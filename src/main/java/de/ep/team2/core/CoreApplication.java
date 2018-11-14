@@ -7,10 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
-import de.ep.team2.core.DbTest.Customer;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import de.ep.team2.core.DbTest.User;
+
+import java.util.LinkedList;
 
 
 @SpringBootApplication
@@ -27,28 +26,41 @@ public class CoreApplication implements CommandLineRunner{
 
     @Override
     public void run(String... strings) throws Exception {
+        testDB();
+    }
 
+    /**
+     * Method to Test the DB Connection.
+     * Creates some test users writes them in the Database and runs a query on the Database.
+     * Logs the results to the Serverconsole.
+     */
+    private void testDB(){
         log.info("Creating tables");
 
-        jdbcTemplate.execute("DROP TABLE IF EXISTS customers");
-        jdbcTemplate.execute("CREATE TABLE customers(" +
+        jdbcTemplate.execute("DROP TABLE IF EXISTS users");
+        jdbcTemplate.execute("CREATE TABLE users(" +
                 "id SERIAL, first_name VARCHAR(255), last_name VARCHAR(255))");
 
-        // Split up the array of whole names into an array of first/last names
-        List<Object[]> splitUpNames = Arrays.asList("John Woo", "Jeff Dean", "Josh Bloch", "Josh Long").stream()
-                .map(name -> name.split(" "))
-                .collect(Collectors.toList());
+        LinkedList<Object[]> test = new LinkedList<>();
+        Object[] timo = {"Timo","Heinrich"};
+        Object[] alex = {"Alexander","Reißig"};
+        Object[] felix = {"Felix","Wilhelm"};
+        Object[] yannick = {"Yannick","Osenstätter"};
+        test.add(timo);
+        test.add(alex);
+        test.add(felix);
+        test.add(yannick);
 
-        // Use a Java 8 stream to print out each tuple of the list
-        splitUpNames.forEach(name -> log.info(String.format("Inserting customer record for %s %s", name[0], name[1])));
+        for (Object[] o:test) {
+            log.info(String.format("Inserting user record for %s %s", o[0], o[1]));
+        }
 
-        // Uses JdbcTemplate's batchUpdate operation to bulk load data
-        jdbcTemplate.batchUpdate("INSERT INTO customers(first_name, last_name) VALUES (?,?)", splitUpNames);
+        jdbcTemplate.batchUpdate("INSERT INTO users(first_name, last_name) VALUES (?,?)", test);
 
-        log.info("Querying for customer records where first_name = 'Josh':");
+        log.info("Querying for user records where first_name = 'Timo':");
         jdbcTemplate.query(
-                "SELECT id, first_name, last_name FROM customers WHERE first_name = ?", new Object[] { "Josh" },
-                (rs, rowNum) -> new Customer(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"))
-        ).forEach(customer -> log.info(customer.toString()));
+                "SELECT id, first_name, last_name FROM users WHERE first_name = ?", new Object[] { "Timo" },
+                (rs, rowNum) -> new User(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"))
+        ).forEach(user -> log.info(user.toString()));
     }
 }

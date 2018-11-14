@@ -1,10 +1,14 @@
 package de.ep.team2.core.DbTest;
 
-public class Customer {
+/**
+ * User class to Test DB Connection.
+ * Will be reworked when storing actual Userdata in the DB.
+ */
+public class User {
     private long id;
     private String firstName, lastName;
 
-    public Customer(long id, String firstName, String lastName) {
+    public User(long id, String firstName, String lastName) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
