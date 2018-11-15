@@ -1,5 +1,6 @@
 package de.ep.team2.core;
 
+import de.ep.team2.core.service.DataBaseService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.slf4j.Logger;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import de.ep.team2.core.DbTest.User;
-
 import java.util.LinkedList;
 
 
@@ -26,6 +26,8 @@ public class CoreApplication implements CommandLineRunner{
 
     @Override
     public void run(String... strings) throws Exception {
+        DataBaseService dbService = DataBaseService.getInstance();
+        dbService.setJdbcTemplate(jdbcTemplate);
         testDB();
     }
 
