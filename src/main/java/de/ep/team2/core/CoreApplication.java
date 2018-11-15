@@ -1,5 +1,6 @@
 package de.ep.team2.core;
 
+import de.ep.team2.core.DataInit.DataInit;
 import de.ep.team2.core.service.DataBaseService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,9 +26,9 @@ public class CoreApplication implements CommandLineRunner{
     JdbcTemplate jdbcTemplate;
 
     @Override
-    public void run(String... strings) throws Exception {
-        DataBaseService dbService = DataBaseService.getInstance();
-        dbService.setJdbcTemplate(jdbcTemplate);
+    public void run(String... strings) {
+        //Sets the JDBC-Template in DataBaseServices to us it in other classes.
+        DataBaseService.getInstance().setJdbcTemplate(jdbcTemplate);
         testDB();
     }
 
@@ -37,28 +38,7 @@ public class CoreApplication implements CommandLineRunner{
      * Logs the results to the Serverconsole.
      */
     private void testDB(){
-        log.info("Creating tables");
-
-        jdbcTemplate.execute("DROP TABLE IF EXISTS users");
-        jdbcTemplate.execute("CREATE TABLE users(" +
-                "id SERIAL, first_name VARCHAR(255), last_name VARCHAR(255))");
-
-        LinkedList<Object[]> test = new LinkedList<>();
-        Object[] timo = {"Timo","Heinrich"};
-        Object[] alex = {"Alexander","Reißig"};
-        Object[] felix = {"Felix","Wilhelm"};
-        Object[] yannick = {"Yannick","Osenstätter"};
-        test.add(timo);
-        test.add(alex);
-        test.add(felix);
-        test.add(yannick);
-
-        for (Object[] o:test) {
-            log.info(String.format("Inserting user record for %s %s", o[0], o[1]));
-        }
-
-        jdbcTemplate.batchUpdate("INSERT INTO users(first_name, last_name) VALUES (?,?)", test);
-
+        new DataInit(jdbcTemplate,log);
         log.info("Querying for user records where first_name = 'Timo':");
         jdbcTemplate.query(
                 "SELECT id, first_name, last_name FROM users WHERE first_name = ?", new Object[] { "Timo" },
