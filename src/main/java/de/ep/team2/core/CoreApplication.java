@@ -41,8 +41,9 @@ public class CoreApplication implements CommandLineRunner{
         new DataInit(jdbcTemplate,log);
         log.info("Querying for user records where first_name = 'Timo':");
         jdbcTemplate.query(
-                "SELECT id, first_name, last_name FROM users WHERE first_name = ?", new Object[] { "Timo" },
-                (rs, rowNum) -> new User(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"))
+                "SELECT id, email, first_name, last_name FROM users WHERE first_name = ?", new Object[] { "Timo" },
+                (rs, rowNum) -> new User(rs.getLong("id"), rs.getString("email"),
+                        rs.getString("first_name"), rs.getString("last_name"))
         ).forEach(user -> log.info(user.toString()));
     }
 }

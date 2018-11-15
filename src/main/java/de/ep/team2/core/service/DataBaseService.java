@@ -57,7 +57,7 @@ public class DataBaseService {
         LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT id, first_name, last_name FROM users WHERE id = ?",
                 new Object[]{id},
-                (rs, rowNum) -> new User(rs.getLong("id"),
+                (rs, rowNum) -> new User(rs.getLong("id"), rs.getString("first_name"),
                         rs.getString("first_name"), rs.getString("last_name"))
         ));
         if (toReturn.isEmpty()) {
@@ -67,10 +67,11 @@ public class DataBaseService {
         }
     }
 
-    public void insertUser(String firstName, String lastName){
-        Object[] toInsert = {firstName, lastName};
-        jdbcTemplate.update("INSERT INTO users(first_name, last_name) VALUES (?,?)",
+    public void insertUser(String email, String firstName, String lastName){
+        Object[] toInsert = {email, firstName, lastName};
+        jdbcTemplate.update("INSERT INTO users(email, first_name, last_name) VALUES (?,?,?)",
                 toInsert);
-        log.info("User '" + firstName + " " + lastName + "' inserted in Table users!");
+        log.info("User '" + firstName + " " + lastName + "' with mail: '"
+                + email + "' inserted in Table 'users'!");
     }
 }

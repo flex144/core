@@ -6,10 +6,12 @@ package de.ep.team2.core.DbTest;
  */
 public class User {
     private long id;
+    private String email;
     private String firstName, lastName;
 
-    public User(long id, String firstName, String lastName) {
+    public User(long id,  String email, String firstName, String lastName) {
         this.id = id;
+        this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -17,8 +19,8 @@ public class User {
     @Override
     public String toString() {
         return String.format(
-                "User[id=%d, firstName='%s', lastName='%s']",
-                id, firstName, lastName);
+                "User[id=%d, email='%s', firstName='%s', lastName='%s']",
+                id, email, firstName, lastName);
     }
 
     public long getId() {
@@ -27,6 +29,14 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getFirstName() {

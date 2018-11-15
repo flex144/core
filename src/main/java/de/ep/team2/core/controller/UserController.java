@@ -32,7 +32,7 @@ public class UserController {
             model.addAttribute("error",numberFormatException.getMessage());
             return "error";
         }
-        User searchedUser = userService.getUser(idInt);
+        User searchedUser = userService.getUserByID(idInt);
         if (searchedUser == null) {
             model.addAttribute("error","User not found!");
             return "error";

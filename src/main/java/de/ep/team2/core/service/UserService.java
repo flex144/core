@@ -18,7 +18,7 @@ public class UserService {
     private static final Logger log = LoggerFactory.getLogger(CoreApplication.class);
 
 
-    public User getUser(Integer id) {
+    public User getUserByID(Integer id) {
         return DataBaseService.getInstance().getUserById(id);
     }
 }

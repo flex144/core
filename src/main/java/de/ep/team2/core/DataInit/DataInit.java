@@ -22,21 +22,22 @@ public class DataInit {
         log.info("Creating tables");
         jdbcTemplate.execute("DROP TABLE IF EXISTS users");
         jdbcTemplate.execute("CREATE TABLE users(" +
-                "id SERIAL, first_name VARCHAR(255), last_name VARCHAR(255))");
+                "id SERIAL, email VARCHAR(255)," +
+                " first_name VARCHAR(255), last_name VARCHAR(255))");
     }
 
     private void fillUsers() {
         LinkedList<String[]> initTestData = new LinkedList<>();
-        String[] timo = {"Timo","Heinrich"};
-        String[] alex = {"Alexander","Reißig"};
-        String[] felix = {"Felix","Wilhelm"};
-        String[] yannick = {"Yannick","Osenstätter"};
+        String[] timo = {"Timo@gmail.com", "Timo", "Heinrich"};
+        String[] alex = {"Alex@gmail.com", "Alexander", "Reißig"};
+        String[] felix = {"Felix@gmail.com", "Felix", "Wilhelm"};
+        String[] yannick = {"Yannick@gmail.com", "Yannick", "Osenstätter"};
         initTestData.add(timo);
         initTestData.add(alex);
         initTestData.add(felix);
         initTestData.add(yannick);
         for (String[] o : initTestData) {
-            DataBaseService.getInstance().insertUser(o[0], o[1]);
+            DataBaseService.getInstance().insertUser(o[0], o[1], o[2]);
         }
     }
 }
