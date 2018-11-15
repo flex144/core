@@ -3,9 +3,11 @@ package de.ep.team2.core.DataInit;
 import de.ep.team2.core.service.DataBaseService;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
-
 import java.util.LinkedList;
 
+/**
+ * Initiates the tables and fills it with example data.
+ */
 public class DataInit {
 
     private JdbcTemplate jdbcTemplate;

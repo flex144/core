@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import de.ep.team2.core.DbTest.User;
-import java.util.LinkedList;
-
 
 @SpringBootApplication
 public class CoreApplication implements CommandLineRunner{
