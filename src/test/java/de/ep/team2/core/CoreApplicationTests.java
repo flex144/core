@@ -13,4 +13,9 @@ public class CoreApplicationTests {
 	public void contextLoads() {
 	}
 
+	@Test
+    public void dataBaseInit() {
+
+    }
+
 }
