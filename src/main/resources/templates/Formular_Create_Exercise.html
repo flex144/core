@@ -1,70 +1,142 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Übung hinzufügen</title>
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
 
-    <link href="http://cdn.jsdelivr.net/webjars/bootstrap/4.1.3/css/bootstrap.min.css"
-          th:href="@{webjars/bootstrap/4.1.3/css/bootstrap.min.css}"
-          rel="stylesheet" media="screen" />
-
-    <script src="http://cdn.jsdelivr.net/webjars/jquery/3.3.1/jquery.min.js"
-            th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <link href="../static/css/core.css"
-          th:href="@{css/core.css}" rel="stylesheet" media="screen"/>
+          th:href="@{css/core.css}" rel="stylesheet" media="screen">
+
+    <link href="../static/css/navbar.css"
+          th:href="@{css/navbar.css}" rel="stylesheet" media="screen">
 
 </head>
 
 <body>
+
+<div class="container">
+    <!-- Standard-Navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Core</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Startseite</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">Trainingsplan
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Planübersicht</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Neue Planvorlage</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">Nutzer
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Nutzerliste</a></li>
+                            <li><a href="#">Nutzersuche</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">Trainingsübungen
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Übungsübersicht</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Übungssuche</a></li>
+                            <li><a href="#">Neue Übung</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Statistiken</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <button type="button" class="btn btn-default navbar-btn">Abmelden</button>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
 <div class="container">
     <div class="jumbotron">
         <h1>Neue Trainingseinheit erstellen</h1>
         &ensp;
         <p>Fülle das folgende Formular und speichere anschließend die eingegebenen
             Daten um die neue Übung hinzuzufügen.</p>
-        <div class="col-md-8">
-            <form>
-                <div class="form-group">
-                    <label for="exerciseName">Name der Übung</label>
-                    <input  type="text" class="form-control" id="exerciseName"
-                            placeholder="Hier die Übungsbezeichnung eingeben...">
+    </div>
+    <div class="col-md-12">
+        <form>
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label for="exerciseName">Name der Übung</label>
+                        <input  type="text" class="form-control" id="exerciseName"
+                                placeholder="Hier die Übungsbezeichnung eingeben...">
+                    </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="description">Beschreibung der Übung</label>
-                    <textarea id="description" class="form-control" rows="5"></textarea>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="description">Beschreibung der Übung</label>
+                        <textarea id="description" class="form-control" rows="6"></textarea>
+                    </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="weightType">Gewichtsart auswählen</label>
-                    <select id="weightType" class="form-control">
-                        <option selected disabled hidden>Wähle eine Option aus...</option>
-                        <option>Eigengewicht</option>
-                        <option>Befestigtes Gewicht</option>
-                    </select>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="weightType">Gewichtsart auswählen</label>
+                        <select id="weightType" class="form-control">
+                            <option selected disabled hidden>Wähle eine Option aus...</option>
+                            <option>Eigengewicht</option>
+                            <option>Befestigtes Gewicht</option>
+                        </select>
+                    </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="videoLink1">Erklärungsvideos (Optional)</label>
-                    <input  type="url" class="form-control" id="videoLink1"
-                            placeholder="Hier Link zu einem Erklärungsvideo einfügen...">
-                    <input  type="url" class="form-control" id="videoLink2"
-                            placeholder="Hier Link zu einem weiteren Erklärungsvideo einfügen...">
-                    <input  type="url" class="form-control" id="videoLink3"
-                            placeholder="Hier Link zu einem weiteren Erklärungsvideo einfügen...">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="videoLink1">Erklärungsvideos (Optional)</label>
+                        <input  type="url" class="form-control" id="videoLink1"
+                                placeholder="Hier Link zu einem Erklärungsvideo einfügen...">
+                        <input  type="url" class="form-control" id="videoLink2"
+                                placeholder="Hier Link zu einem weiteren Erklärungsvideo einfügen...">
+                        <input  type="url" class="form-control" id="videoLink3"
+                                placeholder="Hier Link zu einem weiteren Erklärungsvideo einfügen...">
+                    </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="imageInput">Bild hochladen (Optional)</label>
-                    <input  type="image" class="form-control" id="imageInput"
-                            placeholder="Hier Bild zur Übung einfügen...">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="imageInput">Bild hochladen (Optional)</label>
+                        <input  type="image" class="form-control" id="imageInput"
+                                placeholder="Hier Bild zur Übung einfügen...">
+                    </div>
                 </div>
+            </div>
 
-                <button type="submit" class="btn btn-primary btn-lg">Speichern</button>
-            </form>
-        </div>
+            <button type="submit" class="btn btn-primary btn-lg">Speichern</button>
+        </form>
     </div>
 </div>
 </body>

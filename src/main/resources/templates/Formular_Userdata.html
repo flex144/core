@@ -1,101 +1,203 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Userdata</title>
-    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <title>Nutzerdaten eingeben</title>
 
-    <link href="http://cdn.jsdelivr.net/webjars/bootstrap/4.1.3/css/bootstrap.min.css"
-          th:href="@{webjars/bootstrap/4.1.3/css/bootstrap.min.css}"
-          rel="stylesheet" media="screen" />
-
-    <script src="http://cdn.jsdelivr.net/webjars/jquery/3.3.1/jquery.min.js"
-            th:src="@{/webjars/jquery/3.3.1/jquery.min.js}"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <link href="../static/css/core.css"
-          th:href="@{css/core.css}" rel="stylesheet" media="screen"/>
+          th:href="@{css/core.css}" rel="stylesheet" media="screen">
 
+    <link href="../static/css/navbar.css"
+          th:href="@{css/navbar.css}" rel="stylesheet" media="screen">
 </head>
 
 <body>
+
+<div class="container">
+
+    <!-- Standard-Navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Core</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">Startseite</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">Trainingsplan
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Planübersicht</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Neue Planvorlage</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">Nutzer
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Nutzerliste</a></li>
+                            <li><a href="#">Nutzersuche</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">Trainingsübungen
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Übungsübersicht</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Übungssuche</a></li>
+                            <li><a href="#">Neue Übung</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Statistiken</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <button type="button" class="btn btn-default navbar-btn">Abmelden</button>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
 <div class="container">
     <div class="jumbotron">
-        <h1>Angaben für deinen individuellen Trainingsplan</h1>
+        <h2>Angaben für deinen individuellen Trainingsplan</h2>
         &ensp;
-        <p>Fülle das folgende Formular aus und schicke deine Daten ab. Anschließend erhältst du dein Einstufungstraining</p>
-        <div class="col-md-8">
-            <form>
-                <div class="form-group">
-                    <label for="firstname">Vorname</label>
-                    <input  type="text" class="form-control" id="firstname" placeholder="Hier deinen Vornamen eingeben...">
+        <p style="font-size: 12pt">Fülle das folgende Formular aus und schicke deine Daten ab. Anschließend erhältst du
+            dein Einstufungstraining</p>
+    </div>
+    <!-- Verkleinern und zentrieren: <div class="col-md-1"></div>-->
+    <div class="col-md-12">
+        <form th:align="center">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="firstname">Vorname</label>
+                        <input  type="text" class="form-control" id="firstname"
+                                placeholder="Hier deinen Vornamen eingeben...">
+                    </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="lastname">Nachname</label>
+                        <input  type="text" class="form-control" id="lastname"
+                                placeholder="Hier deinen Nachnamen eingeben...">
+                    </div>
+                </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="lastname">Vorname</label>
-                    <input  type="text" class="form-control" id="lastname" placeholder="Hier deinen Nachnamen eingeben...">
+            <!-- Input Nebeneinander -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="gender">Geschlecht auswählen</label>
+                        <select id="gender" class="form-control" required>
+                            <option selected disabled hidden>Wähle eine Option aus...</option>
+                            <option>Männlich</option>
+                            <option>Weiblich</option>
+                        </select>
+                    </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="age">Alter</label>
+                        <input  type="text" class="form-control" id="age"
+                                placeholder="Hier deinen Alter eingeben...">
+                    </div>
+                </div>
+            </div>
 
-                <!--
-                <div class="form-group">
-                    <label for="age">Alter</label>
-                    <input  type="text" class="form-control" id="age" placeholder="Hier deinen Alter eingeben...">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="height">Körpergröße (in cm)</label>
+                        <input  type="number" class="form-control" id="height"
+                                placeholder="Hier deine Größe in cm eingeben...">
+                    </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="weight">Gewicht (in kg)</label>
+                        <input  type="number" class="form-control" id="weight"
+                                placeholder="Hier dein Gewicht in kg eingeben...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input untereinander
+            <div class="form-group">
+                <label for="gender">Geschlecht auswählen</label>
+                <select id="gender" class="form-control" required>
+                    <option selected disabled hidden>Wähle eine Option aus...</option>
+                    <option>Männlich</option>
+                    <option>Weiblich</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Alter</label>
+                <input  type="text" class="form-control" id="age"
+                placeholder="Hier deinen Alter eingeben...">
+            </div>
+
+            <div class="form-group">
+                <label for="height">Körpergröße (in cm)</label>
+                <input  type="number" class="form-control" id="height"
+                        placeholder="Hier deine Größe in cm eingeben...">
+            </div>
+
+            <div class="form-group">
+                <label for="weight">Gewicht (in kg)</label>
+                <input  type="number" class="form-control" id="weight"
+                        placeholder="Hier dein Gewicht in kg eingeben...">
+            </div>
+            -->
+
+            <div class="form-group">
+                <!-- Input mit eigener Eingabe + Vorschläge (autocomplete)
+                <label for="experienceLevel">Erfahrungsstufe auswählen</label>
+                <input type="text" name="experience" list="experienceLevel">
+                <datalist id="experienceLevel">
+                    <option value="Anfänger ohne Vorkenntnisse" />
+                    <option value="Anfänger mit geringen Vorkenntnissen" />
+                    <option value="Erfahren" />
+                    <option value="Profi" />
+                </datalist>
+                </input>
                 -->
+                <label for="experience">Erfahrungsstufe auswählen</label>
+                <select id="experience" class="form-control" required>
+                    <option selected disabled hidden>Wähle eine Option aus...</option>
+                    <option>Anfänger ohne Vorkenntnisse</option>
+                    <option>Anfänger mit geringen Vorkenntnissen</option>
+                    <option>Erfahren</option>
+                    <option>Profi</option>
+                </select>
+            </div>
 
-                <div class="form-group">
-                    <label for="gender">Geschlecht auswählen</label>
-                    <select id="gender" class="form-control" required>
-                        <option selected disabled hidden>Wähle eine Option aus...</option>
-                        <option>Männlich</option>
-                        <option>Weiblich</option>
-                    </select>
-                </div>
+            <div class="form-group">
+                <label for="focus">Trainingsfokus auswählen</label>
+                <select id="focus" class="form-control" required>
+                    <option selected disabled hidden>Wähle eine Option aus...</option>
+                    <option>Muskelaufbau</option>
+                    <option>Ausdauer</option>
+                    <option>Schmerzreduktion</option>
+                </select>
+            </div>
 
-                <div class="form-group">
-                    <label for="height">Körpergröße (in cm)</label>
-                    <input  type="number" class="form-control" id="height" placeholder="Hier deine Größe in cm eingeben...">
-                </div>
-
-                <div class="form-group">
-                    <label for="weight">Gewicht (in kg)</label>
-                    <input  type="number" class="form-control" id="weight" placeholder="Hier dein Gewicht in kg eingeben...">
-                </div>
-
-                <div class="form-group">
-                    <!--
-                    <label for="experienceLevel">Erfahrungsstufe auswählen</label>
-                    <input type="text" name="experience" list="experienceLevel">
-                    <datalist id="experienceLevel">
-                        <option value="Anfänger ohne Vorkenntnisse" />
-                        <option value="Anfänger mit geringen Vorkenntnissen" />
-                        <option value="Erfahren" />
-                        <option value="Profi" />
-                    </datalist>
-                    </input>
-                    -->
-                    <label for="experience">Erfahrungsstufe auswählen</label>
-                    <select id="experience" class="form-control" required>
-                        <option selected disabled hidden>Wähle eine Option aus...</option>
-                        <option>Anfänger ohne Vorkenntnisse</option>
-                        <option>Anfänger mit geringen Vorkenntnissen</option>
-                        <option>Erfahren</option>
-                        <option>Profi</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="focus">Trainingsfokus auswählen</label>
-                    <select id="focus" class="form-control" required>
-                        <option selected disabled hidden>Wähle eine Option aus...</option>
-                        <option>Muskelaufbau</option>
-                        <option>Ausdauer</option>
-                        <option>Schmerzreduktion</option>
-                    </select>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-lg">Absenden</button>
-            </form>
-        </div>
+            <button type="submit" class="btn btn-primary btn-lg">Absenden</button>
+        </form>
     </div>
 </div>
 </body>
