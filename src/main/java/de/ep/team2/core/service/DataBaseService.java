@@ -4,8 +4,10 @@ import de.ep.team2.core.CoreApplication;
 import de.ep.team2.core.DbTest.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -80,6 +82,17 @@ public class DataBaseService {
         } else {
             return toReturn.getFirst();
         }
+    }
+
+    /**
+     * Searches in the Database "users" for all Users and adds them to a List.
+     * @return Returns a List of Users.
+     */
+    public List<User> getAllUsers() {
+        String sql = "SELECT * FROM users";
+        List<User> toReturn = jdbcTemplate.query(sql, new BeanPropertyRowMapper(User.class));
+
+        return toReturn;
     }
 
     /**

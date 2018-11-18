@@ -3,6 +3,7 @@ package de.ep.team2.core.service;
 import de.ep.team2.core.DbTest.User;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +21,8 @@ public class UserService {
     public User getUserByEmail(String email) {
         return DataBaseService.getInstance().getUserByEmail(email);
     }
+
+    public List<User> getAllUsers() { return DataBaseService.getInstance().getAllUsers(); }
 
     /**
      * This method checks if the given String is a valid E-Mail.
