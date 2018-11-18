@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Moderator Startup Page</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+          crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+
+        /*Scales the size of the buttons according to device*/
+        .scaler {
+            height: 20vh;
+            min-height: 25px;
+        }
+
+        /*Design choices for the Button class*/
+        .btn-block {
+            height: 100%;
+            width: 100%;
+            min-height: 20px;
+            min-width: 40px;
+            padding: 20px 20px;
+            float: inside;
+            text-align: center;
+            font-size: 4vw;
+            /*TODO fix font scaling, right now it can leave button.*/
+        }
+
+        /* Create two columns that floats next to each other*/
+        .leftHalf {
+            float: left;
+            width: 50%;
+            height: 100vh;
+            background: #ffb74d;
+            padding: 20px;
+        }
+
+        .rightHalf {
+            float: left;
+            width: 50%;
+            height: 100vh;
+            background: #e3f2fd;
+            padding: 20px;
+        }
+
+        /*--------------------Table Styles-------------------*/
+        #user {
+            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 50vw;
+        }
+
+        #user td, #user th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #user tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #user tr:hover {
+            background-color: #ddd;
+        }
+
+        #user th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* Stacks the two halfs above each other when on small screens */
+        @media (max-width: 600px) {
+            nav, article {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<!--Left half of the page-->
+<div class="leftHalf">
+    <div class="scaler">
+        <div class="btn-block">
+            <a href="Testseite%20Verlinkung.html" type="button"
+               class="success btn-block">
+                Plan Verzeichnis
+            </a>
+        </div>
+    </div>
+    <div class="scaler">
+        <div class="btn-block">
+            <a href="Testseite%20Verlinkung.html" type="button"
+               class="success btn-block">
+                Plan erstellen
+            </a>
+        </div>
+    </div>
+    <div class="scaler">
+        <div class="btn-block">
+            <a href="Testseite%20Verlinkung.html" type="button"
+               class="success btn-block">
+                Übungen
+            </a>
+        </div>
+    </div>
+    <div class="scaler">
+        <div class="btn-block">
+            <a href="Testseite%20Verlinkung.html" type="button"
+               class="success btn-block">
+                Statistiken
+            </a>
+        </div>
+    </div>
+</div>
+
+
+<!--Right half of the page-->
+<div class="rightHalf">
+    <div class="scaler">
+        <div class="btn-block">
+            <a href="Mod-UserSearch.html" type="button"
+               class="success btn-block">
+                Nutzer suche
+            </a>
+        </div>
+    </div>
+    <!--- TODO Scale once we know which data we include--->
+    <table id="user">
+        <tr>
+            <th>NutzerName</th>
+            <th>Ziel</th>
+            <th>Fokus</th>
+            <th>Einheit</th>
+        </tr>
+        <tr>
+            <td>Benedikt Schwarz</td>
+            <td>Muskelaufbau</td>
+            <td>Ganzkörper</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>Benedikt Schwarz 2</td>
+            <td>Muskelaufbau</td>
+            <td>Ganzkörper</td>
+            <td>3</td>
+        </tr>
+        <tr>
+            <td>Benedikt Schwarz 3</td>
+            <td>Muskelaufbau</td>
+            <td>Ganzkörper</td>
+            <td>3</td>
+        </tr>
+    </table>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+</body>
+</html>
