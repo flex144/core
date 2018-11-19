@@ -1,0 +1,77 @@
+
+
+/*--------------------------Table Styles-----------------------------*/
+#user {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+    table-layout: fixed;
+    background: #f2f2f2;
+}
+
+#user th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+
+#user td, #user th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: initial;
+}
+
+#user tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+#user tr:hover {
+    background-color: #ddd;
+}
+
+#User td:nth-child(1),
+#User td:nth-child(3),
+#User td:nth-child(4) {
+    width: 15%;
+}
+
+#User td:nth-child(2) {
+    width: 55%;
+}
+
+#User th:nth-child(1),
+#User th:nth-child(3),
+#User th:nth-child(4) {
+    width: 15%;
+}
+
+#User th:nth-child(2) {
+    width: 55%;
+}
+
+/*------------------------Container Styles--------------------------*/
+.containerSearch {
+    padding: 10px;
+    background: #4CAF50;
+}
+
+.containerTable {
+    padding: 20px;
+    background: #ffb74d;
+}
+
+/*---------------------Search bar Style------------------------------*/
+.form-control-borderless {
+    border: none;
+}
+
+.form-control-borderless:hover, .form-control-borderless:active, .form-control-borderless:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
