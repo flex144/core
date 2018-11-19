@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class IndexController {
 
-    private String errorMessage = "Invalid E-Mail";
-
     @RequestMapping(value = {"/login"}, method=RequestMethod.GET)
     public String login(Model model){
         User user = new User();
@@ -23,15 +21,32 @@ public class IndexController {
 
     @RequestMapping(value = {"/login"}, method=RequestMethod.POST)
     public String checkuser(Model model, @ModelAttribute("user") User user){
-
-        UserService userservice = new UserService();
         String email = user.getEmail();
-        if(email != null && userservice.checkEmail(email) && userservice.getUserByEmail(email) != null) {
-            return "formular_create_exercise";
+        String errorMessage = checkMail(email);
+        if(errorMessage.isEmpty()) {
+            return "User-StartupPage";
+        } else {
+            model.addAttribute("errorMessage", errorMessage);
+            return "login_page";
         }
+    }
 
-        model.addAttribute("errorMessage", errorMessage);
-        return "login_page";
+    private String checkMail(String email) {
+        String errorMessage = "";
+        UserService userservice = new UserService();
+        if(email == null || email.isEmpty()) {
+            errorMessage = "E-Mail Feld muss ausgefüllt werden!";
+        } else if (!userservice.checkEmail(email)) {
+            errorMessage = "Das ist keine E-Mail!";
+        } else if (userservice.getUserByEmail(email) == null) {
+            errorMessage = "E-Mail existiert nicht";
+        }
+        return errorMessage;
+    }
+
+    @RequestMapping(value = {"/search"}, method = RequestMethod.GET)
+    public String searchUser() {
+        return "Mod-UserSearch";
     }
 
     @RequestMapping(value = {"/create"}, method=RequestMethod.GET)
