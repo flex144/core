@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Nutzerdaten eingeben</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link href="../static/css/core.css"
+          th:href="@{css/core.css}" rel="stylesheet" media="screen">
+
+    <link href="../static/css/navbar.css"
+          th:href="@{css/navbar.css}" rel="stylesheet" media="screen">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Standard-Navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Core</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#">
+                        <span class="glyphicon glyphicon-home"></span> Startseite</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-list-alt"></span> Trainingsplan
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Planübersicht</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Neue Planvorlage</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-user"></span> Nutzer
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Nutzerliste</a></li>
+                            <li><a href="#">Nutzersuche</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-indent-left"></span> Trainingsübungen
+                            <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Übungsübersicht</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="#">Übungssuche</a></li>
+                            <li><a href="#">Neue Übung</a></li>
+                        </ul>
+                        <!-- Bis auf Weiteres nicht visualisiert
+                        <li>
+                            <a href="#">
+                                <span class="glyphicon glyphicon-stats"></span> Statistiken
+                            </a>
+                        </li>
+                        -->
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <button type="button" class="btn btn-default navbar-btn">
+                        <span class="glyphicon glyphicon-log-out"></span> Abmelden</button>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div class="container">
+    <div class="jumbotron">
+        <h2>Erstelle eine neue Trainingsplanvorlage</h2>
+        &ensp;
+        <p style="font-size: 12pt">Fülle das folgende Formular aus und speichere anschließend deine erstellte Vorlage
+        für individuelle Trainingspläne.</p>
+    </div>
+    <!-- Verkleinern und zentrieren: <div class="col-md-1"></div>-->
+    <div class="col-md-12">
+        <table class="table table-bordered table-condensed" border="1" width="100%">
+            <colgroup>
+                <col width="5%">
+                <col width="10%">
+                <col width="30%">
+                <col width="35%">
+                <col width="5%">
+                <col width="5%">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Ordnung</th>
+                    <th>Übung</th>
+                    <th>Ausführung</th>
+                    <th>Last/Wiederholungen/Sätze</th>
+                    <th>Tempo</th>
+                    <th>Pause</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><input type="text" class="form-control" /></td>
+                <td>
+                    <input type="text" name="exercise" list="stored_exercises">
+                        <datalist id="stored_exercises">
+                            <option value="Liegestütze" />
+                            <option value="Klimmzüge" />
+                            <option value="Leg-Press" />
+                            <option value="Bench-Press" />
+                            <option value="Front-Curl" />
+                            <option value="Back-Curl" />
+                            <option value="Squad" />
+                        </datalist>
+                    </input>
+                </td>
+                <td>
+                    <textarea id="description" class="form-control" rows="4"></textarea>
+                </td>
+                <td>
+                    <table class="table table-bordered table-condensed">
+                        <tbody>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <table class="table table-bordered table-condensed">
+                        <tbody>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <table class="table table-bordered table-condensed">
+                        <tbody>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" class="form-control" /></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <button type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-plus-sign"></span> Weitere Übung</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

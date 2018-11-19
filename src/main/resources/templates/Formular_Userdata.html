@@ -29,10 +29,12 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Startseite</a></li>
+                    <li class="active"><a href="#">
+                        <span class="glyphicon glyphicon-home"></span> Startseite</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                           aria-haspopup="true" aria-expanded="false">Trainingsplan
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-list-alt"></span> Trainingsplan
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Planübersicht</a></li>
@@ -42,7 +44,8 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                           aria-haspopup="true" aria-expanded="false">Nutzer
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-user"></span> Nutzer
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Nutzerliste</a></li>
@@ -51,7 +54,8 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                           aria-haspopup="true" aria-expanded="false">Trainingsübungen
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-indent-left"></span> Trainingsübungen
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Übungsübersicht</a></li>
@@ -59,11 +63,17 @@
                             <li><a href="#">Übungssuche</a></li>
                             <li><a href="#">Neue Übung</a></li>
                         </ul>
+                    <!-- Bis auf Weiteres nicht visualisiert
+                    <li>
+                        <a href="#">
+                            <span class="glyphicon glyphicon-stats"></span> Statistiken
+                        </a>
                     </li>
-                    <li><a href="#">Statistiken</a></li>
+                    -->
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <button type="button" class="btn btn-default navbar-btn">Abmelden</button>
+                    <a type="button" class="btn btn-default navbar-btn" href="login_page.html">
+                        <span class="glyphicon glyphicon-log-out"></span> Abmelden</a>
                 </ul>
             </div>
         </div>
@@ -83,16 +93,18 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="firstname">Vorname</label>
+                        <label for="firstname">Vorname:</label>
                         <input  type="text" class="form-control" id="firstname"
-                                placeholder="Hier deinen Vornamen eingeben...">
+                                placeholder="Hier deinen Vornamen eingeben..."
+                                required>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="lastname">Nachname</label>
+                        <label for="lastname">Nachname:</label>
                         <input  type="text" class="form-control" id="lastname"
-                                placeholder="Hier deinen Nachnamen eingeben...">
+                                placeholder="Hier deinen Nachnamen eingeben..."
+                                required>
                     </div>
                 </div>
             </div>
@@ -100,6 +112,7 @@
             <!-- Input Nebeneinander -->
             <div class="row">
                 <div class="col-md-6">
+                    <!--
                     <div class="form-group">
                         <label for="gender">Geschlecht auswählen</label>
                         <select id="gender" class="form-control" required>
@@ -108,10 +121,24 @@
                             <option>Weiblich</option>
                         </select>
                     </div>
+                    -->
+                    <div class="form-group">
+                        <label for="gender">Geschlecht auswählen</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="radio-inline"><input type="radio" name="optradio">  Männlich</label>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="radio-inline"><input type="radio" name="optradio">  Weiblich</label>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
+
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="age">Alter</label>
+                        <label for="age">Alter:</label>
                         <input  type="text" class="form-control" id="age"
                                 placeholder="Hier deinen Alter eingeben...">
                     </div>
@@ -121,14 +148,14 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="height">Körpergröße (in cm)</label>
+                        <label for="height">Körpergröße: (in cm)</label>
                         <input  type="number" class="form-control" id="height"
                                 placeholder="Hier deine Größe in cm eingeben...">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="weight">Gewicht (in kg)</label>
+                        <label for="weight">Gewicht: (in kg)</label>
                         <input  type="number" class="form-control" id="weight"
                                 placeholder="Hier dein Gewicht in kg eingeben...">
                     </div>
@@ -196,7 +223,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-lg">Absenden</button>
+            <button type="submit" class="btn btn-primary btn-lg" href="login_page.html">Absenden</button>
         </form>
     </div>
 </div>

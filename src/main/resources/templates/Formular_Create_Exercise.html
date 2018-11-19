@@ -29,10 +29,12 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Startseite</a></li>
+                    <li class="active"><a href="#">
+                        <span class="glyphicon glyphicon-home"></span> Startseite</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                           aria-haspopup="true" aria-expanded="false">Trainingsplan
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-list-alt"></span> Trainingsplan
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Planübersicht</a></li>
@@ -42,7 +44,8 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                           aria-haspopup="true" aria-expanded="false">Nutzer
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-user"></span> Nutzer
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Nutzerliste</a></li>
@@ -51,7 +54,8 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                           aria-haspopup="true" aria-expanded="false">Trainingsübungen
+                           aria-haspopup="true" aria-expanded="false">
+                            <span class="glyphicon glyphicon-indent-left"></span> Trainingsübungen
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="#">Übungsübersicht</a></li>
@@ -59,11 +63,17 @@
                             <li><a href="#">Übungssuche</a></li>
                             <li><a href="#">Neue Übung</a></li>
                         </ul>
-                    </li>
-                    <li><a href="#">Statistiken</a></li>
+                        <!-- Bis auf Weiteres nicht visualisiert
+                        <li>
+                            <a href="#">
+                                <span class="glyphicon glyphicon-stats"></span> Statistiken
+                            </a>
+                        </li>
+                        -->
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <button type="button" class="btn btn-default navbar-btn">Abmelden</button>
+                    <button type="button" class="btn btn-default navbar-btn">
+                        <span class="glyphicon glyphicon-log-out"></span> Abmelden</button>
                 </ul>
             </div>
         </div>
@@ -72,9 +82,9 @@
 
 <div class="container">
     <div class="jumbotron">
-        <h1>Neue Trainingseinheit erstellen</h1>
+        <h2>Neue Trainingseinheit erstellen</h2>
         &ensp;
-        <p>Fülle das folgende Formular und speichere anschließend die eingegebenen
+        <p style="font-size: 12pt">Fülle das folgende Formular und speichere anschließend die eingegebenen
             Daten um die neue Übung hinzuzufügen.</p>
     </div>
     <div class="col-md-12">
@@ -82,7 +92,7 @@
             <div class="row">
                 <div class="col-md-5">
                     <div class="form-group">
-                        <label for="exerciseName">Name der Übung</label>
+                        <label for="exerciseName">Name der Übung:</label>
                         <input  type="text" class="form-control" id="exerciseName"
                                 placeholder="Hier die Übungsbezeichnung eingeben...">
                     </div>
@@ -92,7 +102,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="form-group">
-                        <label for="description">Beschreibung der Übung</label>
+                        <label for="description">Beschreibung der Übung:</label>
                         <textarea id="description" class="form-control" rows="6"></textarea>
                     </div>
                 </div>
@@ -114,13 +124,17 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="videoLink1">Erklärungsvideos (Optional)</label>
+                        <label for="videoLink1">Erklärungsvideos: (Optional)</label>
                         <input  type="url" class="form-control" id="videoLink1"
                                 placeholder="Hier Link zu einem Erklärungsvideo einfügen...">
+                        <!--
                         <input  type="url" class="form-control" id="videoLink2"
                                 placeholder="Hier Link zu einem weiteren Erklärungsvideo einfügen...">
                         <input  type="url" class="form-control" id="videoLink3"
                                 placeholder="Hier Link zu einem weiteren Erklärungsvideo einfügen...">
+                        -->
+                        <button type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-plus-sign"></span> Zusätzlicher Link</button>
                     </div>
                 </div>
             </div>
