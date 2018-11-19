@@ -56,20 +56,20 @@ public class IndexController {
 
     @RequestMapping(value = {"/usersearch"}, method = RequestMethod.GET)
     public String userSearch() {
-        return "Mod-UserSearch";
+        return "mod-userSearch";
     }
 
     /**
      * This method searches for all Users in the Database and adds them to the model
      * of the Thymeleaf Html-Website.
      * @param model Adds the existing Users to the model, for Thymeleaf to work with.
-     * @return Returns userlist.html
+     * @return Returns mod-userSearch.html
      */
     @RequestMapping(value = {"/usersearch"}, method = RequestMethod.POST)
     public String getUserList(Model model, @ModelAttribute("searchtext") String searchtext) {
         UserService userService = new UserService();
         model.addAttribute("users", userService.getAllUsers());
-        return "Mod-UserSearch";
+        return "mod-userSearch";
     }
 
 
