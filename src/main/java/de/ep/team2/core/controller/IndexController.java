@@ -54,17 +54,22 @@ public class IndexController {
         return "formular_create_exercise";
     }
 
+    @RequestMapping(value = {"/usersearch"}, method = RequestMethod.GET)
+    public String userSearch() {
+        return "Mod-UserSearch";
+    }
+
     /**
      * This method searches for all Users in the Database and adds them to the model
      * of the Thymeleaf Html-Website.
      * @param model Adds the existing Users to the model, for Thymeleaf to work with.
      * @return Returns userlist.html
      */
-    @RequestMapping(value = {"/userlist"}, method = RequestMethod.GET)
-    public String getUserList(Model model) {
+    @RequestMapping(value = {"/usersearch"}, method = RequestMethod.POST)
+    public String getUserList(Model model, @ModelAttribute("searchtext") String searchtext) {
         UserService userService = new UserService();
         model.addAttribute("users", userService.getAllUsers());
-        return "userlist";
+        return "Mod-UserSearch";
     }
 
 

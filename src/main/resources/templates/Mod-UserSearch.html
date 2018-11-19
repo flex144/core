@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en", xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -140,6 +140,7 @@
 </head>
 <body>
 
+<form  class="form-horizontal" th:action="@{/usersearch}" th:object="${searchtext}" method="post">
 <div class="containerSearch">
     <div class="row">
     </div>
@@ -158,9 +159,8 @@
                 </div>
             </th>
             <th>
-                <button type="button" class="primary btn-block" id="searchButton">
-                    <!---TODO Label Button
-                    Searchv--->
+                <button type="submit" class="btn  btn-primary" id="searchButton">
+                    Suchen
                 </button>
             </th>
         </tr>
@@ -175,32 +175,23 @@
             <th>Vorname</th>
             <th>Nachname</th>
         </tr>
-        <tr>
-            <td>1</td>
-            <td>Timo@gmail.com</td>
-            <td>Timo</td>
-            <td>Heinrich</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>Alex@gmail.com</td>
-            <td>Alexander</td>
-            <td>Reißig</td>
-        </tr>
-        <tr>
-            <td>3</td>
-            <td>Felix@gmail.com</td>
-            <td>Felix</td>
-            <td>Wilhelm</td>
-        </tr>
-        <tr>
-            <td>4</td>
-            <td>Yannick@gmail.com</td>
-            <td>Yannick</td>
-            <td>Osenstätter</td>
+        <tr th:each="user : ${users}" style="cursor: pointer"
+            th:onclick="'javascript:rowClicked(\'' + ${user.id} + '\');'">
+            <td th:text="${user.getId()}"/>
+            <td th:text="${user.getEmail()}"/>
+            <td th:text="${user.getFirstName()}"/>
+            <td th:text="${user.getLastName()}"/>
         </tr>
     </table>
 </div>
+</form>
+
+
+<script>
+    function rowClicked(value) {
+        location.href = "/users/" + value;
+    }
+</script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
