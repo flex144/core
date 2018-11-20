@@ -1,0 +1,85 @@
+
+body {
+    background: #ffb74d;
+    width: 100%;
+}
+
+.btn-block {
+    min-height: 20px;
+    min-width: 40px;
+    padding: 20px 20px;
+    float: inside;
+    font-size: 6vh;
+    text-align: center;
+}
+
+/*------------------Container Styles----------------*/
+.containerUser {
+    background: #ffb74d;
+    padding-left: 10%;
+    height: 100%;
+    width: 80%;
+}
+
+.userData {
+    background: #dddddd;
+    padding: 20px;
+}
+
+.userButtons {
+    height: 60%;
+    width: 100%;
+}
+
+/*--------------------Table Styles-------------------*/
+
+#tableUserData {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+    table-layout: fixed;
+    background: #f2f2f2;
+}
+
+#tableUserData td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: initial;
+}
+
+#userTimeTable td:nth-child(odd),
+#userTimeTable td:nth-child(even) {
+    width: 15%;
+}
+
+#userTimeTable {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+    table-layout: fixed;
+    background: #f2f2f2;
+}
+
+#userTimeTable td, #userTimeTable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: initial;
+}
+
+#userTimeTable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: #4CAF50;
+    color: white;
+}
+
+#userTimeTable th:nth-child(1) {
+    width: 15%;
+}
+
