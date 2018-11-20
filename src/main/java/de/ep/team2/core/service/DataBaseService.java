@@ -55,8 +55,7 @@ public class DataBaseService {
         LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT id, email, first_name, last_name FROM users WHERE id = ?",
                 new Object[]{id},
-                (rs, rowNum) -> new User(rs.getLong("id"), rs.getString("email"),
-                        rs.getString("first_name"), rs.getString("last_name"))
+                new BeanPropertyRowMapper<>(User.class)
         ));
         if (toReturn.isEmpty()) {
             return null;
@@ -74,10 +73,7 @@ public class DataBaseService {
     public User getUserByEmail(String email) {
         LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT id, email, first_name, last_name FROM users WHERE email = ?",
-                new Object[]{email},
-                (rs, rowNum) -> new User(rs.getLong("id"), rs.getString("email"),
-                        rs.getString("first_name"), rs.getString("last_name"))
-        ));
+                new Object[]{email}, new BeanPropertyRowMapper<>(User.class)));
         if (toReturn.isEmpty()) {
             return null;
         } else {
@@ -91,7 +87,7 @@ public class DataBaseService {
      */
     public List<User> getAllUsers() {
         String sql = "SELECT * FROM users";
-        List<User> toReturn = jdbcTemplate.query(sql, new BeanPropertyRowMapper(User.class));
+        List<User> toReturn = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
 
         return toReturn;
     }
@@ -112,6 +108,10 @@ public class DataBaseService {
                 + getUserByEmail(email).getId() + " !");
     }
 
+    /**
+     * Deletes a user in the table with the given id.
+     * @param id user to delete.
+     */
     public void deleteUserById(Integer id) {
         User toDelete = getUserById(id);
         if (toDelete != null) {
