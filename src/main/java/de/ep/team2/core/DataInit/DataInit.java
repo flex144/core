@@ -30,10 +30,10 @@ public class DataInit {
 
     private void fillUsers() {
         LinkedList<String[]> initTestData = new LinkedList<>();
-        String[] timo = {"Timo@gmail.com", "Timo", "Heinrich"};
-        String[] alex = {"Alex@gmail.com", "Alexander", "Reißig"};
-        String[] felix = {"Felix@gmail.com", "Felix", "Wilhelm"};
-        String[] yannick = {"Yannick@gmail.com", "Yannick", "Osenstätter"};
+        String[] timo = {"timo@gmail.com", "Timo", "Heinrich"};
+        String[] alex = {"alex@gmail.com", "Alexander", "Reißig"};
+        String[] felix = {"felix@gmail.com", "Felix", "Wilhelm"};
+        String[] yannick = {"yannick@gmail.com", "Yannick", "Osenstätter"};
         initTestData.add(timo);
         initTestData.add(alex);
         initTestData.add(felix);

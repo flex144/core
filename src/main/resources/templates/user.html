@@ -5,9 +5,9 @@
     <title>User ID</title>
 </head>
 <body>
-    <p th:text="'The ID is: ' + ${id} + '!'"/>
-    <p th:text="${email}"/>
-    <p th:text="${firstName}"/>
-    <p th:text="${lastName}"/>
+    <p th:text="'The ID is: ' + ${user.id} + '!'"/>
+    <p th:text="${user.email}"/>
+    <p th:text="${user.firstName}"/>
+    <p th:text="${user.lastName}"/>
 </body>
 </html>

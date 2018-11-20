@@ -1,7 +1,7 @@
 package de.ep.team2.core.service;
 
 import de.ep.team2.core.CoreApplication;
-import de.ep.team2.core.DbTest.User;
+import de.ep.team2.core.entities.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
