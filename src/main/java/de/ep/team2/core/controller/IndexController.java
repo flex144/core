@@ -1,6 +1,6 @@
 package de.ep.team2.core.controller;
 
-import de.ep.team2.core.DbTest.User;
+import de.ep.team2.core.entities.User;
 import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,26 +21,14 @@ public class IndexController {
     @RequestMapping(value = {"/login"}, method=RequestMethod.POST)
     public String checkuser(Model model, @ModelAttribute("user") User user){
         String email = user.getEmail();
-        String errorMessage = checkMail(email);
+        UserService userService = new UserService();
+        String errorMessage = (userService.wrongMailReason(email));
         if(errorMessage.isEmpty()) {
             return "User-StartupPage";
         } else {
             model.addAttribute("errorMessage", errorMessage);
             return "login_page";
         }
-    }
-
-    private String checkMail(String email) {
-        String errorMessage = "";
-        UserService userservice = new UserService();
-        if(email == null || email.isEmpty()) {
-            errorMessage = "E-Mail Feld muss ausgefüllt werden!";
-        } else if (!userservice.checkEmail(email)) {
-            errorMessage = "Das ist keine E-Mail!";
-        } else if (userservice.getUserByEmail(email) == null) {
-            errorMessage = "E-Mail existiert nicht";
-        }
-        return errorMessage;
     }
 
     @RequestMapping(value = {"/create"}, method=RequestMethod.GET)

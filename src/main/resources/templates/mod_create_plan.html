@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Nutzerdaten eingeben</title>
+    <title>Planvorlage erstellen</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -20,48 +20,49 @@
 <body>
 
 <div class="container">
-
-    <!-- Standard-Navbar -->
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
                 <a class="navbar-brand" href="#">Core</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">
-                        <span class="glyphicon glyphicon-home"></span> Startseite</a></li>
-                    <li class="dropdown">
+                    <li>
+                        <a href="mod_startup_page_web.html">
+                            <span class="glyphicon glyphicon-home"></span> Startseite
+                        </a>
+                    </li>
+                    <li class="dropdown; active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false">
                             <span class="glyphicon glyphicon-list-alt"></span> Trainingsplan
-                            <span class="caret"></span></a>
+                            <span class="caret"></span>
+                        </a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Planübersicht</a></li>
+                            <li><a href="mod_plan_search.html">Planverzeichnis</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">Neue Planvorlage</a></li>
+                            <li><a href="mod_create_plan.html">Plan erstellen</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                           aria-haspopup="true" aria-expanded="false">
+                    <li>
+                        <a href="mod_user_search.html">
                             <span class="glyphicon glyphicon-user"></span> Nutzer
-                            <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Nutzerliste</a></li>
-                            <li><a href="#">Nutzersuche</a></li>
-                        </ul>
+                        </a>
                     </li>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                        <a href="mod_exercise_search.html" class="dropdown-toggle" data-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false">
                             <span class="glyphicon glyphicon-indent-left"></span> Trainingsübungen
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Übungsübersicht</a></li>
+                            <li><a href="mod_exercise_search.html">Übungsübersicht</a></li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="#">Übungssuche</a></li>
-                            <li><a href="#">Neue Übung</a></li>
+                            <li><a href="mod_create_exercise.html">Neue Übung</a></li>
                         </ul>
                         <!-- Bis auf Weiteres nicht visualisiert
                         <li>
@@ -72,8 +73,8 @@
                         -->
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <button type="button" class="btn btn-default navbar-btn">
-                        <span class="glyphicon glyphicon-log-out"></span> Abmelden</button>
+                    <a href="login_page.html" type="button" class="btn btn-default navbar-btn">
+                        <span class="glyphicon glyphicon-log-out"></span> Abmelden</a>
                 </ul>
             </div>
         </div>

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Nutzerübericht</title>
+    <title>Planverzeichnis</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -20,7 +20,6 @@
 </head>
 <body>
 <div class="container">
-    <!-- Standard-Navbar -->
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -38,7 +37,7 @@
                             <span class="glyphicon glyphicon-home"></span> Startseite
                         </a>
                     </li>
-                    <li class="dropdown">
+                    <li class="dropdown; active">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false">
                             <span class="glyphicon glyphicon-list-alt"></span> Trainingsplan
@@ -50,7 +49,7 @@
                             <li><a href="mod_create_plan.html">Plan erstellen</a></li>
                         </ul>
                     </li>
-                    <li class="active">
+                    <li>
                         <a href="mod_user_search.html">
                             <span class="glyphicon glyphicon-user"></span> Nutzer
                         </a>
@@ -82,63 +81,77 @@
     </nav>
 </div>
 
-<form class="form-horizontal" th:action="@{usersearch}"
-      th:object="${searchtext}" method="post">
+<form class="form-horizontal">
     <div class="container">
         <div class="jumbotron">
-            <h2>Liste aller auf der Webseite registrierten Nutzer</h2>
+            <h2>Verzeichnis aller erstellten Trainingsplanvorlagen</h2>
             <br>
-            <p style="font-size: 12pt">Gib in die folgende Eingabezeile ein beliebiges Attribut des oder der gesuchten Nutzer ein</p>
+            <br>
+            <p style="font-size: 12pt">Gib in die folgende Eingabezeile alle Pläne nach bestimmten Attributen
+            zu filtern</p>
             <input class="form-control" id="myInput" type="text" placeholder="Suchwort eingeben..">
             <br>
+            <a href="mod_create_plan.html" type="button" class="btn btn-success btn-medium">
+                <span class="glyphicon glyphicon-plus-sign"></span> Neue Vorlage</a>
         </div>
     </div>
     <div class="container">
-        <table id="userTable" class="table table-bordered table-condensed" data-toggle="table">
+        <table id="planTable" class="table table-bordered table-condensed" data-toggle="table">
             <thead>
-                <tr>
-                    <th data-field="ID" data-sortable="true">
-                        <span class="glyphicon glyphicon-sort"></span> ID
-                    </th>
-                    <th data-field="email" data-sortable="true">
-                        <span class="glyphicon glyphicon-sort"></span> Email
-                    </th>
-                    <th data-field="firstName" data-sortable="true">
-                        <span class="glyphicon glyphicon-sort"></span> Vorname
-                    </th>
-                    <th data-field="lastName" data-sortable="true">
-                        <span class="glyphicon glyphicon-sort"></span> Nachname
-                    </th>
-                </tr>
+            <tr>
+                <th data-field="ID" data-sortable="true">
+                    <span class="glyphicon glyphicon-sort"></span> ID
+                </th>
+                <th data-field="planName" data-sortable="true">
+                    <span class="glyphicon glyphicon-sort"></span> Übungsname
+                </th>
+                <th data-field="focus" data-sortable="true">
+                    <span class="glyphicon glyphicon-sort"></span> Schwerpunkt
+                </th>
+                <th data-field="timeSpan" data-sortable="true">
+                    <span class="glyphicon glyphicon-sort"></span> Dauer
+                </th>
+                <th data-field="author" data-sortable="true">
+                    <span class="glyphicon glyphicon-sort"></span> Autor
+                </th>
+            </tr>
             </thead>
             <tbody id="myTable">
                 <tr>
                     <td>001</td>
-                    <td>paulfriedrich@web.de</td>
-                    <td>Paul</td>
-                    <td>Friedrich</td>
+                    <td>Einstiegstraining</td>
+                    <td>Muskelaufbau</td>
+                    <td>1 Tag</td>
+                    <td>Paul Friedrich</td>
                 </tr>
                 <tr>
                     <td>002</td>
-                    <td>martinM@gmx.at</td>
-                    <td>Martin</td>
-                    <td>Maier</td>
+                    <td>Anfängertraining</td>
+                    <td>Muskelaufbau</td>
+                    <td>1 Monat</td>
+                    <td>Paul Friedrich</td>
                 </tr>
                 <tr>
-                    <td>003</td>
-                    <td>BenSchwarz@web.de</td>
-                    <td>Benedikt</td>
-                    <td>Schwarz</td>
+                    <td>004</td>
+                    <td>Konditionstraining</td>
+                    <td>Ausdauersteigerung</td>
+                    <td>3 Monate</td>
+                    <td>Martin Maier</td>
                 </tr>
-                <!--
-                <tr th:each="user : ${users}" style="cursor: pointer"
-                    th:onclick="'javascript:rowClicked(\'' + ${user.id} + '\');'">
-                    <td th:text="${user.getId()}"/>
-                    <td th:text="${user.getEmail()}"/>
-                    <td th:text="${user.getFirstName()}"/>
-                    <td th:text="${user.getLastName()}"/>
+                <tr>
+                    <td>006</td>
+                    <td>Training für Fortgeschrittene</td>
+                    <td>Muskelaufbau</td>
+                    <td>6 Wochen</td>
+                    <td>Paul Friedrich</td>
                 </tr>
-                -->
+                <tr>
+                    <td>011</td>
+                    <td>Linderung Rückenschmerzen</td>
+                    <td>Schmerzreduktion</td>
+                    <td>1 Monat</td>
+                    <td>Martin Maier</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -154,14 +167,6 @@
             });
         });
     });
-</script>
-
-<!--- test
---->
-<script>
-    function rowClicked(value) {
-        location.href = "/users/" + value;
-    }
 </script>
 
 </body>

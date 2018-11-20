@@ -1,4 +1,4 @@
-package de.ep.team2.core.DbTest;
+package de.ep.team2.core.entities;
 
 /**
  * Class which represents a User of the Database table 'users'.
