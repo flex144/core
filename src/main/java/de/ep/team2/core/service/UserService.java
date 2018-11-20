@@ -42,12 +42,13 @@ public class UserService {
     /**
      * Determines the reason why a given email is flawed and returns it,
      * or the String 'valid' if there is nothing wrong.
+     *
      * @param email email to get the error.
      * @return error message.
      */
     public String wrongMailReason(String email) {
         String errorMessage = "valid";
-        if(email == null || email.isEmpty()) {
+        if (email == null || email.isEmpty()) {
             errorMessage = "E-Mail Feld muss ausgefüllt werden!";
         } else if (!checkEmailPattern(email)) {
             errorMessage = "Das ist keine E-Mail!";

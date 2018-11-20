@@ -30,10 +30,14 @@ public class UserController {
         String errorMsg = "Email oder ID ist nicht valide!";
         if (userService.checkEmailPattern(query)) {
             searchedUser = userService.getUserByEmail(query);
-            if (searchedUser == null) { errorMsg = "Benutzer nicht gefunden!";}
+            if (searchedUser == null) {
+                errorMsg = "Benutzer nicht gefunden!";
+            }
         } else if (isInteger(query)) {
             searchedUser = userService.getUserByID(Integer.parseInt(query));
-            if (searchedUser == null) { errorMsg = "Benutzer nicht gefunden!";}
+            if (searchedUser == null) {
+                errorMsg = "Benutzer nicht gefunden!";
+            }
         }
         if (searchedUser == null) {
             model.addAttribute("error", errorMsg);
@@ -64,7 +68,7 @@ public class UserController {
      * @param toCheck String to check.
      * @return true if String is an Integer, otherwise false.
      */
-    private boolean isInteger (String toCheck){
+    private boolean isInteger(String toCheck) {
         try {
             Integer.parseInt(toCheck);
         } catch (NumberFormatException numberFormatException) {

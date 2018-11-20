@@ -6,7 +6,8 @@
 
     <title>Planverzeichnis</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
@@ -23,7 +24,8 @@
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <button type="button" class="navbar-toggle"
+                        data-toggle="collapse" data-target="#navbar">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -34,35 +36,47 @@
                 <ul class="nav navbar-nav">
                     <li>
                         <a href="mod_startup_page_web.html">
-                            <span class="glyphicon glyphicon-home"></span> Startseite
+                            <span class="glyphicon glyphicon-home"></span>
+                            Startseite
                         </a>
                     </li>
                     <li class="dropdown; active">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                        <a href="#" class="dropdown-toggle"
+                           data-toggle="dropdown" role="button"
                            aria-haspopup="true" aria-expanded="false">
-                            <span class="glyphicon glyphicon-list-alt"></span> Trainingsplan
+                            <span class="glyphicon glyphicon-list-alt"></span>
+                            Trainingsplan
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="mod_plan_search.html">Planverzeichnis</a></li>
+                            <li>
+                                <a href="mod_plan_search.html">Planverzeichnis</a>
+                            </li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="mod_create_plan.html">Plan erstellen</a></li>
+                            <li><a href="mod_create_plan.html">Plan
+                                erstellen</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="mod_user_search.html">
-                            <span class="glyphicon glyphicon-user"></span> Nutzer
+                            <span class="glyphicon glyphicon-user"></span>
+                            Nutzer
                         </a>
                     </li>
                     <li class="dropdown">
-                        <a href="mod_exercise_search.html" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                        <a href="mod_exercise_search.html"
+                           class="dropdown-toggle" data-toggle="dropdown"
+                           role="button"
                            aria-haspopup="true" aria-expanded="false">
-                            <span class="glyphicon glyphicon-indent-left"></span> Trainingsübungen
+                            <span class="glyphicon glyphicon-indent-left"></span>
+                            Trainingsübungen
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="mod_exercise_search.html">Übungsübersicht</a></li>
+                            <li><a href="mod_exercise_search.html">Übungsübersicht</a>
+                            </li>
                             <li role="separator" class="divider"></li>
-                            <li><a href="mod_create_exercise.html">Neue Übung</a></li>
+                            <li><a href="mod_create_exercise.html">Neue
+                                Übung</a></li>
                         </ul>
                         <!-- Bis auf Weiteres nicht visualisiert
                         <li>
@@ -73,8 +87,10 @@
                         -->
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <a href="login_page.html" type="button" class="btn btn-default navbar-btn">
-                        <span class="glyphicon glyphicon-log-out"></span> Abmelden</a>
+                    <a href="login_page.html" type="button"
+                       class="btn btn-default navbar-btn">
+                        <span class="glyphicon glyphicon-log-out"></span>
+                        Abmelden</a>
                 </ul>
             </div>
         </div>
@@ -87,16 +103,20 @@
             <h2>Verzeichnis aller erstellten Trainingsplanvorlagen</h2>
             <br>
             <br>
-            <p style="font-size: 12pt">Gib in die folgende Eingabezeile alle Pläne nach bestimmten Attributen
-            zu filtern</p>
-            <input class="form-control" id="myInput" type="text" placeholder="Suchwort eingeben..">
+            <p style="font-size: 12pt">Gib in die folgende Eingabezeile alle
+                Pläne nach bestimmten Attributen
+                zu filtern</p>
+            <input class="form-control" id="myInput" type="text"
+                   placeholder="Suchwort eingeben..">
             <br>
-            <a href="mod_create_plan.html" type="button" class="btn btn-success btn-medium">
+            <a href="mod_create_plan.html" type="button"
+               class="btn btn-success btn-medium">
                 <span class="glyphicon glyphicon-plus-sign"></span> Neue Vorlage</a>
         </div>
     </div>
     <div class="container">
-        <table id="planTable" class="table table-bordered table-condensed" data-toggle="table">
+        <table id="planTable" class="table table-bordered table-condensed"
+               data-toggle="table">
             <thead>
             <tr>
                 <th data-field="ID" data-sortable="true">
@@ -117,41 +137,41 @@
             </tr>
             </thead>
             <tbody id="myTable">
-                <tr>
-                    <td>001</td>
-                    <td>Einstiegstraining</td>
-                    <td>Muskelaufbau</td>
-                    <td>1 Tag</td>
-                    <td>Paul Friedrich</td>
-                </tr>
-                <tr>
-                    <td>002</td>
-                    <td>Anfängertraining</td>
-                    <td>Muskelaufbau</td>
-                    <td>1 Monat</td>
-                    <td>Paul Friedrich</td>
-                </tr>
-                <tr>
-                    <td>004</td>
-                    <td>Konditionstraining</td>
-                    <td>Ausdauersteigerung</td>
-                    <td>3 Monate</td>
-                    <td>Martin Maier</td>
-                </tr>
-                <tr>
-                    <td>006</td>
-                    <td>Training für Fortgeschrittene</td>
-                    <td>Muskelaufbau</td>
-                    <td>6 Wochen</td>
-                    <td>Paul Friedrich</td>
-                </tr>
-                <tr>
-                    <td>011</td>
-                    <td>Linderung Rückenschmerzen</td>
-                    <td>Schmerzreduktion</td>
-                    <td>1 Monat</td>
-                    <td>Martin Maier</td>
-                </tr>
+            <tr>
+                <td>001</td>
+                <td>Einstiegstraining</td>
+                <td>Muskelaufbau</td>
+                <td>1 Tag</td>
+                <td>Paul Friedrich</td>
+            </tr>
+            <tr>
+                <td>002</td>
+                <td>Anfängertraining</td>
+                <td>Muskelaufbau</td>
+                <td>1 Monat</td>
+                <td>Paul Friedrich</td>
+            </tr>
+            <tr>
+                <td>004</td>
+                <td>Konditionstraining</td>
+                <td>Ausdauersteigerung</td>
+                <td>3 Monate</td>
+                <td>Martin Maier</td>
+            </tr>
+            <tr>
+                <td>006</td>
+                <td>Training für Fortgeschrittene</td>
+                <td>Muskelaufbau</td>
+                <td>6 Wochen</td>
+                <td>Paul Friedrich</td>
+            </tr>
+            <tr>
+                <td>011</td>
+                <td>Linderung Rückenschmerzen</td>
+                <td>Schmerzreduktion</td>
+                <td>1 Monat</td>
+                <td>Martin Maier</td>
+            </tr>
             </tbody>
         </table>
     </div>
@@ -159,10 +179,10 @@
 
 <!-- Code für das Filtern der Tabelle nach Suchwort -->
 <script>
-    $(document).ready(function(){
-        $("#myInput").on("keyup", function() {
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
             var value = $(this).val().toLowerCase();
-            $("#myTable tr").filter(function() {
+            $("#myTable tr").filter(function () {
                 $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
             });
         });

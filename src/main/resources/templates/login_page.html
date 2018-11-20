@@ -22,24 +22,27 @@
     <div class="jumbotron">
         <h2>Willkommen auf unserer Webseite "Core"</h2>
         &ensp;<br>
-        <p style="font-size: 12pt">Hier bei uns bekommst du deinen <u>persönlichen Trainingsplan</u>. Registriere dich jetzt und trainiere
+        <p style="font-size: 12pt">Hier bei uns bekommst du deinen <u>persönlichen
+            Trainingsplan</u>. Registriere dich jetzt und trainiere
         ab sofort mit deinem individuellen Plan.</p>
         <br>
-        <div th:if="${errorMessage}" th:utext="${errorMessage}" style="color:red"></div>
+        <div th:if="${errorMessage}" th:utext="${errorMessage}"
+             style="color:red"></div>
         <div class="col-md-12">
             <form  class="form-horizontal" th:action="@{/login}" th:object="${user}" method="post">
-                <div  class="row">
-                    <label  for="inputEmail"  class="control-label col-md-1">E-Mail: </label>
-                    <div  class="col-md-8">
+                <div class="row">
+                    <label for="inputEmail" class="control-label col-md-1">E-Mail: </label>
+                    <div class="col-md-8">
                         <input  type="text"  class="form-control"  placeholder="E-Mail Adresse"  id="inputEmail"
                             th:field="*{email}">
                         <!--<span  class="help-block">Hinweis:  Aktive E-Mail benötigt.</span>-->
                     </div>
                 </div>
 
-                <div  class="row">
-                    <label  for="inputPassword"  class="control-label col-md-1 align-content-center">Passwort: </label>
-                    <div  class="col-md-8">
+                <div class="row">
+                    <label for="inputPassword"
+                           class="control-label col-md-1 align-content-center">Passwort: </label>
+                    <div class="col-md-8">
                         <input  type="password"  placeholder="Passwort" class="form-control"  id="inputPassword">
                     </div>
                 </div>
@@ -58,13 +61,15 @@
                 <div class="row">
                     <div class="form-group">
                         <div class="col-md-4">
-                            <a href="login_choice_presentation.html" class="btn  btn-primary btn-lg"
+                            <a href="login_choice_presentation.html"
+                               class="btn  btn-primary btn-lg"
                                type="submit">Anmelden</a>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-4">
-                            <a href="user_data.html" class="btn  btn-primary btn-lg"
+                            <a href="user_data.html"
+                               class="btn  btn-primary btn-lg"
                                type="submit">Registrieren</a>
                         </div>
                     </div>

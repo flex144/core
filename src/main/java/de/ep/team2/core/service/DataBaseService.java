@@ -19,7 +19,8 @@ public class DataBaseService {
     private JdbcTemplate jdbcTemplate;
     private static final Logger log = LoggerFactory.getLogger(CoreApplication.class);
 
-    private DataBaseService() {}
+    private DataBaseService() {
+    }
 
     /**
      * Returns the Instance of this Singleton.
@@ -114,7 +115,8 @@ public class DataBaseService {
     public void deleteUserById(Integer id) {
         User toDelete = getUserById(id);
         if (toDelete != null) {
-            jdbcTemplate.update("DELETE FROM users WHERE id = ?", new Object[]{id});
+            jdbcTemplate.update("DELETE FROM users WHERE id = ?",
+                    new Object[]{id});
             log.info("User '" + toDelete.getFirstName() + " " + toDelete.getLastName()
                     + "' with mail: '" + toDelete.getEmail() + "' deleted!");
         }

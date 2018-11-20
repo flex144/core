@@ -13,16 +13,17 @@ import static org.junit.Assert.assertTrue;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CoreApplicationTests {
 
-	@Autowired
-	private TestRestTemplate restTemplate;
+    @Autowired
+    private TestRestTemplate restTemplate;
 
 	@Test
     public void getUser() {
-	    assertTrue(restTemplate.getForObject("/users/1", String.class)
+        assertTrue(restTemplate.getForObject("/users/1", String.class)
                 .contains("Heinrich"));
-	    assertTrue(restTemplate.getForObject("/users/235",String.class)
+        assertTrue(restTemplate.getForObject("/users/235", String.class)
                 .contains("Benutzer nicht gefunden!"));
-	    assertTrue(restTemplate.getForObject("/users/alex@gmail.com",String.class)
+        assertTrue(restTemplate.getForObject("/users/alex@gmail.com",
+                String.class)
                 .contains("Reißig"));
     }
 
