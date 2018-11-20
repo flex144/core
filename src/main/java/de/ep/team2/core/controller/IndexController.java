@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class IndexController {
 
-    @RequestMapping(value = {"/login"}, method=RequestMethod.GET)
+    @RequestMapping(value = {"/login", "/"}, method=RequestMethod.GET)
     public String login(Model model){
         User user = new User();
         model.addAttribute(user);
@@ -24,7 +24,7 @@ public class IndexController {
         UserService userService = new UserService();
         String errorMessage = (userService.wrongMailReason(email));
         if(errorMessage.isEmpty()) {
-            return "User-StartupPage";
+            return "user_startup_page";
         } else {
             model.addAttribute("errorMessage", errorMessage);
             return "login_page";
@@ -37,7 +37,9 @@ public class IndexController {
     }
 
     @RequestMapping(value = {"/usersearch"}, method = RequestMethod.GET)
-    public String userSearch() {
+    public String userSearch(Model model) {
+        UserService userService = new UserService();
+        model.addAttribute("users", userService.getAllUsers());
         return "mod_user_search";
     }
 

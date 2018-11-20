@@ -107,19 +107,19 @@
         <table id="tableUserData">
             <tr>
                 <td>User id</td>
-                <td><p th:text="'The ID is: ' + ${id} + '!'"/></td>
+                <td><p th:text="'The ID is: ' + ${user.id} + '!'"/></td>
             </tr>
             <tr>
                 <td>Email</td>
-                <td><p th:text="${email}"/></td>
+                <td><p th:text="${user.email}"/></td>
             </tr>
             <tr>
                 <td>First name</td>
-                <td><p th:text="${firstName}"/></td>
+                <td><p th:text="${user.firstName}"/></td>
             </tr>
             <tr>
                 <td>Last name</td>
-                <td><p th:text="${lastName}"/></td>
+                <td><p th:text="${user.lastName}"/></td>
             </tr>
         </table>
     </div>
