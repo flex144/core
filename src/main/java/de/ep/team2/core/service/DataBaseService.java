@@ -19,7 +19,7 @@ public class DataBaseService {
     private JdbcTemplate jdbcTemplate;
     private static final Logger log = LoggerFactory.getLogger(CoreApplication.class);
 
-    private DataBaseService() { }
+    private DataBaseService() {}
 
     /**
      * Returns the Instance of this Singleton.
@@ -107,6 +107,16 @@ public class DataBaseService {
         jdbcTemplate.update("INSERT INTO users(email, first_name, last_name) VALUES (?,?,?)",
                 toInsert);
         log.info("User '" + firstName + " " + lastName + "' with mail: '"
-                + email + "' inserted in Table 'users'!");
+                + email + "' inserted in Table 'users' with Id "
+                + getUserByEmail(email).getId() + " !");
+    }
+
+    public void deleteUserById(Integer id) {
+        User toDelete = getUserById(id);
+        if (toDelete != null) {
+            jdbcTemplate.update("DELETE FROM users WHERE id = ?", new Object[]{id});
+            log.info("User '" + toDelete.getFirstName() + " " + toDelete.getLastName()
+                    + "' with mail: '" + toDelete.getEmail() + "' deleted!");
+        }
     }
 }

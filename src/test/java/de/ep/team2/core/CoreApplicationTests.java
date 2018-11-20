@@ -17,7 +17,7 @@ public class CoreApplicationTests {
 	private TestRestTemplate restTemplate;
 
 	@Test
-    public void dataBaseInitTests() {
+    public void getUser() {
 	    assertTrue(restTemplate.getForObject("/users/1", String.class)
                 .contains("Heinrich"));
 	    assertTrue(restTemplate.getForObject("/users/235",String.class)
@@ -25,5 +25,14 @@ public class CoreApplicationTests {
 	    assertTrue(restTemplate.getForObject("/users/alex@gmail.com",String.class)
                 .contains("Reißig"));
     }
+
+    /*
+    @Test
+    public void deleteUser() {
+        restTemplate.delete("http://localhost:8080/users/1");
+        assertTrue(restTemplate.getForObject("/users/1",String.class)
+                .contains("Benutzer nicht gefunden!"));
+    }
+    */
 
 }

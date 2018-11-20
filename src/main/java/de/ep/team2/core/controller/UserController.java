@@ -4,8 +4,7 @@ import de.ep.team2.core.entities.User;
 import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Handles Http-Requests with the path '/users'.
@@ -24,11 +23,11 @@ public class UserController {
      * @return 'user' when no Issues occurred;
      * 'error' if the User wasn't found.
      */
-    @RequestMapping("/{query}")
-    public String searchUserEmail(@PathVariable("query") String query, Model model) {
+    @RequestMapping(value = "/{query}", method = RequestMethod.GET)
+    public String searchUser(@PathVariable("query") String query, Model model) {
         UserService userService = new UserService();
         User searchedUser = null;
-        String errorMsg = "Email oder ID sind nicht valide!";
+        String errorMsg = "Email oder ID ist nicht valide!";
         if (userService.checkEmailPattern(query)) {
             searchedUser = userService.getUserByEmail(query);
             if (searchedUser == null) { errorMsg = "Benutzer nicht gefunden!";}
@@ -42,6 +41,22 @@ public class UserController {
         }
         model.addAttribute("user", searchedUser);
         return "user";
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    public String deleteUserById(@PathVariable("id") String id, Model model) {
+        UserService userService = new UserService();
+        if (!isInteger(id)) {
+            model.addAttribute("error", "ID nicht valide!");
+            return "error";
+        } else if (userService.getUserByID(Integer.parseInt(id)) == null) {
+            model.addAttribute("error", "Benutzer existiert nicht!");
+            return "error";
+        } else {
+            userService.deleteUserByID(Integer.parseInt(id));
+            model.addAttribute("users", userService.getAllUsers());
+            return "mod_user_search";
+        }
     }
 
     /**

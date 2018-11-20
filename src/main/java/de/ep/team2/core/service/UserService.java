@@ -22,6 +22,10 @@ public class UserService {
         return DataBaseService.getInstance().getUserByEmail(email);
     }
 
+    public void deleteUserByID(Integer id) {
+        DataBaseService.getInstance().deleteUserById(id);
+    }
+
     public List<User> getAllUsers() { return DataBaseService.getInstance().getAllUsers(); }
 
     /**
