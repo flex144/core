@@ -63,6 +63,27 @@ public class UserController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.POST)
+    public String createUser(Model model, @ModelAttribute("user") User user) {
+            UserService userService = new UserService();
+            String email = user.getEmail();
+            String errorMessage;
+        if (email == null || email.isEmpty()) {
+            errorMessage = "E-Mail Feld muss ausgefüllt werden!";
+        } else if (!userService.checkEmailPattern(email)) {
+            errorMessage = "Das ist keine E-Mail!";
+        } else if (userService.getUserByEmail(email) != null) {
+            errorMessage = "E-Mail existiert bereits!";
+        } else {
+            userService.createUser(email,null,null);
+            model.addAttribute("user",userService.getUserByEmail(email));
+            return "user";
+        }
+        model.addAttribute("errorMessage", errorMessage);
+        return "login_page";
+    }
+
+
     /**
      * Checks if the String is an Integer.
      * @param toCheck String to check.
