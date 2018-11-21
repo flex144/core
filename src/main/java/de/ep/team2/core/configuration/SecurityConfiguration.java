@@ -15,10 +15,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/css/**", "/primeiro_acesso/**", "/upload",
                         "/testes/upload", "/files/**").permitAll()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .and()
                 .logout()
                 .permitAll();
     }
