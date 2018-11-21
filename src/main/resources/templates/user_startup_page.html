@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -15,19 +15,19 @@
 
 <div class="container" style="padding: 5%">
     <div class="jumbotron">
-        <a href="user_training_start.html" type="button"
+        <a th:href="@{/user/plan}" type="button"
            class="btn btn-default btn-block">
             Training starten
         </a>
-        <a href="testseite_verlinkung.html" type="button"
+        <a type="button"
            class="btn btn-default btn-block">
             Social
         </a>
-        <a href="testseite_verlinkung.html" type="button"
+        <a type="button"
            class="btn btn-default btn-block">
             Statistiken
         </a>
-        <a href="testseite_verlinkung.html" type="button"
+        <a type="button"
            class="btn btn-default btn-block">
             Trainer kontaktieren
         </a>
