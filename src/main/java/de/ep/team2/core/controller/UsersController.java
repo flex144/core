@@ -78,7 +78,7 @@ public class UsersController {
         } else {
             userService.createUser(email,null,null);
             User addedUser = userService.getUserByEmail(email);
-            return String.format("redirect:/users/%s", addedUser.getId());
+            return String.format("redirect:/user/new", addedUser.getId());
         }
         model.addAttribute("errorMessage", errorMessage);
         return "redirect:/login";

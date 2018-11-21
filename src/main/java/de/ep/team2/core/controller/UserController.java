@@ -11,4 +11,19 @@ public class UserController {
     public String startUp() {
         return "user_startup_page";
     }
+
+    @RequestMapping("/new")
+    public String newUser() {
+        return "user_data";
+    }
+
+    @RequestMapping("/plan")
+    public String plan() {
+        return "user_training_start";
+    }
+
+    @RequestMapping("/plan/done")
+    public String planEvalu() {
+        return "user_exercise_evaluation";
+    }
 }
