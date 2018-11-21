@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class IndexController {
 
-    @PostMapping(value = {"/login"})
+    @PostMapping(value = {"/login", "/"})
     public String checkuser(Model model, @ModelAttribute("user") User user){
         String email = user.getEmail();
         UserService userService = new UserService();
