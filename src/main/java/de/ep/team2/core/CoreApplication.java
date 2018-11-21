@@ -1,6 +1,6 @@
 package de.ep.team2.core;
 
-import de.ep.team2.core.DataInit.DataInit;
+import de.ep.team2.core.dataInit.DataInit;
 import de.ep.team2.core.service.DataBaseService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
-import de.ep.team2.core.entities.User;
 
 @SpringBootApplication
 public class CoreApplication implements CommandLineRunner{

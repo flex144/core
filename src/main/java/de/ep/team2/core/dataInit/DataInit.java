@@ -1,4 +1,4 @@
-package de.ep.team2.core.DataInit;
+package de.ep.team2.core.dataInit;
 
 import de.ep.team2.core.service.DataBaseService;
 import org.slf4j.Logger;
