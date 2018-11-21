@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <link href="../static/css/core.css"
+          th:href="@{css/core.css}" rel="stylesheet" media="screen">
+
+    <link href="../static/css/navbar.css"
+          th:href="@{css/navbar.css}" rel="stylesheet" media="screen">
+</head>
+<body>
+<div class="btn-group btn-group-justified" role="group" aria-label="..." th:fragment="main">
+    <a type="button" class="btn btn-default">
+        <span class="glyphicon glyphicon-arrow-left"></span> Zurück
+    </a>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-default dropdown-toggle"
+                data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+            <span class="glyphicon glyphicon-th-list"></span> Menü
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a th:href="@{/user/plan}">Trainingsplan</a></li>
+            <li><a th:href="@{/users/1}">Profil</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Trainer kontaktieren</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a th:href="@{/login}">Abmelden</a></li>
+        </ul>
+    </div>
+    <a th:href="@{/login}" type="button" class="btn btn-default">
+        <span class="glyphicon glyphicon-log-out"></span> Abmelden
+    </a>
+</div>
+</body>
+</html>
