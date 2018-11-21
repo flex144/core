@@ -5,244 +5,128 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Plan</title>
+    <title>Training starts</title>
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
           integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
           crossorigin="anonymous">
     <style>
-
-        body{
-            background: #ffb74d;
-            width: 100%;
-        }
-
         input[type=checkbox] {
-            transform: scale(1.5);
+            zoom: 1.5;
         }
-
-        .btn-block{
-            min-height: 20px;
-            min-width: 40px;
-            padding: 20px 20px;
-            float: inside;
-            font-size: 6vh;
-            text-align: center;
-        }
-
-        /*------------------Container Styles----------------*/
-        .containerStartButton{
-            padding: 2%;
-            background: #4CAF50;
-        }
-
-        .exerciseContainer{
-            /*TODO*/
-        }
-        .tableDivider{
-            width: 100%;
-            padding: 5px;
-        }
-
-        .containerEndButton{
-            background: #4CAF50;
-        }
-
-
-        /*--------------------Table Styles-------------------*/
-        #Übung {
-            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-            text-align: center;
-            table-layout: fixed;
-            background: #f2f2f2;
-        }
-
-        #Übung td, #Übung th {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-            overflow: hidden;
-            text-overflow: initial;
-        }
-
-        #Übung th {
-            padding-top: 12px;
-            padding-bottom: 12px;
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        /*Setting the width fluid*/
-        #Übung td:nth-child(1),
-        #Übung td:nth-child(3),
-        #Übung td:nth-child(4){
-            width: 15%;
-        }
-
-        #Übung td:nth-child(2){
-            width: 55%;
-        }
-
-        #Übung th:nth-child(1),
-        #Übung th:nth-child(3),
-        #Übung th:nth-child(4){
-            width: 15%;
-        }
-
-        #Übung th:nth-child(2){
-            width: 55%;
-        }
-
     </style>
 </head>
 <body>
 
-<!--- Start button that enables checkboxes --->
-<div class="containerStartButton">
-    <div class="btn-block">
-        <button type="button" class="success btn-block">
-            Training starten
-        </button>
-    </div>
+<div class="jumbotron" style="text-align: center">
+    <button type="button"
+            class="btn btn-primary">
+        Training starten
+    </button>
+</div>
+<div class="container">
+    <!--- TODO align table head center --->
+    <table class="table table-bordered text-center table-striped"
+           style="text-align: center;">
+        <thead>
+        <tr>
+            <th style="width: 10%; text-align:center">
+            </th>
+            <th style="width: 50%; text-align:center">Übung</th>
+            <th style="width: 20%; text-align:center">Sätze</th>
+            <th style="width: 20%; text-align:center">Tempo</th>
+        </tr>
+        <tr>
+            <th style="width: 10%; text-align:center">Tutorial</th>
+            <th style="width: 50%; text-align:center">Ausführung</th>
+            <th style="width: 20%; text-align:center">Gewicht</th>
+            <th style="width: 20%; text-align:center">Pause</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div class="container">
+    <table class="table table-bordered table-striped"
+           style="text-align: center">
+        <tbody>
+        <tr>
+            <td style="width: 10%">
+                <label class="btn btn-primary">
+                    <input type="checkbox" autocomplete="off">
+                </label>
+            </td>
+            <td style="width: 50%">Bench Press</td>
+            <td style="width: 20%">4x8</td>
+            <td style="width: 20%">-</td>
+        </tr>
+        <tr>
+            <td style="width: 10%">
+                <a href="testseite_verlinkung.html" type="button"
+                   class="btn btn-default btn-block">info</a></td>
+            <td style="width: 50%"> -</td>
+            <td style="width: 20%"> 45kg</td>
+            <td style="width: 20%"> 60s /set</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container">
+    <table class="table table-bordered table-striped"
+           style="text-align: center">
+        <tbody>
+        <tr>
+            <td style="width: 10%">
+                <label class="btn btn-primary">
+                    <input type="checkbox" autocomplete="off">
+                </label>
+            </td>
+            <td style="width: 50%">Rudern</td>
+            <td style="width: 20%"> -</td>
+            <td style="width: 20%"> Schnell</td>
+        </tr>
+        <tr>
+            <td style="width: 10%">
+                <a href="testseite_verlinkung.html" type="button"
+                   class="btn btn-default btn-block">info</a></td>
+            <td style="width: 50%"> Bis nach Venedig</td>
+            <td style="width: 20%"> Eigen</td>
+            <td style="width: 20%"> -</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container">
+    <table class="table table-bordered table-striped"
+           style="text-align: center">
+        <tbody>
+        <tr>
+            <td style="width: 10%">
+                <label class="btn btn-primary">
+                    <input type="checkbox" autocomplete="off">
+                </label>
+            </td>
+            <td style="width: 50%">Hoola Hoops</td>
+            <td style="width: 20%">4x120</td>
+            <td style="width: 20%">-</td>
+        </tr>
+        <tr>
+            <td style="width: 10%">
+                <a href="testseite_verlinkung.html" type="button"
+                   class="btn btn-default btn-block">info</a></td>
+            <td style="width: 50%"> -</td>
+            <td style="width: 20%"> -</td>
+            <td style="width: 20%"> 40s /set</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="jumbotron" style="text-align: center">
+    <a type="button" href="user_exercise_evaluation.html"
+       class="btn btn-primary">
+        Training beenden
+    </a>
 </div>
 
-<!--- Container that forms the middle of the page --->
-<div class="exerciseContainer">
-    <!---TODO enable checkboxes after Training start button pressed--->
-    <!--- Creating the Table header --->
-    <div class="tableDivider">
-        <table id="Übung">
-            <tr>
-                <th scope="col"></th>
-                <th scope="col">Übung</th>
-                <th scope="col">Sätze</th>
-                <th scope="col">Tempo</th>
-            </tr>
-            <tr>
-                <th scope="col">Tutorial</th>
-                <th scope="col">Ausführung</th>
-                <th scope="col">Gewicht</th>
-                <th scope="col">Pause</th>
-            </tr>
-        </table>
-    </div>
-    <!--- Creating the Table rows --->
-    <div class="tableDivider">
-        <table id="Übung">
-            <tr>
-                <th scope="row">
-                    <label class="btn btn-primary|secondary|success|info|warning|danger active">
-                        <input type="checkbox" name="" id="">
-                    </label>
-                </th>
-                <td>Apfel Weitwurf</td>
-                <td>4x12</td>
-                <td>Schnell</td>
-            </tr>
-            <tr>
-                <td>
-                    <a name="i"
-                       class="btn btn-info"
-                       href="Testseite%20Verlinkung.html" role="button">
-                    </a>
-                </td>
-                <td>Einhändig</td>
-                <td>0.40 kg</td>
-                <td>80sec /set</td>
-            </tr>
-        </table>
-    </div>
-    <div class="tableDivider">
-        <table id="Übung">
-            <tr>
-                <th scope="row">
-                    <label class="btn btn-primary|secondary|success|info|warning|danger active">
-                        <input type="checkbox" name="" id="" >
-                    </label>
-                </th>
-                <td>Ruder Maschiene</td>
-                <td>4x12</td>
-                <td>Schnell</td>
-            </tr>
-            <tr>
-                <td>
-                    <a name="i"
-                       class="btn btn-info"
-                       href="Testseite%20Verlinkung.html" role="button">
-                    </a>
-                </td>
-                <td>Einhändig, bis man in Venedig ankommt, dann auf anderen Arm wechseln und zurück</td>
-                <td>20 kg</td>
-                <td>80sec /set</td>
-            </tr>
-        </table>
-    </div>
-    <div class="tableDivider">
-        <table id="Übung">
-            <tr>
-                <th scope="row">
-                    <label class="btn btn-primary|secondary|success|info|warning|danger active">
-                        <input type="checkbox" name="" id="" >
-                    </label>
-                </th>
-                <td>Hoola Hoops</td>
-                <td>4x120</td>
-                <td>Schnell</td>
-            </tr>
-            <tr>
-                <td>
-                    <a name="i"
-                       class="btn btn-info"
-                       href="Testseite%20Verlinkung.html" role="button">
-                    </a>
-                </td>
-                <td> - </td>
-                <td> - </td>
-                <td>20sec /set</td>
-            </tr>
-        </table>
-    </div>
-    <div class="tableDivider">
-        <table id="Übung">
-            <tr>
-                <th scope="row">
-                    <label class="btn btn-primary|secondary|success|info|warning|danger active">
-                        <input type="checkbox" name="" id="" >
-                    </label>
-                </th>
-                <td>Hadfasdf</td>
-                <td>4x120</td>
-                <td>Schnell</td>
-            </tr>
-            <tr>
-                <td>
-                    <a name="i"
-                       class="btn btn-info"
-                       href="Testseite%20Verlinkung.html" role="button">
-                    </a>
-                </td>
-                <td> oraoraora </td>
-                <td> yes </td>
-                <td>20sec /set</td>
-            </tr>
-        </table>
-    </div>
-</div>
-
-<!--- Container linking to the next page --->
-<div class="containerEndButton">
-    <!---TODO enable only after checkboxes checked--->
-    <div class="btn-block">
-        <div class="btn-block">
-            <a href="Testseite%20Verlinkung.html" type="button"
-               class="success btn-block">
-                Training beenden.
-            </a>
-        </div>
-    </div>
-</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>

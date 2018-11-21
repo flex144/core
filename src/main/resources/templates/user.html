@@ -1,172 +1,105 @@
-<!doctype html >
+<!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>User Profil</title>
+    <title>User Profile</title>
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
           integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
           crossorigin="anonymous">
     <style>
-
-
-        body {
-            background: #ffb74d;
-            width: 100%;
-        }
-
-        .btn-block {
-            min-height: 20px;
-            min-width: 40px;
-            padding: 20px 20px;
-            float: inside;
-            font-size: 6vh;
-            text-align: center;
-        }
-
-        /*------------------Container Styles----------------*/
-        .containerUser {
-            background: #ffb74d;
-            padding-left: 10%;
-            height: 100%;
-            width: 80%;
-        }
-
-        .userData {
-            background: #dddddd;
-            padding: 20px;
-        }
-
-        .userButtons {
-            height: 60%;
-            width: 100%;
-        }
-
-        /*--------------------Table Styles-------------------*/
-
-        #tableUserData {
-            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-            text-align: center;
-            table-layout: fixed;
-            background: #f2f2f2;
-        }
-
-        #tableUserData td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-            overflow: hidden;
-            text-overflow: initial;
-        }
-
-        #userTimeTable td:nth-child(odd),
-        #userTimeTable td:nth-child(even) {
-            width: 15%;
-        }
-
-        #userTimeTable {
-            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-            text-align: center;
-            table-layout: fixed;
-            background: #f2f2f2;
-        }
-
-        #userTimeTable td, #userTimeTable th {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-            overflow: hidden;
-            text-overflow: initial;
-        }
-
-        #userTimeTable th {
-            padding-top: 12px;
-            padding-bottom: 12px;
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        #userTimeTable th:nth-child(1) {
-            width: 15%;
-        }
-
-
     </style>
 </head>
 <body>
 
-<div class="containerUser">
-    <div class="userData">
-        <table id="tableUserData">
-            <tr>
-                <td>User id</td>
-                <td><p th:text="'The ID is: ' + ${user.id} + '!'"/></td>
-            </tr>
-            <tr>
-                <td>Email</td>
-                <td><p th:text="${user.email}"/></td>
-            </tr>
-            <tr>
-                <td>First name</td>
-                <td><p th:text="${user.firstName}"/></td>
-            </tr>
-            <tr>
-                <td>Last name</td>
-                <td><p th:text="${user.lastName}"/></td>
-            </tr>
-        </table>
-    </div>
-    <div class="userTrainingTime">
-        <table id="userTimeTable">
-            <tr>
-                <th scope="col"> Montag</th>
-                <td scope="col"> fetch_time1_from_db</td>
-            </tr>
-            <tr>
-                <th scope="col"> Dienstag</th>
-                <td scope="col"> more_javascript</td>
-            </tr>
-            <tr>
-                <th scope="col"> Mittwoch</th>
-            </tr>
-            <tr>
-                <th scope="col"> Donnerstag</th>
-            </tr>
-            <tr>
-                <th scope="col"> Freitag</th>
-            </tr>
-            <tr>
-                <th scope="col"> Samstag</th>
-            </tr>
-            <tr>
-                <th scope="col"> Sonntag</th>
-            </tr>
-        </table>
-    </div>
-    <div class="userButtons">
-        <div class="btn-block">
-            <a href="testseite_verlinkung.html" type="button"
-               class="success btn-block">
-                Plan des Nutzers
-            </a>
+<div class="container" style="padding: 5%">
+    <div class="jumbotron">
+        <div>
+            <table class="table table-striped table-hover table-bordered">
+                <tbody>
+                <tr>
+                    <th>User ID</th>
+                    <td><p th:text="'The ID is: ' + ${user.id} + '!'"/></td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td><p th:text="${user.email}"/></td>
+                </tr>
+                <tr>
+                    <th>First name</th>
+                    <td><p th:text="${user.firstName}"/></td>
+                </tr>
+                <tr>
+                    <th>Last name</th>
+                    <td><p th:text="${user.lastName}"/></td>
+                </tr>
+                </tbody>
+            </table>
+
         </div>
-        <div class="btn-block">
-            <a href="testseite_verlinkung.html" type="button"
-               class="success btn-block">
-                Statistiken des Nutzers
-            </a>
+        <div class="container" style="padding-top: 50pt">
+            <table class="table table-striped table-hover table-bordered"
+                   style="text-align: center">
+                <thead>
+                <tr>
+                    <th>Montag</th>
+                    <th>Dienstag</th>
+                    <th>Mittwoch</th>
+                    <th>Donnerstag</th>
+                    <th>Freitag</th>
+                    <th>Samstag</th>
+                    <th>Sonntag</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>11</td>
+                    <td></td>
+                    <td></td>
+                    <td>11</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>12</td>
+                    <td></td>
+                    <td></td>
+                    <td>14</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="container" style="padding-top: 50pt">
+            <div class="jumbotron">
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-4">
+                        <a href="testseite_verlinkung.html" type="button"
+                           class="btn btn-default btn-block">
+                            Plan des Nutzers
+                        </a>
+                    </div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4">
+                        <a href="testseite_verlinkung.html" type="button"
+                           class="btn btn-default btn-block">
+                            Statistiken des Nutzers
+                        </a>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<script src="userPage.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
