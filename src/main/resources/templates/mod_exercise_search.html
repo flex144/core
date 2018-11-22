@@ -18,6 +18,10 @@
     <link href="../static/css/navbar.css"
           th:href="@{css/navbar.css}" rel="stylesheet" media="screen">
 
+    <style>body {
+        padding-top: 20px;
+    }</style>
+
 </head>
 <body>
 <div th:replace="/fragments/mod-navbar :: header"></div>
@@ -34,7 +38,7 @@
             <input class="form-control" id="myInput" type="text"
                    placeholder="Suchwort eingeben..">
             <br>
-            <a href="mod_create_exercise.html" type="button"
+            <a th:href="@{/mods/createexercise}" type="button"
                class="btn btn-success btn-medium">
                 <span class="glyphicon glyphicon-plus-sign"></span> Neue
                 Übung</a>
