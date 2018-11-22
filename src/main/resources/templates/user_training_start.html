@@ -19,16 +19,22 @@
 
 </head>
 <body>
-<!--- Enabling the checkboxes --->
-<div class="jumbotron" style="text-align: center">
-    <button type="button" id="startTraining"
-            class="btn btn-primary"
-            onclick="$('#exercise1').prop('disabled', false);
+
+<div th:replace="/fragments/user_navbar :: main"></div>
+
+<div class="container">
+    <!--- Enabling the checkboxes --->
+    <div class="jumbotron" style="text-align: center">
+        <button type="button" id="startTraining"
+                class="btn btn-primary btn-lg"
+                onclick="$('#exercise1').prop('disabled', false);
             $('#exercise2').prop('disabled', false);
             $('#exercise3').prop('disabled', false)">
-        Training starten
-    </button>
+            Training starten
+        </button>
+    </div>
 </div>
+
 <!--- The exercise tables --->
 <div class="container">
     <!--- Header for the Layout --->
@@ -129,21 +135,15 @@
         </tbody>
     </table>
 </div>
-<!--- Chaning page to the Evaluation Page --->
-<div class="jumbotron" style="text-align: center">
-    <input type="button" id="goToEvaluation"
-           class="btn btn-primary" disabled value="Training beenden"
-           th:onclick="'javascript:clicked();'">
+
+<div class="container">
+    <!--- Chaning page to the Evaluation Page --->
+    <div class="jumbotron" style="text-align: center">
+        <input type="button" id="goToEvaluation"
+               class="btn btn-primary btn-lg" disabled value="Training beenden"
+               th:onclick="'javascript:clicked();'">
+    </div>
 </div>
-
-
-<!--- Scripts --->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-        crossorigin="anonymous"></script>
-
 
 <script>
     function clicked() {
