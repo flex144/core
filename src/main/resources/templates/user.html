@@ -24,22 +24,23 @@
 
 <div class="container">
     <div class="jumbotron">
-        <!--------- User Details ---------->
+        <form th:object="${user}" th:action="@{/users/{path}(path=${user.id})}" th:method="delete" id="deleteForm">
         <div class="btn-group btn-group-justified">
             <a th:href="@{/user/plan}" type="button"
                class="btn btn-default">
                 <span class="glyphicon glyphicon-list-alt"></span>
-                Plan des Nutzers
+                 Plan des Nutzers
             </a>
             <a type="button" class="btn btn-default">
                 <span class="glyphicon glyphicon-stats"></span>
-                Statistiken des Nutzers
+                 Statistiken des Nutzers
             </a>
-            <a type="button" class="btn btn-danger">
+            <a class="btn btn-danger" id="submitForm">
                 <span class="glyphicon glyphicon-remove"></span>
                 Löschen
             </a>
         </div>
+        </form>
         <br>
         <div>
             <table class="table table-striped table-bordered" id="user">
@@ -101,29 +102,12 @@
             </tbody>
         </table>
     </div>
-    <div class="container" style="padding-top: 50pt">
-        <div class="jumbotron">
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-4">
-                    <a th:href="@{/user/plan}" type="button"
-                       class="btn btn-default btn-block">
-                        Plan des Nutzers
-                    </a>
-                </div>
-                <div class="col-md-2"></div>
-                <div class="col-md-4">
-                    <a type="button"
-                       class="btn btn-default btn-block">
-                        Statistiken des Nutzers
-                    </a>
-                </div>
-                <div class="col-md-1"></div>
-            </div>
-        </div>
-    </div>
-
 </div>
+<script>
+    document.getElementById("submitForm").onclick = function() {
+        document.getElementById("deleteForm").submit();
+    }
+</script>
 
 </body>
 </html>
