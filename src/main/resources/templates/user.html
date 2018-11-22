@@ -7,23 +7,46 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>User Profile</title>
     <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
-          crossorigin="anonymous">
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
     <style>
+        #user, #plan {
+            background: white;
+        }
     </style>
 </head>
 <body>
 
-<div class="container" style="padding: 5%">
+
+<div th:include="/fragments/mod-navbar :: header"></div>
+
+<div class="container">
     <div class="jumbotron">
         <!--------- User Details ---------->
+        <div class="btn-group btn-group-justified">
+            <a th:href="@{/user/plan}" type="button"
+               class="btn btn-default">
+                <span class="glyphicon glyphicon-list-alt"></span>
+                 Plan des Nutzers
+            </a>
+            <a type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-stats"></span>
+                 Statistiken des Nutzers
+            </a>
+            <a type="button" class="btn btn-danger">
+                <span class="glyphicon glyphicon-remove"></span>
+                 Löschen
+            </a>
+        </div>
+        <br>
         <div>
-            <table class="table table-striped table-hover table-bordered">
+            <table class="table table-striped table-bordered" id="user">
                 <tbody>
                 <tr>
                     <th>User ID</th>
-                    <td><p th:text="'The ID is: ' + ${user.id} + '!'"/></td>
+                    <td><p th:text="${user.id}"/></td>
                 </tr>
                 <tr>
                     <th>Email</th>
@@ -41,71 +64,66 @@
             </table>
 
         </div>
-        <!--------- Training Times ---------->
-        <div class="container" style="padding-top: 50pt">
-            <table class="table table-striped table-hover table-bordered"
-                   style="text-align: center">
-                <thead>
-                <tr>
-                    <th>Montag</th>
-                    <th>Dienstag</th>
-                    <th>Mittwoch</th>
-                    <th>Donnerstag</th>
-                    <th>Freitag</th>
-                    <th>Samstag</th>
-                    <th>Sonntag</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>11</td>
-                    <td></td>
-                    <td></td>
-                    <td>11</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>12</td>
-                    <td></td>
-                    <td></td>
-                    <td>14</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <!--------- Functionality buttons ---------->
-        <div class="container" style="padding-top: 50pt">
-            <div class="jumbotron">
-                <div class="row">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-4">
-                        <a href="testseite_verlinkung.html" type="button"
-                           class="btn btn-default btn-block">
-                            Plan des Nutzers
-                        </a>
-                    </div>
-                    <div class="col-md-2"></div>
-                    <div class="col-md-4">
-                        <a href="testseite_verlinkung.html" type="button"
-                           class="btn btn-default btn-block">
-                            Statistiken des Nutzers
-                        </a>
-                    </div>
+    </div>
+    <div class="container">
+        <table class="table table-striped table-hover table-bordered" id="plan"
+               style="text-align: center">
+            <thead>
+            <tr>
+                <th>Montag</th>
+                <th>Dienstag</th>
+                <th>Mittwoch</th>
+                <th>Donnerstag</th>
+                <th>Freitag</th>
+                <th>Samstag</th>
+                <th>Sonntag</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>11:00</td>
+                <td></td>
+                <td></td>
+                <td>11:00</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>12:00</td>
+                <td></td>
+                <td></td>
+                <td>14:00</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="container" style="padding-top: 50pt">
+        <div class="jumbotron">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-4">
+                    <a th:href="@{/user/plan}" type="button"
+                       class="btn btn-default btn-block">
+                        Plan des Nutzers
+                    </a>
                 </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                    <a  type="button"
+                       class="btn btn-default btn-block">
+                        Statistiken des Nutzers
+                    </a>
+                </div>
+                <div class="col-md-1"></div>
             </div>
         </div>
     </div>
+
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-        crossorigin="anonymous"></script>
 </body>
 </html>

@@ -48,6 +48,12 @@ public class UsersController {
         return "user";
     }
 
+    /**
+     * Deletes a User from the Database if he exists and the ID is valid.
+     * @param id Id of the user to delete.
+     * @param model The Model Thymeleaf uses.
+     * @return "mod_user_search" at success, "error" when an error occurred.
+     */
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public String deleteUserById(@PathVariable("id") String id, Model model) {
         UserService userService = new UserService();
@@ -64,6 +70,16 @@ public class UsersController {
         }
     }
 
+    /**
+     * Adds a new User to the Database if the email is unique and valid.
+     * If an error occurs it adds a fitting error message to the model
+     * so thymeleaf can display it.
+     *
+     * @param user User to add to the DB.
+     * @param model Model thymeleaf uses.
+     * @return at success redirect to the 'user_data' page. If something went
+     * wrong goes back to the login page(returns "login_page".
+     */
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String createUser(@ModelAttribute("user") User user, Model model) {
         UserService userService = new UserService();
@@ -81,7 +97,7 @@ public class UsersController {
             return String.format("redirect:/user/new", addedUser.getId());
         }
         model.addAttribute("errorMessage", errorMessage);
-        return "redirect:/login";
+        return new IndexController().login(model);
     }
 
 

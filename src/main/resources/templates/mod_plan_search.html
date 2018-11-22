@@ -11,12 +11,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <!-- Latest compiled and minified JavaScript -->
+    <!-- Imports for Bootstrap table -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.css"></script>
-
-    <link href="../static/css/navbar.css"
-          th:href="@{css/navbar.css}" rel="stylesheet" media="screen">
 
 </head>
 <body>
@@ -34,7 +31,7 @@
             <input class="form-control" id="myInput" type="text"
                    placeholder="Suchwort eingeben..">
             <br>
-            <a href="mod_create_plan.html" type="button"
+            <a th:href="@{/mods/createplan}" type="button"
                class="btn btn-success btn-medium">
                 <span class="glyphicon glyphicon-plus-sign"></span> Neue Vorlage</a>
         </div>

@@ -9,7 +9,15 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class IndexController {
 
-    @PostMapping(value = {"/login", "/"})
+    /**
+     * Checks if the email the user provides is registered in the Database.
+     * Leads him to the home page of the user at success or provides an error
+     * message and leads back to the login page.
+     * @param model Model used by thymeleaf
+     * @param user user which contains the email, created by thymeleaf.
+     * @return "user_startup_page" at success or "login_page" if something fails.
+     */
+    @PostMapping(value = {"/login"})
     public String checkuser(Model model, @ModelAttribute("user") User user){
         String email = user.getEmail();
         UserService userService = new UserService();
@@ -22,8 +30,8 @@ public class IndexController {
         }
     }
 
-    @GetMapping(value = {"/login"})
-    public String login(Model model) {
+    @GetMapping(value = {"/login", "/"})
+    public String login(Model model){
         User user = new User();
         model.addAttribute(user);
         return "login_page";

@@ -1,6 +1,9 @@
 package de.ep.team2.core.controller;
 
+import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -37,7 +40,9 @@ public class ModController {
     }
 
     @RequestMapping(value = {"/searchuser"}, method = RequestMethod.GET)
-    public String searchUser() {
+    public String searchUser(Model model) {
+        UserService userService = new UserService();
+        model.addAttribute("users", userService.getAllUsers());
         return "mod_user_search";
     }
 
