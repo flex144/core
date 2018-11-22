@@ -19,6 +19,9 @@
 <body>
 
 
+<div th:replace="/fragments/user_navbar :: main"></div>
+
+<div class="container">
 <!--- Enabling the checkboxes --->
 <div class="jumbotron" style="text-align: center">
     <button type="button" id="startTraining"
@@ -129,13 +132,15 @@
         </tbody>
     </table>
 </div>
-<!--- Chaning page to the Evaluation Page --->
-<div class="jumbotron" style="text-align: center">
-    <input type="button" id="goToEvaluation"
-           class="btn btn-primary" disabled value="Training beenden"
-           th:onclick="'javascript:clicked();'">
+    <div class="container">
+        <!--- Chaning page to the Evaluation Page --->
+        <div class="jumbotron" style="text-align: center">
+            <input type="button" id="goToEvaluation"
+                   class="btn btn-primary" disabled value="Training beenden"
+                   th:onclick="'javascript:clicked();'">
+        </div>
+    </div>
 </div>
-
 
 <!--- Scripts --->
 
