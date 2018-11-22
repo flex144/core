@@ -17,15 +17,17 @@
     </style>
 </head>
 <body>
-
+<!--- Enabling the checkboxes --->
 <div class="jumbotron" style="text-align: center">
-    <button type="button"
-            class="btn btn-primary">
+    <button type="button" id="startTraining"
+            class="btn btn-primary"
+            onclick="$('#exercise1').prop('disabled', false); $('#exercise2').prop('disabled', false); $('#exercise3').prop('disabled', false)">
         Training starten
     </button>
 </div>
+<!--- The exercise tables --->
 <div class="container">
-    <!--- TODO align table head center --->
+    <!--- Header for the Layout --->
     <table class="table table-bordered text-center table-striped"
            style="text-align: center;">
         <thead>
@@ -46,13 +48,14 @@
     </table>
 </div>
 <div class="container">
+    <!--- The first exercise --->
     <table class="table table-bordered table-striped"
            style="text-align: center">
         <tbody>
         <tr>
             <td style="width: 10%">
                 <label class="btn btn-primary">
-                    <input type="checkbox" autocomplete="off">
+                    <input type="checkbox" id="exercise1" disabled>
                 </label>
             </td>
             <td style="width: 50%">Bench Press</td>
@@ -71,13 +74,14 @@
     </table>
 </div>
 <div class="container">
+    <!--- The second exercise --->
     <table class="table table-bordered table-striped"
            style="text-align: center">
         <tbody>
         <tr>
             <td style="width: 10%">
                 <label class="btn btn-primary">
-                    <input type="checkbox" autocomplete="off">
+                    <input type="checkbox" id="exercise2" disabled>
                 </label>
             </td>
             <td style="width: 50%">Rudern</td>
@@ -96,13 +100,14 @@
     </table>
 </div>
 <div class="container">
+    <!--- The third exercise --->
     <table class="table table-bordered table-striped"
            style="text-align: center">
         <tbody>
         <tr>
             <td style="width: 10%">
                 <label class="btn btn-primary">
-                    <input type="checkbox" autocomplete="off">
+                    <input type="checkbox" id="exercise3" disabled>
                 </label>
             </td>
             <td style="width: 50%">Hoola Hoops</td>
@@ -120,12 +125,13 @@
         </tbody>
     </table>
 </div>
+<!--- Chaning page to the Evaluation Page --->
 <div class="jumbotron" style="text-align: center">
-    <a type="button" href="user_exercise_evaluation.html"
-       class="btn btn-primary">
-        Training beenden
-    </a>
+    <input type="button" id="goToEvaluation"
+           class="btn btn-primary" disabled value="Training beenden"
+           onclick="window.location.href = 'user_exercise_evaluation.html'">
 </div>
+
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -133,5 +139,15 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
         integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
         crossorigin="anonymous"></script>
+<!--- Enabling the "Training beenden" button --->
+<script>
+    $('input[type="checkbox"]').change(function () {
+        if ($('input[id="exercise1"]:checked').length & $('input[id="exercise2"]:checked').length & $('input[id="exercise3"]:checked').length) {
+            $('#goToEvaluation').prop('disabled', false);
+        } else {
+            $('#goToEvaluation').prop('disabled', true);
+        }
+    });
+</script>
 </body>
 </html>
