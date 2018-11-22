@@ -5,7 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Training starts</title>
+    <title>Evaluation</title>
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -54,10 +54,6 @@
         <tbody>
         <tr>
             <td style="width: 10%">
-                <label class="btn btn-primary|secondary|success|info|warning|danger active">
-                    <input type="checkbox" name="" checked
-                           autocomplete="off" disabled>
-                </label>
             </td>
             <td style="width: 50%">Bench Press</td>
             <td style="width: 20%">4x8</td>
@@ -102,10 +98,6 @@
         <tbody>
         <tr>
             <td style="width: 10%">
-                <label class="btn btn-primary|secondary|success|info|warning|danger active">
-                    <input type="checkbox" name="" checked
-                           autocomplete="off" disabled>
-                </label>
             </td>
             <td style="width: 50%">Rudern</td>
             <td style="width: 20%"> -</td>
@@ -149,10 +141,6 @@
         <tbody>
         <tr>
             <td style="width: 10%">
-                <label class="btn btn-primary|secondary|success|info|warning|danger active">
-                    <input type="checkbox" name="" checked
-                           autocomplete="off" disabled>
-                </label>
             </td>
             <td style="width: 50%">Hoola Hoops</td>
             <td style="width: 20%">4x120</td>
@@ -190,11 +178,13 @@
 </div>
 
 <!--------- Completing the exercise ---------->
-<div class="jumbotron" style="text-align: center">
-    <a type="button" th:href="@{/user/home}"
-       class="btn btn-primary">
-        Evaluation beenden
-    </a>
+<div class="container">
+    <div class="jumbotron" style="text-align: center">
+        <a type="button" th:href="@{/user/home}"
+           class="btn btn-default">
+            Evaluation beenden
+        </a>
+    </div>
 </div>
 </body>
 </html>
