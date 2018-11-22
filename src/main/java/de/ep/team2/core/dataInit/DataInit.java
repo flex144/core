@@ -1,4 +1,4 @@
-package de.ep.team2.core.DataInit;
+package de.ep.team2.core.dataInit;
 
 import de.ep.team2.core.service.DataBaseService;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public class DataInit {
         log.info("Creating tables");
         jdbcTemplate.execute("DROP TABLE IF EXISTS users");
         jdbcTemplate.execute("CREATE TABLE users(" +
-                "id SERIAL, email VARCHAR(255)," +
+                "id SERIAL, email VARCHAR(255) NOT NULL ," +
                 " first_name VARCHAR(255), last_name VARCHAR(255))");
     }
 
@@ -33,7 +33,7 @@ public class DataInit {
         String[] timo = {"timo@gmail.com", "Timo", "Heinrich"};
         String[] alex = {"alex@gmail.com", "Alexander", "Reißig"};
         String[] felix = {"felix@gmail.com", "Felix", "Wilhelm"};
-        String[] yannick = {"yannick@gmail.com", "Yannick", "Osenstätter"};
+        String[] yannick = {"yannick@gmail.com", null, null};
         initTestData.add(timo);
         initTestData.add(alex);
         initTestData.add(felix);

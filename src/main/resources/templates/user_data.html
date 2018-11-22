@@ -21,80 +21,7 @@
 
 <div class="container">
 
-    <!-- Standard-Navbar -->
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle"
-                        data-toggle="collapse" data-target="#navbar">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Core</a>
-            </div>
-            <div id="navbar" class="navbar-collapse collapse">
-                <!--
-                <ul class="nav navbar-nav navbar-left">
-                    <a href="login_page.html" type="button" class="btn btn-default navbar-btn">
-                        <span class="glyphicon glyphicon-arrow-left"></span> Zurück</a>
-                </ul>
-                -->
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="#">
-                            <span class="glyphicon glyphicon-list-alt"></span> Trainingsplan
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <span class="glyphicon glyphicon-user"></span>
-                            Profil
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <span class="glyphicon glyphicon-envelope"></span>
-                            Trainer kontaktieren
-                        </a>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <a href="login_page.html" type="button"
-                       class="btn btn-default navbar-btn">
-                        <span class="glyphicon glyphicon-log-out"></span> Abmelden</a>
-                </ul>
-            </div>
-        </div>
-    </nav>
-</div>
-
-<div class="container">
-
-    <div class="btn-group btn-group-justified" role="group" aria-label="...">
-        <a type="button" class="btn btn-default">
-            <span class="glyphicon glyphicon-arrow-left"></span> Zurück
-        </a>
-        <div class="btn-group" role="group">
-            <button type="button" class="btn btn-default dropdown-toggle"
-                    data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                <span class="glyphicon glyphicon-th-list"></span> Menü
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li><a href="#">Trainingsplan</a></li>
-                <li><a href="#">Profil</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">Trainer kontaktieren</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="login_page.html">Abmelden</a></li>
-            </ul>
-        </div>
-        <a href="login_page.html" type="button" class="btn btn-default">
-            <span class="glyphicon glyphicon-log-out"></span> Abmelden
-        </a>
-    </div>
+    <div th:replace="/fragments/user_mobile_navbar :: main"></div>
 
     <br>
     <br>
@@ -241,7 +168,9 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-lg" href="login_page.html">Absenden</button>
+            <button type="submit" class="btn btn-primary btn-lg"
+                    th:href="@{/user/start}">Absenden
+            </button>
         </form>
     </div>
 </div>

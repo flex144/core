@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -63,7 +63,7 @@
         </tr>
         <tr>
             <td style="width: 10%">
-                <a href="testseite_verlinkung.html" type="button"
+                <a type="button"
                    class="btn btn-default btn-block">info</a></td>
             <td style="width: 50%"> -</td>
             <td style="width: 20%"> 45kg</td>
@@ -111,7 +111,7 @@
         </tr>
         <tr>
             <td style="width: 10%">
-                <a href="testseite_verlinkung.html" type="button"
+                <a type="button"
                    class="btn btn-default btn-block">info</a></td>
             <td style="width: 50%"> Bis nach Venedig</td>
             <td style="width: 20%"> Eigen</td>
@@ -158,7 +158,7 @@
         </tr>
         <tr>
             <td style="width: 10%">
-                <a href="testseite_verlinkung.html" type="button"
+                <a type="button"
                    class="btn btn-default btn-block">info</a></td>
             <td style="width: 50%"> -</td>
             <td style="width: 20%"> -</td>
@@ -189,7 +189,7 @@
 
 <!--------- Completing the exercise ---------->
 <div class="jumbotron" style="text-align: center">
-    <a type="button" href="user_startup_page.html"
+    <a type="button" th:href="@{/user/home}"
        class="btn btn-primary">
         Evaluation beenden
     </a>

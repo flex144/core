@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -21,7 +21,9 @@
 <div class="jumbotron" style="text-align: center">
     <button type="button" id="startTraining"
             class="btn btn-primary"
-            onclick="$('#exercise1').prop('disabled', false); $('#exercise2').prop('disabled', false); $('#exercise3').prop('disabled', false)">
+            onclick="$('#exercise1').prop('disabled', false);
+            $('#exercise2').prop('disabled', false);
+            $('#exercise3').prop('disabled', false)">
         Training starten
     </button>
 </div>
@@ -64,7 +66,7 @@
         </tr>
         <tr>
             <td style="width: 10%">
-                <a href="testseite_verlinkung.html" type="button"
+                <a type="button"
                    class="btn btn-default btn-block">info</a></td>
             <td style="width: 50%"> -</td>
             <td style="width: 20%"> 45kg</td>
@@ -90,7 +92,7 @@
         </tr>
         <tr>
             <td style="width: 10%">
-                <a href="testseite_verlinkung.html" type="button"
+                <a type="button"
                    class="btn btn-default btn-block">info</a></td>
             <td style="width: 50%"> Bis nach Venedig</td>
             <td style="width: 20%"> Eigen</td>
@@ -116,7 +118,7 @@
         </tr>
         <tr>
             <td style="width: 10%">
-                <a href="testseite_verlinkung.html" type="button"
+                <a type="button"
                    class="btn btn-default btn-block">info</a></td>
             <td style="width: 50%"> -</td>
             <td style="width: 20%"> -</td>
@@ -129,25 +131,34 @@
 <div class="jumbotron" style="text-align: center">
     <input type="button" id="goToEvaluation"
            class="btn btn-primary" disabled value="Training beenden"
-           onclick="window.location.href = 'user_exercise_evaluation.html'">
+           th:onclick="'javascript:clicked();'">
 </div>
 
 
-
+<!--- Scripts --->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
         integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
         crossorigin="anonymous"></script>
+
+
+<script>
+    function clicked() {
+        location.href = "/user/plan/done";
+    }
+</script>
+
 <!--- Enabling the "Training beenden" button --->
 <script>
     $('input[type="checkbox"]').change(function () {
-        if ($('input[id="exercise1"]:checked').length & $('input[id="exercise2"]:checked').length & $('input[id="exercise3"]:checked').length) {
+        if ($('input[id="exercise1"]:checked').length > 0 && $('input[id="exercise2"]:checked').length > 0 && $('input[id="exercise3"]:checked').length > 0) {
             $('#goToEvaluation').prop('disabled', false);
         } else {
             $('#goToEvaluation').prop('disabled', true);
         }
     });
 </script>
+
 </body>
 </html>
