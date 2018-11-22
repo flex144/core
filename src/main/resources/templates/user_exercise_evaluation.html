@@ -14,6 +14,12 @@
         input[type=checkbox] {
             zoom: 1.5;
         }
+
+        label {
+            width: 18%;
+            overflow: fragments;
+        }
+
     </style>
 </head>
 <body>
@@ -21,7 +27,7 @@
 <div th:replace="/fragments/user_navbar :: main"></div>
 
 <div class="container">
-    <!--- TODO align table head center --->
+    <!--------- Table Header ---------->
     <table class="table table-bordered text-center table-striped"
            style="text-align: center;">
         <thead>
@@ -42,14 +48,15 @@
     </table>
 </div>
 <div class="container" style="padding-bottom: 40px">
+    <!--------- Exercise 1 ---------->
     <table class="table table-bordered table-striped"
            style="text-align: center">
         <tbody>
         <tr>
             <td style="width: 10%">
                 <label class="btn btn-primary|secondary|success|info|warning|danger active">
-                    <input type="checkbox" name="" id="" checked
-                           autocomplete="off">
+                    <input type="checkbox" name="" checked
+                           autocomplete="off" disabled>
                 </label>
             </td>
             <td style="width: 50%">Bench Press</td>
@@ -66,41 +73,38 @@
         </tr>
         </tbody>
     </table>
+    <!--------- Exercise 1 Evaluation---------->
     <div class="container" style="text-align: center;">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label class="btn btn-secondary">
-                <input type="radio" name="options" id="option1"
-                       autocomplete="off"> Viel zu <br> einfach
+                <input type="radio"> sehr <br> ein <br>fach
             </label>
             <label class="btn btn-secondary">
-                <input type="radio" name="options" id="option2"
-                       autocomplete="off"> zu <br> einfach
+                <input type="radio"> zu <br> ein <br>fach
             </label>
             <label class="btn btn-secondary active">
-                <input type="radio" name="options" id="option3"
-                       autocomplete="off" checked> Gut
+                <input type="radio" checked> Gut
             </label>
             <label class="btn btn-secondary">
-                <input type="radio" name="options" id="option3"
-                       autocomplete="off"> zu <br> anstrengend
+                <input type="radio"> zu <br> hart
             </label>
             <label class="btn btn-secondary">
-                <input type="radio" name="options" id="option3"
-                       autocomplete="off"> Viel zu <br> anstrengend
+                <input type="radio"> Viel <br> zu <br> hart
             </label>
         </div>
     </div>
 </div>
 
 <div class="container" style="padding-bottom: 40px">
+    <!--------- Exercise 2 ---------->
     <table class="table table-bordered table-striped"
            style="text-align: center">
         <tbody>
         <tr>
             <td style="width: 10%">
                 <label class="btn btn-primary|secondary|success|info|warning|danger active">
-                    <input type="checkbox" name="" id="" checked
-                           autocomplete="off">
+                    <input type="checkbox" name="" checked
+                           autocomplete="off" disabled>
                 </label>
             </td>
             <td style="width: 50%">Rudern</td>
@@ -109,48 +113,45 @@
         </tr>
         <tr>
             <td style="width: 10%">
-                <a  type="button"
+                <a type="button"
                    class="btn btn-default btn-block">info</a></td>
             <td style="width: 50%"> Bis nach Venedig</td>
             <td style="width: 20%"> Eigen</td>
             <td style="width: 20%"> -</td>
         </tbody>
     </table>
+    <!--------- Exercise 2 Evaluation ---------->
     <div class="container" style="text-align: center;">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label class="btn btn-secondary">
-                <input type="radio" name="options" id="option1"
-                       autocomplete="off"> Viel zu <br> einfach
+                <input type="radio"> sehr <br> ein <br>fach
             </label>
             <label class="btn btn-secondary">
-                <input type="radio" name="options" id="option2"
-                       autocomplete="off"> zu <br> einfach
+                <input type="radio"> zu <br> ein <br>fach
             </label>
             <label class="btn btn-secondary active">
-                <input type="radio" name="options" id="option3"
-                       autocomplete="off" checked> Gut
+                <input type="radio" checked> Gut
             </label>
             <label class="btn btn-secondary">
-                <input type="radio" name="options" id="option3"
-                       autocomplete="off"> zu <br> anstrengend
+                <input type="radio"> zu <br> hart
             </label>
             <label class="btn btn-secondary">
-                <input type="radio" name="options" id="option3"
-                       autocomplete="off"> Viel zu <br> anstrengend
+                <input type="radio"> Viel <br> zu <br> hart
             </label>
         </div>
     </div>
 </div>
 
 <div class="container" style="padding-bottom: 40px">
+    <!--------- Exercise 3 ---------->
     <table class="table table-bordered table-striped"
            style="text-align: center">
         <tbody>
         <tr>
             <td style="width: 10%">
                 <label class="btn btn-primary|secondary|success|info|warning|danger active">
-                    <input type="checkbox" name="" id="" checked
-                           autocomplete="off">
+                    <input type="checkbox" name="" checked
+                           autocomplete="off" disabled>
                 </label>
             </td>
             <td style="width: 50%">Hoola Hoops</td>
@@ -159,39 +160,36 @@
         </tr>
         <tr>
             <td style="width: 10%">
-                <a  type="button"
+                <a type="button"
                    class="btn btn-default btn-block">info</a></td>
             <td style="width: 50%"> -</td>
             <td style="width: 20%"> -</td>
             <td style="width: 20%"> 40s /set</td>
         </tbody>
     </table>
+    <!--------- Exercise 3 Evaluation ---------->
     <div class="container" style="text-align: center;">
         <div class="btn-group btn-group-toggle" data-toggle="buttons">
             <label class="btn btn-secondary">
-                <input type="radio" name="options" id="option1"
-                       autocomplete="off"> Viel zu <br> einfach
+                <input type="radio"> sehr <br> ein <br>fach
             </label>
             <label class="btn btn-secondary">
-                <input type="radio" name="options" id="option2"
-                       autocomplete="off"> zu <br> einfach
+                <input type="radio"> zu <br> ein <br>fach
             </label>
             <label class="btn btn-secondary active">
-                <input type="radio" name="options" id="option3"
-                       autocomplete="off" checked> Gut
+                <input type="radio" checked> Gut
             </label>
             <label class="btn btn-secondary">
-                <input type="radio" name="options" id="option3"
-                       autocomplete="off"> zu <br> anstrengend
+                <input type="radio"> zu <br> hart
             </label>
             <label class="btn btn-secondary">
-                <input type="radio" name="options" id="option3"
-                       autocomplete="off"> Viel zu <br> anstrengend
+                <input type="radio"> Viel <br> zu <br> hart
             </label>
         </div>
     </div>
 </div>
 
+<!--------- Completing the exercise ---------->
 <div class="jumbotron" style="text-align: center">
     <a type="button" th:href="@{/user/home}"
        class="btn btn-primary">

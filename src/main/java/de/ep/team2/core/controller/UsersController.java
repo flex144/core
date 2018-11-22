@@ -92,7 +92,7 @@ public class UsersController {
         } else if (userService.getUserByEmail(email) != null) {
             errorMessage = "E-Mail existiert bereits!";
         } else {
-            userService.createUser(email,null,null);
+            userService.createUser(email, null, null);
             User addedUser = userService.getUserByEmail(email);
             return String.format("redirect:/user/new", addedUser.getId());
         }
@@ -103,6 +103,7 @@ public class UsersController {
 
     /**
      * Checks if the String is an Integer.
+     *
      * @param toCheck String to check.
      * @return true if String is an Integer, otherwise false.
      */

@@ -46,11 +46,13 @@ public class CoreApplicationTests {
 
     @Test
     public void addUser() {
-        assertTrue(restTemplate.getForObject("/users/Test@gmail.com", String.class)
+        assertTrue(restTemplate.getForObject("/users/Test@gmail.com",
+                String.class)
                 .contains("Benutzer nicht gefunden!"));
         // refactor with restTemplate Post
         DataBaseService.getInstance().insertUser("Test@gmail.com", null, null);
-        assertTrue(restTemplate.getForObject("/users/Test@gmail.com", String.class)
+        assertTrue(restTemplate.getForObject("/users/Test@gmail.com",
+                String.class)
                 .contains("Test@gmail.com"));
     }
 }

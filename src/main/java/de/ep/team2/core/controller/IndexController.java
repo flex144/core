@@ -22,7 +22,7 @@ public class IndexController {
         String email = user.getEmail();
         UserService userService = new UserService();
         String errorMessage = (userService.wrongMailReason(email));
-        if(errorMessage.equals("valid")) {
+        if (errorMessage.equals("valid")) {
             return "redirect:user/home";
         } else {
             model.addAttribute("errorMessage", errorMessage);

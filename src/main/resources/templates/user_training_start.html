@@ -19,120 +19,148 @@
 
 </head>
 <body>
-
-<div th:replace="/fragments/user_navbar :: main"></div>
-
-<div class="container">
-    <div class="jumbotron" style="text-align: center">
-        <button type="button"
-                class="btn btn-primary btn-lg">
-            Training starten
-        </button>
-    </div>
-
-    <div class="container">
-        <!--- TODO align table head center --->
-        <table class="table table-bordered text-center table-striped"
-               style="text-align: center;">
-            <thead>
-            <tr>
-                <th style="width: 10%; text-align:center">
-                </th>
-                <th style="width: 50%; text-align:center">Übung</th>
-                <th style="width: 20%; text-align:center">Sätze</th>
-                <th style="width: 20%; text-align:center">Tempo</th>
-            </tr>
-            <tr>
-                <th style="width: 10%; text-align:center">Tutorial</th>
-                <th style="width: 50%; text-align:center">Ausführung</th>
-                <th style="width: 20%; text-align:center">Gewicht</th>
-                <th style="width: 20%; text-align:center">Pause</th>
-            </tr>
-            </thead>
-        </table>
-    </div>
-    <div class="container">
-        <table class="table table-bordered table-striped"
-               style="text-align: center">
-            <tbody>
-            <tr>
-                <td style="width: 10%">
-                    <label class="btn btn-primary">
-                        <input type="checkbox" autocomplete="off">
-                    </label>
-                </td>
-                <td style="width: 50%">Bench Press</td>
-                <td style="width: 20%">4x8</td>
-                <td style="width: 20%">-</td>
-            </tr>
-            <tr>
-                <td style="width: 10%">
-                    <a type="button"
-                       class="btn btn-default btn-block">info</a></td>
-                <td style="width: 50%"> -</td>
-                <td style="width: 20%"> 45kg</td>
-                <td style="width: 20%"> 60s /set</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="container">
-        <table class="table table-bordered table-striped"
-               style="text-align: center">
-            <tbody>
-            <tr>
-                <td style="width: 10%">
-                    <label class="btn btn-primary">
-                        <input type="checkbox" autocomplete="off">
-                    </label>
-                </td>
-                <td style="width: 50%">Rudern</td>
-                <td style="width: 20%"> -</td>
-                <td style="width: 20%"> Schnell</td>
-            </tr>
-            <tr>
-                <td style="width: 10%">
-                    <a type="button"
-                       class="btn btn-default btn-block">info</a></td>
-                <td style="width: 50%"> Bis nach Venedig</td>
-                <td style="width: 20%"> Eigen</td>
-                <td style="width: 20%"> -</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="container">
-        <table class="table table-bordered table-striped"
-               style="text-align: center">
-            <tbody>
-            <tr>
-                <td style="width: 10%">
-                    <label class="btn btn-primary">
-                        <input type="checkbox" autocomplete="off">
-                    </label>
-                </td>
-                <td style="width: 50%">Hoola Hoops</td>
-                <td style="width: 20%">4x120</td>
-                <td style="width: 20%">-</td>
-            </tr>
-            <tr>
-                <td style="width: 10%">
-                    <a type="button"
-                       class="btn btn-default btn-block">info</a></td>
-                <td style="width: 50%"> -</td>
-                <td style="width: 20%"> -</td>
-                <td style="width: 20%"> 40s /set</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="jumbotron" style="text-align: center">
-        <a type="button" th:href="@{/user/plan/done}"
-           class="btn btn-primary btn-lg">
-            Training beenden
-        </a>
-    </div>
+<!--- Enabling the checkboxes --->
+<div class="jumbotron" style="text-align: center">
+    <button type="button" id="startTraining"
+            class="btn btn-primary"
+            onclick="$('#exercise1').prop('disabled', false);
+            $('#exercise2').prop('disabled', false);
+            $('#exercise3').prop('disabled', false)">
+        Training starten
+    </button>
 </div>
+<!--- The exercise tables --->
+<div class="container">
+    <!--- Header for the Layout --->
+    <table class="table table-bordered text-center table-striped"
+           style="text-align: center;">
+        <thead>
+        <tr>
+            <th style="width: 10%; text-align:center">
+            </th>
+            <th style="width: 50%; text-align:center">Übung</th>
+            <th style="width: 20%; text-align:center">Sätze</th>
+            <th style="width: 20%; text-align:center">Tempo</th>
+        </tr>
+        <tr>
+            <th style="width: 10%; text-align:center">Tutorial</th>
+            <th style="width: 50%; text-align:center">Ausführung</th>
+            <th style="width: 20%; text-align:center">Gewicht</th>
+            <th style="width: 20%; text-align:center">Pause</th>
+        </tr>
+        </thead>
+    </table>
+</div>
+<div class="container">
+    <!--- The first exercise --->
+    <table class="table table-bordered table-striped"
+           style="text-align: center">
+        <tbody>
+        <tr>
+            <td style="width: 10%">
+                <label class="btn btn-primary">
+                    <input type="checkbox" id="exercise1" disabled>
+                </label>
+            </td>
+            <td style="width: 50%">Bench Press</td>
+            <td style="width: 20%">4x8</td>
+            <td style="width: 20%">-</td>
+        </tr>
+        <tr>
+            <td style="width: 10%">
+                <a type="button"
+                   class="btn btn-default btn-block">info</a></td>
+            <td style="width: 50%"> -</td>
+            <td style="width: 20%"> 45kg</td>
+            <td style="width: 20%"> 60s /set</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container">
+    <!--- The second exercise --->
+    <table class="table table-bordered table-striped"
+           style="text-align: center">
+        <tbody>
+        <tr>
+            <td style="width: 10%">
+                <label class="btn btn-primary">
+                    <input type="checkbox" id="exercise2" disabled>
+                </label>
+            </td>
+            <td style="width: 50%">Rudern</td>
+            <td style="width: 20%"> -</td>
+            <td style="width: 20%"> Schnell</td>
+        </tr>
+        <tr>
+            <td style="width: 10%">
+                <a type="button"
+                   class="btn btn-default btn-block">info</a></td>
+            <td style="width: 50%"> Bis nach Venedig</td>
+            <td style="width: 20%"> Eigen</td>
+            <td style="width: 20%"> -</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="container">
+    <!--- The third exercise --->
+    <table class="table table-bordered table-striped"
+           style="text-align: center">
+        <tbody>
+        <tr>
+            <td style="width: 10%">
+                <label class="btn btn-primary">
+                    <input type="checkbox" id="exercise3" disabled>
+                </label>
+            </td>
+            <td style="width: 50%">Hoola Hoops</td>
+            <td style="width: 20%">4x120</td>
+            <td style="width: 20%">-</td>
+        </tr>
+        <tr>
+            <td style="width: 10%">
+                <a type="button"
+                   class="btn btn-default btn-block">info</a></td>
+            <td style="width: 50%"> -</td>
+            <td style="width: 20%"> -</td>
+            <td style="width: 20%"> 40s /set</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<!--- Chaning page to the Evaluation Page --->
+<div class="jumbotron" style="text-align: center">
+    <input type="button" id="goToEvaluation"
+           class="btn btn-primary" disabled value="Training beenden"
+           th:onclick="'javascript:clicked();'">
+</div>
+
+
+<!--- Scripts --->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+
+
+<script>
+    function clicked() {
+        location.href = "/user/plan/done";
+    }
+</script>
+
+<!--- Enabling the "Training beenden" button --->
+<script>
+    $('input[type="checkbox"]').change(function () {
+        if ($('input[id="exercise1"]:checked').length > 0 && $('input[id="exercise2"]:checked').length > 0 && $('input[id="exercise3"]:checked').length > 0) {
+            $('#goToEvaluation').prop('disabled', false);
+        } else {
+            $('#goToEvaluation').prop('disabled', true);
+        }
+    });
+</script>
+
 </body>
 </html>

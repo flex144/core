@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/mods")
 public class ModController {
 
-    @RequestMapping(value= {"/home"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/home"}, method = RequestMethod.GET)
     public String home() {
         return "mod_startup_page_web";
     }
 
-    @RequestMapping(value= {"/createplan"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/createplan"}, method = RequestMethod.GET)
     public String createPlan() {
         return "mod_create_plan";
     }
