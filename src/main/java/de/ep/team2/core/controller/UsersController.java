@@ -50,7 +50,8 @@ public class UsersController {
 
     /**
      * Deletes a User from the Database if he exists and the ID is valid.
-     * @param id Id of the user to delete.
+     *
+     * @param id    Id of the user to delete.
      * @param model The Model Thymeleaf uses.
      * @return "mod_user_search" at success, "error" when an error occurred.
      */
