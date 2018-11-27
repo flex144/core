@@ -146,21 +146,27 @@
                                aria-haspopup="true" aria-expanded="false">
                                 <span class="glyphicon glyphicon-indent-left"></span>
                                 Trainingsübungen
-                                <span class="caret"></span></a>
+                                <span class="caret"></span>
+                            </a>
                             <ul class="dropdown-menu">
-                                <li><a th:href="@{/mods/searchexercise}">Übungsübersicht</a>
+                                <li>
+                                    <a th:href="@{/mods/searchexercise}">
+                                        Übungsübersicht
+                                    </a>
                                 </li>
                                 <li role="separator" class="divider"></li>
-                                <li><a th:href="@{/mods/createexercise}">Neue
-                                    Übung</a></li>
+                                <li>
+                                    <a th:href="@{/mods/createexercise}">Neue
+                                    Übung
+                                    </a>
+                                </li>
                             </ul>
-                            <!-- Bis auf Weiteres nicht visualisiert
-                            <li>
-                                <a href="#">
-                                    <span class="glyphicon glyphicon-stats"></span> Statistiken
-                                </a>
-                            </li>
-                            -->
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="glyphicon glyphicon-stats"></span> Statistiken
+                            </a>
+                        </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <a th:href="@{/login}" type="button"
@@ -211,6 +217,11 @@
                             <a href="#">
                                 <span class="glyphicon glyphicon-envelope"></span>
                                 Trainer kontaktieren
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="glyphicon glyphicon-stats"></span> Statistiken
                             </a>
                         </li>
                     </ul>

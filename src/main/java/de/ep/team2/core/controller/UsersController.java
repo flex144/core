@@ -5,7 +5,6 @@ import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Handles Http-Requests with the path '/users'.
@@ -45,7 +44,7 @@ public class UsersController {
             return "error";
         }
         model.addAttribute("user", searchedUser);
-        return "user";
+        return "mod_view_user_profile";
     }
 
     /**
