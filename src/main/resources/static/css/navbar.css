@@ -2,7 +2,72 @@ body {
     padding-top: 20px;
     padding-bottom: 20px;
 }
-
-.navbar {
-    margin-bottom: 20px;
+/* navbar */
+.navbar-default {
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #fd8900; /* General background color */
+    border-color: #c35a00; /* General border color */
+}
+/* Title */
+.navbar-default .navbar-brand {
+    color: #ecf0f1; /* Text color of navbar header */
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: #ecf0f1; /* Text color of navbar header when hovered over or focused */
+}
+/* Link */
+.navbar-default .navbar-nav > li > a {
+    color: #ecf0f1; /* Text color of list elements */
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #ecf0f1; /* Text color of list elements when hovered over or focused */
+    background-color: #c35a00; /* Background color of list elements when hovered over or focused */
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #ecf0f1; /* Text color of active list element when hovered over or focused */
+    background-color: #c35a00; /* Background color of active list element when hovered over or focused */
+}
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #ecf0f1; /* Text color of open list element with dropdown menu*/
+    background-color: #c35a00; /* Background color of open list element with dropdown */
+}
+/* Caret */
+.navbar-default .navbar-nav > .dropdown > a .caret {
+    border-top-color: #ecf0f1; /* Color of caret in normal state */
+}
+.navbar-default .navbar-nav > .dropdown > a:hover .caret,
+.navbar-default .navbar-nav > .dropdown > a:focus .caret {
+    border-top-color: #2E2E2E; /* Color of caret when hovered over or focused */
+}
+.navbar-default .navbar-nav > .open > a .caret,
+.navbar-default .navbar-nav > .open > a:hover .caret,
+.navbar-default .navbar-nav > .open > a:focus .caret {
+    border-top-color: #2E2E2E; /* Color of caret when dropdown menu open */
+}
+/* Mobile version */
+.navbar-default .navbar-toggle {
+    border-color: #ecf0f1; /* Border color of toggle button */
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #c35a00; /* Background color of toggle button when hovered over or focused */
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ecf0f1; /* Background color of icons in toggle button */
+}
+@media (max-width: 767px) {
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        color: #ecf0f1; /* Standard text color of elements in dropdown menu */
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+        color: #ecf0f1; /* Text color of elements in dropdown menu when hovered over or focused */
+    }
 }
