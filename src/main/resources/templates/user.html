@@ -16,11 +16,12 @@
             background: white;
         }
     </style>
+
+    <div th:include="/fragments/navbar :: navbar_style"></div>
 </head>
+
 <body>
-
-
-<div th:include="/fragments/mod-navbar :: header"></div>
+<div th:replace="/fragments/navbar :: navbar_user"></div>
 
 <div class="container">
     <div class="jumbotron">

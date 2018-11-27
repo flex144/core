@@ -21,10 +21,12 @@
         }
 
     </style>
-</head>
-<body>
 
-<div th:replace="/fragments/user_navbar :: main"></div>
+    <div th:include="/fragments/navbar :: navbar_style"></div>
+</head>
+
+<body>
+<div th:replace="/fragments/navbar :: navbar_user"></div>
 
 <div class="container">
     <!--------- Table Header ---------->

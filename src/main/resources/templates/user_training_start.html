@@ -15,11 +15,12 @@
             zoom: 1.5;
         }
     </style>
+
+    <div th:include="/fragments/navbar :: navbar_style"></div>
 </head>
+
 <body>
-
-
-<div th:replace="/fragments/user_navbar :: main"></div>
+<div th:replace="/fragments/navbar :: navbar_user"></div>
 
 <div class="container">
 <!--- Enabling the checkboxes --->

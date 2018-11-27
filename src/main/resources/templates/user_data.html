@@ -10,17 +10,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
+    <div th:include="/fragments/navbar :: navbar_style"></div>
 </head>
 
 <body>
+<div th:replace="/fragments/navbar :: navbar_user"></div>
 
 <div class="container">
-
-    <div th:replace="/fragments/user_navbar :: main"></div>
-
     <br>
     <br>
-
     <div class="jumbotron">
         <h2>Angaben für deinen individuellen Trainingsplan</h2>
         &ensp;
