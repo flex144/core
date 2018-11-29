@@ -1,5 +1,6 @@
 package de.ep.team2.core.dataInit;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import de.ep.team2.core.service.DataBaseService;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,14 +19,19 @@ public class DataInit {
         this.log = log;
         initTables();
         fillUsers();
+        fillExercises();
     }
 
     private void initTables() {
         log.info("Creating tables");
         jdbcTemplate.execute("DROP TABLE IF EXISTS users");
         jdbcTemplate.execute("CREATE TABLE users(" +
-                "id SERIAL, email VARCHAR(255) NOT NULL ," +
-                " first_name VARCHAR(255), last_name VARCHAR(255))");
+                "id SERIAL NOT NULL, email VARCHAR(255) NOT NULL," +
+                " first_name VARCHAR(255), last_name VARCHAR(255), PRIMARY KEY(email) )");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS exercises");
+        jdbcTemplate.execute("CREATE TABLE exercises(" +
+                "id SERIAL NOT NULL PRIMARY KEY, name VARCHAR(255) NOT NULL," +
+                " description VARCHAR(255), img_path VARCHAR(400))");
     }
 
     private void fillUsers() {
@@ -39,7 +45,16 @@ public class DataInit {
         initTestData.add(felix);
         initTestData.add(yannick);
         for (String[] o : initTestData) {
-            DataBaseService.getInstance().insertUser(o[0], o[1], o[2]);
+            try {
+                DataBaseService.getInstance().insertUser(o[0], o[1], o[2]);
+            } catch (InvalidArgumentException exception) {
+                //do nothing
+            }
         }
+    }
+
+    private void fillExercises() {
+        DataBaseService.getInstance().insertExercise("Bankdrücken", "Drücke die Bank!", "/images/Bankdrücken/test1");
+        DataBaseService.getInstance().insertExercise("Rudern", null, null);
     }
 }

@@ -1,5 +1,6 @@
 package de.ep.team2.core.service;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import de.ep.team2.core.entities.User;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,7 @@ public class UserService {
         DataBaseService.getInstance().deleteUserById(id);
     }
 
-    public void createUser(String email, String firstName, String lastName) {
+    public void createUser(String email, String firstName, String lastName) throws InvalidArgumentException {
         DataBaseService.getInstance().insertUser(email, firstName, lastName);
     }
 

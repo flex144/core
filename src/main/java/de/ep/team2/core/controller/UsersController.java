@@ -1,5 +1,6 @@
 package de.ep.team2.core.controller;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import de.ep.team2.core.entities.User;
 import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -75,7 +76,7 @@ public class UsersController {
      * If an error occurs it adds a fitting error message to the model
      * so thymeleaf can display it.
      *
-     * @param user User to add to the DB.
+     * @param user  User to add to the DB.
      * @param model Model thymeleaf uses.
      * @return at success redirect to the 'user_data' page. If something went
      * wrong goes back to the login page(returns "login_page".
@@ -92,14 +93,16 @@ public class UsersController {
         } else if (userService.getUserByEmail(email) != null) {
             errorMessage = "E-Mail existiert bereits!";
         } else {
-            userService.createUser(email, null, null);
-            User addedUser = userService.getUserByEmail(email);
-            return String.format("redirect:/user/new", addedUser.getId());
+            try {
+                userService.createUser(email, null, null);
+                return "redirect:/user/new";
+            } catch (InvalidArgumentException exception) {
+                errorMessage = "E-Mail existiert bereits!";
+            }
         }
         model.addAttribute("errorMessage", errorMessage);
         return new IndexController().login(model);
     }
-
 
     /**
      * Checks if the String is an Integer.
