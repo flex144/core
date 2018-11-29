@@ -23,11 +23,31 @@
         <p style="font-size: 12pt">Fülle das folgende Formular aus und speichere anschließend deine erstellte Vorlage
         für individuelle Trainingspläne.</p>
         <br>
-        <button type="button" data-toggle="modal" data-target="#modal_formular" class="btn btn-success btn-medium">
+        <form method="post" action="">
+            <div>
+                <label for="inputUnit">Trainingseinheiten: </label>
+                <button type="button" class="btn increment-button" onclick="increment()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </button>
+                <input type="text" name="trainingUnits" id="inputUnit" value="6"
+                       style="width: 30px; border: 3px solid black; text-align: center;
+                       font-weight: bold; font-size: 16px">
+                <button type="button" class="btn decrement-button" onclick="decrement()">
+                    <span class="glyphicon glyphicon-minus"></span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <button type="button" data-toggle="modal" data-target="#modal_formular"
+                class="btn btn-success btn-medium">
             <span class="glyphicon glyphicon-plus-sign"></span>
             Neue Übung erstellen
         </button>
     </div>
+
+    <br>
     <!-- Verkleinern und zentrieren: <div class="col-md-1"></div>-->
     <div class="col-md-12">
         <table class="table table-bordered table-condensed" border="1" width="100%">
@@ -244,5 +264,29 @@
         </div>
     </div>
 </div>
+
+<script>
+    function increment() {
+        var oldValue = document.getElementById("inputUnit").value;
+        if (oldValue < 15) {
+            var newValue = parseFloat(oldValue) + 1;
+        } else {
+            alert("Ein Trainingsplan kann nicht aus mehr als 15 Trainingseinheiten bestehen");
+            var newValue = 15;
+        }
+        document.getElementById("inputUnit").value = newValue;
+    }
+    function decrement() {
+        var oldValue = document.getElementById("inputUnit").value;
+        var newValue;
+        if (oldValue > 3) {
+            newValue = parseFloat(oldValue) - 1;
+        } else {
+            alert("Ein Trainingsplan kann nicht aus weniger als 3 Trainingseinheiten bestehen");
+            newValue = 3;
+        }
+        document.getElementById("inputUnit").value = newValue;
+    }
+</script>
 </body>
 </html>
