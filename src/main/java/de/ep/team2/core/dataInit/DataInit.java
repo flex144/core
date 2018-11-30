@@ -1,6 +1,5 @@
 package de.ep.team2.core.dataInit;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import de.ep.team2.core.service.DataBaseService;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,7 +29,7 @@ public class DataInit {
                 " first_name VARCHAR(255), last_name VARCHAR(255), PRIMARY KEY(email) )");
         jdbcTemplate.execute("DROP TABLE IF EXISTS exercises");
         jdbcTemplate.execute("CREATE TABLE exercises(" +
-                "id SERIAL NOT NULL PRIMARY KEY, name VARCHAR(255) NOT NULL," +
+                "id SERIAL NOT NULL PRIMARY KEY, name VARCHAR(255) NOT NULL UNIQUE," +
                 " description VARCHAR(255), img_path VARCHAR(400))");
     }
 
@@ -47,7 +46,7 @@ public class DataInit {
         for (String[] o : initTestData) {
             try {
                 DataBaseService.getInstance().insertUser(o[0], o[1], o[2]);
-            } catch (InvalidArgumentException exception) {
+            } catch (IllegalArgumentException exception) {
                 //do nothing
             }
         }

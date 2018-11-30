@@ -1,6 +1,6 @@
 package de.ep.team2.core.service;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
+
 import de.ep.team2.core.CoreApplication;
 import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.entities.User;
@@ -8,14 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
-
 
 /**
  * Singleton Data Access Object which handles all SQL queries with the Database.
@@ -119,13 +113,12 @@ public class DataBaseService {
      * @param firstName First Name of the User.
      * @param lastName  Last Name of the User.
      */
-    public void insertUser(String email, String firstName, String lastName) throws InvalidArgumentException {
+    public void insertUser(String email, String firstName, String lastName) {
         String mail = email.toLowerCase();
         if (getUserByEmail(mail) != null) {
             log.info("Insert User failed! Email " + email + " already in the " +
                     "Database!");
-            throw new InvalidArgumentException(new String[]{"Email already in" +
-                    " the Database!"});
+            throw new IllegalArgumentException("Email already in the Database!");
         }
         String[] toInsert = {email.toLowerCase(), firstName, lastName};
         jdbcTemplate.update("INSERT INTO users(email, first_name, last_name) " +
@@ -154,22 +147,35 @@ public class DataBaseService {
     // Exercise
 
     /**
-     * @param name
-     * @param description
-     * @param imgPath
+     * Inserts a new Exercise into the Table.
+     * The name has to be Unique.
+     *
+     * @param name Unique name of the Exercise
+     * @param description Optional Description of the Exercise.
+     * @param imgPath Optional Path to the img of the Exercise.
+     * @return
      */
-    public void insertExercise(String name, String description,
+    public Integer insertExercise(String name, String description,
                                String imgPath) {
-        String[] toInsert = {name, description, imgPath};
-        jdbcTemplate.update("INSERT INTO exercises(name, description, " +
-                        "img_path) VALUES (?,?,?)",
-                toInsert);
-        List<Integer> id = jdbcTemplate.query("select currval" +
-                        "(pg_get_serial_sequence('exercises','id'));",
-                (resultSet, i) -> resultSet.getInt(i + 1));
-        log.info("Exercise '" + name + "' inserted in Table 'exercises' with " +
-                "Id "
-                + id.get(0) + " !");
+        if (exerciseNameUnique(name)) {
+            String[] toInsert = {name, description, imgPath};
+            jdbcTemplate.update("INSERT INTO exercises(name, description, " +
+                            "img_path) VALUES (?,?,?)",
+                    toInsert);
+            List<Integer> id = jdbcTemplate.query("select currval" +
+                            "(pg_get_serial_sequence('exercises','id'));",
+                    (resultSet, i) -> resultSet.getInt(i + 1));
+            log.info("Exercise '" + name + "' inserted in Table 'exercises' with " +
+                    "Id "
+                    + id.get(0) + " !");
+            return id.get(0);
+        } else {
+            throw new IllegalArgumentException("Exercise name already in use");
+        }
+    }
+
+    boolean exerciseNameUnique(String name) {
+        return getExerciseByName(name) == null;
     }
 
     /**
@@ -203,6 +209,23 @@ public class DataBaseService {
     }
 
     /**
+     *
+     * @param name
+     * @return
+     */
+    public Exercise getExerciseByName(String name) {
+        LinkedList<Exercise> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM exercises WHERE exercises.name = ?",
+                new String[]{name},
+                new BeanPropertyRowMapper<>(Exercise.class)));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
+    }
+
+    /**
      * todo
      *
      * @param id
@@ -223,7 +246,7 @@ public class DataBaseService {
      * @param name
      * @return
      */
-    public List<Exercise> getExercisesByName(String name) {
+    public List<Exercise> getExerciseListByName(String name) {
         if (name != null && !name.isEmpty()) {
             String sql = String.format("SELECT * FROM exercises WHERE name " +
                     "LIKE '%%%s%%'", name);

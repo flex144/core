@@ -24,13 +24,13 @@
             Daten um die neue Übung hinzuzufügen.</p>
     </div>
     <div class="col-md-12">
-        <form>
+        <form th:action="@{/exercises}" th:object="${exercise}" method="post">
             <div class="row">
                 <div class="col-md-5">
                     <div class="form-group">
                         <label for="exerciseName">Name der Übung:</label>
                         <input  type="text" class="form-control" id="exerciseName"
-                                placeholder="Hier die Übungsbezeichnung eingeben...">
+                                placeholder="Hier die Übungsbezeichnung eingeben..." th:field="*{name}">
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                 <div class="col-md-8">
                     <div class="form-group">
                         <label for="description">Beschreibung der Übung:</label>
-                        <textarea id="description" class="form-control" rows="6"></textarea>
+                        <textarea id="description" class="form-control" rows="6" th:field="*{description}"></textarea>
                     </div>
                 </div>
             </div>
@@ -85,8 +85,8 @@
                 </div>
             </div>
 
-            <a th:href="@{/mods/searchexercise}" type="submit"
-               class="btn btn-primary btn-lg">Speichern</a>
+            <input type="submit"
+               class="btn btn-primary btn-lg" value="Speichern"/>
         </form>
     </div>
 </div>

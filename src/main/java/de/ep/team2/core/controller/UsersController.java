@@ -1,6 +1,5 @@
 package de.ep.team2.core.controller;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import de.ep.team2.core.entities.User;
 import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -96,7 +95,7 @@ public class UsersController {
             try {
                 userService.createUser(email, null, null);
                 return "redirect:/user/new";
-            } catch (InvalidArgumentException exception) {
+            } catch (IllegalArgumentException exception) {
                 errorMessage = "E-Mail existiert bereits!";
             }
         }

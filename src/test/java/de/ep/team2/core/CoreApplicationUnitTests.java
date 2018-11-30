@@ -1,8 +1,10 @@
 package de.ep.team2.core;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
+
 import de.ep.team2.core.service.DataBaseService;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -32,7 +34,7 @@ public class CoreApplicationUnitTests {
     }
 
     @Test
-    public void addUser() throws InvalidArgumentException {
+    public void addUser() {
         DataBaseService db = DataBaseService.getInstance();
         assertNull(db.getUserByEmail("Hallo@test.com"));
         db.insertUser("Hallo@test.com","Hallo","Test");
@@ -41,7 +43,7 @@ public class CoreApplicationUnitTests {
     }
 
     @Test
-    public void deleteUserById() throws InvalidArgumentException {
+    public void deleteUserById() {
         DataBaseService db = DataBaseService.getInstance();
         assertNotNull(db.getUserById(1));
         db.deleteUserById(1);
@@ -65,11 +67,22 @@ public class CoreApplicationUnitTests {
     @Test
     public void addExercise() {
         DataBaseService db = DataBaseService.getInstance();
-        assertTrue(db.getExercisesByName("HalloTest1234567").isEmpty());
+        assertTrue(db.getExerciseListByName("HalloTest1234567").isEmpty());
         db.insertExercise("HalloTest1234567","Test Description","Test/Test");
-        String test = db.getExercisesByName("HalloTest1234567").toString();
-        assertTrue(test.contains("HalloTest1234567") && test.contains("3"));
-        db.deleteExerciseById(db.getExercisesByName("HalloTest1234567").get(0).getId());
+        assertTrue(db.getExerciseListByName("HalloTest1234567").toString()
+                .contains("HalloTest1234567"));
+        db.deleteExerciseById(db.getExerciseListByName("HalloTest1234567").get(0).getId());
+    }
+
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
+
+    @Test
+    public void insertSameExercise() {
+        expectedEx.expect(RuntimeException.class);
+        expectedEx.expectMessage("Exercise name already in use");
+        DataBaseService.getInstance().insertExercise(
+                "Bankdrücken","Test for Illegal Argument","Test/Test");
     }
 
     @Test
@@ -87,10 +100,16 @@ public class CoreApplicationUnitTests {
     }
 
     @Test
-    public void getExerciseByName() {
+    public void getExerciseListByName() {
         DataBaseService db = DataBaseService.getInstance();
-        assertTrue(db.getExercisesByName("fkldsajflkösdjflkösadjf").isEmpty());
-        assertNull(db.getExercisesByName(null));
-        assertEquals("Bankdrücken", db.getExercisesByName("Bankdrücken").get(0).getName());
+        assertTrue(db.getExerciseListByName("fkldsajflkösdjflkösadjf").isEmpty());
+        assertNull(db.getExerciseListByName(null));
+        assertEquals("Bankdrücken", db.getExerciseListByName("Bankdrücken").get(0).getName());
+    }
+
+    @Test
+    public void getExerciseByName() {
+        assertEquals("Bankdrücken",
+                DataBaseService.getInstance().getExerciseByName("Bankdrücken").getName());
     }
 }

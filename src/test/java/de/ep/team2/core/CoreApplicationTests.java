@@ -1,6 +1,5 @@
 package de.ep.team2.core;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import de.ep.team2.core.service.DataBaseService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +32,7 @@ public class CoreApplicationTests {
     }
 
     @Test
-    public void deleteUserRest() throws InvalidArgumentException {
+    public void deleteUserRest() {
         restTemplate.delete("http://localhost:8080/users/1");
         assertTrue(restTemplate.getForObject("/users/1", String.class)
                 .contains("Benutzer nicht gefunden!"));
@@ -49,7 +48,7 @@ public class CoreApplicationTests {
     }
 
     @Test
-    public void addUserRest() throws InvalidArgumentException {
+    public void addUserRest() {
         DataBaseService db = DataBaseService.getInstance();
         assertTrue(restTemplate.getForObject("/users/Test@gmail.com",
                 String.class)
