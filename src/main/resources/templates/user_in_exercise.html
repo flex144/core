@@ -69,7 +69,7 @@
         <h2>Klimmzüge</h2>
     </div>
     <a type="button"
-       class="btn btn-info" href="fragments/navbar.html">
+       class="btn btn-info" href="testseite_verlinkung.html">
         i
     </a>
 </div>
@@ -135,38 +135,64 @@
 <!--- Highlighted box with Timer and Evaluation --->
 <div class="highlightedContainer" id="container_timerAndEvaluation"
      style="height: 20%;">
-    <table id="timerTable">
-        <tr>
-            <td rowspan="3" id="timer_table_cell" style="width: 80%;">
-                <h1><span id="time">00:00</span></h1>
-            </td>
-            <td>
-                <button type="button"
-                        class="btn-block btn-success" id="button90s"
-                        onclick="parseTime(90)">
-                    90s
-                </button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <button type="button"
-                        class="btn-block btn-success" id="button60s"
-                        onclick="parseTime(60)">
-                    60s
-                </button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <button type="button"
-                        class="btn-block btn-success" id="button30s"
-                        onclick="parseTime(30)">
-                    30s
-                </button>
-            </td>
-        </tr>
-    </table>
+    <!--- Timer --->
+    <!---
+    <div>
+        <table id="timerTable">
+            <tr>
+                <td rowspan="3" id="timer_table_cell" style="width: 80%;">
+                    <h1><span id="time">00:00</span></h1>
+                </td>
+                <td>
+                    <button type="button"
+                            class="btn-block btn-success" id="button90s"
+                            onclick="parseTime(90)">
+                        90s
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button"
+                            class="btn-block btn-success" id="button60s"
+                            onclick="parseTime(60)">
+                        60s
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button"
+                            class="btn-block btn-success" id="button30s"
+                            onclick="parseTime(30)">
+                        30s
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    -->
+    <!--- TODO Use glyphicons for labels --->
+    <!--- Evaluation --->
+    <div class="container" style="text-align: center;">
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-secondary">
+                <input type="radio"> sehr <br> ein <br>fach
+            </label>
+            <label class="btn btn-secondary">
+                <input type="radio"> zu <br> ein <br>fach
+            </label>
+            <label class="btn btn-secondary active">
+                <input type="radio" checked> Gut
+            </label>
+            <label class="btn btn-secondary">
+                <input type="radio"> zu <br> hart
+            </label>
+            <label class="btn btn-secondary">
+                <input type="radio"> Viel <br> zu <br> hart
+            </label>
+        </div>
+    </div>
 </div>
 
 <!--- Back/Cancel and Completion/Start buttons--->
