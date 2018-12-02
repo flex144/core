@@ -51,12 +51,6 @@
             column-fill: auto;
         }
 
-        #timer_table_cell {
-            background: #dddddd;
-            text-align: center;
-            vertical-align: baseline;
-        }
-
         #timer_table_cell td, tr {
             padding: 0;
         }
@@ -64,7 +58,6 @@
         #button90s, #button60s, #button30s {
             padding: 0;
         }
-
     </style>
 </head>
 <body>
@@ -142,7 +135,7 @@
 <!--- Highlighted box with Timer and Evaluation --->
 <div class="highlightedContainer" id="container_timerAndEvaluation"
      style="height: 20%;">
-    <table id="timerTable" class="table table-bordered">
+    <table id="timerTable">
         <tr>
             <td rowspan="3" id="timer_table_cell" style="width: 80%;">
                 <h1><span id="time">00:00</span></h1>
@@ -168,7 +161,7 @@
             <td>
                 <button type="button"
                         class="btn-block btn-success" id="button30s"
-                        onclick="parseTime(10)">
+                        onclick="parseTime(30)">
                     30s
                 </button>
             </td>
@@ -198,11 +191,11 @@
     </div>
 </div>
 
+<!--- Stopwatch Script--->
 <script>
     var singleTimer = true;
     var timerID = 0;
 
-    /*TODO fix timer jumping*/
     function startTimer(duration, display) {
         var timer = duration, minutes, seconds;
         timerID = setInterval(function () {
@@ -225,12 +218,14 @@
         if (singleTimer) {
             var timeValue = value;
             display = document.querySelector('#time');
+            clearInterval(timerID);
             singleTimer = false;
             startTimer(timeValue, display);
         }
     }
 
 </script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
