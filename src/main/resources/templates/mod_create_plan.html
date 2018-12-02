@@ -11,6 +11,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <div th:include="/fragments/navbar :: navbar_style"></div>
+    <style>
+        #inputUnit:disabled {
+            background-color: white;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,15 +25,15 @@
     <div class="jumbotron">
         <h2>Erstelle eine neue Trainingsplanvorlage</h2>
         &ensp;
-        <p style="font-size: 12pt">Fülle das folgende Formular aus und speichere anschließend deine erstellte Vorlage
-        für individuelle Trainingspläne.</p>
-        <div>
-            <p style="font-size: 12pt">Um Übungen zu deinem Plan hinzuzufügen, fülle das folgende Formular aus und klicke auf
-                den blauen Button. Falls du eine noch nicht vorhandene Übung in deinem Plan verwenden willst,
-                drücke den grünen Button um eine neue zu erstellen.</p>
-        </div>
+        <p style="font-size: 12pt">Gib zuerst die allgemeinen Daten zu deinem Plan an, die Bezeichnung, den Planfokus und die Anzahl
+        der Trainingseinheiten</p><br>
+        <p style="font-size: 12pt">Um Übungen zu deinem Plan hinzuzufügen, fülle das Formular <mark>"Übung bearbeiten"</mark> aus
+            und klicke auf den Button <mark>"Übung hinzufügen"</mark>. Falls du eine noch nicht vorhandene Übung in deinem Plan verwenden willst,
+            drücke den Button <mark>"Neue Übungsart"</mark> um direkt eine Neue zu erstellen.</p><br>
+        <p style="font-size: 12pt">Wenn du am Ende mit deinem Plan zufrieden bist,
+            speichere diesen mit einem Klick auf den Button <mark>"Plan speichern"</mark>.</p>
         <br><br>
-        <div class="row" style="border-color: #2E2E2E">
+        <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="planName">Planbezeichnung:</label>
@@ -50,14 +55,14 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="inputUnit">Trainingseinheiten: </label>
-                    <button type="button" class="btn increment-button" onclick="increment()">
-                        <span class="glyphicon glyphicon-plus"></span>
+                    <button type="button" class="btn decrement-button" onclick="decrement(); updateTeInputs()">
+                        <span class="glyphicon glyphicon-minus"></span>
                     </button>
                     <input type="text" name="trainingUnits" id="inputUnit" value="6"
                            style="width: 30px; border: 3px solid darkgray; text-align: center;
-                   font-weight: bold">
-                    <button type="button" class="btn decrement-button" onclick="decrement()">
-                        <span class="glyphicon glyphicon-minus"></span>
+                           font-weight: bold" disabled>
+                    <button type="button" class="btn increment-button" onclick="increment(); updateTeInputs()">
+                        <span class="glyphicon glyphicon-plus"></span>
                     </button>
                 </div>
             </div>
@@ -68,11 +73,11 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-8" style="margin-top: 6px">
                     Übung bearbeiten
                 </div>
                 <div class="col-md-2">
-                    <button type="button" class="btn btn-primary btn-block">
+                    <button type="button" id="addExercise" value="Add" class="btn btn-primary btn-block">
                         <span class="glyphicon glyphicon-plus-sign"></span>
                         Übung hinzufügen
                     </button>
@@ -81,7 +86,7 @@
                     <button type="button" data-toggle="modal"
                             class="btn btn-success btn-block launch-modal">
                         <span class="glyphicon glyphicon-plus-sign"></span>
-                        Neue Übung
+                        Neue Übungsart
                     </button>
                 </div>
             </div>
@@ -98,86 +103,60 @@
                         <col width="5%">
                     </colgroup>
                     <thead>
-                    <tr>
-                        <th>Ordnung</th>
-                        <th>Übung</th>
-                        <th>Ausführung</th>
-                        <th>Last/Wiederholungen/Sätze</th>
-                        <th>Tempo</th>
-                        <th>Pause</th>
-                    </tr>
+                        <tr>
+                            <th>Ordnung</th>
+                            <th>Übung</th>
+                            <th>Ausführung</th>
+                            <th>Last/Wiederholungen/Sätze</th>
+                            <th>Tempo</th>
+                            <th>Pause</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td><input type="text" class="form-control" /></td>
-                        <td>
-                            <input type="text" name="exercise" list="stored_exercises">
-                            <datalist id="stored_exercises">
-                                <option value="Liegestütze" />
-                                <option value="Klimmzüge" />
-                                <option value="Leg-Press" />
-                                <option value="Bench-Press" />
-                                <option value="Front-Curl" />
-                                <option value="Back-Curl" />
-                                <option value="Squad" />
-                            </datalist>
-                            </input>
-                        </td>
-                        <td>
-                            <textarea id="description" class="form-control" rows="4"></textarea>
-                        </td>
-                        <td>
-                            <table class="table table-bordered table-condensed">
-                                <tbody>
-                                <tr>
-                                    <td><input type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" class="form-control" /></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <button type="button" class="btn btn-default">
-                                            <span class="glyphicon glyphicon-plus-sign"></span> Neuer Satz</button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                        <td>
-                            <table class="table table-bordered table-condensed">
-                                <tbody>
-                                <tr>
-                                    <td><input type="text" class="form-control" /></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                        <td>
-                            <table class="table table-bordered table-condensed">
-                                <tbody>
-                                <tr>
-                                    <td><input type="text" class="form-control" /></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                    </tr>
+                        <tr>
+                            <td>
+                                <input type="text" class="form-control" />
+                            </td>
+                            <td>
+                                <input type="text" name="exercise" id="exercise" class="form-control" list="stored_exercises">
+                                    <datalist id="stored_exercises">
+                                        <option value="Liegestütze" />
+                                        <option value="Klimmzüge" />
+                                        <option value="Leg-Press" />
+                                        <option value="Bench-Press" />
+                                        <option value="Front-Curl" />
+                                        <option value="Back-Curl" />
+                                        <option value="Squad" />
+                                    </datalist>
+                                </input>
+                            </td>
+                            <td>
+                                <textarea id="description" class="form-control" rows="4"></textarea>
+                            </td>
+                            <td>
+                                <div id="sets"/>
+                            </td>
+                            <td>
+                                <table class="table table-bordered table-condensed">
+                                    <tbody>
+                                        <tr>
+                                            <td><input type="text" class="form-control" /></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                            <td>
+                                <table class="table table-bordered table-condensed">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="text" class="form-control"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -185,9 +164,15 @@
     </div>
 
     <div class="panel panel-success">
-        <div class="panel-heading">Aktueller Trainingsplan</div>
+        <div class="panel-heading">
+            Aktueller Trainingsplan
+        </div>
         <div class="panel-body">
             <!-- Liste mit hinzugefügten übungen hier einfügen -->
+            <div class="form-group">
+                <ul id="exerciseList" class="list-group">
+                </ul>
+            </div>
 
             <div class="row">
                 <div class="col-md-10"></div>
@@ -296,6 +281,40 @@
             });
         });
     });
+
+    $(document).ready(function(){
+        $('#addExercise').click(function(){
+            var newitem = $('#exercise').val();
+            var uniqid = Math.round(new Date().getTime() + (Math.random() * 100));
+            $('#exerciseList').append('' +
+                '<li id="'+uniqid+'" class="list-group-item">' + '<input type="button" ' + 'data-id="'+uniqid+'" ' +
+                'class="listelement" value="X" />' +
+                ' '+newitem+'<input type="hidden" ' + 'name="listed[]" ' + 'value="'+newitem+'"></li>');
+            $('#exercise').val('');
+            return false;
+        });
+        $('#exerciseList').delegate(".listelement", "click", function() {
+            var elemid = $(this).attr('data-id');
+            $("#"+elemid).remove();
+        });
+    });
+
+    $(document).ready(updateTeInputs())
+
+    function updateTeInputs() {
+        var number = document.getElementById("inputUnit").value;
+        var sets = document.getElementById("sets");
+        while (sets.hasChildNodes()) {
+            sets.removeChild(sets.lastChild);
+        }
+        for (var i=0;i<number;i++){
+            var input = document.createElement("input");
+            input.type = "text";
+            input.class = "form-control";
+            sets.appendChild(input);
+            sets.appendChild(document.createElement("br"));
+        }
+    }
 
     function increment() {
         var oldValue = document.getElementById("inputUnit").value;
