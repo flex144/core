@@ -153,7 +153,7 @@ public class DataBaseService {
      * @param name Unique name of the Exercise
      * @param description Optional Description of the Exercise.
      * @param imgPath Optional Path to the img of the Exercise.
-     * @return
+     * @return The ID of the inserted exercise.
      */
     public Integer insertExercise(String name, String description,
                                String imgPath) {
@@ -179,22 +179,21 @@ public class DataBaseService {
     }
 
     /**
-     * todo
+     * Returns a List of all Exercises stored in the DB.
      *
-     * @return
+     * @return List of all stored Exercises
      */
     public List<Exercise> getAllExercises() {
         String sql = "SELECT * FROM exercises";
-        List<Exercise> toReturn = jdbcTemplate.query(sql,
+        return jdbcTemplate.query(sql,
                 new BeanPropertyRowMapper<>(Exercise.class));
-        return toReturn;
     }
 
     /**
-     * todo
+     * Searches for an Exercise with a specific ID an returns it.
      *
-     * @param id
-     * @return
+     * @param id ID to search for
+     * @return Exercise object representing the Database entry.
      */
     public Exercise getExerciseById(int id) {
         LinkedList<Exercise> toReturn = new LinkedList<>(jdbcTemplate.query(
@@ -209,9 +208,10 @@ public class DataBaseService {
     }
 
     /**
+     * Searches for an Exercise with this exact name.
      *
-     * @param name
-     * @return
+     * @param name name to search for.
+     * @return Exercise object representing the Database entry.
      */
     public Exercise getExerciseByName(String name) {
         LinkedList<Exercise> toReturn = new LinkedList<>(jdbcTemplate.query(
@@ -226,9 +226,9 @@ public class DataBaseService {
     }
 
     /**
-     * todo
+     * Deletes the entry, in the Table exercises, with the given id.
      *
-     * @param id
+     * @param id id of the Exercise to delete.
      */
     public void deleteExerciseById(int id) {
         Exercise toDelete = getExerciseById(id);
@@ -241,10 +241,12 @@ public class DataBaseService {
     }
 
     /**
-     * todo
+     * Searches for all exercises in the Database,
+     * where the given String {@code name} is part of the name.
      *
-     * @param name
-     * @return
+     * @param name String name fragment to search for.
+     * @return List of all found exercises; empty list if nothing was found;
+     *          null if the Parameter was empty.
      */
     public List<Exercise> getExerciseListByName(String name) {
         if (name != null && !name.isEmpty()) {

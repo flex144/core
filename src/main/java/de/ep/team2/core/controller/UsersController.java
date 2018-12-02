@@ -5,6 +5,7 @@ import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Handles Http-Requests with the path '/users'.
@@ -81,7 +82,8 @@ public class UsersController {
      * wrong goes back to the login page(returns "login_page".
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String createUser(@ModelAttribute("user") User user, Model model) {
+    public String createUser(@ModelAttribute("user") User user, Model model
+            , RedirectAttributes redirectAttributes) {
         UserService userService = new UserService();
         String email = user.getEmail();
         String errorMessage;
@@ -99,8 +101,8 @@ public class UsersController {
                 errorMessage = "E-Mail existiert bereits!";
             }
         }
-        model.addAttribute("errorMessage", errorMessage);
-        return new IndexController().login(model);
+        redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+        return "redirect:/login";
     }
 
     /**

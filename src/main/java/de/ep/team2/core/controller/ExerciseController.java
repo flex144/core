@@ -4,10 +4,8 @@ import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.service.ExerciseService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/exercises")
@@ -34,7 +32,8 @@ public class ExerciseController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String postExercise(@ModelAttribute("exercise") Exercise exercise, Model model) {
+    public String postExercise(@RequestParam("image") MultipartFile image,
+                               @ModelAttribute("exercise") Exercise exercise, Model model) {
         ExerciseService service = new ExerciseService();
         if (!service.exerciseNameUnique(exercise.getName())) {
             model.addAttribute("error", "Übungsname schon vorhanden!");
@@ -42,6 +41,14 @@ public class ExerciseController {
         } else {
             service.insertExercise(exercise.getName(), exercise.getDescription(),
                     exercise.getImgPath());
+            if (!image.isEmpty() || image.getContentType() != null) {
+                if (image.getContentType().equals("image/jpeg")
+                        || image.getContentType().equals("image/png")) {
+                        String msg = service.uploadImg(image, exercise);
+                    System.out.println(msg);
+                        model.addAttribute("messageImage", msg);
+                }
+            }
             return "mod_exercise_search";
         }
     }
