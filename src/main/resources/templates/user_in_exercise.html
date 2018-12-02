@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>In exercise</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+          crossorigin="anonymous">
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #4CAF50;
+        }
+
+        .orangeContainer {
+            background: #ffb74d;
+            border: 2px solid #fd8900;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+
+        .highlightedContainer {
+            background: #c35a00;
+            border: 2px solid #2E2E2E;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        #exerciseDetails {
+            width: 100%;
+            height: 100%;
+        }
+
+        #exerciseDetails td {
+            width: 50%;
+        }
+
+    </style>
+</head>
+<body>
+<div class="highlightedContainer" id="container_planExerciseName"
+     style="height: 10%;">
+    <div style="width: 90%;">
+        <h2>Klimmzüge</h2>
+    </div>
+    <a type="button"
+       class="btn btn-info" href="fragments/navbar.html">
+        i
+    </a>
+</div>
+<div class="orangeContainer" id="container_planInstructions"
+     style="height: 20%;">
+    <div class="row">
+        <div class="col-md-1" id="container_planBild" style="width: 50%">
+            Bild
+        </div>
+        <div class="col-md-2" id="container_planDetails" style="width: 50%">
+            Massive anmerkungen zum text obwohl hier wahrscheinlich nie mehr als
+            ein zwei wörter stehen wird
+        </div>
+    </div>
+</div>
+<div class="orangeContainer" id="container_planExerciseData"
+     style="height: 40%;">
+    <table id="exerciseDetails" class="table-striped table-bordered">
+        <tr>
+            <td>Gewicht</td>
+            <td>Eigen</td>
+        </tr>
+        <tr>
+            <td>Tempo</td>
+            <td>Langsam</td>
+        </tr>
+        <tr>
+            <td>Pause</td>
+            <td>90 s</td>
+        </tr>
+        <tr>
+            <td>Sätze</td>
+            <td>1/4</td>
+        </tr>
+        <tr>
+            <td>Wiederholungen</td>
+            <td>12</td>
+        </tr>
+        <tr>
+            <td>Geschaffte Wdh.</td>
+            <td>
+                <form>
+                    <input type="number" class="form-control"
+                           id="accomplishedReps">
+                </form>
+                <button type="button"
+                        class="btn btn-secondary">
+                    -
+                </button>
+                <button type="button"
+                        class="btn btn-secondary">
+                    +
+                </button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="highlightedContainer" id="container_timerAndEvaluation"
+     style="height: 20%;">
+    <h1>hier wird der Timer/eval sein</h1>
+</div>
+<div class="orangeContainer" style="height: 10%;">
+    <div name="spacing" style="height: 20%">
+    </div>
+    <div class="row" style="width: 100%; height: 80%;">
+        <div name="spacing" style="width: 10%;"></div>
+        <div name="spacing" style="width: 30%;">
+            <button type="button"
+                    class="btn btn-block btn-danger">
+                zurück
+            </button>
+        </div>
+        <div name="spacing" style="width: 30%;"></div>
+        <div name="spacing" style="width: 30%;">
+            <button type="button"
+                    class="btn btn-block btn-success">
+                starten
+            </button>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+</body>
+</html>
