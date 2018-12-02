@@ -155,7 +155,6 @@
                 </button>
             </td>
         </tr>
-        </tr>
         <tr>
             <td>
                 <button type="button"
@@ -193,7 +192,7 @@
         <div style="width: 30%;">
             <button type="button"
                     class="btn btn-block btn-success">
-                starten
+                Starten
             </button>
         </div>
     </div>
@@ -203,10 +202,11 @@
     var singleTimer = true;
     var timerID = 0;
 
+    /*TODO fix timer jumping*/
     function startTimer(duration, display) {
         var timer = duration, minutes, seconds;
         timerID = setInterval(function () {
-            minutes = parseInt(timer / 60, 10)
+            minutes = parseInt(timer / 60, 10);
             seconds = parseInt(timer % 60, 10);
 
             minutes = minutes < 10 ? "0" + minutes : minutes;
@@ -219,7 +219,7 @@
                 singleTimer = true;
             }
         }, 1000);
-    };
+    }
 
     function parseTime(value) {
         if (singleTimer) {
@@ -229,16 +229,6 @@
             startTimer(timeValue, display);
         }
     }
-
-    /* TODO buttons on press set timer
-    *  = function(){
-    *  var runTime = 30/60/90,
-    *  display = doument.querySelector('#time');
-    *  startTimer(runTime, display)
-    *
-     *
-    document.getElementById($button60s).onclick = startTimer(60, display);
-      * */
 
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
