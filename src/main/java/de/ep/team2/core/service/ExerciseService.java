@@ -24,31 +24,16 @@ public class ExerciseService {
 
     public String uploadImg(MultipartFile image, Exercise exercise) {
         String fileName = image.getOriginalFilename();
-        String dirDestString = "src/main/resources/images/" +  exercise.getName();
+        String dirDestString = "src/main/resources/static/images/" +  exercise.getName();
         Path dirDest = Paths.get(dirDestString);
-        Path dest = Paths.get( exercise.getName(), fileName);
-        //FileSystem fs = FileSystems.getDefault();
-        //Path dirDest = fs.getPath("src" ,"main/resources/images", exercise.getName());
-        //Path dest = fs.getPath("src" ,"main/resources/images", exercise.getName(), fileName);
+        Path dest = Paths.get( dirDestString, fileName);
         try {
-            Files.createDirectory(dirDest);
+            Files.createDirectories(dirDest);
             Files.createFile(dest);
-            System.out.println("ok");
             image.transferTo(dest);
         } catch (IOException exception) {
-            return exception.getMessage();
+            return null;
         }
-        return "Success";
-    }
-
-    private void convertPaths(Path path) {
-        Path real = null;
-        try {
-            real = path.toRealPath();
-        }
-        catch (IOException e) {
-            System.out.println("Real path could not be created !");
-        }
-        System.out.println("Real path: " + real);
+        return "/images/" + exercise.getName() + "/" + fileName;
     }
 }

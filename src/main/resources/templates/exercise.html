@@ -9,5 +9,9 @@
 <p th:text="${exercise.name}"></p>
 <p th:text="${exercise.description}"></p>
 <p th:text="${exercise.imgPath}"></p>
+<img th:src="@{/images/Test123/mvvm.png}"/>
+<img th:src="@{${exercise.imgPath}}"/>
+<img th:src="@{{path}(path=${exercise.imgPath})}"/>
+
 </body>
 </html>

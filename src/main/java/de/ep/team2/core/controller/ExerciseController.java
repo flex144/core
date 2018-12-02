@@ -23,7 +23,7 @@ public class ExerciseController {
         }
         Exercise toGet = service.getExerciseById(idInt);
         if (toGet == null) {
-            model.addAttribute("error", "Benutzer nicht gefunden!");
+            model.addAttribute("error", "Übung nicht gefunden!");
             return "error";
         } else {
             model.addAttribute("exercise", toGet);
@@ -39,16 +39,19 @@ public class ExerciseController {
             model.addAttribute("error", "Übungsname schon vorhanden!");
             return "error";
         } else {
-            service.insertExercise(exercise.getName(), exercise.getDescription(),
-                    exercise.getImgPath());
             if (!image.isEmpty() || image.getContentType() != null) {
                 if (image.getContentType().equals("image/jpeg")
                         || image.getContentType().equals("image/png")) {
-                        String msg = service.uploadImg(image, exercise);
-                    System.out.println(msg);
-                        model.addAttribute("messageImage", msg);
+                    String imgPath = service.uploadImg(image, exercise);
+                    if (imgPath == null) {
+                        System.out.println("Image upload failed!");
+                    } else {
+                        exercise.setImgPath(imgPath);
+                    }
                 }
             }
+            service.insertExercise(exercise.getName(), exercise.getDescription(),
+                    exercise.getImgPath());
             return "mod_exercise_search";
         }
     }

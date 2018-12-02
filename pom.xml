@@ -81,6 +81,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- when running in shell uncomment to update resources
+				<configuration>
+					<addResources>true</addResources>
+				</configuration>
+				-->
 			</plugin>
 		</plugins>
 	</build>
