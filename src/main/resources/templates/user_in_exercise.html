@@ -10,23 +10,22 @@
           href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
           integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
           crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
+        /********************container Styles**********************/
         html, body {
             width: 100%;
             height: 100%;
-            background: #4CAF50;
         }
 
         .orangeContainer {
-            background: #ffb74d;
-            border: 2px solid #fd8900;
             width: 100%;
             height: 100%;
             text-align: center;
         }
 
         .highlightedContainer {
-            background: #c35a00;
+            background: #fd8900; /*light orange*/
             border: 2px solid #2E2E2E;
             display: flex;
             align-items: center;
@@ -35,6 +34,12 @@
             height: 100%;
         }
 
+        /******************** Button Styles**********************/
+        .btn-group-toggle{
+            transform: scale(0.8);
+        }
+
+        /******************** Table Styles **********************/
         #exerciseDetails {
             width: 100%;
             height: 100%;
@@ -65,11 +70,11 @@
 <!--- Titlebar of the exercise --->
 <div class="highlightedContainer" id="container_planExerciseName"
      style="height: 10%;">
-    <div style="width: 90%;">
+    <div style="width: 80%;">
         <h2>Klimmzüge</h2>
     </div>
-    <a type="button"
-       class="btn btn-info" href="testseite_verlinkung.html">
+    <div style="width: 5%"></div>
+    <a href="testseite_verlinkung.html" class="btn btn-info">
         i
     </a>
 </div>
@@ -77,11 +82,12 @@
 <!--- Picture / Notice to current exercise --->
 <div class="orangeContainer" id="container_planInstructions"
      style="height: 20%;">
-    <div class="row">
-        <div class="col-md-1" id="container_planBild" style="width: 50%">
+    <div class="row" style="height: 100%;">
+        <!--- TODO fetch picture from exercise --->
+        <div  id="container_planBild" style="width: 50%; height: 100%;">
             Bild
         </div>
-        <div class="col-md-2" id="container_planDetails" style="width: 50%">
+        <div  id="container_planDetails" style="width: 45%; height: 100%; overflow-y: scroll; overflow-x: fragments;">
             Massive anmerkungen zum text obwohl hier wahrscheinlich nie mehr als
             ein zwei wörter stehen wird
         </div>
@@ -106,27 +112,39 @@
         </tr>
         <tr>
             <td>Sätze</td>
-            <td>1/4</td>
+            <td>
+                <span class="value"></span>
+            </td>
         </tr>
         <tr>
             <td>Wiederholungen</td>
-            <td>12</td>
+            <td>
+                <span class="doneReps"> t</span>
+            </td>
         </tr>
         <tr>
             <td>Geschaffte Wdh.</td>
             <td>
-                <form>
-                    <input type="number" class="form-control"
-                           id="accomplishedReps">
-                </form>
-                <button type="button"
-                        class="btn btn-secondary">
-                    -
-                </button>
-                <button type="button"
-                        class="btn btn-secondary">
-                    +
-                </button>
+                <div class="row">
+                    <div style="width: 5%;"></div>
+                    <div style="width: 30%;">
+                        <button type="button"
+                                class="btn btn-secondary" onclick="decreaseReps()" id="buttonDecrease" disabled>
+                            -
+                        </button>
+                    </div>
+                    <div style="width: 30%;">
+                        <form>
+                            <input type="number" oninput="updateReps()" id="repInput" value="999" style="width: 100%; text-align: center" disabled>
+                        </form>
+                    </div>
+                    <div style="width: 30%;">
+                        <button type="button"
+                                class="btn btn-secondary" onclick="increaseReps()" id="buttonIncrease" disabled>
+                            +
+                        </button>
+                    </div>
+                </div>
             </td>
         </tr>
     </table>
@@ -136,8 +154,7 @@
 <div class="highlightedContainer" id="container_timerAndEvaluation"
      style="height: 20%;">
     <!--- Timer --->
-    <!---
-    <div>
+    <div id="container_timerBox" style="width: 100%;">
         <table id="timerTable">
             <tr>
                 <td rowspan="3" id="timer_table_cell" style="width: 80%;">
@@ -171,26 +188,26 @@
             </tr>
         </table>
     </div>
-    -->
-    <!--- TODO Use glyphicons for labels --->
     <!--- Evaluation --->
-    <div class="container" style="text-align: center;">
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-            <label class="btn btn-secondary">
-                <input type="radio"> sehr <br> ein <br>fach
-            </label>
-            <label class="btn btn-secondary">
-                <input type="radio"> zu <br> ein <br>fach
-            </label>
-            <label class="btn btn-secondary active">
-                <input type="radio" checked> Gut
-            </label>
-            <label class="btn btn-secondary">
-                <input type="radio"> zu <br> hart
-            </label>
-            <label class="btn btn-secondary">
-                <input type="radio"> Viel <br> zu <br> hart
-            </label>
+    <div id="container_evaluationBox" style="width: 100%;">
+        <div class="container" style="text-align: center">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <button class="btn btn-secondary">
+                    <input type="radio"> sehr <br> ein <br>fach
+                </button>
+                <button class="btn btn-secondary">
+                    <input type="radio"> zu <br> ein <br>fach
+                </button>
+                <button class="btn btn-secondary active">
+                    <input type="radio"> passt
+                </button>
+                <button class="btn btn-secondary">
+                    <input type="radio"> zu <br> hart
+                </button>
+                <button class="btn btn-secondary">
+                    <input type="radio"> Viel <br> zu <br> hart
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -210,8 +227,8 @@
         <div style="width: 30%;"></div>
         <div style="width: 30%;">
             <button type="button"
-                    class="btn btn-block btn-success">
-                Starten
+                    class="btn btn-block btn-success" id="startButton" onclick="exerciseFunction()" style="font-size: small">
+                <span class="buttonName"></span>
             </button>
         </div>
     </div>
@@ -250,6 +267,94 @@
         }
     }
 
+</script>
+
+<!--- Toggle Evaluation/Timer and Rep Counter --->
+<script>
+
+    /*TODO totalReps = DB dependant value*/
+    /*** Needed parameters for Rep counter**/
+    var totalReps = 12;
+    var currentReps = totalReps;
+
+    /*TODO setCounter = DB dependant value*/
+    /*** Needed parameters for Container Switch***/
+    var timerBox = document.getElementById("container_timerBox");
+    var evaluationBox = document.getElementById("container_evaluationBox");
+    var currentCounter = 0;
+    var setCounter = 4;
+    var labelValue = currentCounter + "/" + setCounter;
+    var buttonTitle = "Starten";
+    var done = false;
+
+    /*** Instancing first values for both scripts**/
+    document.onLoad(initializeReps());
+    function initializeReps() {
+        document.getElementById('repInput').value = currentReps;
+        document.querySelector('.doneReps').innerHTML = totalReps;
+        evaluationBox.style.display = "none";
+        document.querySelector('.value').innerHTML = labelValue;
+        document.querySelector('.buttonName').innerHTML = buttonTitle;
+    }
+
+    /*** Rep Counter functions***/
+    /*** update Values on each input***/
+    function updateReps() {
+        var valueCheck = document.getElementById('repInput').value;
+        if(valueCheck < 2* totalReps && valueCheck> 0){
+            currentReps = valueCheck;
+        } else if(valueCheck == ""){
+
+        }else{
+            currentReps = totalReps;
+            document.getElementById('repInput').value = currentReps;
+        }
+    }
+
+    /*** Decrease Values on each click***/
+    function decreaseReps(){
+        if(currentReps > 0){
+            currentReps--;
+            document.getElementById('repInput').value = currentReps;
+        }
+    }
+
+    /*** Increase Values on each click***/
+    function increaseReps(){
+        if(currentReps < 2*totalReps){
+            currentReps++;
+            document.getElementById('repInput').value = currentReps;
+        }
+    }
+
+    /*** Change Values on each click***/
+    function exerciseFunction(){
+        if (done){
+            window.location ="testseite_verlinkung.html";
+        }else if (currentCounter == setCounter){
+            timerBox.style.display = "none";
+            evaluationBox.style.display = "inherit";
+            buttonTitle = "Abschließen";
+            done = true;
+            document.getElementById('buttonDecrease').disabled = true;
+            document.getElementById('buttonIncrease').disabled = true;
+            document.getElementById('repInput').disabled = true;
+        } else if(currentCounter == setCounter -1) {
+            buttonTitle = "Evaluation";
+            currentCounter++;
+        }else{
+            buttonTitle = "Satz beenden";
+            currentCounter++;
+            document.getElementById('buttonDecrease').disabled = false;
+            document.getElementById('buttonIncrease').disabled = false;
+            document.getElementById('repInput').disabled = false;
+        }
+        currentReps = totalReps;
+        document.getElementById('repInput').value = currentReps;
+        labelValue = currentCounter + "/" + setCounter;
+        document.querySelector('.value').innerHTML = labelValue;
+        document.querySelector('.buttonName').innerHTML = buttonTitle;
+    }
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
