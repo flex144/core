@@ -27,8 +27,8 @@ public class UserService {
         DataBaseService.getInstance().deleteUserById(id);
     }
 
-    public void createUser(String email, String firstName, String lastName) {
-        DataBaseService.getInstance().insertUser(email, firstName, lastName);
+    public void createUser(String email, String firstName, String lastName, String password) {
+        DataBaseService.getInstance().insertUser(email, firstName, lastName, password);
     }
 
     public List<User> getAllUsers() { return DataBaseService.getInstance().getAllUsers(); }

@@ -99,10 +99,10 @@ public class DataBaseService {
      * @param firstName First Name of the User.
      * @param lastName Last Name of the User.
      */
-    public void insertUser(String email, String firstName, String lastName){
-        Object[] toInsert = {email, firstName, lastName};
-        jdbcTemplate.update("INSERT INTO users(email, first_name, last_name) VALUES (?,?,?)",
-                toInsert);
+    public void insertUser(String email, String firstName, String lastName, String password){
+        Object[] toInsert = {email, firstName, lastName, password, true, "ROLE_USER"};
+        jdbcTemplate.update("INSERT INTO users(email, first_name, last_name, password, enabled, role) " +
+                        "VALUES (?,?,?,?,?,?)", toInsert);
         log.info("User '" + firstName + " " + lastName + "' with mail: '"
                 + email + "' inserted in Table 'users' with Id "
                 + getUserByEmail(email).getId() + " !");

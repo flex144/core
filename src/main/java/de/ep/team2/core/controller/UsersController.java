@@ -84,6 +84,7 @@ public class UsersController {
     public String createUser(@ModelAttribute("user") User user, Model model) {
         UserService userService = new UserService();
         String email = user.getEmail();
+        String password = user.getPassword();
         String errorMessage;
         if (email == null || email.isEmpty()) {
             errorMessage = "E-Mail Feld muss ausgefüllt werden!";
@@ -92,12 +93,12 @@ public class UsersController {
         } else if (userService.getUserByEmail(email) != null) {
             errorMessage = "E-Mail existiert bereits!";
         } else {
-            userService.createUser(email, null, null);
+            userService.createUser(email, null, null, password);
             User addedUser = userService.getUserByEmail(email);
             return String.format("redirect:/user/new", addedUser.getId());
         }
         model.addAttribute("errorMessage", errorMessage);
-        return new IndexController().login();
+        return "login_page";
     }
 
 

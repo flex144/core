@@ -20,26 +20,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     CustomAuthSuccessHandler customAuthSuccessHandler;
 
     @Autowired
-    UserDetailsService userDetailsService;
-
-
-    @Autowired
     DataSource dataSource;
 
+    /**
+     * Added for Development. Password Encoder that is actually not a PasswordEncoder #lol
+     * @return PasswordEncoder
+     */
     @SuppressWarnings("deprecation")
     @Bean
     public static NoOpPasswordEncoder passwordEncoder() {
         return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
     }
 
-
     @Autowired
     public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
-                .usersByUsernameQuery("Select email, password, enabled from users where email=?")
-                .authoritiesByUsernameQuery("select email, role from user_roles where email=?");
+                .usersByUsernameQuery("select email, password, enabled from users where email=?")
+                .authoritiesByUsernameQuery("select email, role from users where email=?");
     }
-
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception{
@@ -59,14 +57,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .logout()
                     .permitAll();
     }
-
-    /*
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .inMemoryAuthentication()
-                .withUser("user").password("user").roles("USER")
-                .and()
-                .withUser("admin").password("admin").roles("ADMIN");
-    }
-    */
 }

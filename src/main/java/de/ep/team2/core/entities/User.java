@@ -5,13 +5,14 @@ package de.ep.team2.core.entities;
  */
 public class User {
     private long id;
-    private String email, firstName, lastName;
+    private String email, firstName, lastName, password;
 
-    public User(long id,  String email, String firstName, String lastName) {
+    public User(long id,  String email, String firstName, String lastName, String password) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.password = password;
     }
 
     public User(){}
@@ -54,4 +55,8 @@ public class User {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    public String getPassword() { return password; }
+
+    public void setPassword(String password) {this.password = password; }
 }

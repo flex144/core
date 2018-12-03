@@ -50,7 +50,7 @@ public class CoreApplicationTests {
                 String.class)
                 .contains("Benutzer nicht gefunden!"));
         // refactor with restTemplate Post
-        DataBaseService.getInstance().insertUser("Test@gmail.com", null, null);
+        DataBaseService.getInstance().insertUser("Test@gmail.com", null, null, "123");
         assertTrue(restTemplate.getForObject("/users/Test@gmail.com",
                 String.class)
                 .contains("Test@gmail.com"));
