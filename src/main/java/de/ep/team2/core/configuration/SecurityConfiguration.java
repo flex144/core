@@ -47,12 +47,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/mods/**").hasRole("MOD")
                     .anyRequest().authenticated()
-                    .and()
-                .formLogin().successHandler(customAuthSuccessHandler)
+                .and()
+                    .authorizeRequests()
+                    .antMatchers("/resources/**").permitAll()
+                    .anyRequest().permitAll()
+                .and()
+                    .formLogin().successHandler(customAuthSuccessHandler)
                     .loginPage("/login")
                     .permitAll()
-                    .and()
-                .logout()
+                .and()
+                    .logout()
                     .permitAll();
     }
 
