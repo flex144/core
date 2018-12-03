@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Willkommen bei Core</title>
+
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <link href="../static/css/navbar.css"
+          th:href="@{css/navbar.css}" rel="stylesheet" media="screen">
+</head>
+<body>
+<div class="container" style="padding-top: 20px">
+    <!-- Standard-Navbar -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle"
+                        data-toggle="collapse" data-target="#navbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand">Core</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right" style="padding-left: 15px">
+                    <a th:href="@{/user/home}" type="button" class="btn btn-default navbar-btn">
+                        Direkt weiter zur Webseite <span class="glyphicon glyphicon-arrow-right"></span>
+                    </a>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2>Willkommen bei "Core"</h2>
+            &ensp;
+            <p style="font-size: 12pt">Allgemeine Infos zur Webseite</p>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>Trainingsplan erstellen</h4>
+        </div>
+        <div class="panel-body">
+            <p style="font-size: 16px">
+                Infos und Anleitung zur Erstellung eines eigenen Trainingsplans mit Beispiel-Screenshots
+            </p>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>Mit der Webseite trainieren</h4>
+        </div>
+        <div class="panel-body">
+            <p style="font-size: 16px">
+                Infos und Anleitung zum Trainieren mit der Webseite mit Beispiel-Screenshots und Erklärungen
+            </p>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>Weitere Infos</h4>
+        </div>
+        <div class="panel-body">
+            <p style="font-size: 16px">
+                Weitere Infos bla bla bla....
+            </p>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-9"></div>
+                <div class="col-md-3">
+                    <a th:href="@{/user/home}" type="button" class="btn btn-default btn-block">
+                        Weiter zur Webseite <span class="glyphicon glyphicon-arrow-right"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
