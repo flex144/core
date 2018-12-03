@@ -4,6 +4,7 @@ import de.ep.team2.core.service.DataBaseService;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Initiates the tables and fills it with example data.
@@ -27,10 +28,15 @@ public class DataInit {
         jdbcTemplate.execute("CREATE TABLE users(" +
                 "id SERIAL NOT NULL, email VARCHAR(255) NOT NULL," +
                 " first_name VARCHAR(255), last_name VARCHAR(255), PRIMARY KEY(email) )");
-        jdbcTemplate.execute("DROP TABLE IF EXISTS exercises");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS exercises CASCADE ");
         jdbcTemplate.execute("CREATE TABLE exercises(" +
                 "id SERIAL NOT NULL PRIMARY KEY, name VARCHAR(255) NOT NULL UNIQUE," +
-                " description VARCHAR(255), img_path VARCHAR(400))");
+                " description VARCHAR(255))");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS images");
+        jdbcTemplate.execute("CREATE TABLE images(" +
+                "exercise integer references exercises not null," +
+                "path varchar(400) PRIMARY KEY," +
+                "img_type varchar(10) NOT NULL)");
     }
 
     private void fillUsers() {
@@ -53,7 +59,9 @@ public class DataInit {
     }
 
     private void fillExercises() {
-        DataBaseService.getInstance().insertExercise("Bankdrücken", "Drücke die Bank!", "/images/Bankdrücken/test1");
+        List<String[]> paths = new LinkedList<>();
+        paths.add(new String[]{"/images/Bankdrücken/test1", "other"});
+        DataBaseService.getInstance().insertExercise("Bankdrücken", "Drücke die Bank!", paths);
         DataBaseService.getInstance().insertExercise("Rudern", null, null);
     }
 }

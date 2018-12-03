@@ -9,6 +9,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.LinkedList;
+
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -68,7 +70,9 @@ public class CoreApplicationUnitTests {
     public void addExercise() {
         DataBaseService db = DataBaseService.getInstance();
         assertTrue(db.getExerciseListByName("HalloTest1234567").isEmpty());
-        db.insertExercise("HalloTest1234567","Test Description","Test/Test");
+        LinkedList<String[]> test = new LinkedList<>();
+        test.add(new String[]{"Test/Test","other"});
+        db.insertExercise("HalloTest1234567","Test Description", test);
         assertTrue(db.getExerciseListByName("HalloTest1234567").toString()
                 .contains("HalloTest1234567"));
         db.deleteExerciseById(db.getExerciseListByName("HalloTest1234567").get(0).getId());
@@ -81,8 +85,10 @@ public class CoreApplicationUnitTests {
     public void insertSameExercise() {
         expectedEx.expect(RuntimeException.class);
         expectedEx.expectMessage("Exercise name already in use");
+        LinkedList<String[]> test = new LinkedList<>();
+        test.add(new String[]{"Test/Test","other"});
         DataBaseService.getInstance().insertExercise(
-                "Bankdrücken","Test for Illegal Argument","Test/Test");
+                "Bankdrücken","Test for Illegal Argument",test);
     }
 
     @Test

@@ -63,14 +63,6 @@
                         <label for="videoLink1">Erklärungsvideos: (Optional)</label>
                         <input  type="url" class="form-control" id="videoLink1"
                                 placeholder="Hier Link zu einem Erklärungsvideo einfügen...">
-                        <!--
-                        <input  type="url" class="form-control" id="videoLink2"
-                                placeholder="Hier Link zu einem weiteren Erklärungsvideo einfügen...">
-                        <input  type="url" class="form-control" id="videoLink3"
-                                placeholder="Hier Link zu einem weiteren Erklärungsvideo einfügen...">
-                        -->
-                        <button type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-plus-sign"></span> Zusätzlicher Link</button>
                     </div>
                 </div>
             </div>
@@ -78,8 +70,17 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="imageInput">Bild hochladen (Optional)</label>
-                        <input  type="file" name="image" class="form-control" id="imageInput">
+                        <label for="imageInput1">Muskelbild hochladen (Optional)</label>
+                        <input  type="file" name="muscleImage" class="form-control" id="imageInput1" multiple>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="imageInput2">Anderes Bild hochladen (Optional)</label>
+                        <input  type="file" name="otherImage" class="form-control" id="imageInput2" multiple>
                     </div>
                 </div>
             </div>

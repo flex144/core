@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -149,26 +150,35 @@ public class DataBaseService {
     /**
      * Inserts a new Exercise into the Table.
      * The name has to be Unique.
+     * Also saves the images of the exercise in the table images.
      *
      * @param name Unique name of the Exercise
      * @param description Optional Description of the Exercise.
-     * @param imgPath Optional Path to the img of the Exercise.
+     * @param imgPaths Optional List of the Paths to the images
+     *                of the Exercise with type(muscle , other).
      * @return The ID of the inserted exercise.
      */
     public Integer insertExercise(String name, String description,
-                               String imgPath) {
+                               List<String[]> imgPaths) {
         if (exerciseNameUnique(name)) {
-            String[] toInsert = {name, description, imgPath};
-            jdbcTemplate.update("INSERT INTO exercises(name, description, " +
-                            "img_path) VALUES (?,?,?)",
+            String[] toInsert = {name, description};
+            jdbcTemplate.update("INSERT INTO exercises(name, description) VALUES (?,?)",
                     toInsert);
-            List<Integer> id = jdbcTemplate.query("select currval" +
+            Integer id = jdbcTemplate.query("select currval" +
                             "(pg_get_serial_sequence('exercises','id'));",
-                    (resultSet, i) -> resultSet.getInt(i + 1));
+                    (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+            if (imgPaths != null) {
+                for (String[] s : imgPaths) {
+                    Object[] insert = {id, s[0], s[1]};
+                    jdbcTemplate.update(
+                            "insert into images(exercise, path, img_type) values (?,?,?)",
+                            insert);
+                }
+            }
             log.info("Exercise '" + name + "' inserted in Table 'exercises' with " +
                     "Id "
-                    + id.get(0) + " !");
-            return id.get(0);
+                    + id + " !");
+            return id;
         } else {
             throw new IllegalArgumentException("Exercise name already in use");
         }
@@ -185,8 +195,8 @@ public class DataBaseService {
      */
     public List<Exercise> getAllExercises() {
         String sql = "SELECT * FROM exercises";
-        return jdbcTemplate.query(sql,
-                new BeanPropertyRowMapper<>(Exercise.class));
+        return addImagesToBean(new LinkedList<>(jdbcTemplate.query(sql,
+                new BeanPropertyRowMapper<>(Exercise.class))));
     }
 
     /**
@@ -203,9 +213,11 @@ public class DataBaseService {
         if (toReturn.isEmpty()) {
             return null;
         } else {
-            return toReturn.getFirst();
+            return addImagesToBean(toReturn).getFirst();
         }
     }
+
+
 
     /**
      * Searches for an Exercise with this exact name.
@@ -221,7 +233,7 @@ public class DataBaseService {
         if (toReturn.isEmpty()) {
             return null;
         } else {
-            return toReturn.getFirst();
+            return addImagesToBean(toReturn).getFirst();
         }
     }
 
@@ -233,6 +245,8 @@ public class DataBaseService {
     public void deleteExerciseById(int id) {
         Exercise toDelete = getExerciseById(id);
         if (toDelete != null) {
+            jdbcTemplate.update("DELETE FROM images WHERE exercise = ?",
+                    new Integer[]{id});
             jdbcTemplate.update("DELETE FROM exercises WHERE id = ?",
                     new Integer[]{id});
             log.info("Exercise '" + toDelete.getName() + "' with ID: '"
@@ -255,8 +269,35 @@ public class DataBaseService {
             LinkedList<Exercise> toReturn = new LinkedList<>(jdbcTemplate.query(
                     sql,
                     new BeanPropertyRowMapper<>(Exercise.class)));
-            return toReturn;
+            return addImagesToBean(toReturn);
         }
         return null;
+    }
+
+    /**
+     * Used to create Exercise objects when retrieving them from the database.
+     * Adds all Imagepaths of all Exercises in the List
+     * to the Exercise object by running additional sql queries.
+     *
+     * @param exercises List where the images have to be added.
+     * @return List of exercises with its img paths attached.
+     */
+    private LinkedList<Exercise> addImagesToBean(LinkedList<Exercise> exercises) {
+        for (Exercise exercise : exercises) {
+            LinkedList<String[]> paths = new LinkedList<>(jdbcTemplate.query(
+                    "SELECT path, img_type FROM images WHERE exercise = ?",
+                    new Integer[]{exercise.getId()},
+                    (rs, rowNum) -> new String[]{rs.getString("path"), rs.getString("img_type")}));
+            if (!paths.isEmpty()) {
+                for (String[] s : paths) {
+                   if (s[1].equals("muscle")) {
+                       exercise.addMuscleImgPath(s[0]);
+                   } else {
+                       exercise.addOtherImgPath(s[0]);
+                   }
+                }
+            }
+        }
+        return exercises;
     }
 }

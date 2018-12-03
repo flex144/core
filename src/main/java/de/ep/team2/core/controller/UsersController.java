@@ -77,12 +77,12 @@ public class UsersController {
      * so thymeleaf can display it.
      *
      * @param user  User to add to the DB.
-     * @param model Model thymeleaf uses.
+     * @param redirectAttributes Used to redirect attributes.
      * @return at success redirect to the 'user_data' page. If something went
      * wrong goes back to the login page(returns "login_page".
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String createUser(@ModelAttribute("user") User user, Model model
+    public String createUser(@ModelAttribute("user") User user
             , RedirectAttributes redirectAttributes) {
         UserService userService = new UserService();
         String email = user.getEmail();
@@ -111,7 +111,7 @@ public class UsersController {
      * @param toCheck String to check.
      * @return true if String is an Integer, otherwise false.
      */
-    private boolean isInteger(String toCheck) {
+    static boolean isInteger(String toCheck) {
         try {
             Integer.parseInt(toCheck);
         } catch (NumberFormatException numberFormatException) {
