@@ -97,7 +97,7 @@ public class UsersController {
             return String.format("redirect:/user/new", addedUser.getId());
         }
         model.addAttribute("errorMessage", errorMessage);
-        return new IndexController().login(model);
+        return new IndexController().login();
     }
 
 
