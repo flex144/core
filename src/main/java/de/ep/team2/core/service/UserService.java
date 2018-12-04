@@ -4,7 +4,6 @@ import de.ep.team2.core.entities.User;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

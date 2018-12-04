@@ -57,7 +57,6 @@
             <artifactId>jquery</artifactId>
             <version>3.3.1</version>
         </dependency>
-
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -73,7 +72,6 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -81,6 +79,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- Uncomment to access the uploaded images without server restart;
+                Server must be started with maven goal execute "spring-boot:run"
+                when this config is enabled.
+                The server can't be started with the IDEs run function now.
+                After disabling this config, the server has to be started
+                one more time with the maven goal.
+                Then the server can be started in the IDE again.
+				<configuration>
+					<addResources>true</addResources>
+				</configuration>
+				-->
 			</plugin>
 		</plugins>
 	</build>

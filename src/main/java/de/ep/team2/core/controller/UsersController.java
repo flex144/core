@@ -5,6 +5,7 @@ import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Handles Http-Requests with the path '/users'.
@@ -75,13 +76,14 @@ public class UsersController {
      * If an error occurs it adds a fitting error message to the model
      * so thymeleaf can display it.
      *
-     * @param user User to add to the DB.
-     * @param model Model thymeleaf uses.
+     * @param user  User to add to the DB.
+     * @param redirectAttributes Used to redirect attributes.
      * @return at success redirect to the 'user_data' page. If something went
      * wrong goes back to the login page(returns "login_page".
      */
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public String createUser(@ModelAttribute("user") User user, Model model) {
+    public String createUser(@ModelAttribute("user") User user
+            , RedirectAttributes redirectAttributes) {
         UserService userService = new UserService();
         String email = user.getEmail();
         String errorMessage;
@@ -92,14 +94,16 @@ public class UsersController {
         } else if (userService.getUserByEmail(email) != null) {
             errorMessage = "E-Mail existiert bereits!";
         } else {
-            userService.createUser(email, null, null);
-            User addedUser = userService.getUserByEmail(email);
-            return String.format("redirect:/user/new", addedUser.getId());
+            try {
+                userService.createUser(email, null, null);
+                return "redirect:/user/new";
+            } catch (IllegalArgumentException exception) {
+                errorMessage = "E-Mail existiert bereits!";
+            }
         }
-        model.addAttribute("errorMessage", errorMessage);
-        return new IndexController().login(model);
+        redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+        return "redirect:/login";
     }
-
 
     /**
      * Checks if the String is an Integer.
@@ -107,7 +111,7 @@ public class UsersController {
      * @param toCheck String to check.
      * @return true if String is an Integer, otherwise false.
      */
-    private boolean isInteger(String toCheck) {
+    static boolean isInteger(String toCheck) {
         try {
             Integer.parseInt(toCheck);
         } catch (NumberFormatException numberFormatException) {

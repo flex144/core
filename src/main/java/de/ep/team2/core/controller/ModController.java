@@ -1,5 +1,6 @@
 package de.ep.team2.core.controller;
 
+import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,7 +25,8 @@ public class ModController {
     }
 
     @RequestMapping(value = {"/createexercise"}, method = RequestMethod.GET)
-    public String createExercise() {
+    public String createExercise(Model model) {
+        model.addAttribute("exercise", new Exercise());
         return "mod_create_exercise";
     }
 
