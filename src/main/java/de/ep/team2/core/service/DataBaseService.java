@@ -164,7 +164,7 @@ public class DataBaseService {
     public Integer insertExercise(String name, String description, WeightType weightType,
                                String videoLink, List<String[]> imgPaths) {
         if (exerciseNameUnique(name)) {
-            String[] toInsert = {name, description, weightType.toString(), videoLink};
+            String[] toInsert = {name.toLowerCase(), description, weightType.toString(), videoLink};
             jdbcTemplate.update(
                     "INSERT INTO exercises(name, description, weight_type, video_link)" +
                             " VALUES (?,?,?,?)", toInsert);
@@ -189,7 +189,7 @@ public class DataBaseService {
     }
 
     boolean exerciseNameUnique(String name) {
-        return getExerciseByName(name) == null;
+        return getExerciseByName(name.toLowerCase()) == null;
     }
 
     /**
@@ -230,7 +230,7 @@ public class DataBaseService {
     public Exercise getExerciseByName(String name) {
         LinkedList<Exercise> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM exercises WHERE exercises.name = ?",
-                new String[]{name},
+                new String[]{name.toLowerCase()},
                 new BeanPropertyRowMapper<>(Exercise.class)));
         if (toReturn.isEmpty()) {
             return null;
@@ -267,7 +267,7 @@ public class DataBaseService {
     public List<Exercise> getExerciseListByName(String name) {
         if (name != null && !name.isEmpty()) {
             String sql = String.format("SELECT * FROM exercises WHERE name " +
-                    "LIKE '%%%s%%'", name);
+                    "LIKE '%%%s%%'", name.toLowerCase());
             LinkedList<Exercise> toReturn = new LinkedList<>(jdbcTemplate.query(
                     sql,
                     new BeanPropertyRowMapper<>(Exercise.class)));

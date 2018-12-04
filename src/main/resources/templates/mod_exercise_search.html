@@ -12,7 +12,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!-- Imports for Bootstrap table -->
+    <!---
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
+    Removed Bootstrap table js, otherwise linking a row is not working.
+    --->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.css"></script>
 
     <div th:include="/fragments/navbar :: navbar_style"></div>
@@ -21,17 +24,20 @@
 <body>
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
-<form class="form-horizontal">
+<form class="form-horizontal" th:action="@{/mods/searchexercise}" method="post" id="searchForm">
     <div class="container">
         <div class="jumbotron">
-            <h2>Liste aller verfügbaren Trainingseinheiten</h2>
+            <h2>Liste aller verfügbaren Übungen</h2>
             <br>
             <br>
-            <p style="font-size: 12pt">Gib in die folgende Eingabezeile ein
-                beliebiges Attribut ein um
-                eine bestimmte Übung zu finden</p>
-            <input class="form-control" id="myInput" type="text"
+            <p style="font-size: 12pt">Gib in die Eingabezeile den Namen oder einen Teil davon
+                ein um passende Übungen zu finden!</p>
+            <input class="form-control" id="myInput" type="text" name="nameUebung"
                    placeholder="Suchwort eingeben..">
+            <p style="font-size: 25px; margin: 2%" th:if="${message}" th:utext="${message}"></p>
+            <a type="button" class="btn btn-success btn-medium" id="submitForm" style="margin-top: 2%;
+                   margin-bottom: 2%">
+                <span class="glyphicon glyphicon-search"></span> Suchen</a>
             <br>
             <a th:href="@{/mods/createexercise}" type="button"
                class="btn btn-success btn-medium">
@@ -50,41 +56,17 @@
                 <th data-field="exerciseName" data-sortable="true">
                     <span class="glyphicon glyphicon-sort"></span> Übungsname
                 </th>
-                <th data-field="author" data-sortable="true">
-                    <span class="glyphicon glyphicon-sort"></span> Autor
+                <th data-field="description" data-sortable="true">
+                    <span class="glyphicon glyphicon-sort"></span> Beschreibung
                 </th>
             </tr>
             </thead>
             <tbody id="myTable">
-            <tr>
-                <td>001</td>
-                <td>Front-Curl</td>
-                <td>Paul Friedrich</td>
-            </tr>
-            <tr>
-                <td>002</td>
-                <td>Leg-Press</td>
-                <td>Martin Maier</td>
-            </tr>
-            <tr>
-                <td>006</td>
-                <td>Klimmzüge</td>
-                <td>Paul Friedrich</td>
-            </tr>
-            <tr>
-                <td>008</td>
-                <td>Bench-Press</td>
-                <td>Paul Friedrich</td>
-            </tr>
-            <tr>
-                <td>011</td>
-                <td>Back-Curl</td>
-                <td>Paul Friedrich</td>
-            </tr>
-            <tr>
-                <td>015</td>
-                <td>Leg-Press</td>
-                <td>Martin Maier</td>
+            <tr th:each="exercise : ${exercises}" style="cursor: pointer"
+                th:onclick="'javascript:rowClicked(\'' + ${exercise.getId()} + '\');'">
+                <td th:text="${exercise.getId()}"></td>
+                <td th:text="${exercise.getName()}"></td>
+                <td th:text="${exercise.getDescription()}"></td>
             </tr>
             </tbody>
         </table>
@@ -102,6 +84,18 @@
         });
     });
 </script>
+<!--- Script to link every row with the Exercise.
+--->
+<script>
+    function rowClicked(value) {
+        location.href = "/exercises/" + value;
+    }
+</script>
 
+<script>
+    document.getElementById("submitForm").onclick = function() {
+        document.getElementById("searchForm").submit();
+    }
+</script>
 </body>
 </html>
