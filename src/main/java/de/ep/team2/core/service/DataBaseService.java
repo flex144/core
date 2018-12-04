@@ -98,6 +98,7 @@ public class DataBaseService {
      * @param email Email of the User.
      * @param firstName First Name of the User.
      * @param lastName Last Name of the User.
+     * @param password Password, as Hash, of the User.
      */
     public void insertUser(String email, String firstName, String lastName, String password){
         Object[] toInsert = {email, firstName, lastName, password, true, "ROLE_USER"};
@@ -119,6 +120,18 @@ public class DataBaseService {
                     new Object[]{id});
             log.info("User '" + toDelete.getFirstName() + " " + toDelete.getLastName()
                     + "' with mail: '" + toDelete.getEmail() + "' deleted!");
+        }
+    }
+
+    /**
+     * Promotes a regular user to a moderator.
+     * @param id user to promote.
+     */
+    public void changeToMod(Integer id) {
+        User toChange = getUserById(id);
+        if (toChange != null) {
+            jdbcTemplate.update("UPDATE users SET role = 'ROLE_MOD' WHERE id = ?", new Object[]{id});
+            log.info("User '" + toChange.getFirstName() + " " + toChange.getLastName() + "' is now Mod!");
         }
     }
 }

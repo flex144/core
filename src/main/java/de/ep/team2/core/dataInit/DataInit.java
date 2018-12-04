@@ -1,8 +1,10 @@
 package de.ep.team2.core.dataInit;
 
 import de.ep.team2.core.service.DataBaseService;
+import de.ep.team2.core.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
+
 import java.util.LinkedList;
 
 /**
@@ -12,6 +14,7 @@ public class DataInit {
 
     private JdbcTemplate jdbcTemplate;
     private Logger log;
+    private UserService userService;
 
     public DataInit(JdbcTemplate jdbcTemplate, Logger log) {
         this.jdbcTemplate = jdbcTemplate;
@@ -26,7 +29,7 @@ public class DataInit {
         jdbcTemplate.execute("CREATE TABLE users(" +
                 "id SERIAL, email VARCHAR(255) NOT NULL ," +
                 " first_name VARCHAR(255), last_name VARCHAR(255) ," +
-                " password varchar(20) not null, " +
+                " password varchar(60) not null, " +
                 " enabled boolean not null default false, " +
                 " role varchar(20) not null," +
                 " primary key(email))");
@@ -34,10 +37,10 @@ public class DataInit {
 
     private void fillUsers() {
         LinkedList<String[]> initTestData = new LinkedList<>();
-        String[] timo = {"timo@gmail.com", "Timo", "Heinrich", "123"};
-        String[] alex = {"alex@gmail.com", "Alexander", "Reißig", "123"};
-        String[] felix = {"felix@gmail.com", "Felix", "Wilhelm", "123"};
-        String[] yannick = {"yannick@gmail.com", null, null, "123"};
+        String[] timo = {"timo@gmail.com", "Timo", "Heinrich", userService.encode("hello")};
+        String[] alex = {"alex@gmail.com", "Alexander", "Reißig", userService.encode("password")};
+        String[] felix = {"felix@gmail.com", "Felix", "Wilhelm", userService.encode("123")};
+        String[] yannick = {"yannick@gmail.com", null, null, userService.encode("123")};
         initTestData.add(timo);
         initTestData.add(alex);
         initTestData.add(felix);
@@ -45,5 +48,7 @@ public class DataInit {
         for (String[] o : initTestData) {
             DataBaseService.getInstance().insertUser(o[0], o[1], o[2], o[3]);
         }
+        DataBaseService.getInstance().changeToMod(3);
     }
+
 }
