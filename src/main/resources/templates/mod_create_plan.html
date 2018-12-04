@@ -19,6 +19,9 @@
         ul {
             list-style-type: none;
         }
+        textarea{
+            resize: none;
+        }
     </style>
 </head>
 
@@ -26,6 +29,7 @@
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
 <div class="container">
+    <!-- Jumbotron with information for the page and inputs for general data for the plan -->
     <div class="jumbotron">
         <h2>Erstelle eine neue Trainingsplanvorlage</h2>
         &ensp;
@@ -37,6 +41,7 @@
         <p style="font-size: 12pt">Wenn du am Ende mit deinem Plan zufrieden bist,
             speichere diesen mit einem Klick auf den Button <mark>"Plan speichern"</mark>.</p>
         <br><br>
+        <!-- Input fields for general data of the plan -->
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
@@ -59,13 +64,15 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label for="inputUnit">Trainingseinheiten: </label>
-                    <button type="button" class="btn decrement-button" onclick="decrement(); updateTeInputs()">
+                    <button type="button" class="btn decrement-button" id="btnDecrement"
+                            onclick="decrement(); updateTeInputs()">
                         <span class="glyphicon glyphicon-minus"></span>
                     </button>
                     <input type="text" name="trainingUnits" id="inputUnit" value="6"
                            style="width: 30px; border: 3px solid darkgray; text-align: center;
                            font-weight: bold" disabled>
-                    <button type="button" class="btn increment-button" onclick="increment(); updateTeInputs()">
+                    <button type="button" class="btn increment-button" id="btnIncrement"
+                            onclick="increment(); updateTeInputs()">
                         <span class="glyphicon glyphicon-plus"></span>
                     </button>
                 </div>
@@ -73,8 +80,9 @@
         </div>
     </div>
 
-    <!-- Verkleinern und zentrieren: <div class="col-md-1"></div>-->
+    <!-- panel with form to customize an exercise, add it to the plan and create a new exercise -->
     <div class="panel panel-default">
+        <!-- Panel header with title and buttons to add or create exercises and to reset the form -->
         <div class="panel-heading">
             <div class="row">
                 <div class="col-md-6" style="margin-top: 6px">
@@ -105,6 +113,7 @@
         <!-- panel with form to customize and add an exercise to the plan -->
         <div class="panel-body">
             <div class="col-md-12">
+                <!-- table for input forms to customize an exercise -->
                 <table class="table table-bordered table-condensed" border="1" width="100%">
                     <colgroup>
                         <col width="5%">
@@ -121,7 +130,7 @@
                             <th>Übung</th>
                             <th>Ausführung</th>
                             <th>TE</th>
-                            <th>Last/Wiederholungen/Sätze</th>
+                            <th>Sätze - Wiederholungen</th>
                             <th>Tempo</th>
                             <th>Pause</th>
                         </tr>
@@ -181,6 +190,7 @@
         </div>
         <div class="panel-body">
             <div class="col-md-12">
+                <!-- Table to list the added exercises in the final plan -->
                 <table class="table table-bordered table-condensed" border="1" width="100%">
                     <colgroup>
                         <col width="5%">
@@ -215,11 +225,13 @@
                     </tbody>
                 </table>
             </div>
-
+            <!-- Buttons for preview of the plan and to save it -->
             <div class="row">
                 <div class="col-md-8"></div>
                 <div class="col-md-2">
-                    <button type="button" id="previewPlan" class="btn btn-primary btn-block">
+                    <button type="button" id="previewPlan" class="btn btn-primary btn-block"
+                        data-toggle="modal" data-target="#modalViewFinalPlan"
+                        onclick="fillPlan()">
                         <span class="glyphicon glyphicon-blackboard"></span>
                         Planvorschau
                     </button>
@@ -253,7 +265,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="form-group">
                         <div class="col-md-6">
@@ -271,7 +282,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
@@ -284,7 +294,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
@@ -294,7 +303,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
@@ -317,41 +325,368 @@
 <div class="modal fade" id="modalConfirmResetForm">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <!-- body (form) -->
             <div class="modal-body">
-                <form>
-                    <div class="panel panel-warning">
-                        <div class="panel-heading">
-                            <h4>Zurücksetzen des Formulars bestätigen</h4>
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h4>Zurücksetzen des Formulars bestätigen</h4>
+                    </div>
+                    <!-- Panel body with warning text and buttons to confirm/return -->
+                    <div class="panel-body">
+                        <p style="font-size: 16px">
+                            Wollen sie das Eingabeformular wirklich zurücksetzen?
+                        </p>
+                        <p class="text-danger" style="font-size: 12px">
+                            Nicht gespeichterte Daten werden verworfen!
+                        </p>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-warning btn-block"
+                                        id="buttonResetFormular" onclick="resetForm()"
+                                        data-dismiss="modal">
+                                    Zurücksetzen
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-default btn-block"
+                                        data-dismiss="modal">
+                                    Abbrechen
+                                </button>
+                            </div>
+                            <div class="col-md-2"></div>
                         </div>
-                        <div class="panel-body">
-                            <p style="font-size: 16px">
-                                Wollen sie das Eingabeformular wirklich zurücksetzen?
-                            </p>
-                            <p class="text-danger" style="font-size: 12px">
-                                Nicht gespeichterte Daten werden verworfen!
-                            </p>
-                            <br>
-                            <div class="row">
-                                <div class="col-md-2"></div>
-                                <div class="col-md-4">
-                                    <button type="button" class="btn btn-warning btn-block"
-                                            id="buttonResetFormular" onclick="resetForm()"
-                                            data-dismiss="modal">
-                                        Zurücksetzen
-                                    </button>
-                                </div>
-                                <div class="col-md-4">
-                                    <button type="button" class="btn btn-default btn-block"
-                                            data-dismiss="modal">
-                                        Abbrechen
-                                    </button>
-                                </div>
-                                <div class="col-md-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal to view the details of an example exercise -->
+<div class="modal fade" id="modalDetailsExercise">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4>Detailansicht</h4>
+                    </div>
+                    <!-- Panel body with an example exercise to show the detail view -->
+                    <div class="panel-body">
+                        <div class="col-md-12">
+                            <table class="table table-bordered table-condensed" border="1" width="100%">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="15%">
+                                    <col width="30%">
+                                    <col width="7%">
+                                    <col width="23%">
+                                    <col width="5%">
+                                    <col width="5%">
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>Ordnung</th>
+                                    <th>Übung</th>
+                                    <th>Ausführung</th>
+                                    <th>TE</th>
+                                    <th>Sätze - Wiederholungen</th>
+                                    <th>Tempo</th>
+                                    <th>Pause</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <input id="viewOrder" type="text" class="form-control"
+                                               value="A1" disabled/>
+                                    </td>
+                                    <td>
+                                        <input id="viewExercise" type="text" class="form-control"
+                                               value="Liegestütze" disabled/>
+                                    </td>
+                                    <td>
+                                        <textarea id="viewDescription" class="form-control"
+                                                  rows="4" disabled>Auf geraden Rücken achten!
+                                        </textarea>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="viewCounterTE" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="viewSetInputs" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="viewTempoInputs" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="viewPauseInputs" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Panel footer with Buttons to interact with the shown exercise -->
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-danger btn-block"
+                                        id="deleteCurrentExercise" data-dismiss="modal">
+                                    Übung löschen
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-primary btn-block"
+                                        id="editCurrentExercise" data-dismiss="modal">
+                                    Übung bearbeiten
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-default btn-block"
+                                        data-dismiss="modal">
+                                    Schließen
+                                </button>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal to view the details of an example plan -->
+<div class="modal fade" id="modalViewFinalPlan">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="panel panel-success">
+                    <!-- Panel header with title and general date for the final plan -->
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <h4>Planvorschau</h4>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" type="text" id="viewPlanName"
+                                       value="Planname" disabled/>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" type="text" id="viewPlanFocus"
+                                       value="Muskelfokus" disabled/>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" type="text" id="viewPlanTE"
+                                       value="AnzahlTE" disabled/>
                             </div>
                         </div>
                     </div>
-                </form>
+                    <!-- Panel body containing 3 example exercises for an example plan -->
+                    <div class="panel-body">
+                        <div class="col-md-12">
+                            <table class="table table-bordered table-condensed" border="1" width="100%">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="15%">
+                                    <col width="30%">
+                                    <col width="7%">
+                                    <col width="23%">
+                                    <col width="5%">
+                                    <col width="5%">
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>Ordnung</th>
+                                    <th>Übung</th>
+                                    <th>Ausführung</th>
+                                    <th>TE</th>
+                                    <th>Sätze - Wiederholungen</th>
+                                    <th>Tempo</th>
+                                    <th>Pause</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control"
+                                               value="A1" disabled/>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control"
+                                               value="Ausfallschritte" disabled/>
+                                    </td>
+                                    <td>
+                                        <textarea class="form-control"
+                                                  rows="4" disabled>Rückwärts, am Platz, alternierend, Kurzhantel
+                                        </textarea>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="plan1CounterTE" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="plan1SetInputs" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="plan1TempoInputs" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="plan1PauseInputs" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered table-condensed" border="1" width="100%">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="15%">
+                                    <col width="30%">
+                                    <col width="7%">
+                                    <col width="23%">
+                                    <col width="5%">
+                                    <col width="5%">
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>Ordnung</th>
+                                    <th>Übung</th>
+                                    <th>Ausführung</th>
+                                    <th>TE</th>
+                                    <th>Sätze - Wiederholungen</th>
+                                    <th>Tempo</th>
+                                    <th>Pause</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control"
+                                               value="A2" disabled/>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control"
+                                               value="Leg-Curl" disabled/>
+                                    </td>
+                                    <td>
+                                        <textarea class="form-control"
+                                                  rows="4" disabled>Fußspitze nach innen
+                                        </textarea>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="plan2CounterTE" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="plan2SetInputs" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="plan2TempoInputs" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="plan2PauseInputs" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-bordered table-condensed" border="1" width="100%">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="15%">
+                                    <col width="30%">
+                                    <col width="7%">
+                                    <col width="23%">
+                                    <col width="5%">
+                                    <col width="5%">
+                                </colgroup>
+                                <thead>
+                                <tr>
+                                    <th>Ordnung</th>
+                                    <th>Übung</th>
+                                    <th>Ausführung</th>
+                                    <th>TE</th>
+                                    <th>Sätze - Wiederholungen</th>
+                                    <th>Tempo</th>
+                                    <th>Pause</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control"
+                                               value="B1" disabled/>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control"
+                                               value="Kniebeuge" disabled/>
+                                    </td>
+                                    <td>
+                                        <textarea class="form-control"
+                                                  rows="4" disabled>Stange hinten
+                                        </textarea>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="plan3CounterTE" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="plan3SetInputs" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="plan3TempoInputs" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <ul id="plan3PauseInputs" class="list-group"></ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Panel footer with button to close the modal positioned on the right -->
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-default btn-block"
+                                        data-dismiss="modal">
+                                    Schließen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -364,16 +699,24 @@
      */
     $(document).ready(function(){
         $('.launch-modal').click(function(){
+            // launch the modalExerciseForm as static modal to avoid closing by accident
             $('#modalExerciseForm').modal({
                 backdrop: 'static'
             });
         });
     });
 
+    /**
+     * Function to add function to button addExercise in order to add an exercise
+     * to the final plan. After adding the exercise it calls the function resetForm()
+     * to reset the input fields and calls the function checkPlanEmpty().
+     */
     $(document).ready(function(){
         $('#addExercise').click(function(){
+            // Get the entered values of the exercise form
             var newExerciseOrder = $('#inputOrder').val();
             var newExerciseName = $('#inputExercise').val();
+            // Create new list element in final plan containing the entered values and a button to view details
             $('#planExerciseOrder').append(
                 '<li style="padding-top: .3em; padding-bottom: .3em">' +
                 '<input type="text" value="'+newExerciseOrder+'" class="form-control" disabled>' + '</li>');
@@ -382,16 +725,27 @@
                 '<input type="text" value="'+newExerciseName+'" class="form-control" disabled>' + '</li>');
             $('#planButtonExerciseDetails').append(
                 '<li style="padding-top: .3em; padding-bottom: .3em">' +
-                '<input type="button" value="Details" class="btn btn-primary btn-block">' + '</li>');
+                '<button type="button" class="btn btn-primary btn-block" data-toggle="modal" ' +
+                'data-target="#modalDetailsExercise" onclick="getExerciseDetails()">' +
+                '<span class="glyphicon glyphicon-zoom-in"></span>' + ' Details' + '</button>' + '</li>');
+            // Reset the exercise form after adding the contents to the final plan
             resetForm();
+            // Call checkPlanEmpty to disable the TE buttons after adding an element with fixed TE
+            checkPlanEmpty();
         });
     });
 
+    /**
+     * Temporary function, that adds function to delete all elements in the final plan
+     * and call the function checkPlanEmpty() to the button savePlan
+     */
     $(document).ready(function () {
         $('#savePlan').click(function () {
+            // Create a reference on the lists in the final plan
             var addedOrders = document.getElementById("planExerciseOrder");
             var addedExercises = document.getElementById("planExerciseName");
             var addedDetailButtons = document.getElementById("planButtonExerciseDetails");
+            // Remove all list elements in the final plan
             while (addedOrders.hasChildNodes()) {
                 addedOrders.removeChild(addedOrders.lastChild);
             }
@@ -401,18 +755,31 @@
             while (addedDetailButtons.hasChildNodes()) {
                 addedDetailButtons.removeChild(addedDetailButtons.lastChild);
             }
+            // call checkPlanEmpty to reset the TE buttons
+            checkPlanEmpty()
         })
     })
 
+    /**
+     * Execute function updateTeInputs when document is loaded
+     */
     $(document).ready(updateTeInputs())
 
+    /**
+     * Deletes current input fields in the exercise form and creates new fields according to
+     * the amount of entered TE´s
+     */
     function updateTeInputs() {
+        // Get the amount of TE´s
         var number = document.getElementById("inputUnit").value;
+
+        // Get data lists and store them in variables for further manipulation
         var te = document.getElementById("counterTE");
         var sets = document.getElementById("setInputs");
         var tempos = document.getElementById("tempoInputs");
         var pauses = document.getElementById("pauseInputs");
 
+        // loops to reset the list with input fields in the exercise form
         while (te.hasChildNodes()) {
             te.removeChild(te.lastChild);
         }
@@ -425,11 +792,16 @@
         while (pauses.hasChildNodes()) {
             pauses.removeChild(pauses.lastChild);
         }
+
+        // loop to add example input fields to the TE/Set/Tempo/Pause columns in the exercise form
         for (var i=0;i<number;i++){
+            // create unique id´s
             var counterTEId = "counter" + i;
             var setInputId = "setInput" + i;
             var tempoInputId = "tempoInput" + i;
             var pauseInputId = "pauseInput" + i;
+
+            // Add the input fields to the lists
             $('#counterTE').append(
                 '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
             $('#setInputs').append(
@@ -441,12 +813,38 @@
         }
     }
 
+    /**
+     * Function to check if the final plan contains exercises.
+     * If yes: disable the buttons to change the TE-amount
+     * If not: enable the buttons to change the TE-amount
+     */
+    function checkPlanEmpty() {
+        // Get amount of TE´s
+        var addedExercises = document.getElementById("planExerciseName");
+        // Check if the final plan has contains exercises
+        if (addedExercises.hasChildNodes()) {
+            // Disable the TE buttons
+            $('#btnDecrement').prop('disabled', true);
+            $('#btnIncrement').prop('disabled', true);
+        } else {
+            // Enable the TE buttons
+            $('#btnDecrement').prop('disabled', false);
+            $('#btnIncrement').prop('disabled', false);
+        }
+    }
+
+    /**
+     * Function to reset the input form for an exercise to add to the plan
+     */
     function resetForm() {
+        // Get amount of TE´s
         var number = document.getElementById("inputUnit").value;
+        // Empty the content of the input fields
         $('#inputOrder').val('');
         $('#inputExercise').val('');
         $('#inputDescription').val('');
 
+        // Loop to empty the dynamically created input fields
         for (var i=0;i<number;i++){
             var currentSetInput = "#setInput" + i;
             var currentTempoInput = "#tempoInput" + i;
@@ -457,27 +855,207 @@
         }
     }
 
+    /**
+     * Function to increase the TE-counter and alert if TE climbs over 15
+     */
     function increment() {
+        // Get the current amount of TE´s
         var oldValue = document.getElementById("inputUnit").value;
+        // Test if the top limit is reached
         if (oldValue < 15) {
+            // Increase the value by 1
             var newValue = parseFloat(oldValue) + 1;
         } else {
+            // Alert to inform the user that the top limit is reached
             alert("Ein Trainingsplan kann nicht aus mehr als 15 Trainingseinheiten bestehen");
             var newValue = 15;
         }
+        // Write new TE amount in the input field
         document.getElementById("inputUnit").value = newValue;
     }
 
+    /**
+     * Function to decrease the TE-counter and alert if TE falls under 3
+     */
     function decrement() {
+        // Get the current amount of TE´s
         var oldValue = document.getElementById("inputUnit").value;
-        var newValue;
+        // Test if the bottom limit is reached
         if (oldValue > 3) {
-            newValue = parseFloat(oldValue) - 1;
+            // Decrease the value by 1
+            var newValue = parseFloat(oldValue) - 1;
         } else {
+            // Alert to inform the user that the bottom limit is reached
             alert("Ein Trainingsplan kann nicht aus weniger als 3 Trainingseinheiten bestehen");
-            newValue = 3;
+            var newValue = 3;
         }
+        // Write new TE amount in the input field
         document.getElementById("inputUnit").value = newValue;
+    }
+
+    /**
+     * Temporary function to add example-content to modal to view exercise details
+     */
+    function getExerciseDetails() {
+        // Get amount of TE´s
+        var number = document.getElementById("inputUnit").value;
+
+        // Get data lists and store them in variables for further manipulation
+        var te = document.getElementById("viewCounterTE");
+        var sets = document.getElementById("viewSetInputs");
+        var tempos = document.getElementById("viewTempoInputs");
+        var pauses = document.getElementById("viewPauseInputs");
+
+        // loops to reset the example data in the viewExercise table
+        while (te.hasChildNodes()) {
+            te.removeChild(te.lastChild);
+        }
+        while (sets.hasChildNodes()) {
+            sets.removeChild(sets.lastChild);
+        }
+        while (tempos.hasChildNodes()) {
+            tempos.removeChild(tempos.lastChild);
+        }
+        while (pauses.hasChildNodes()) {
+            pauses.removeChild(pauses.lastChild);
+        }
+
+        // loop to add example values to the TE/Set/Tempo/Pause columns in viewExercise table
+        for (var i=0;i<number;i++){
+            // create unique id´s
+            var counterTEId = "viewCounter" + i;
+            var setInputId = "viewSetInput" + i;
+            var tempoInputId = "viewTempoInput" + i;
+            var pauseInputId = "viewPauseInput" + i;
+
+            // Add the examples to the lists
+            $('#viewCounterTE').append(
+                '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+            $('#viewSetInputs').append(
+                '<li>' + '<input id="'+setInputId+'" disabled value="3 - '+(10+i)+'" type="text" class="form-control">' + '</li>');
+            $('#viewTempoInputs').append(
+                '<li>' + '<input id="'+tempoInputId+'" disabled value="90" type="text" class="form-control">' + '</li>');
+            $('#viewPauseInputs').append(
+                '<li>' + '<input id="'+pauseInputId+'" disabled value="60" type="text" class="form-control">' + '</li>');
+        }
+    }
+
+    /**
+     * Temporary function to add example-content to the modal for plan preview
+     */
+    function fillPlan() {
+        // Get the number of TE´s
+        var number = document.getElementById("inputUnit").value;
+
+        // Get data lists and store them in variables for further manipulation
+        var te1 = document.getElementById("plan1CounterTE");
+        var sets1 = document.getElementById("plan1SetInputs");
+        var tempos1 = document.getElementById("plan1TempoInputs");
+        var pauses1 = document.getElementById("plan1PauseInputs");
+
+        var te2 = document.getElementById("plan2CounterTE");
+        var sets2 = document.getElementById("plan2SetInputs");
+        var tempos2 = document.getElementById("plan2TempoInputs");
+        var pauses2 = document.getElementById("plan2PauseInputs");
+
+        var te3 = document.getElementById("plan3CounterTE");
+        var sets3 = document.getElementById("plan3SetInputs");
+        var tempos3 = document.getElementById("plan3TempoInputs");
+        var pauses3 = document.getElementById("plan3PauseInputs");
+
+        // 12 loops to reset the example data in the viewPlan table
+        while (te1.hasChildNodes()) {
+            te1.removeChild(te1.lastChild);
+        }
+        while (sets1.hasChildNodes()) {
+            sets1.removeChild(sets1.lastChild);
+        }
+        while (tempos1.hasChildNodes()) {
+            tempos1.removeChild(tempos1.lastChild);
+        }
+        while (pauses1.hasChildNodes()) {
+            pauses1.removeChild(pauses1.lastChild);
+        }
+
+        while (te2.hasChildNodes()) {
+            te2.removeChild(te2.lastChild);
+        }
+        while (sets2.hasChildNodes()) {
+            sets2.removeChild(sets2.lastChild);
+        }
+        while (tempos2.hasChildNodes()) {
+            tempos2.removeChild(tempos2.lastChild);
+        }
+        while (pauses2.hasChildNodes()) {
+            pauses2.removeChild(pauses2.lastChild);
+        }
+
+        while (te3.hasChildNodes()) {
+            te3.removeChild(te3.lastChild);
+        }
+        while (sets3.hasChildNodes()) {
+            sets3.removeChild(sets3.lastChild);
+        }
+        while (tempos3.hasChildNodes()) {
+            tempos3.removeChild(tempos3.lastChild);
+        }
+        while (pauses3.hasChildNodes()) {
+            pauses3.removeChild(pauses3.lastChild);
+        }
+
+        // loop to add example values to the TE/Set/Tempo/Pause columns in viewPlan table
+        for (var i=0;i<number;i++){
+            // create unique id´s
+            var counterTEId1 = "plan1Counter" + i;
+            var setInputId1 = "plan1SetInput" + i;
+            var tempoInputId1 = "plan1TempoInput" + i;
+            var pauseInputId1 = "plan1PauseInput" + i;
+
+            var counterTEId2 = "plan2Counter" + i;
+            var setInputId2 = "plan2SetInput" + i;
+            var tempoInputId2 = "plan2TempoInput" + i;
+            var pauseInputId2 = "plan2PauseInput" + i;
+
+            var counterTEId3 = "plan3Counter" + i;
+            var setInputId3 = "plan3SetInput" + i;
+            var tempoInputId3 = "plan3TempoInput" + i;
+            var pauseInputId3 = "plan3PauseInput" + i;
+
+            // Add the examples to the lists
+            $('#plan1CounterTE').append(
+                '<li>' + '<input id="'+counterTEId1+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+            $('#plan1SetInputs').append(
+                '<li>' + '<input id="'+setInputId1+'" disabled value="3 - '+(10+i)+'" type="text" class="form-control">' + '</li>');
+            $('#plan1TempoInputs').append(
+                '<li>' + '<input id="'+tempoInputId1+'" disabled value="60" type="text" class="form-control">' + '</li>');
+            $('#plan1PauseInputs').append(
+                '<li>' + '<input id="'+pauseInputId1+'" disabled value="60" type="text" class="form-control">' + '</li>');
+
+            $('#plan2CounterTE').append(
+                '<li>' + '<input id="'+counterTEId2+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+            $('#plan2SetInputs').append(
+                '<li>' + '<input id="'+setInputId2+'" disabled value="3 - '+(15+i)+'" type="text" class="form-control">' + '</li>');
+            $('#plan2TempoInputs').append(
+                '<li>' + '<input id="'+tempoInputId2+'" disabled value="90" type="text" class="form-control">' + '</li>');
+            $('#plan2PauseInputs').append(
+                '<li>' + '<input id="'+pauseInputId2+'" disabled value="45" type="text" class="form-control">' + '</li>');
+
+            $('#plan3CounterTE').append(
+                '<li>' + '<input id="'+counterTEId3+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+            $('#plan3SetInputs').append(
+                '<li>' + '<input id="'+setInputId3+'" disabled value="3 - '+(20+i)+'" type="text" class="form-control">' + '</li>');
+            $('#plan3TempoInputs').append(
+                '<li>' + '<input id="'+tempoInputId3+'" disabled value="90" type="text" class="form-control">' + '</li>');
+            $('#plan3PauseInputs').append(
+                '<li>' + '<input id="'+pauseInputId3+'" disabled value="30" type="text" class="form-control">' + '</li>');
+        }
+        // Get the values of the general plan data and write it into the viewPlan panel header
+        var planName = document.getElementById("planName").value;
+        var planFocus = document.getElementById("focus").value;
+        var planTE = document.getElementById("inputUnit").value;
+        $('#viewPlanName').val(planName);
+        $('#viewPlanfocus').val(planFocus);
+        $('#viewPlanTE').val("Trainingseinheiten: "+planTE);
     }
 </script>
 </body>
