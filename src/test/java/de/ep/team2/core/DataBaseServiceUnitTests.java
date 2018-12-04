@@ -1,6 +1,7 @@
 package de.ep.team2.core;
 
 
+import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CoreApplicationUnitTests {
+public class DataBaseServiceUnitTests {
 
     // User
 
@@ -72,7 +73,8 @@ public class CoreApplicationUnitTests {
         assertTrue(db.getExerciseListByName("HalloTest1234567").isEmpty());
         LinkedList<String[]> test = new LinkedList<>();
         test.add(new String[]{"Test/Test","other"});
-        db.insertExercise("HalloTest1234567","Test Description", test);
+        db.insertExercise("HalloTest1234567","Test Description", WeightType.FIXED_WEIGHT,
+                null, test);
         assertTrue(db.getExerciseListByName("HalloTest1234567").toString()
                 .contains("HalloTest1234567"));
         db.deleteExerciseById(db.getExerciseListByName("HalloTest1234567").get(0).getId());
@@ -88,7 +90,8 @@ public class CoreApplicationUnitTests {
         LinkedList<String[]> test = new LinkedList<>();
         test.add(new String[]{"Test/Test","other"});
         DataBaseService.getInstance().insertExercise(
-                "Bankdrücken","Test for Illegal Argument",test);
+                "Bankdrücken", "Test for Illegal Argument", WeightType.FIXED_WEIGHT,
+                "link.de./video",test);
     }
 
     @Test
@@ -97,7 +100,9 @@ public class CoreApplicationUnitTests {
         assertNotNull(db.getExerciseById(2));
         db.deleteExerciseById(2);
         assertNull(db.getExerciseById(2));
-        db.insertExercise("TestEx", "To balance the amount of exercises after delete", null);
+        db.insertExercise("TestEx", "To balance the amount of exercises after delete",
+                WeightType.FIXED_WEIGHT,
+                null, null);
     }
 
     @Test

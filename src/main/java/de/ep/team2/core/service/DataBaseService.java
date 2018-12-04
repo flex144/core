@@ -4,6 +4,7 @@ package de.ep.team2.core.service;
 import de.ep.team2.core.CoreApplication;
 import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.entities.User;
+import de.ep.team2.core.enums.WeightType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -154,16 +155,19 @@ public class DataBaseService {
      *
      * @param name Unique name of the Exercise
      * @param description Optional Description of the Exercise.
+     * @param weightType weight type of the exercise.
+     * @param videoLink optional videolink to a example video.
      * @param imgPaths Optional List of the Paths to the images
      *                of the Exercise with type(muscle , other).
      * @return The ID of the inserted exercise.
      */
-    public Integer insertExercise(String name, String description,
-                               List<String[]> imgPaths) {
+    public Integer insertExercise(String name, String description, WeightType weightType,
+                               String videoLink, List<String[]> imgPaths) {
         if (exerciseNameUnique(name)) {
-            String[] toInsert = {name, description};
-            jdbcTemplate.update("INSERT INTO exercises(name, description) VALUES (?,?)",
-                    toInsert);
+            String[] toInsert = {name, description, weightType.toString(), videoLink};
+            jdbcTemplate.update(
+                    "INSERT INTO exercises(name, description, weight_type, video_link)" +
+                            " VALUES (?,?,?,?)", toInsert);
             Integer id = jdbcTemplate.query("select currval" +
                             "(pg_get_serial_sequence('exercises','id'));",
                     (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
@@ -216,8 +220,6 @@ public class DataBaseService {
             return addImagesToBean(toReturn).getFirst();
         }
     }
-
-
 
     /**
      * Searches for an Exercise with this exact name.

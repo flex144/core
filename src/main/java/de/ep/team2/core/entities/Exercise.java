@@ -1,9 +1,9 @@
 package de.ep.team2.core.entities;
 
+import de.ep.team2.core.enums.WeightType;
+
 import java.util.LinkedList;
 import java.util.List;
-
-// TODO: 03.12.18 add gewichtstyp und link. 
 
 /**
  * Represents a Entry Exercise in the Database
@@ -11,14 +11,19 @@ import java.util.List;
 public class Exercise {
     private int id;
     private String name, description;
-    private List<String> muscleImgPaths;
-    private List<String> otherImgPaths;
+    private WeightType weightType;
+    private String videoLink;
+    private List<String> muscleImgPaths = new LinkedList<>();
+    private List<String> otherImgPaths = new LinkedList<>();
 
     public Exercise(int id, String name, String description,
+                    WeightType weightType, String videoLink,
                     List<String> muscleImgPaths, List<String> otherImgPaths) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.weightType = weightType;
+        this.videoLink = videoLink;
         this.muscleImgPaths = muscleImgPaths;
         this.otherImgPaths = otherImgPaths;
     }
@@ -64,6 +69,22 @@ public class Exercise {
         this.description = description;
     }
 
+    public WeightType getWeightType() {
+        return weightType;
+    }
+
+    public void setWeightType(WeightType weightType) {
+        this.weightType = weightType;
+    }
+
+    public String getVideoLink() {
+        return videoLink;
+    }
+
+    public void setVideoLink(String videoLink) {
+        this.videoLink = videoLink;
+    }
+
     public List<String> getMuscleImgPaths() {
         return muscleImgPaths;
     }
@@ -81,16 +102,10 @@ public class Exercise {
     }
 
     public void addMuscleImgPath(String path) {
-        if (muscleImgPaths == null) {
-            muscleImgPaths = new LinkedList<>();
-        }
         muscleImgPaths.add(path);
     }
 
     public void addOtherImgPath(String path) {
-        if (otherImgPaths == null) {
-            otherImgPaths = new LinkedList<>();
-        }
         otherImgPaths.add(path);
     }
 }

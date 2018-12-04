@@ -45,7 +45,6 @@ public class ExerciseController {
      * Creates a new Exercise in the Database with the information provided by the user.
      * Saves the images to resources/static/images and references them in the Database.
      * Checks if the uploaded images are of the format png or jpeg and allows only them.
-     * todo error handling best in html with script
      * When the file is to large or the upload fails writes a message to the error console.
      *
      * @param otherImage Array of files uploaded as other images.
@@ -67,15 +66,11 @@ public class ExerciseController {
                 if (!img.isEmpty() || img.getContentType() != null) {
                     if (img.getContentType().equals("image/jpeg")
                             || img.getContentType().equals("image/png")) {
-                        if (img.getSize() <= 1000000) {
-                            String imgPath = service.uploadImg(img, exercise);
-                            if (imgPath == null) {
-                                System.err.println("Image upload failed!");
-                            } else {
-                                exercise.addOtherImgPath(imgPath);
-                            }
+                        String imgPath = service.uploadImg(img, exercise);
+                        if (imgPath == null) {
+                            System.err.println("Image upload failed!");
                         } else {
-                            System.err.println("File to large");
+                            exercise.addOtherImgPath(imgPath);
                         }
                     }
                 }
@@ -84,21 +79,18 @@ public class ExerciseController {
                 if (!img.isEmpty() || img.getContentType() != null) {
                     if (img.getContentType().equals("image/jpeg")
                             || img.getContentType().equals("image/png")) {
-                        if (img.getSize() <= 1000000) {
-                            String imgPath = service.uploadImg(img, exercise);
-                            if (imgPath == null) {
-                                System.err.println("Image upload failed!");
-                            } else {
-                                exercise.addMuscleImgPath(imgPath);
-                            }
+                        String imgPath = service.uploadImg(img, exercise);
+                        if (imgPath == null) {
+                            System.err.println("Image upload failed!");
                         } else {
-                            System.err.println("File to large");
+                            exercise.addMuscleImgPath(imgPath);
                         }
                     }
                 }
             }
-            service.insertExercise(exercise.getName(), exercise.getDescription()
-                    ,exercise.getMuscleImgPaths(), exercise.getOtherImgPaths());
+            service.insertExercise(exercise.getName(), exercise.getDescription(),
+                    exercise.getWeightType(), exercise.getVideoLink()
+                    , exercise.getMuscleImgPaths(), exercise.getOtherImgPaths());
             return "redirect:/mods/searchexercise";
         }
     }
