@@ -4,6 +4,7 @@ import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.UserService;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.LinkedList;
 
@@ -14,7 +15,6 @@ public class DataInit {
 
     private JdbcTemplate jdbcTemplate;
     private Logger log;
-    private UserService userService;
 
     public DataInit(JdbcTemplate jdbcTemplate, Logger log) {
         this.jdbcTemplate = jdbcTemplate;
@@ -37,10 +37,10 @@ public class DataInit {
 
     private void fillUsers() {
         LinkedList<String[]> initTestData = new LinkedList<>();
-        String[] timo = {"timo@gmail.com", "Timo", "Heinrich", userService.encode("hello")};
-        String[] alex = {"alex@gmail.com", "Alexander", "Reißig", userService.encode("password")};
-        String[] felix = {"felix@gmail.com", "Felix", "Wilhelm", userService.encode("123")};
-        String[] yannick = {"yannick@gmail.com", null, null, userService.encode("123")};
+        String[] timo = {"timo@gmail.com", "Timo", "Heinrich", encode("hello")};
+        String[] alex = {"alex@gmail.com", "Alexander", "Reißig", encode("password")};
+        String[] felix = {"felix@gmail.com", "Felix", "Wilhelm", encode("123")};
+        String[] yannick = {"yannick@gmail.com", null, null, encode("123")};
         initTestData.add(timo);
         initTestData.add(alex);
         initTestData.add(felix);
@@ -49,6 +49,12 @@ public class DataInit {
             DataBaseService.getInstance().insertUser(o[0], o[1], o[2], o[3]);
         }
         DataBaseService.getInstance().changeToMod(3);
+    }
+
+    public String encode(String pw) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String hashedPw = passwordEncoder.encode(pw);
+        return hashedPw;
     }
 
 }
