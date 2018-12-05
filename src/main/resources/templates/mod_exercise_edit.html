@@ -96,12 +96,6 @@
                 </div>
             </div>
             <div class="col-4">
-                <!-- toggle container button
-                <button type="button"
-                        class="btn btn-block btn-secondary" onclick="toggleContainer()">
-                    Übung <br> bearbeiten
-                </button>
-                modal button -->
                 <button type="button"
                         class="btn btn-block btn-secondary" data-toggle="modal" data-target="#myModal" onclick="toggleContainer()">
                     Übung <br> bearbeiten
@@ -243,9 +237,6 @@
         tempDescription = description;
         tempPictureURL = pictureURL;
         tempVideoLink = videoLink;
-        if(document.getElementById('weightType').value == document.getElementById('additionalWeight')){
-            weightType = document.getElementById('additionalWeight').value;
-        }
     }
 
     function updateName() {
@@ -279,6 +270,9 @@
         description = tempDescription;
         pictureURL = tempPictureURL;
         videoLink = tempVideoLink;
+        if(document.getElementById('weightType').value == document.getElementById('additionalWeight').value){
+            weightType = document.getElementById('additionalWeight').value;
+        }
         containerSaveButton.style.display = "inherit";
         toggleContainer();
     }
@@ -297,9 +291,6 @@
             document.getElementById('description').value = description;
             document.getElementById('imageInput').value = pictureURL;
             document.getElementById('videoLink1').value = videoLink;
-            if(document.getElementById('weightType').value == document.getElementById('additionalWeight').value){
-                weightType = document.getElementById('additionalWeight').value;
-            }
             document.getElementById('weightType').value = weightType;
 
         } else {
