@@ -52,23 +52,35 @@
                 <tbody>
                 <tr>
                     <th>ID</th>
-                    <td><p th:text="${exercise.id}"></p></td>
+                    <td><p th:text="${exercise.getId()}"></p></td>
                 </tr>
                 <tr>
                     <th>Name</th>
-                    <td><p th:text="${exercise.name}"></p></td>
+                    <td><p th:text="${exercise.getName()}"></p></td>
                 </tr>
                 <tr>
                     <th>Beschreibung</th>
-                    <td><p th:text="${exercise.description}"></p></td>
+                    <td><p th:text="${exercise.getDescription()}"></p></td>
+                </tr>
+                <tr>
+                    <th>Gewichtsart</th>
+                    <td><p th:text="${exercise.getWeightType().getValue()}"></p></td>
+                </tr>
+                <tr>
+                    <th>Beispiel Video</th>
+                    <td><a th:href="@{${exercise.getVideoLink()}}" th:text="${exercise.getVideoLink()}"></a></td>
                 </tr>
                 </tbody>
             </table>
-            <div th:each="path : ${exercise.otherImgPaths}" class="image">
-                <img th:src="@{${path}}"/>
-            </div>
-            <div th:each="path : ${exercise.muscleImgPaths}" class="image">
-                <img th:src="@{${path}}"/>
+            <div class="row">
+                <p th:if="${!exercise.getMuscleImgPaths().isEmpty()}">Muskelgruppen Bilder:</p>
+                <div th:each="path : ${exercise.getMuscleImgPaths()}" class="image">
+                    <img th:src="@{${path}}"/>
+                </div>
+                <p th:if="${!exercise.getOtherImgPaths().isEmpty()}">Andere Bilder:</p>
+                <div th:each="path : ${exercise.getOtherImgPaths()}" class="image">
+                    <img th:src="@{${path}}"/>
+                </div>
             </div>
         </div>
     </div>

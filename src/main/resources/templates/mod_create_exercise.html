@@ -39,7 +39,7 @@
                 <div class="col-md-8">
                     <div class="form-group">
                         <label for="description">Beschreibung der Übung: (Optional)</label>
-                        <textarea id="description" class="form-control" rows="6" th:field="*{description}"></textarea>
+                        <textarea id="description" class="form-control" rows="6" th:field="*{description}" maxlength="2000"></textarea>
                     </div>
                 </div>
             </div>
@@ -67,7 +67,8 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <p style="font-size: 10px" class="text-muted">Maximale Dateigröße: 1 MB; Unterstützte Dateitypen: .jpg, .png; <br/>
+                        <p style="font-size: 10px" class="text-muted">Maximale Uploadgröße pro Bildergruppe: 10 MB; <br/>
+                            Unterstützte Dateitypen: .jpg, .png; <br/>
                             Um mehrere Bilder hochzuladen müssen Sie bei "Dateien auswählen", <br/>
                             die gewünscheten Bilder markieren(Strg + Linksklick) und auf "öffnen" klicken; <br/>
                             Laden sie keine Bilder mit gleichem namen, bei der gleichen Übung, hoch.</p>
