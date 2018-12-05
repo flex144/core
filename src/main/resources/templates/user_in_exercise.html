@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>In exercise</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+          crossorigin="anonymous">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        /********************container Styles**********************/
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        .greyContainer {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+
+        .highlightedContainer {
+            background: #fd8900; /*light orange*/
+            border: 2px solid #2E2E2E;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        /******************** Button Styles**********************/
+        .btn-group-toggle{
+            transform: scale(0.8);
+        }
+
+        /******************** Table Styles **********************/
+        #exerciseDetails {
+            width: 100%;
+            height: 100%;
+        }
+
+        #exerciseDetails td {
+            width: 50%;
+        }
+
+        #timerTable {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            column-fill: auto;
+        }
+
+        #timer_table_cell td, tr {
+            padding: 0;
+        }
+
+        #button90s, #button60s, #button30s {
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+
+<!--- Titlebar of the exercise --->
+<div class="highlightedContainer" id="container_planExerciseName"
+     style="height: 10%;">
+    <div style="width: 80%;">
+        <h2>Klimmzüge</h2>
+    </div>
+    <div style="width: 5%"></div>
+    <a href="testseite_verlinkung.html" class="btn btn-info">
+        i
+    </a>
+</div>
+
+<!--- Picture / Notice to current exercise --->
+<div class="greyContainer" id="container_planInstructions"
+     style="height: 20%;">
+    <div class="row" style="height: 100%;">
+        <!--- TODO fetch picture from exercise --->
+        <div  id="container_planBild" style="width: 50%; height: 100%;">
+            Bild
+        </div>
+        <div  id="container_planDetails" style="width: 45%; height: 100%;
+            overflow-y: scroll; overflow-x: fragments;">
+            Massive anmerkungen zum text obwohl hier wahrscheinlich nie mehr als
+            ein zwei wörter stehen wird
+        </div>
+    </div>
+</div>
+
+<!--- Details to the current exercise--->
+<div class="orangeContainer" id="container_planExerciseData"
+     style="height: 40%;">
+    <table id="exerciseDetails" class="table-striped table-bordered">
+        <tr>
+            <td>Gewicht</td>
+            <td>Eigen</td>
+        </tr>
+        <tr>
+            <td>Tempo</td>
+            <td>Langsam</td>
+        </tr>
+        <tr>
+            <td>Pause</td>
+            <td>90 s</td>
+        </tr>
+        <tr>
+            <td>Sätze</td>
+            <td>
+                <span class="value"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>Wiederholungen</td>
+            <td>
+                <span class="doneReps"> t</span>
+            </td>
+        </tr>
+        <tr>
+            <td>Geschaffte Wdh.</td>
+            <td>
+                <div class="row">
+                    <div style="width: 5%;"></div>
+                    <div style="width: 30%;">
+                        <button type="button"
+                                class="btn btn-secondary" onclick="decreaseReps()" id="buttonDecrease" disabled>
+                            -
+                        </button>
+                    </div>
+                    <div style="width: 30%;">
+                        <form>
+                            <input type="number" oninput="updateReps()" id="repInput" value="999" style="width: 100%; text-align: center" disabled>
+                        </form>
+                    </div>
+                    <div style="width: 30%;">
+                        <button type="button"
+                                class="btn btn-secondary" onclick="increaseReps()" id="buttonIncrease" disabled>
+                            +
+                        </button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!--- Highlighted box with Timer and Evaluation --->
+<div class="highlightedContainer" id="container_timerAndEvaluation"
+     style="height: 20%;">
+    <!--- Timer --->
+    <div id="container_timerBox" style="width: 100%;">
+        <table id="timerTable">
+            <tr>
+                <td rowspan="3" id="timer_table_cell" style="width: 80%;">
+                    <h1><span id="time">00:00</span></h1>
+                </td>
+                <td>
+                    <button type="button"
+                            class="btn-block btn-success" id="button90s"
+                            onclick="parseTime(90)" disabled>
+                        90s
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button"
+                            class="btn-block btn-success" id="button60s"
+                            onclick="parseTime(60)" disabled>
+                        60s
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button"
+                            class="btn-block btn-success" id="button30s"
+                            onclick="parseTime(30)" disabled>
+                        30s
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!--- Evaluation --->
+    <div id="container_evaluationBox" style="width: 100%;">
+        <div class="container" style="text-align: center">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <button class="btn btn-secondary">
+                    <input type="radio"> sehr <br> ein <br>fach
+                </button>
+                <button class="btn btn-secondary">
+                    <input type="radio"> zu <br> ein <br>fach
+                </button>
+                <button class="btn btn-secondary active">
+                    <input type="radio"> passt
+                </button>
+                <button class="btn btn-secondary">
+                    <input type="radio"> zu <br> hart
+                </button>
+                <button class="btn btn-secondary">
+                    <input type="radio"> Viel <br> zu <br> hart
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--- Back/Cancel and Completion/Start buttons--->
+<div class="orangeContainer" style="height: 10%;">
+    <div style="height: 20%">
+    </div>
+    <div class="row" style="width: 100%; height: 80%;">
+        <div style="width: 10%;"></div>
+        <div style="width: 30%;">
+            <button type="button"
+                    class="btn btn-block btn-danger">
+                zurück
+            </button>
+        </div>
+        <div style="width: 30%;"></div>
+        <div style="width: 30%;">
+            <button type="button"
+                    class="btn btn-block btn-success" id="startButton" onclick="exerciseFunction()" style="font-size: small">
+                <span class="buttonName"></span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!--- Stopwatch Script--->
+<script>
+    var singleTimer = true;
+    var timerID = 0;
+    function startTimer(duration, display) {
+        var timer = duration, minutes, seconds;
+        timerID = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                timer = 0;
+                singleTimer = true;
+            }
+        }, 1000);
+    }
+    function parseTime(value) {
+        if (singleTimer) {
+            var timeValue = value;
+            display = document.querySelector('#time');
+            clearInterval(timerID);
+            singleTimer = false;
+            startTimer(timeValue, display);
+        }
+    }
+
+</script>
+
+<!--- Toggle Evaluation/Timer and Rep Counter --->
+<script>
+
+    /*TODO totalReps = DB dependant value*/
+    /*** Needed parameters for Rep counter**/
+    var totalReps = 12;
+    var currentReps = totalReps;
+    var valueCheck = totalReps;
+
+    /*TODO setCounter = DB dependant value*/
+    /*** Needed parameters for Container Switch***/
+    var timerBox = document.getElementById("container_timerBox");
+    var evaluationBox = document.getElementById("container_evaluationBox");
+    var currentCounter = 0;
+    var setCounter = 4;
+    var labelValue = currentCounter + "/" + setCounter;
+    var buttonTitle = "Starten";
+    var done = false;
+
+    /*** Instancing first values for both scripts**/
+    document.onLoad(initializeReps());
+    function initializeReps() {
+        document.getElementById('repInput').value = currentReps;
+        document.querySelector('.doneReps').innerHTML = totalReps;
+        evaluationBox.style.display = "none";
+        document.querySelector('.value').innerHTML = labelValue;
+        document.querySelector('.buttonName').innerHTML = buttonTitle;
+    }
+
+    /*** Rep Counter functions***/
+    /*** update Values on each input***/
+    function updateReps() {
+        valueCheck = Math.ceil(document.getElementById('repInput').value);
+        if(valueCheck < 2* totalReps && valueCheck> 0){
+            currentReps = valueCheck;
+        } else if(valueCheck == ""){
+
+        }else{
+            currentReps = totalReps;
+            document.getElementById('repInput').value = currentReps;
+        }
+    }
+
+    /*** Decrease Values on each click***/
+    function decreaseReps(){
+        if(currentReps > 0){
+            currentReps--;
+            document.getElementById('repInput').value = currentReps;
+        }
+    }
+
+    /*** Increase Values on each click***/
+    function increaseReps(){
+        if(currentReps < 2*totalReps){
+            currentReps++;
+            document.getElementById('repInput').value = currentReps;
+        }
+    }
+
+    /*** Evaluation/Timer Toggle***/
+    /*** Change Values on each click***/
+    function exerciseFunction(){
+        /***Can't send empty/illegal inputs***/
+        if( !( valueCheck < 2* totalReps && valueCheck> 0) ){
+            alert("Please enter a valid repition number before proceeding");
+        }
+        else if (done){
+            window.location ="testseite_verlinkung.html";
+        }else if (currentCounter == setCounter){
+            timerBox.style.display = "none";
+            evaluationBox.style.display = "inherit";
+            buttonTitle = "Abschließen";
+            done = true;
+            document.getElementById('buttonDecrease').disabled = true;
+            document.getElementById('buttonIncrease').disabled = true;
+            document.getElementById('repInput').disabled = true;
+        } else if(currentCounter == setCounter -1) {
+            buttonTitle = "Evaluation";
+            currentCounter++;
+        }else{
+            buttonTitle = "Satz beenden";
+            currentCounter++;
+            document.getElementById('buttonDecrease').disabled = false;
+            document.getElementById('buttonIncrease').disabled = false;
+            document.getElementById('repInput').disabled = false;
+            document.getElementById('button30s').disabled = false;
+            document.getElementById('button60s').disabled = false;
+            document.getElementById('button90s').disabled = false;
+        }
+        currentReps = totalReps;
+        document.getElementById('repInput').value = currentReps;
+        labelValue = currentCounter + "/" + setCounter;
+        document.querySelector('.value').innerHTML = labelValue;
+        document.querySelector('.buttonName').innerHTML = buttonTitle;
+    }
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+        crossorigin="anonymous"></script>
+</body>
+</html>
