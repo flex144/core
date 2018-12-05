@@ -18,7 +18,7 @@
             height: 100%;
         }
 
-        .orangeContainer {
+        .greyContainer {
             width: 100%;
             height: 100%;
             text-align: center;
@@ -80,14 +80,15 @@
 </div>
 
 <!--- Picture / Notice to current exercise --->
-<div class="orangeContainer" id="container_planInstructions"
+<div class="greyContainer" id="container_planInstructions"
      style="height: 20%;">
     <div class="row" style="height: 100%;">
         <!--- TODO fetch picture from exercise --->
         <div  id="container_planBild" style="width: 50%; height: 100%;">
             Bild
         </div>
-        <div  id="container_planDetails" style="width: 45%; height: 100%; overflow-y: scroll; overflow-x: fragments;">
+        <div  id="container_planDetails" style="width: 45%; height: 100%;
+            overflow-y: scroll; overflow-x: fragments;">
             Massive anmerkungen zum text obwohl hier wahrscheinlich nie mehr als
             ein zwei wörter stehen wird
         </div>
@@ -327,6 +328,7 @@
         }
     }
 
+    /*** Evaluation/Timer Toggle***/
     /*** Change Values on each click***/
     function exerciseFunction(){
         if (done){
