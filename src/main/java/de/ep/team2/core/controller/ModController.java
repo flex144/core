@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/mods")
 public class ModController {
 
-    @RequestMapping(value = {"/home"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"","/home"}, method = RequestMethod.GET)
     public String home() {
         return "mod_startup_page";
     }

@@ -2,6 +2,9 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Übungsansicht</title>
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -9,100 +12,105 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <div th:include="/fragments/navbar :: navbar_style"></div>
+
+    <style>
+        img {
+            width: 100%;
+            max-width: 100%;
+        }
+        .image {
+            max-width: 60%;
+            margin: 0 auto;
+            margin-bottom: 2%;
+        }
+    </style>
 </head>
 
 <body>
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
-<div>
-<div class="btn-group btn-group-justified">
-    <a class="btn btn-danger" data-toggle="modal" data-target="#confirm_delete">
-        <span class="glyphicon glyphicon-remove"></span>
-        Löschen
-    </a>
-</div>
-<br>
-<div>
-    <table class="table table-striped table-bordered" id="user">
-        <tbody>
-        <tr>
-            <th>ID</th>
-            <td><p th:text="${exercise.id}"></p></td>
-        </tr>
-        <tr>
-            <th>Name</th>
-            <td><p th:text="${exercise.name}"></p></td>
-        </tr>
-        <tr>
-            <th>Beschreibung</th>
-            <td><p th:text="${exercise.description}"></p></td>
-        </tr>
-        </thead>
-        <tbody id="myTable">
-        <tr th:each="path : ${exercise.otherImgPaths}" style="cursor: pointer">
-            <th>Img Path</th>
-            <td><p th:text="${path}"></p></td>
-        </tr>
-        </tbody>
-        <tbody>
-        <tr th:each="path : ${exercise.otherImgPaths}">
-            <th>Img</th>
-            <td><img th:src="@{${path}}"/></td>
-        </tr>
-        </tbody>
-        </thead>
-        <tbody id="myTable2">
-        <tr th:each="path : ${exercise.muscleImgPaths}" style="cursor: pointer">
-            <th>Img Path</th>
-            <td><p th:text="${path}"></p></td>
-        </tr>
-        </tbody>
-        <tbody>
-        <tr th:each="path : ${exercise.muscleImgPaths}">
-            <th>Img</th>
-            <td><img th:src="@{${path}}"/></td>
-        </tr>
-        </tbody>
-    </table>
-
-</div>
-</div>
-<div class="modal fade" id="confirm_delete">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-body">
-            <form th:object="${exercise}"
-                  th:action="@{/exercises/{path}(path=${exercise.id})}"
-                  th:method="delete" id="deleteForm">
-                <div class="panel panel-danger">
-                    <div class="panel-heading">
-                        <h4>Löschen bestätigen</h4>
-                    </div>
-                    <div class="panel-body">
-                        <p style="font-size: 16px">
-                            Wollen sie die aktuelle Übung wirklich löschen?
-                        </p>
-                        <p class="text-danger" style="font-size: 12px">
-                            Diese Aktion kann nicht rückgängig gemacht werden!
-                        </p>
-                        <br>
-                        <div class="row">
-                            <div class="col-md-2"></div>
-                            <div class="col-md-4">
-                                <button type="button"
-                                        class="btn btn-danger btn-block"
-                                        id="submitForm">Löschen
-                                </button>
+<div class="container">
+    <div class="jumbotron">
+        <div class="btn-group btn-group-justified">
+            <a th:href="@{/mods/searchexercise}" type="button"
+               class="btn btn-default">
+                <span class="glyphicon glyphicon-th-list"></span>
+                Zurück zur Suche
+            </a>
+            <a type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-pencil"></span>
+                Bearbeiten
+            </a>
+            <a class="btn btn-danger" data-toggle="modal"
+               data-target="#confirm_delete">
+                <span class="glyphicon glyphicon-remove"></span>
+                Löschen
+            </a>
+        </div>
+        <br>
+        <div>
+            <table class="table table-striped table-bordered" id="user">
+                <tbody>
+                <tr>
+                    <th>ID</th>
+                    <td><p th:text="${exercise.id}"></p></td>
+                </tr>
+                <tr>
+                    <th>Name</th>
+                    <td><p th:text="${exercise.name}"></p></td>
+                </tr>
+                <tr>
+                    <th>Beschreibung</th>
+                    <td><p th:text="${exercise.description}"></p></td>
+                </tr>
+                </tbody>
+            </table>
+            <div th:each="path : ${exercise.otherImgPaths}" class="image">
+                <img th:src="@{${path}}"/>
+            </div>
+            <div th:each="path : ${exercise.muscleImgPaths}" class="image">
+                <img th:src="@{${path}}"/>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="confirm_delete">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-body">
+                <form th:object="${exercise}"
+                      th:action="@{/exercises/{path}(path=${exercise.id})}"
+                      th:method="delete" id="deleteForm">
+                    <div class="panel panel-danger">
+                        <div class="panel-heading">
+                            <h4>Löschen bestätigen</h4>
+                        </div>
+                        <div class="panel-body">
+                            <p style="font-size: 16px">
+                                Wollen sie die aktuelle Übung wirklich löschen?
+                            </p>
+                            <p class="text-danger" style="font-size: 12px">
+                                Diese Aktion kann nicht rückgängig gemacht
+                                werden!
+                            </p>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-4">
+                                    <button type="button"
+                                            class="btn btn-danger btn-block"
+                                            id="submitForm">Löschen
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button"
+                                            class="btn btn-default btn-block"
+                                            data-dismiss="modal">Abbrechen
+                                    </button>
+                                </div>
+                                <div class="col-md-2"></div>
                             </div>
-                            <div class="col-md-4">
-                                <button type="button"
-                                        class="btn btn-default btn-block"
-                                        data-dismiss="modal">Abbrechen
-                                </button>
-                            </div>
-                            <div class="col-md-2"></div>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 </div>

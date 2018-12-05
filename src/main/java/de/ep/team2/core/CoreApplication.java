@@ -26,6 +26,6 @@ public class CoreApplication implements CommandLineRunner{
     public void run(String... strings) {
         //Sets the JDBC-Template in DataBaseServices to us it in other classes.
         DataBaseService.getInstance().setJdbcTemplate(jdbcTemplate);
-        new DataInit(jdbcTemplate,log);
+        //new DataInit(jdbcTemplate,log);
     }
 }
