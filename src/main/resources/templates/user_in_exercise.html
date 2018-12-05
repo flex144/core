@@ -164,7 +164,7 @@
                 <td>
                     <button type="button"
                             class="btn-block btn-success" id="button90s"
-                            onclick="parseTime(90)">
+                            onclick="parseTime(90)" disabled>
                         90s
                     </button>
                 </td>
@@ -173,7 +173,7 @@
                 <td>
                     <button type="button"
                             class="btn-block btn-success" id="button60s"
-                            onclick="parseTime(60)">
+                            onclick="parseTime(60)" disabled>
                         60s
                     </button>
                 </td>
@@ -182,7 +182,7 @@
                 <td>
                     <button type="button"
                             class="btn-block btn-success" id="button30s"
-                            onclick="parseTime(30)">
+                            onclick="parseTime(30)" disabled>
                         30s
                     </button>
                 </td>
@@ -239,7 +239,6 @@
 <script>
     var singleTimer = true;
     var timerID = 0;
-
     function startTimer(duration, display) {
         var timer = duration, minutes, seconds;
         timerID = setInterval(function () {
@@ -257,7 +256,6 @@
             }
         }, 1000);
     }
-
     function parseTime(value) {
         if (singleTimer) {
             var timeValue = value;
@@ -277,6 +275,7 @@
     /*** Needed parameters for Rep counter**/
     var totalReps = 12;
     var currentReps = totalReps;
+    var valueCheck = totalReps;
 
     /*TODO setCounter = DB dependant value*/
     /*** Needed parameters for Container Switch***/
@@ -301,7 +300,7 @@
     /*** Rep Counter functions***/
     /*** update Values on each input***/
     function updateReps() {
-        var valueCheck = document.getElementById('repInput').value;
+        valueCheck = Math.ceil(document.getElementById('repInput').value);
         if(valueCheck < 2* totalReps && valueCheck> 0){
             currentReps = valueCheck;
         } else if(valueCheck == ""){
@@ -331,7 +330,11 @@
     /*** Evaluation/Timer Toggle***/
     /*** Change Values on each click***/
     function exerciseFunction(){
-        if (done){
+        /***Can't send empty/illegal inputs***/
+        if( !( valueCheck < 2* totalReps && valueCheck> 0) ){
+            alert("Please enter a valid repition number before proceeding");
+        }
+        else if (done){
             window.location ="testseite_verlinkung.html";
         }else if (currentCounter == setCounter){
             timerBox.style.display = "none";
@@ -350,6 +353,9 @@
             document.getElementById('buttonDecrease').disabled = false;
             document.getElementById('buttonIncrease').disabled = false;
             document.getElementById('repInput').disabled = false;
+            document.getElementById('button30s').disabled = false;
+            document.getElementById('button60s').disabled = false;
+            document.getElementById('button90s').disabled = false;
         }
         currentReps = totalReps;
         document.getElementById('repInput').value = currentReps;
