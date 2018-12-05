@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -23,7 +23,14 @@
 </head>
 
 <body>
-<div th:replace="/fragments/navbar :: navbar_mod"></div>
+
+<div sec:authorize="hasRole('MOD')">
+    <div th:replace="/fragments/navbar :: navbar_mod"></div>
+</div>
+
+<div sec:authorize="hasRole('USER')">
+    <div th:replace="/fragments/navbar :: navbar_user"></div>
+</div>
 
 <div class="container">
     <div class="jumbotron">
@@ -37,7 +44,8 @@
                 <span class="glyphicon glyphicon-stats"></span>
                  Statistiken des Nutzers
             </a>
-            <a class="btn btn-danger" data-toggle="modal" data-target="#confirm_delete">
+            <a class="btn btn-danger" data-toggle="modal" data-target="#confirm_delete"
+               sec:authorize="hasRole('MOD')">
                 <span class="glyphicon glyphicon-remove"></span>
                 Löschen
             </a>

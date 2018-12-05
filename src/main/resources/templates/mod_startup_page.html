@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head lang="en">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,7 +21,10 @@
 </head>
 
 <body>
+
+<div sec:authorize="hasRole('MOD')">
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
+</div>
 
 <div class="container">
     <div class="jumbotron">

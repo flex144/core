@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
 
@@ -95,6 +95,7 @@
     </div>
 </head>
 <body>
+<div th:fragment="navbar">
 <div th:fragment="navbar_mod">
     <div class="container" style="padding-top: 20px">
         <nav class="navbar navbar-default">
@@ -182,7 +183,7 @@
     </div>
 </div>
 
-<div th:fragment="navbar_user">
+<div th:fragment="navbar_user" >
     <div class="container" style="padding-top: 20px">
         <nav class="navbar navbar-default">
             <div class="container-fluid">
@@ -239,6 +240,7 @@
             </div>
         </nav>
     </div>
+</div>
 </div>
 </body>
 </html>
