@@ -43,7 +43,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
@@ -52,6 +51,25 @@
                             <option th:value="${T(de.ep.team2.core.enums.WeightType).SELF_WEIGHT}">Eigengewicht</option>
                             <option th:value="${T(de.ep.team2.core.enums.WeightType).FIXED_WEIGHT}">Befestigtes Gewicht</option>
                         </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="displaySelected">Ausgewählte Muskelgruppen:</label>
+                        <span id="displaySelected"></span>
+                        <label for="inputMuscle">Muskelgruppe Hinzufügen:</label>
+                        <input id="inputMuscle" type="text" name="muscleGroup"
+                               class="form-control" list="stored_muscleGroups">
+                        <datalist id="stored_muscleGroups">
+                            <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).BRUST.getName()}"></option>
+                            <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).BIZEPS.getName()}"></option>
+                            <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).TRIZEPS.getName()}"></option>
+                            <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).ABDOMINALS.getName()}"></option>
+                        </datalist>
+                        </input>
+                        <button id="addMuscle" onclick="addToList()" type="button">Hinzufügen</button>
                     </div>
                 </div>
             </div>
@@ -98,5 +116,20 @@
         </form>
     </div>
 </div>
+<script>
+    var selectedMuscles = [];
+    
+    function addToList() {
+        var toadd = document.getElementById('inputMuscle').value;
+        selectedMuscles.push(toadd);
+        document.getElementById('inputMuscle').value = "";
+        display();
+    }
+    
+    function display() {
+        document.getElementById("displaySelected").innerHTML = selectedMuscles;
+    }
+
+</script>
 </body>
 </html>

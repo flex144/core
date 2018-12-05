@@ -67,6 +67,10 @@
                     <td><p th:text="${exercise.getWeightType().getValue()}"></p></td>
                 </tr>
                 <tr>
+                    <th>Muskelgruppen</th>
+                    <td><p>Brust, Trizeps</p></td>
+                </tr>
+                <tr>
                     <th>Beispiel Video</th>
                     <td><a th:href="@{${exercise.getVideoLink()}}" th:text="${exercise.getVideoLink()}"></a></td>
                 </tr>
