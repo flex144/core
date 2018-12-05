@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Übungsdetails</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+    <style>
+        html,body{
+            background: #ecf0f1;
+        }
+
+        .greyContainer {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+
+        .buttonBar{
+            height: 10%;
+            width: 100%;
+            background: #dddddd;
+            border: 1px solid #2E2E2E;
+            padding: 5px;
+        }
+
+        .highlightedContainer {
+            background: #fd8900; /*light orange*/
+            border: 2px solid #2E2E2E;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+<div class="greyContainer" style="height: 100%;">
+    <div class="highlightedContainer" style="height: 10%">
+        <div style="height: 100%">
+            <h1 align="center">Klimmzug</h1>
+        </div>
+    </div>
+    <div class="buttonBar" id="container_buttons" style="height: 10%">
+        <div class="row">
+            <div class="col-3">
+                <button type="button"
+                        class="btn btn-block btn-secondary" style="height: 100%">
+                    zurück
+                </button>
+            </div>
+            <div class="col-1">
+
+            </div>
+            <div class="col-4">
+                <button type="button"
+                        class="btn btn-block btn-danger">
+                    Übung <br> festlegen
+                </button>
+            </div>
+            <div class="col-4">
+                <button type="button"
+                        class="btn btn-block btn-danger">
+                    Alternative <br> Übung
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="container" id="container_details" style="height: 50%; padding-top: 5px;
+            overflow-y: scroll; overflow-x: fragments">
+        <div class="row">
+            <div class="container" style="width: 50%">
+                <img src="https://images-na.ssl-images-amazon.com/images/I/41rWGxlUPHL._SX355_.jpg" alt="Hantel" width="180px" style="float:left; width: 200px;">
+            </div>
+            <div class="container" style="width: 50%;">
+                <p >Der Klimmzug (von klimmen, ein Synonym für „klettern“)
+                    ist eine Eigengewichtübung, bei der der Körper durch
+                    den Rücken in Zusammenarbeit mit den Armen an einer
+                    waagerechten Stange (Klimmzugstange) hochgezogen
+                    und wieder herabgelassen wird.</p>
+            </div>
+        </div>
+    </div>
+    <div id="container_youtubeEmbeding" style="height: 30%">
+        <iframe width="384" height="216" src="https://www.youtube.com/embed/kdiFoOpL4E8">
+        </iframe>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+</body>
+</html>
