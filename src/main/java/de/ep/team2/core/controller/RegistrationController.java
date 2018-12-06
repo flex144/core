@@ -42,10 +42,10 @@ public class RegistrationController {
     public String registerUser(@ModelAttribute("user") RegistrationDto userDto, Model model) {
         String errorMessage = userService.checkToCreateUser(userDto);
         if (errorMessage.equals("")) {
-            model.addAttribute("success", "Profil erstellt!");
+            return "redirect:/welcome";
         } else {
             model.addAttribute("errorMessage", errorMessage);
+            return "registration";
         }
-        return "registration";
     }
 }

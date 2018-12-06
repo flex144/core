@@ -40,7 +40,7 @@ public class DataBaseServiceUnitTests {
     public void addUser() {
         DataBaseService db = DataBaseService.getInstance();
         assertNull(db.getUserByEmail("Hallo@test.com"));
-        db.insertUser("Hallo@test.com","Hallo","Test");
+        db.insertUser("Hallo@test.com","Hallo","Test", "123");
         assertTrue(db.getUserByEmail("Hallo@test.com").toString().contains("hallo@test.com"));
         db.deleteUserById(db.getUserByEmail("Hallo@test.com").getId());
     }
@@ -51,7 +51,7 @@ public class DataBaseServiceUnitTests {
         assertNotNull(db.getUserById(1));
         db.deleteUserById(1);
         assertNull(db.getUserById(1));
-        db.insertUser("timo@gmail123.com", "Timo", "Heinrich");
+        db.insertUser("timo@gmail123.com", "Timo", "Heinrich", "123");
     }
 
     @Test

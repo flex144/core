@@ -54,7 +54,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .anyRequest().authenticated()
                 .and()
                     .authorizeRequests()
-                    .antMatchers("/resources/**", "/registration").permitAll()
+                    .antMatchers("/resources/**", "/registration", "/welcome").permitAll()
                     .anyRequest().permitAll()
                 .and()
                     .formLogin().successHandler(customAuthSuccessHandler)

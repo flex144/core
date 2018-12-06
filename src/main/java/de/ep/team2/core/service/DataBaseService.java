@@ -85,7 +85,7 @@ public class DataBaseService {
      */
     public User getUserByEmail(String email) {
         LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT id, email, first_name, last_name FROM users WHERE " +
+                "SELECT id, email, first_name, last_name, password FROM users WHERE " +
                         "email = ?",
                 new String[]{email.toLowerCase()},
                 new BeanPropertyRowMapper<>(User.class)));
@@ -118,7 +118,7 @@ public class DataBaseService {
      * @param password Password, as Hash, of the User.
      */
     public void insertUser(String email, String firstName, String lastName, String password){
-        Object[] toInsert = {email, firstName, lastName, password, true, "ROLE_USER"};
+        Object[] toInsert = {email.toLowerCase(), firstName, lastName, password, true, "ROLE_USER"};
         if (getUserByEmail(email) != null) {
             log.info("Insert User failed! Email " + email + " already in the " +
                     "Database!");

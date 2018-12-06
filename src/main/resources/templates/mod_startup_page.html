@@ -11,12 +11,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <style>
-        .glyphicon{
-            font-size: 5rem;
-        }
-    </style>
-
     <div th:include="/fragments/navbar :: navbar_style"></div>
 </head>
 
@@ -37,7 +31,7 @@
                             <!--------- Training Page ---------->
                             <a th:href="@{/mods/searchplan}" type="button"
                                class="btn btn-success" style="height: 100%; width: 100%;">
-                                <span class="glyphicon glyphicon-th-list"></span><br>
+                                <span class="glyphicon glyphicon-th-list" style="font-size: 5rem;"></span><br>
                                 Pläne
                             </a>
                         </div>
@@ -47,7 +41,7 @@
                             <!--------- Social Page ---------->
                             <a th:href="@{/mods/searchuser}" type="button"
                                class="btn btn-info" style="height: 100%; width: 100%;">
-                                <span class="glyphicon glyphicon-user"></span><br>
+                                <span class="glyphicon glyphicon-user" style="font-size: 5rem;"></span><br>
                                 Nutzerverwaltung
                             </a>
                         </div>
@@ -63,7 +57,7 @@
                             <!--------- Statistics Page---------->
                             <a type="button"
                                class="btn btn-primary" style="height: 100%; width: 100%;">
-                                <span class="glyphicon glyphicon-book"></span><br>
+                                <span class="glyphicon glyphicon-book" style="font-size: 5rem;"></span><br>
                                 Statistiken
                             </a>
                         </div>
@@ -73,7 +67,7 @@
                             <!--------- contacting-trainer Page ---------->
                             <a th:href="@{/mods/searchexercise}" type="button"
                                class="btn btn-info" style="height: 100%; width: 100%;">
-                                <span class="glyphicon glyphicon-edit"></span><br>
+                                <span class="glyphicon glyphicon-edit" style="font-size: 5rem;"></span><br>
                                 Übungsverwaltung
                             </a>
                         </div>

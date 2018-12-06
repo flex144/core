@@ -23,7 +23,7 @@ public class IndexController {
         return "mod_user_search";
     }
 
-    @RequestMapping(value = {"/welcome"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/welcome"}, method = RequestMethod.GET)
     public String welcome() { return "user_welcome_page";}
 
     /**
@@ -38,6 +38,4 @@ public class IndexController {
         model.addAttribute("users", userService.getAllUsers());
         return "mod_user_search";
     }
-
-
 }

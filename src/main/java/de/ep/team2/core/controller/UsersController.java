@@ -81,6 +81,8 @@ public class UsersController {
      * @return at success redirect to the 'user_data' page. If something went
      * wrong goes back to the login page(returns "login_page".
      */
+
+    /* Depricated
     @RequestMapping(value = "", method = RequestMethod.POST)
     public String createUser(@ModelAttribute("user") User user
             , RedirectAttributes redirectAttributes) {
@@ -102,6 +104,7 @@ public class UsersController {
         model.addAttribute("errorMessage", errorMessage);
         return "login_page";
     }
+    */
 
     /**
      * Checks if the String is an Integer.
@@ -109,7 +112,7 @@ public class UsersController {
      * @param toCheck String to check.
      * @return true if String is an Integer, otherwise false.
      */
-    private boolean isInteger(String toCheck) {
+    static boolean isInteger(String toCheck) {
         try {
             Integer.parseInt(toCheck);
         } catch (NumberFormatException numberFormatException) {

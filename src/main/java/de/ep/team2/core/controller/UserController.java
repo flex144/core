@@ -19,7 +19,7 @@ public class UserController {
 
     @RequestMapping("/plan")
     public String plan() {
-        return "user_training_start";
+        return "user_in_exercise";
     }
 
     @RequestMapping("/plan/done")
