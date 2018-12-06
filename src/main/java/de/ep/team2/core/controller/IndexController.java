@@ -49,6 +49,9 @@ public class IndexController {
         return "mod_user_search";
     }
 
+    @RequestMapping(value = {"/welcome"}, method = RequestMethod.POST)
+    public String welcome() { return "user_welcome_page";}
+
     /**
      * This method searches for all Users in the Database and adds them to the model
      * of the Thymeleaf Html-Website.
