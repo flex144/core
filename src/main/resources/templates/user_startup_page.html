@@ -14,6 +14,11 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <div th:include="/fragments/navbar :: navbar_style"></div>
+    <style>
+        .glyphicon{
+            font-size: 5rem;
+        }
+    </style>
 </head>
 
 <body>
@@ -21,27 +26,64 @@
 
 <div class="container" style="padding: 5%">
     <div class="jumbotron">
-        <!--------- Training Page ---------->
-        <a th:href="@{/user/plan}" type="button"
-           class="btn btn-default btn-block">
-            Training starten
-        </a>
-        <!--------- Social Page ---------->
-        <a type="button"
-           class="btn btn-default btn-block">
-            Social
-        </a>
-        <!--------- Statistics Page---------->
-        <a type="button"
-           class="btn btn-default btn-block">
-            Statistiken
-        </a>
-        <!--------- contacting-trainer Page ---------->
-        <a type="button"
-           class="btn btn-default btn-block">
-            Trainer kontaktieren
-        </a>
+        <div class="container" style="text-align: center; height: 200px">
+            <h1>Willkommen zurück</h1>
+            <div > Begrüßungstext für Nutzer</div>
+        </div>
+        <div style="width: 100%; text-align: center; padding-bottom: 20px">
+            <table style="width: 100%; text-align: center; padding-bottom: 20px">
+                <tr style="height: 100px;">
+                    <td style="width: 50%; height: inherit;">
+                        <div class="container" style="height: 100%; width: 100%;">
+                            <!--------- Training Page ---------->
+                            <a th:href="@{/user/plan}" type="button"
+                               class="btn btn-success" style="height: 100%; width: 100%;">
+                                <span class="glyphicon glyphicon-th-list"></span><br>
+                                Training starten
+                            </a>
+                        </div>
+                    </td>
+                    <td style="width: 50%; height: inherit;">
+                        <div class="container" style="height: 100%; width: 100%;">
+                            <!--------- Social Page ---------->
+                            <a type="button"
+                               class="btn btn-info" style="height: 100%; width: 100%;">
+                                <span class="glyphicon glyphicon-thumbs-up"></span><br>
+                                Social
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="width: 100%; text-align: center; padding-bottom: 20px">
+            <table style="width: 100%; text-align: center; padding-bottom: 20px">
+                <tr style="height: 100px;">
+                    <td style="width: 50%; height: inherit;">
+                        <div class="container" style="height: 100%; width: 100%;">
+                            <!--------- Statistics Page---------->
+                            <a type="button"
+                               class="btn btn-primary" style="height: 100%; width: 100%;">
+                                <span class="glyphicon glyphicon-book"></span><br>
+                                Statistiken
+                            </a>
+                        </div>
+                    </td>
+                    <td style="width: 50%; height: inherit;">
+                        <div class="container" style="height: 100%; width: 100%;">
+                            <!--------- contacting-trainer Page ---------->
+                            <a type="button"
+                               class="btn btn-secondary" style="height: 100%; width: 100%;">
+                                <span class="glyphicon glyphicon-bell"></span><br>
+                                Trainer kontaktieren
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>
+
 </body>
 </html>
