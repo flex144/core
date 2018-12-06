@@ -17,141 +17,430 @@
 <div th:replace="/fragments/navbar :: navbar_user"></div>
 
 <div class="container">
-    <br>
-    <br>
-    <div class="jumbotron">
-        <h2>Angaben für deinen individuellen Trainingsplan</h2>
-        &ensp;
-        <p style="font-size: 12pt">Fülle das folgende Formular aus und schicke deine Daten ab. Anschließend erhältst du
-            dein Einstufungstraining</p>
-    </div>
-    <!-- Verkleinern und zentrieren: <div class="col-md-1"></div>-->
-    <div class="col-md-12">
-        <form th:align="center">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="firstname">Vorname:</label>
-                        <input  type="text" class="form-control" id="firstname"
-                                placeholder="Hier deinen Vornamen eingeben..."
-                                required>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h2>Relevante Informationen für deinen individuellen Trainingsplan angeben</h2>
+            <br>
+            <p style="font-size: 16px">
+                Fülle jeweils das aktuelle Formular oder triff deine Wahl und bestätige deine Angaben mit
+                einem Klick auf den Button <mark>"Weiter"</mark>. Nachdem du alle notwendigen Informationen
+                angegeben hast, werden dir deine Angaben noch einmal angezeigt und du kannst diese endgültig
+                absenden.
+            </p>
+            <br>
+            <div id="myCarousel" class="carousel slide" data-interval="false">
+                <div class="carousel-inner">
+                    <!-- Carousel page for personal data input -->
+                    <div class="item active">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8" align="center">
+                                        <h5><b>Persönliche Daten eingeben</b></h5>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a href="#myCarousel" class="btn btn-success btn-block" data-slide="next">
+                                            Weiter
+                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="col-md-12">
+                                    <form>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="firstname">Vorname:</label>
+                                                    <input  type="text" class="form-control" id="firstname"
+                                                            placeholder="Hier deinen Vornamen eingeben..."
+                                                            required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="lastname">Nachname:</label>
+                                                    <input  type="text" class="form-control" id="lastname"
+                                                            placeholder="Hier deinen Nachnamen eingeben..."
+                                                            required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="gender">Geschlecht auswählen</label>
+                                                    <select id="gender" class="form-control" required>
+                                                        <option selected disabled hidden>Wähle eine Option aus...</option>
+                                                        <option>Männlich</option>
+                                                        <option>Weiblich</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="age">Alter:</label>
+                                                    <input  type="text" class="form-control" id="age"
+                                                            placeholder="Hier deinen Alter eingeben...">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="height">Körpergröße: (in cm)</label>
+                                                    <input  type="number" class="form-control" id="height"
+                                                            placeholder="Hier deine Größe in cm eingeben...">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="weight">Gewicht: (in kg)</label>
+                                                    <input  type="number" class="form-control" id="weight"
+                                                            placeholder="Hier dein Gewicht in kg eingeben...">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carousel page to determine the users experience level -->
+                    <div class="item">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <a href="#myCarousel" class="btn btn-danger btn-block" data-slide="prev">
+                                            <span class="glyphicon glyphicon-chevron-left"></span>
+                                            Zurück
+                                        </a>
+                                    </div>
+                                    <div class="col-md-8" align="center">
+                                        <h5><b>Erfahrungsstufe auswählen</b></h5>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a href="#myCarousel" class="btn btn-success btn-block" data-slide="next">
+                                            Weiter
+                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <!--<div class="col-md-10"></div>-->
+                                    <div class="col-md-12" align="center">
+                                        Erfahrungsstufe hier auswählen
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carousel page to choose the trainingsfocus -->
+                    <div class="item">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <a href="#myCarousel" class="btn btn-danger btn-block" data-slide="prev">
+                                            <span class="glyphicon glyphicon-chevron-left"></span>
+                                            Zurück
+                                        </a>
+                                    </div>
+                                    <div class="col-md-8" align="center">
+                                        <h5><b>Trainingsfokus auswählen</b></h5>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <br><br><br>
+                                        <div align="center">
+                                            Beispielbild
+                                        </div>
+                                        <br><br><br>
+                                        <p>
+                                            Beispielbeschreibung
+                                        </p>
+                                        <br><br><br>
+                                        <a class="btn btn-primary btn-block" onclick="jumpToFocus1()">
+                                            Muskelfokus
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <br><br><br>
+                                        <div align="center">
+                                            Beispielbild
+                                        </div>
+                                        <br><br><br>
+                                        <p>
+                                            Beispielbeschreibung
+                                        </p>
+                                        <br><br><br>
+                                        <a class="btn btn-primary btn-block" onclick="jumpToFocus2()">
+                                            Ausdauerfokus
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <br><br><br>
+                                        <div align="center">
+                                            Beispielbild
+                                        </div>
+                                        <br><br><br>
+                                        <p>
+                                            Beispielbeschreibung
+                                        </p>
+                                        <br><br><br>
+                                        <a class="btn btn-primary btn-block" onclick="jumpToFocus3()">
+                                            Schmerzreduktion
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carousel page with information about the musclefocus -->
+                    <div class="item">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <a class="btn btn-danger btn-block" onclick="jumpToChooseFocus()">
+                                            <span class="glyphicon glyphicon-chevron-left"></span>
+                                            Zurück
+                                        </a>
+                                    </div>
+                                    <div class="col-md-8" align="center">
+                                        <h5><b>Informationen zu Muskelfokus</b></h5>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a class="btn btn-success btn-block" onclick="jumpToEnd()">
+                                            Weiter
+                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <h2>Informationen zu Muskelfokus</h2>
+                                <p style="font-size: 14px">Beispielinhalt Beispielinhalt Beispielinhalt Beispielinhalt </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carousel page with information about the endurancefocus -->
+                    <div class="item">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <a class="btn btn-danger btn-block" onclick="jumpToChooseFocus()">
+                                            <span class="glyphicon glyphicon-chevron-left"></span>
+                                            Zurück
+                                        </a>
+                                    </div>
+                                    <div class="col-md-8" align="center">
+                                        <h5><b>Informationen zu Ausdauerfokus</b></h5>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a class="btn btn-success btn-block" onclick="jumpToEnd()">
+                                            Weiter
+                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body" align="center">
+                                <h2>Informationen zu Ausdauerfokus</h2>
+                                <p style="font-size: 14px">Beispielinhalt Beispielinhalt Beispielinhalt Beispielinhalt </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carousel page with information about the pain-reduction -->
+                    <div class="item">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <a class="btn btn-danger btn-block" onclick="jumpToChooseFocus()">
+                                            <span class="glyphicon glyphicon-chevron-left"></span>
+                                            Zurück
+                                        </a>
+                                    </div>
+                                    <div class="col-md-8" align="center">
+                                        <h5><b>Informationen zur Schmerzreduktion</b></h5>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a class="btn btn-success btn-block" onclick="jumpToEnd()">
+                                            Weiter
+                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <h2>Informationen zur Schmerzreduktion</h2>
+                                <p style="font-size: 14px">Beispielinhalt Beispielinhalt Beispielinhalt Beispielinhalt </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carousel page with final information and preview -->
+                    <div class="item">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <a class="btn btn-danger btn-block" onclick="jumpToChooseFocus()">
+                                            <span class="glyphicon glyphicon-chevron-left"></span>
+                                            Zurück
+                                        </a>
+                                    </div>
+                                    <div class="col-md-8" align="center">
+                                        <h5><b>Abschlussseite</b></h5>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a type="button" data-toggle="modal" data-target="#modal_preview"
+                                           class="btn btn-success btn-block">
+                                            <span class="glyphicon glyphicon-blackboard"></span>
+                                            Vorschau
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                Content
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="lastname">Nachname:</label>
-                        <input  type="text" class="form-control" id="lastname"
-                                placeholder="Hier deinen Nachnamen eingeben..."
-                                required>
-                    </div>
-                </div>
             </div>
-
-            <!-- Input Nebeneinander -->
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="gender">Geschlecht auswählen</label>
-                        <select id="gender" class="form-control" required>
-                            <option selected disabled hidden>Wähle eine Option aus...</option>
-                            <option>Männlich</option>
-                            <option>Weiblich</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="age">Alter:</label>
-                        <input  type="text" class="form-control" id="age"
-                                placeholder="Hier deinen Alter eingeben...">
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="height">Körpergröße: (in cm)</label>
-                        <input  type="number" class="form-control" id="height"
-                                placeholder="Hier deine Größe in cm eingeben...">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="weight">Gewicht: (in kg)</label>
-                        <input  type="number" class="form-control" id="weight"
-                                placeholder="Hier dein Gewicht in kg eingeben...">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Input untereinander
-            <div class="form-group">
-                <label for="gender">Geschlecht auswählen</label>
-                <select id="gender" class="form-control" required>
-                    <option selected disabled hidden>Wähle eine Option aus...</option>
-                    <option>Männlich</option>
-                    <option>Weiblich</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="age">Alter</label>
-                <input  type="text" class="form-control" id="age"
-                placeholder="Hier deinen Alter eingeben...">
-            </div>
-
-            <div class="form-group">
-                <label for="height">Körpergröße (in cm)</label>
-                <input  type="number" class="form-control" id="height"
-                        placeholder="Hier deine Größe in cm eingeben...">
-            </div>
-
-            <div class="form-group">
-                <label for="weight">Gewicht (in kg)</label>
-                <input  type="number" class="form-control" id="weight"
-                        placeholder="Hier dein Gewicht in kg eingeben...">
-            </div>
-            -->
-
-            <div class="form-group">
-                <!-- Input mit eigener Eingabe + Vorschläge (autocomplete)
-                <label for="experienceLevel">Erfahrungsstufe auswählen</label>
-                <input type="text" name="experience" list="experienceLevel">
-                <datalist id="experienceLevel">
-                    <option value="Anfänger ohne Vorkenntnisse" />
-                    <option value="Anfänger mit geringen Vorkenntnissen" />
-                    <option value="Erfahren" />
-                    <option value="Profi" />
-                </datalist>
-                </input>
-                -->
-                <label for="experience">Erfahrungsstufe auswählen</label>
-                <select id="experience" class="form-control" required>
-                    <option selected disabled hidden>Wähle eine Option aus...</option>
-                    <option>Anfänger ohne Vorkenntnisse</option>
-                    <option>Anfänger mit geringen Vorkenntnissen</option>
-                    <option>Erfahren</option>
-                    <option>Profi</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="focus">Trainingsfokus auswählen</label>
-                <select id="focus" class="form-control" required>
-                    <option selected disabled hidden>Wähle eine Option aus...</option>
-                    <option>Muskelaufbau</option>
-                    <option>Ausdauer</option>
-                    <option>Schmerzreduktion</option>
-                </select>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-lg"
-                    th:href="@{/user/start}">Absenden
-            </button>
-        </form>
+        </div>
     </div>
 </div>
+
+<!-- Modal with example data to show at the end of carousel -->
+<div id="modal_preview" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Eingegebene persönliche Daten:</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleFirstname">Vorname:</label>
+                            <input  type="text" class="form-control" value="Benedikt" disabled id="exampleFirstname">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleLastname">Nachname:</label>
+                            <input  type="text" class="form-control" value="Schwarz" disabled id="exampleLastname">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleGender">Geschlecht:</label>
+                            <input id="exampleGender" type="text" class="form-control" disabled value="Männlich">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleAge">Alter:</label>
+                            <input id="exampleAge"  type="text" class="form-control" disabled value="21" >
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleHeight">Körpergröße: (in cm)</label>
+                            <input  type="text" class="form-control" id="exampleHeight" value="183" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleWeight">Gewicht: (in kg)</label>
+                            <input type="text" class="form-control" id="exampleWeight" value="80" disabled>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="exampleExperience">Gewählte Erfahrungsstufe:</label>
+                    <input id="exampleExperience" type="text" class="form-control" disabled value="Anfänger">
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleFocus">Gewählter Trainingsfokus:</label>
+                    <input id="exampleFocus" type="text" class="form-control" disabled value="Muskelfokus">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-danger btn-block" data-dismiss="modal">Zurück</button>
+                    </div>
+                    <div class="col-md-6"></div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-primary btn-block" onclick="sendData()">Absenden</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /**
+     * Function to jump to the crousel page to choose the focus
+     */
+    function jumpToChooseFocus() {
+        $('#myCarousel').carousel(2);
+    }
+
+    /**
+     * Function to jump to the crousel page with information to the page about musclefocus
+     */
+    function jumpToFocus1() {
+        $('#myCarousel').carousel(3);
+    }
+
+    /**
+     * Function to jump to the crousel page with information to the page about enduracefocus
+     */
+    function jumpToFocus2() {
+        $('#myCarousel').carousel(4);
+    }
+
+    /**
+     * Function to jump to the crousel page with information to the page about painreduction
+     */
+    function jumpToFocus3() {
+        $('#myCarousel').carousel(5);
+    }
+
+    /**
+     * Function to jump to the crousel page to choose the final page
+     */
+    function jumpToEnd() {
+        $('#myCarousel').carousel(6);
+    }
+
+    /**
+     * Temporary function to show alert after data is supposed to be stored
+     */
+    function sendData() {
+        alert("Persönliche Daten wurden gespeichert");
+    }
+</script>
 </body>
 </html>
