@@ -1,5 +1,8 @@
 package de.ep.team2.core.dtos;
 
+/**
+ * Data Transfer Object, used for the registration form.
+ */
 public class RegistrationDto {
 
     private String email;

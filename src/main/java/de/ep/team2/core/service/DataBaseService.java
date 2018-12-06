@@ -86,7 +86,7 @@ public class DataBaseService {
      * @return Returns a List of Users.
      */
     public List<User> getAllUsers() {
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT id, email, first_name, last_name, role FROM users";
         List<User> toReturn = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
 
         return toReturn;

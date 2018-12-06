@@ -17,6 +17,8 @@ import java.util.regex.Pattern;
 @Component
 public class UserService {
 
+    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public User getUserByID(Integer id) {
         return DataBaseService.getInstance().getUserById(id);
     }
@@ -70,9 +72,19 @@ public class UserService {
      * @return Password as a hash value.
      */
     public String encode(String pw) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String hashedPw = passwordEncoder.encode(pw);
         return hashedPw;
+    }
+
+    /**
+     * Function to see, if a password in plain text matches the hash of the encrypted version of the password.
+     * It calls the matches function of the BCrypt PasswordEncoder.
+     * @param pw Password in plaintext
+     * @param encryptedPw Password as hash
+     * @return True, if passwords match. False, if not.
+     */
+    public boolean pwMatches(String pw, String encryptedPw) {
+        return passwordEncoder.matches(pw, encryptedPw);
     }
 
     /**

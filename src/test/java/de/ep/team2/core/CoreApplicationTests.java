@@ -51,54 +51,20 @@ public class CoreApplicationTests {
         //Get User-profile from existing user with e-mail
         action = mvc.perform(get("/users/alex@gmail.com"));
         assertTrue(action.andReturn().getResponse().getContentAsString().contains("Reißig"));
-
-        /**
-        assertTrue(restTemplate.getForObject("/users/1", String.class)
-                .contains("Heinrich"));
-        assertTrue(restTemplate.getForObject("/users/235", String.class)
-                .contains("Benutzer nicht gefunden!"));
-        assertTrue(restTemplate.getForObject("/users/alex@gmail.com",
-                String.class)
-                .contains("Reißig"));
-         */
     }
 
-    @WithMockUser
+    /**
+     * Gets now tested with Acceptance test.
+     */
     @Test
-    public void deleteUser() throws Exception {
-        //Delete User with ID 1
-        TestRestTemplate restTemplate = new TestRestTemplate();
-        restTemplate.delete("http://localhost:8080/users/1");
-        ResultActions action = mvc.perform(get("/users/1"));
-        String result = action.andReturn().getResponse().getContentAsString();
-        assertTrue(action.andReturn().getResponse().getContentAsString().contains("Benutzer nicht gefunden!"));
-
-        /**
-        restTemplate.delete("http://localhost:8080/users/1");
-        assertTrue(restTemplate.getForObject("/users/1", String.class)
-                .contains("Benutzer nicht gefunden!"));
-        HttpEntity<String> response = restTemplate.exchange(
-                "http://localhost:8080/users/1", HttpMethod.DELETE, null,
-                String.class);
-        assertTrue(response.getBody().contains("Benutzer existiert nicht!"));
-        HttpEntity<String> response2 = restTemplate.exchange(
-                "http://localhost:8080/users/eg93434", HttpMethod.DELETE, null,
-                String.class);
-        assertTrue(response2.getBody().contains("ID nicht valide!"));
-         */
+    public void deleteUser() {
     }
 
+    /**
+     * Gets now tested with Acceptance test.
+     * https://jira.sepws18.padim.fim.uni-passau.de/secure/attachment/10015/acceptance-test-session.txt
+     */
     @Test
     public void addUser() {
-        /*
-        assertTrue(restTemplate.getForObject("/users/Test@gmail.com",
-                String.class)
-                .contains("Benutzer nicht gefunden!"));
-        // refactor with restTemplate Post
-        DataBaseService.getInstance().insertUser("Test@gmail.com", null, null, "123");
-        assertTrue(restTemplate.getForObject("/users/Test@gmail.com",
-                String.class)
-                .contains("Test@gmail.com"));
-                */
     }
 }
