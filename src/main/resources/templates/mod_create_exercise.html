@@ -38,12 +38,11 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="form-group">
-                        <label for="description">Beschreibung der Übung:</label>
-                        <textarea id="description" class="form-control" rows="6" th:field="*{description}"></textarea>
+                        <label for="description">Beschreibung der Übung: (Optional)</label>
+                        <textarea id="description" class="form-control" rows="6" th:field="*{description}" maxlength="2000"></textarea>
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
@@ -56,8 +55,28 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="displaySelected">Ausgewählte Muskelgruppen:</label>
+                        <span id="displaySelected"></span>
+                        <label for="inputMuscle">Muskelgruppe Hinzufügen:</label>
+                        <input id="inputMuscle" type="text" name="muscleGroup"
+                               class="form-control" list="stored_muscleGroups">
+                        <datalist id="stored_muscleGroups">
+                            <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).BRUST.getName()}"></option>
+                            <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).BIZEPS.getName()}"></option>
+                            <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).TRIZEPS.getName()}"></option>
+                            <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).ABDOMINALS.getName()}"></option>
+                        </datalist>
+                        </input>
+                        <button id="addMuscle" onclick="addToList()" type="button">Hinzufügen</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
+                        <p style="font-size: 10px" class="text-muted">Damit das Video korrekt angezeigt wird muss der Einbettungslink zu einem Youtubevideo verwendet werden </p>
                         <label for="videoLink1">Erklärungsvideos: (Optional)</label>
                         <input  type="url" class="form-control" id="videoLink1"
                                 placeholder="Hier Link zu einem Erklärungsvideo einfügen..." th:field="*{videoLink}">
@@ -67,7 +86,8 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <p style="font-size: 10px" class="text-muted">Maximale Dateigröße: 1 MB; Unterstützte Dateitypen: .jpg, .png; <br/>
+                        <p style="font-size: 10px" class="text-muted">Maximale Uploadgröße pro Bildergruppe: 10 MB; <br/>
+                            Unterstützte Dateitypen: .jpg, .png; <br/>
                             Um mehrere Bilder hochzuladen müssen Sie bei "Dateien auswählen", <br/>
                             die gewünscheten Bilder markieren(Strg + Linksklick) und auf "öffnen" klicken; <br/>
                             Laden sie keine Bilder mit gleichem namen, bei der gleichen Übung, hoch.</p>
@@ -77,7 +97,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="imageInput1">Muskelbild hochladen (Optional)</label>
+                        <label for="imageInput1">Muskelgruppen Bilder hochladen (Optional)</label>
                         <input  type="file" name="muscleImage" class="form-control" id="imageInput1" multiple>
                     </div>
                 </div>
@@ -86,7 +106,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="imageInput2">Anderes Bild hochladen (Optional)</label>
+                        <label for="imageInput2">Andere Bilder hochladen (Optional)</label>
                         <input  type="file" name="otherImage" class="form-control" id="imageInput2" multiple>
                         <output id="list"></output>
                     </div>
@@ -97,5 +117,20 @@
         </form>
     </div>
 </div>
+<script>
+    var selectedMuscles = [];
+    
+    function addToList() {
+        var toadd = document.getElementById('inputMuscle').value;
+        selectedMuscles.push(toadd);
+        document.getElementById('inputMuscle').value = "";
+        display();
+    }
+    
+    function display() {
+        document.getElementById("displaySelected").innerHTML = selectedMuscles;
+    }
+
+</script>
 </body>
 </html>
