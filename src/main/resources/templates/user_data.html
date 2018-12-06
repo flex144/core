@@ -122,19 +122,66 @@
                                     <div class="col-md-8" align="center">
                                         <h5><b>Erfahrungsstufe auswählen</b></h5>
                                     </div>
-                                    <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-success btn-block" data-slide="next">
-                                            Weiter
-                                            <span class="glyphicon glyphicon-chevron-right"></span>
-                                        </a>
-                                    </div>
+                                    <div class="col-md-2"></div>
                                 </div>
                             </div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <!--<div class="col-md-10"></div>-->
-                                    <div class="col-md-12" align="center">
-                                        Erfahrungsstufe hier auswählen
+                                    <div class="col-sm-3">
+                                        <br><br><br>
+                                        <div align="center">
+                                            Bild zur Veranschaulichung
+                                        </div>
+                                        <br><br><br>
+                                        <p>
+                                            Noch keine Trainingserfahrung
+                                        </p>
+                                        <br><br><br><br>
+                                        <a class="btn btn-primary btn-block" href="#myCarousel" data-slide="next">
+                                            Anfänger
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <br><br><br>
+                                        <div align="center">
+                                            Bild
+                                        </div>
+                                        <br><br><br>
+                                        <p>
+                                            Regelmäßiges Training in einem Zeitraum von unter einem Jahr
+                                        </p>
+                                        <br><br><br>
+                                        <a class="btn btn-primary btn-block" href="#myCarousel" data-slide="next">
+                                            Anfänger mit Vorkenntnissen
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <br><br><br>
+                                        <div align="center">
+                                            Bild
+                                        </div>
+                                        <br><br><br>
+                                        <p>
+                                            Regelmäßiges Training länger als ein Jahr
+                                        </p>
+                                        <br><br><br>
+                                        <a class="btn btn-primary btn-block" href="#myCarousel" data-slide="next">
+                                            Erfahren
+                                        </a>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <br><br><br>
+                                        <div align="center">
+                                            Bild
+                                        </div>
+                                        <br><br><br>
+                                        <p>
+                                            Regelmäßiges Training länger als 5 Jahre
+                                        </p>
+                                        <br><br><br>
+                                        <a class="btn btn-primary btn-block" href="#myCarousel" data-slide="next">
+                                            Profi
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -217,12 +264,13 @@
                                         </a>
                                     </div>
                                     <div class="col-md-8" align="center">
-                                        <h5><b>Informationen zu Muskelfokus</b></h5>
+                                        <h5><b>Informationen zum gewählten Muskelfokus</b></h5>
                                     </div>
                                     <div class="col-md-2">
-                                        <a class="btn btn-success btn-block" onclick="jumpToEnd()">
-                                            Weiter
-                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                        <a type="button" data-toggle="modal" data-target="#modal_preview"
+                                           class="btn btn-success btn-block">
+                                            <span class="glyphicon glyphicon-blackboard"></span>
+                                            Vorschau
                                         </a>
                                     </div>
                                 </div>
@@ -245,12 +293,13 @@
                                         </a>
                                     </div>
                                     <div class="col-md-8" align="center">
-                                        <h5><b>Informationen zu Ausdauerfokus</b></h5>
+                                        <h5><b>Informationen zum gewählten Ausdauerfokus</b></h5>
                                     </div>
                                     <div class="col-md-2">
-                                        <a class="btn btn-success btn-block" onclick="jumpToEnd()">
-                                            Weiter
-                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                        <a type="button" data-toggle="modal" data-target="#modal_preview"
+                                           class="btn btn-success btn-block">
+                                            <span class="glyphicon glyphicon-blackboard"></span>
+                                            Vorschau
                                         </a>
                                     </div>
                                 </div>
@@ -273,12 +322,13 @@
                                         </a>
                                     </div>
                                     <div class="col-md-8" align="center">
-                                        <h5><b>Informationen zur Schmerzreduktion</b></h5>
+                                        <h5><b>Informationen zur gewählten Schmerzreduktion</b></h5>
                                     </div>
                                     <div class="col-md-2">
-                                        <a class="btn btn-success btn-block" onclick="jumpToEnd()">
-                                            Weiter
-                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                        <a type="button" data-toggle="modal" data-target="#modal_preview"
+                                            class="btn btn-success btn-block">
+                                            <span class="glyphicon glyphicon-blackboard"></span>
+                                            Vorschau
                                         </a>
                                     </div>
                                 </div>
@@ -289,7 +339,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Carousel page with final information and preview -->
+                    <!-- Carousel page with final information and preview
                     <div class="item">
                         <div class="panel panel-success">
                             <div class="panel-heading">
@@ -316,7 +366,7 @@
                                 Content
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -431,9 +481,11 @@
     /**
      * Function to jump to the crousel page to choose the final page
      */
+    /*
     function jumpToEnd() {
         $('#myCarousel').carousel(6);
     }
+    */
 
     /**
      * Temporary function to show alert after data is supposed to be stored

@@ -16,7 +16,7 @@
 </head>
 <body>
 <div class="container" style="padding-top: 20px">
-    <!-- Standard-Navbar -->
+    <!-- Custom navbar for welcome page with just one button -->
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -30,8 +30,8 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right" style="padding-left: 15px">
-                    <a th:href="@{/user/home}" type="button" class="btn btn-default navbar-btn">
-                        Direkt weiter zur Webseite <span class="glyphicon glyphicon-arrow-right"></span>
+                    <a th:href="@{/login}" type="button" class="btn btn-default navbar-btn">
+                        Zur Anmeldung <span class="glyphicon glyphicon-arrow-right"></span>
                     </a>
                 </ul>
             </div>
@@ -40,6 +40,7 @@
 </div>
 
 <div class="container">
+    <!-- Panel with welcome message and general information -->
     <div class="panel panel-default">
         <div class="panel-heading">
             <h2>Willkommen bei "Core"</h2>
@@ -47,7 +48,7 @@
             <p style="font-size: 12pt">Allgemeine Infos zur Webseite</p>
         </div>
     </div>
-
+    <!-- Panel with information on how to create an individual trainingsplan -->
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4>Trainingsplan erstellen</h4>
@@ -58,6 +59,7 @@
             </p>
         </div>
     </div>
+    <!-- Panel with information on how to train with the website -->
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4>Mit der Webseite trainieren</h4>
@@ -68,6 +70,7 @@
             </p>
         </div>
     </div>
+    <!-- Panel with additional information -->
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4>Weitere Infos</h4>
@@ -81,8 +84,8 @@
             <div class="row">
                 <div class="col-md-9"></div>
                 <div class="col-md-3">
-                    <a th:href="@{/user/home}" type="button" class="btn btn-default btn-block">
-                        Weiter zur Webseite <span class="glyphicon glyphicon-arrow-right"></span>
+                    <a th:href="@{/login}" type="button" class="btn btn-default btn-block">
+                        Zur Anmeldung <span class="glyphicon glyphicon-arrow-right"></span>
                     </a>
                 </div>
             </div>
