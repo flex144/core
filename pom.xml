@@ -85,11 +85,10 @@
                 The server can't be started with the IDEs run function now.
                 After disabling this config, the server has to be started
                 one more time with the maven goal.
-                Then the server can be started in the IDE again.
+                Then the server can be started in the IDE again. -->
 				<configuration>
 					<addResources>true</addResources>
 				</configuration>
-				-->
 			</plugin>
 		</plugins>
 	</build>
