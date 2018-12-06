@@ -22,3 +22,10 @@ Or Type the following command from the root directory of the project to run it.
 
 --bash
 mvn spring-boot:run
+
+**4. File upload**
+
+At the current version the server is configurated to support file upload without restarting the server.
+With this enabled the server can't be booted in the IDE but only with a maven goal execute via shell or maven projects in IntelliJ.
+To change that go to pom.xml to <build> and follow instructions. Tests may not run when config isn't changed.
+To be reworked next Sprint.
