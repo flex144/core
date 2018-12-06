@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head lang="en">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -441,7 +441,9 @@
                     </div>
                     <div class="col-md-6"></div>
                     <div class="col-md-3">
-                        <button type="button" class="btn btn-primary btn-block" onclick="sendData()">Absenden</button>
+                        <a type="button" class="btn btn-primary btn-block" th:href="@{/user/plan}">
+                            Absenden
+                        </a>
                     </div>
                 </div>
             </div>
