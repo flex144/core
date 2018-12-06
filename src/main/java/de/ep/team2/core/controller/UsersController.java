@@ -86,6 +86,7 @@ public class UsersController {
             , RedirectAttributes redirectAttributes) {
         UserService userService = new UserService();
         String email = user.getEmail();
+        String password = user.getPassword();
         String errorMessage;
         if (email == null || email.isEmpty()) {
             errorMessage = "E-Mail Feld muss ausgefüllt werden!";
@@ -94,15 +95,12 @@ public class UsersController {
         } else if (userService.getUserByEmail(email) != null) {
             errorMessage = "E-Mail existiert bereits!";
         } else {
-            try {
-                userService.createUser(email, null, null);
-                return "redirect:/user/new";
-            } catch (IllegalArgumentException exception) {
-                errorMessage = "E-Mail existiert bereits!";
-            }
+            userService.createUser(email, null, null, password);
+            User addedUser = userService.getUserByEmail(email);
+            return String.format("redirect:/user/new", addedUser.getId());
         }
-        redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
-        return "redirect:/login";
+        model.addAttribute("errorMessage", errorMessage);
+        return "login_page";
     }
 
     /**
@@ -111,7 +109,7 @@ public class UsersController {
      * @param toCheck String to check.
      * @return true if String is an Integer, otherwise false.
      */
-    static boolean isInteger(String toCheck) {
+    private boolean isInteger(String toCheck) {
         try {
             Integer.parseInt(toCheck);
         } catch (NumberFormatException numberFormatException) {

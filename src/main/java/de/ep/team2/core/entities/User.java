@@ -4,14 +4,15 @@ package de.ep.team2.core.entities;
  * Class which represents a User of the Database table 'users'.
  */
 public class User {
-    private int id;
-    private String email, firstName, lastName;
+    private long id;
+    private String email, firstName, lastName, password;
 
-    public User(int id,  String email, String firstName, String lastName) {
+    public User(long id,  String email, String firstName, String lastName, String password) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.password = password;
     }
 
     public User(){}
@@ -23,11 +24,11 @@ public class User {
                 id, email, firstName, lastName);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -54,4 +55,8 @@ public class User {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    public String getPassword() { return password; }
+
+    public void setPassword(String password) {this.password = password; }
 }

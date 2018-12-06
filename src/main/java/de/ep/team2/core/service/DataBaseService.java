@@ -1,6 +1,5 @@
 package de.ep.team2.core.service;
 
-
 import de.ep.team2.core.CoreApplication;
 import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.entities.User;
@@ -103,8 +102,10 @@ public class DataBaseService {
      * @return Returns a List of Users.
      */
     public List<User> getAllUsers() {
-        return jdbcTemplate.query(
-                "SELECT * FROM users", new BeanPropertyRowMapper<>(User.class));
+        String sql = "SELECT id, email, first_name, last_name, role FROM users";
+        List<User> toReturn = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
+
+        return toReturn;
     }
 
     /**
@@ -113,19 +114,18 @@ public class DataBaseService {
      *
      * @param email     Email of the User.
      * @param firstName First Name of the User.
-     * @param lastName  Last Name of the User.
+     * @param lastName Last Name of the User.
+     * @param password Password, as Hash, of the User.
      */
-    public void insertUser(String email, String firstName, String lastName) {
-        String mail = email.toLowerCase();
-        if (getUserByEmail(mail) != null) {
+    public void insertUser(String email, String firstName, String lastName, String password){
+        Object[] toInsert = {email, firstName, lastName, password, true, "ROLE_USER"};
+        if (getUserByEmail(email) != null) {
             log.info("Insert User failed! Email " + email + " already in the " +
                     "Database!");
             throw new IllegalArgumentException("Email already in the Database!");
         }
-        String[] toInsert = {email.toLowerCase(), firstName, lastName};
-        jdbcTemplate.update("INSERT INTO users(email, first_name, last_name) " +
-                        "VALUES (?,?,?)",
-                toInsert);
+        jdbcTemplate.update("INSERT INTO users(email, first_name, last_name, password, enabled, role) " +
+                        "VALUES (?,?,?,?,?,?)", toInsert);
         log.info("User '" + firstName + " " + lastName + "' with mail: '"
                 + email + "' inserted in Table 'users' with Id "
                 + getUserByEmail(email).getId() + " !");
@@ -143,6 +143,18 @@ public class DataBaseService {
                     new Integer[]{id});
             log.info("User '" + toDelete.getFirstName() + " " + toDelete.getLastName()
                     + "' with mail: '" + toDelete.getEmail() + "' deleted!");
+        }
+    }
+
+    /**
+     * Promotes a regular user to a moderator.
+     * @param id user to promote.
+     */
+    public void changeToMod(Integer id) {
+        User toChange = getUserById(id);
+        if (toChange != null) {
+            jdbcTemplate.update("UPDATE users SET role = 'ROLE_MOD' WHERE id = ?", new Object[]{id});
+            log.info("User '" + toChange.getFirstName() + " " + toChange.getLastName() + "' is now Mod!");
         }
     }
 

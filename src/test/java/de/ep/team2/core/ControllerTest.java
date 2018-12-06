@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -15,13 +14,13 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.junit.Assert.assertTrue;
 
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CoreApplicationTests {
+public class ControllerTest {
 
     @Autowired
     private WebApplicationContext context;
@@ -36,35 +35,38 @@ public class CoreApplicationTests {
                 .build();
     }
 
+    @Test
+    public void getLogin() throws Exception{
+        ResultActions action = mvc.perform(get("/"));
+        int status = action.andReturn().getResponse().getStatus();
+        assertTrue("expected status code = 200; current status code = " + status, status == 200);
+    }
+
     @WithMockUser
     @Test
     public void getUser() throws Exception {
-        //Get User-profile from existing user with user id
         ResultActions action = mvc.perform(get("/users/1"));
         assertTrue(action.andReturn().getResponse().getContentAsString().contains("Heinrich"));
-
-        //Get User-profile from non-existing user
-        action = mvc.perform(get("/users/235"));
-        assertTrue(action.andReturn().getResponse().getContentAsString()
-                .contains("Benutzer nicht gefunden!"));
-
-        //Get User-profile from existing user with e-mail
-        action = mvc.perform(get("/users/alex@gmail.com"));
-        assertTrue(action.andReturn().getResponse().getContentAsString().contains("Reißig"));
     }
 
-    /**
-     * Gets now tested with Acceptance test.
-     */
     @Test
-    public void deleteUser() {
+    public void getUserPageWithoutLogin () throws Exception {
+        ResultActions action = mvc.perform(get("/user/home"));
+        int status = action.andReturn().getResponse().getStatus();
+        assertTrue("expected status code = 302; current status code = " + status, status == 302);
+        String redirectURL = action.andReturn().getResponse().getHeader("Location");
+        assertTrue("redirect to login page", redirectURL.equals("http://localhost/login"));
     }
 
-    /**
-     * Gets now tested with Acceptance test.
-     * https://jira.sepws18.padim.fim.uni-passau.de/secure/attachment/10015/acceptance-test-session.txt
-     */
+    @WithMockUser
     @Test
-    public void addUser() {
+    public void getUserAccess () throws Exception {
+        ResultActions action = mvc.perform(get("/user/home"));
+        int status = action.andReturn().getResponse().getStatus();
+        assertTrue("expected status = 200, current status = " + status, status == 200);
+        action = mvc.perform(get("/mods/home"));
+        status = action.andReturn().getResponse().getStatus();
+        assertTrue("expected status = 403, current status = " + status, status==403);
     }
+
 }

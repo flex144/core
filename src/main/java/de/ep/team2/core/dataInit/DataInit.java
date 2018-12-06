@@ -2,6 +2,7 @@ package de.ep.team2.core.dataInit;
 
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
+import de.ep.team2.core.service.UserService;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,6 +20,7 @@ public class DataInit {
 
     private JdbcTemplate jdbcTemplate;
     private Logger log;
+    private UserService userService = new UserService();
 
     public DataInit(JdbcTemplate jdbcTemplate, Logger log) {
         this.jdbcTemplate = jdbcTemplate;
@@ -32,10 +34,12 @@ public class DataInit {
         log.info("Creating tables");
         jdbcTemplate.execute("DROP TABLE IF EXISTS users");
         jdbcTemplate.execute("CREATE TABLE users(" +
-                "id SERIAL NOT NULL, " +
-                "email VARCHAR(255) PRIMARY KEY NOT NULL," +
-                "first_name VARCHAR(255)," +
-                "last_name VARCHAR(255))");
+                "id SERIAL, email VARCHAR(255) NOT NULL ," +
+                " first_name VARCHAR(255), last_name VARCHAR(255) ," +
+                " password varchar(60) not null, " +
+                " enabled boolean not null default false, " +
+                " role varchar(20) not null," +
+                " primary key(email))");
         jdbcTemplate.execute("DROP TABLE IF EXISTS exercises CASCADE ");
         jdbcTemplate.execute("CREATE TABLE exercises(" +
                 "id SERIAL NOT NULL PRIMARY KEY," +
@@ -72,21 +76,18 @@ public class DataInit {
 
     private void fillUsers() {
         LinkedList<String[]> initTestData = new LinkedList<>();
-        String[] timo = {"timo@gmail.com", "Timo", "Heinrich"};
-        String[] alex = {"alex@gmail.com", "Alexander", "Reißig"};
-        String[] felix = {"felix@gmail.com", "Felix", "Wilhelm"};
-        String[] yannick = {"yannick@gmail.com", null, null};
+        String[] timo = {"timo@gmail.com", "Timo", "Heinrich", userService.encode("hello")};
+        String[] alex = {"alex@gmail.com", "Alexander", "Reißig", userService.encode("password")};
+        String[] felix = {"felix@gmail.com", "Felix", "Wilhelm", userService.encode("123")};
+        String[] yannick = {"yannick@gmail.com", null, null, userService.encode("123")};
         initTestData.add(timo);
         initTestData.add(alex);
         initTestData.add(felix);
         initTestData.add(yannick);
         for (String[] o : initTestData) {
-            try {
-                DataBaseService.getInstance().insertUser(o[0], o[1], o[2]);
-            } catch (IllegalArgumentException exception) {
-                //do nothing
-            }
+            DataBaseService.getInstance().insertUser(o[0], o[1], o[2], o[3]);
         }
+        DataBaseService.getInstance().changeToMod(3);
     }
 
     private void fillExercises() {
