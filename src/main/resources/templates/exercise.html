@@ -59,10 +59,6 @@
                     <td><p th:text="${exercise.getName()}"></p></td>
                 </tr>
                 <tr>
-                    <th>Beschreibung</th>
-                    <td><p th:text="${exercise.getDescription()}"></p></td>
-                </tr>
-                <tr>
                     <th>Gewichtsart</th>
                     <td><p th:text="${exercise.getWeightType().getValue()}"></p></td>
                 </tr>
@@ -70,22 +66,53 @@
                     <th>Muskelgruppen</th>
                     <td><p>Brust, Trizeps</p></td>
                 </tr>
-                <tr>
-                    <th>Beispiel Video</th>
-                    <td><a th:href="@{${exercise.getVideoLink()}}" th:text="${exercise.getVideoLink()}"></a></td>
-                </tr>
                 </tbody>
             </table>
-            <div class="row">
-                <p th:if="${!exercise.getMuscleImgPaths().isEmpty()}">Muskelgruppen Bilder:</p>
-                <div th:each="path : ${exercise.getMuscleImgPaths()}" class="image">
-                    <img th:src="@{${path}}"/>
+            <div class="panel panel-default" th:if="${!exercise.getDescription().equals('')}">
+                <div class="panel-heading">
+                    Beschreibung:
                 </div>
-                <p th:if="${!exercise.getOtherImgPaths().isEmpty()}">Andere Bilder:</p>
-                <div th:each="path : ${exercise.getOtherImgPaths()}" class="image">
-                    <img th:src="@{${path}}"/>
+                <div class="panel-body">
+                    <p th:text="${exercise.getDescription()}"></p>
                 </div>
             </div>
+                <div class="panel panel-default" th:if="${!exercise.getVideoLink().equals('')}">
+                    <div class="panel-heading">
+                        Beispielvideo:
+                    </div>
+                    <div class="panel-body">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <iframe th:if="${!exercise.getVideoLink().equals('')}" width="560" height="315"
+                                    th:src="${exercise.getVideoLink()}"
+                                    frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default" th:if="${!exercise.getMuscleImgPaths().isEmpty()}">
+                    <div class="panel-heading">
+                        <p th:if="${!exercise.getMuscleImgPaths().isEmpty()}">
+                            Muskelgruppen Bilder:</p>
+                    </div>
+                    <div class="panel-body">
+
+                        <div th:each="path : ${exercise.getMuscleImgPaths()}"
+                             class="image">
+                            <img th:src="@{${path}}"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default" th:if="${!exercise.getOtherImgPaths().isEmpty()}">
+                    <div class="panel-heading">
+                        <p th:if="${!exercise.getOtherImgPaths().isEmpty()}">Andere
+                            Bilder:</p>
+                    </div>
+                    <div class="panel-body">
+                        <div th:each="path : ${exercise.getOtherImgPaths()}"
+                             class="image">
+                            <img th:src="@{${path}}"/>
+                        </div>
+                    </div>
+                </div>
         </div>
     </div>
     <div class="modal fade" id="confirm_delete">

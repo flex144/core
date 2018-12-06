@@ -116,7 +116,7 @@ public class DataInit {
                         "Hantelstange mit dem Daumen und den anderen Fingern " +
                         "vollständig zu umschließen ",
                 WeightType.FIXED_WEIGHT,
-                "https://www.youtube.com/watch?v=Br8FJCuR4a4", paths );
+                "https://www.youtube.com/embed/jYQtBKRs_D8", paths );
         List<String[]> paths2 = new LinkedList<>();
         paths2.add(new String[]{"/images/Liegestütz/Liegestuetze-Muskelgruppen.jpg", "muscle"});
         paths2.add(new String[]{"/images/Liegestütz/Liegestuetze-Startposition.jpg", "other"});
@@ -131,6 +131,6 @@ public class DataInit {
                         "(“neutrale Wirbelsäule”) wie beim Kreuzheben.\n" +
                         "Berühre den Boden unten mit deiner Brust, nicht mit " +
                         "dem Kopf.", WeightType.SELF_WEIGHT,
-                "https://youtu.be/e_1BDnOVKso", paths2);
+                "https://www.youtube.com/embed/e_1BDnOVKso", paths2);
     }
 }
