@@ -229,8 +229,8 @@ public class DataBaseService {
      */
     public Exercise getExerciseByName(String name) {
         LinkedList<Exercise> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT * FROM exercises WHERE exercises.name = ?",
-                new String[]{name},
+                "SELECT * FROM exercises WHERE lower(name) = ?",
+                new String[]{name.toLowerCase()},
                 new BeanPropertyRowMapper<>(Exercise.class)));
         if (toReturn.isEmpty()) {
             return null;
@@ -266,8 +266,8 @@ public class DataBaseService {
      */
     public List<Exercise> getExerciseListByName(String name) {
         if (name != null && !name.isEmpty()) {
-            String sql = String.format("SELECT * FROM exercises WHERE name " +
-                    "LIKE '%%%s%%'", name);
+            String sql = String.format("SELECT * FROM exercises WHERE lower(name) " +
+                    "LIKE '%%%s%%'", name.toLowerCase());
             LinkedList<Exercise> toReturn = new LinkedList<>(jdbcTemplate.query(
                     sql,
                     new BeanPropertyRowMapper<>(Exercise.class)));

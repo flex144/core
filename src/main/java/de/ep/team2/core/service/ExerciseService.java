@@ -3,8 +3,10 @@ package de.ep.team2.core.service;
 import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.enums.ImageType;
 import de.ep.team2.core.enums.WeightType;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.LinkedList;
@@ -90,26 +92,25 @@ public class ExerciseService {
     public void deleteExercise(int id) {
         DataBaseService db = DataBaseService.getInstance();
         Exercise toDelete = db.getExerciseById(id);
-        String dirDestString = "src/main/resources/static/images/" +  toDelete.getName();
-        Path dirDest = Paths.get(dirDestString);
         try {
-            if (!toDelete.getOtherImgPaths().isEmpty()) {
-                for (String s : toDelete.getOtherImgPaths()) {
-                    Path dest = Paths.get("src/main/resources/static" + s);
-                    Files.delete(dest);
-                }
-            }
-            if (!toDelete.getMuscleImgPaths().isEmpty()) {
-                for (String s : toDelete.getMuscleImgPaths()) {
-                    Path dest = Paths.get("src/main/resources/static" + s);
-                    Files.delete(dest);
-                }
-            }
-            Files.delete(dirDest);
+            FileUtils.deleteDirectory(new File("src/main/resources/static/images/" +
+                    toDelete.getName()));
         } catch (IOException exception) {
             System.err.println(exception.getMessage());
             return;
         }
         db.deleteExerciseById(id);
+    }
+
+    public List<Exercise> getAllExercises() {
+        return DataBaseService.getInstance().getAllExercises();
+    }
+
+    public List<Exercise> getExercisesByName(String name) {
+        if (name == null || name.equals("")) {
+            return getAllExercises();
+        } else {
+            return DataBaseService.getInstance().getExerciseListByName(name);
+        }
     }
 }
