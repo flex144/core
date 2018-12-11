@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
 
     <div th:include="/fragments/navbar :: navbar_style"></div>
 
@@ -18,9 +20,6 @@
         }
         ul {
             list-style-type: none;
-        }
-        textarea{
-            resize: none;
         }
     </style>
 </head>
@@ -58,6 +57,7 @@
                         <option>Muskelaufbau</option>
                         <option>Ausdauer</option>
                         <option>Schmerzreduktion</option>
+                        <option>Gewichtsreduktion</option>
                     </select>
                 </div>
             </div>
@@ -75,6 +75,15 @@
                             onclick="increment(); updateTeInputs()">
                         <span class="glyphicon glyphicon-plus"></span>
                     </button>
+                </div>
+                <br>
+                <div class="form-group">
+                    <div class="form-check">
+                        <label class="form-check-label" for="singleDayCheck">Eintagesplan</label>
+                        <input type="checkbox" class="form-check-input" id="singleDayCheck" 
+                               onchange="checkboxChanged()" style="margin-left: 20px">
+                        <input type="text" id="prevUnitAmount" value="3" hidden disabled>
+                    </div>
                 </div>
             </div>
         </div>
@@ -154,7 +163,7 @@
                                 </input>
                             </td>
                             <td>
-                                <textarea id="inputDescription" class="form-control" rows="4"></textarea>
+
                             </td>
                             <td>
                                 <div class="form-group">
@@ -765,6 +774,21 @@
      */
     $(document).ready(updateTeInputs())
 
+    function checkboxChanged() {
+        if($('#singleDayCheck').prop('checked')) {
+            $('#prevUnitAmount').val(document.getElementById("inputUnit").value);
+            $('#inputUnit').val(1);
+            updateTeInputs()
+            $('#btnDecrement').prop('disabled', true);
+            $('#btnIncrement').prop('disabled', true);
+        } else {
+            $('#inputUnit').val(document.getElementById("prevUnitAmount").value);
+            updateTeInputs();
+            $('#btnDecrement').prop('disabled', false);
+            $('#btnIncrement').prop('disabled', false);
+        }
+    }
+    
     /**
      * Deletes current input fields in the exercise form and creates new fields according to
      * the amount of entered TE´s
@@ -881,13 +905,13 @@
         // Get the current amount of TE´s
         var oldValue = document.getElementById("inputUnit").value;
         // Test if the bottom limit is reached
-        if (oldValue > 3) {
+        if (oldValue > 1) {
             // Decrease the value by 1
             var newValue = parseFloat(oldValue) - 1;
         } else {
             // Alert to inform the user that the bottom limit is reached
-            alert("Ein Trainingsplan kann nicht aus weniger als 3 Trainingseinheiten bestehen");
-            var newValue = 3;
+            alert("Ein Trainingsplan kann nicht aus weniger als einer Trainingseinheit bestehen");
+            var newValue = 1;
         }
         // Write new TE amount in the input field
         document.getElementById("inputUnit").value = newValue;
@@ -1057,6 +1081,7 @@
         $('#viewPlanfocus').val(planFocus);
         $('#viewPlanTE').val("Trainingseinheiten: "+planTE);
     }
+
 </script>
 </body>
 </html>
