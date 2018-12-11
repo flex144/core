@@ -3,6 +3,7 @@ package de.ep.team2.core;
 
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
+import de.ep.team2.core.service.UserService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -47,11 +48,13 @@ public class DataBaseServiceUnitTests {
 
     @Test
     public void deleteUserById() {
+        UserService userService = new UserService();
         DataBaseService db = DataBaseService.getInstance();
         assertNotNull(db.getUserById(1));
         db.deleteUserById(1);
         assertNull(db.getUserById(1));
-        db.insertUser("timo@gmail123.com", "Timo", "Heinrich", "123");
+        db.insertUser("timo@gmail123.com", "Timo", "Heinrich",
+                userService.encode("123"));
     }
 
     @Test
