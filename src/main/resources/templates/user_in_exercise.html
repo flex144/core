@@ -68,6 +68,26 @@
 </head>
 <body>
 
+<!-- Modal -->
+<div id="exerciseModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+            </div>
+            <div class="modal-body">
+                <!--- TODO get data from DB--->
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-block btn-danger" data-dismiss="modal" style="font-size: small">
+                    Zurück
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--- Titlebar of the exercise --->
 <div class="highlightedContainer" id="container_planExerciseName"
      style="height: 10%;">
@@ -75,10 +95,11 @@
         <h2>Klimmzüge</h2>
     </div>
     <div style="width: 5%"></div>
-    <a href="user_exercise_details.html" class="btn btn-info">
+    <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
         i
-    </a>
+    </button>
 </div>
+
 
 <!--- Picture / Notice to current exercise --->
 <div class="greyContainer" id="container_planInstructions"
@@ -181,22 +202,22 @@
     </div>
 
     <!--- Evaluation --->
-    <div id="container_evaluationBox" style="width: 100%;">
-        <div class="container" style="text-align: center">
-            <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <button class="btn btn-secondary">
+    <div id="container_evaluationBox" class="fullsize">
+        <div class="container fullsize">
+            <div class="btn-group btn-group-toggle fullsize" data-toggle="buttons">
+                <button class="btn btn-secondary fullsize">
                     <input type="radio"> sehr <br> ein <br>fach
                 </button>
-                <button class="btn btn-secondary">
+                <button class="btn btn-secondary fullsize">
                     <input type="radio"> zu <br> ein <br>fach
                 </button>
-                <button class="btn btn-secondary active">
+                <button class="btn btn-secondary fullsize active">
                     <input type="radio"> passt
                 </button>
-                <button class="btn btn-secondary">
+                <button class="btn btn-secondary fullsize">
                     <input type="radio"> zu <br> hart
                 </button>
-                <button class="btn btn-secondary">
+                <button class="btn btn-secondary fullsize">
                     <input type="radio"> Viel <br> zu <br> hart
                 </button>
             </div>
@@ -213,7 +234,7 @@
         <div style="width: 30%;">
             <button type="button"
                     class="btn btn-block btn-danger">
-                zurück
+                Zurück
             </button>
         </div>
         <div style="width: 30%;"></div>
@@ -350,8 +371,8 @@
             buttonTitle = "Evaluation";
             currentCounter++;
         }else{
-            buttonTitle = "Satz beenden";
             currentCounter++;
+            buttonTitle = "Satz " + currentCounter +" beenden";
             document.getElementById('buttonDecrease').disabled = false;
             document.getElementById('buttonIncrease').disabled = false;
             document.getElementById('repInput').disabled = false;
