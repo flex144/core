@@ -58,6 +58,7 @@ public class LoginTests {
                 .andExpect(status().is(302));
         redirectUrl = action.andReturn().getResponse().getHeader("Location");
         assertTrue("redirect to /login?error", redirectUrl.equals("/login?error"));
+        //test
     }
 
     /**
