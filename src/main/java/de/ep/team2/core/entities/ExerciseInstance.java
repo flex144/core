@@ -3,7 +3,7 @@ package de.ep.team2.core.entities;
 public class ExerciseInstance {
 
     private Exercise isExercise;
-    private TrainingsSession trainingsSession;
+    private int trainingsSessionID;
     private int id;
     private int repetitionMaxiumum;
     private int sets;
@@ -12,10 +12,10 @@ public class ExerciseInstance {
     private int pauseInSec;
 
     public ExerciseInstance(Exercise isExercise,
-                            TrainingsSession trainingsSession, int id, int repetitionMaxiumum,
+                            int trainingsSessionID, int id, int repetitionMaxiumum,
                             int sets, int[] reps, String tempo, int pauseInSec) {
         this.isExercise = isExercise;
-        this.trainingsSession = trainingsSession;
+        this.trainingsSessionID = trainingsSessionID;
         this.id = id;
         this.repetitionMaxiumum = repetitionMaxiumum;
         this.sets = sets;
@@ -32,12 +32,12 @@ public class ExerciseInstance {
         this.isExercise = isExercise;
     }
 
-    public TrainingsSession getTrainingsSession() {
-        return trainingsSession;
+    public Integer getTrainingsSession() {
+        return trainingsSessionID;
     }
 
-    public void setTrainingsSession(TrainingsSession trainingsSession) {
-        this.trainingsSession = trainingsSession;
+    public void setTrainingsSession(int trainingsSessionID) {
+        this.trainingsSessionID = trainingsSessionID;
     }
 
     public int getId() {

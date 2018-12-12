@@ -6,6 +6,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class FrontEndSeleniumTests {
 
+    /* disabled cause it takes too long
     @Test
     public void exampleTestYoutube() {
         //System.setProperty("webdriver.gecko.driver", //URL);
@@ -24,4 +25,5 @@ public class FrontEndSeleniumTests {
 
         driver.quit();
     }
+    */
 }

@@ -1,5 +1,7 @@
 package de.ep.team2.core.entities;
 
+import java.util.LinkedList;
+
 public class TrainingsPlanTemplate {
 
     private int id;
@@ -9,11 +11,11 @@ public class TrainingsPlanTemplate {
     private boolean oneShotPlan;
     private int numTrainSessions;
     private int exercisesPerSession;
+    private LinkedList<TrainingsSession> trainingsSessions;
 
-    public TrainingsPlanTemplate(int id, String name, String description,
-                                 User author, boolean oneShotPlan,
-                                 int numTrainSessions,
-                                 int exercisesPerSession) {
+    public TrainingsPlanTemplate(int id, String name, String description, User author, boolean oneShotPlan,
+                                 int numTrainSessions, int exercisesPerSession,
+                                 LinkedList<TrainingsSession> trainingsSessions) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -21,6 +23,7 @@ public class TrainingsPlanTemplate {
         this.oneShotPlan = oneShotPlan;
         this.numTrainSessions = numTrainSessions;
         this.exercisesPerSession = exercisesPerSession;
+        this.trainingsSessions = trainingsSessions;
     }
 
     public int getId() {
@@ -77,5 +80,13 @@ public class TrainingsPlanTemplate {
 
     public void setExercisesPerSession(int exercisesPerSession) {
         this.exercisesPerSession = exercisesPerSession;
+    }
+
+    public LinkedList<TrainingsSession> getTrainingsSessions() {
+        return trainingsSessions;
+    }
+
+    public void setTrainingsSessions(LinkedList<TrainingsSession> trainingsSessions) {
+        this.trainingsSessions = trainingsSessions;
     }
 }

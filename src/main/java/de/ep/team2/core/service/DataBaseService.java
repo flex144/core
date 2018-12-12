@@ -1,14 +1,16 @@
 package de.ep.team2.core.service;
 
 import de.ep.team2.core.CoreApplication;
-import de.ep.team2.core.entities.Exercise;
-import de.ep.team2.core.entities.User;
+import de.ep.team2.core.entities.*;
 import de.ep.team2.core.enums.WeightType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -103,9 +105,7 @@ public class DataBaseService {
      */
     public List<User> getAllUsers() {
         String sql = "SELECT id, email, first_name, last_name, role FROM users";
-        List<User> toReturn = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
-
-        return toReturn;
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
 
     /**
@@ -114,10 +114,10 @@ public class DataBaseService {
      *
      * @param email     Email of the User.
      * @param firstName First Name of the User.
-     * @param lastName Last Name of the User.
-     * @param password Password, as Hash, of the User.
+     * @param lastName  Last Name of the User.
+     * @param password  Password, as Hash, of the User.
      */
-    public void insertUser(String email, String firstName, String lastName, String password){
+    public void insertUser(String email, String firstName, String lastName, String password) {
         Object[] toInsert = {email.toLowerCase(), firstName, lastName, password, true, "ROLE_USER"};
         if (getUserByEmail(email) != null) {
             log.info("Insert User failed! Email " + email + " already in the " +
@@ -125,7 +125,7 @@ public class DataBaseService {
             throw new IllegalArgumentException("Email already in the Database!");
         }
         jdbcTemplate.update("INSERT INTO users(email, first_name, last_name, password, enabled, role) " +
-                        "VALUES (?,?,?,?,?,?)", toInsert);
+                "VALUES (?,?,?,?,?,?)", toInsert);
         log.info("User '" + firstName + " " + lastName + "' with mail: '"
                 + email + "' inserted in Table 'users' with Id "
                 + getUserByEmail(email).getId() + " !");
@@ -140,7 +140,7 @@ public class DataBaseService {
         User toDelete = getUserById(id);
         if (toDelete != null) {
             jdbcTemplate.update("DELETE FROM users WHERE id = ?",
-                    new Integer[]{id});
+                    (Object[]) new Integer[]{id});
             log.info("User '" + toDelete.getFirstName() + " " + toDelete.getLastName()
                     + "' with mail: '" + toDelete.getEmail() + "' deleted!");
         }
@@ -148,12 +148,13 @@ public class DataBaseService {
 
     /**
      * Promotes a regular user to a moderator.
+     *
      * @param id user to promote.
      */
     public void changeToMod(Integer id) {
         User toChange = getUserById(id);
         if (toChange != null) {
-            jdbcTemplate.update("UPDATE users SET role = 'ROLE_MOD' WHERE id = ?", new Object[]{id});
+            jdbcTemplate.update("UPDATE users SET role = 'ROLE_MOD' WHERE id = ?", id);
             log.info("User '" + toChange.getFirstName() + " " + toChange.getLastName() + "' is now Mod!");
         }
     }
@@ -165,21 +166,21 @@ public class DataBaseService {
      * The name has to be Unique.
      * Also saves the images of the exercise in the table images.
      *
-     * @param name Unique name of the Exercise
+     * @param name        Unique name of the Exercise
      * @param description Optional Description of the Exercise.
-     * @param weightType weight type of the exercise.
-     * @param videoLink optional videolink to a example video.
-     * @param imgPaths Optional List of the Paths to the images
-     *                of the Exercise with type(muscle , other).
+     * @param weightType  weight type of the exercise.
+     * @param videoLink   optional videolink to a example video.
+     * @param imgPaths    Optional List of the Paths to the images
+     *                    of the Exercise with type(muscle , other).
      * @return The ID of the inserted exercise.
      */
     public Integer insertExercise(String name, String description, WeightType weightType,
-                               String videoLink, List<String[]> imgPaths) {
+                                  String videoLink, List<String[]> imgPaths) {
         if (exerciseNameUnique(name)) {
             String[] toInsert = {name, description, weightType.toString(), videoLink};
             jdbcTemplate.update(
                     "INSERT INTO exercises(name, description, weight_type, video_link)" +
-                            " VALUES (?,?,?,?)", toInsert);
+                            " VALUES (?,?,?,?)", (Object[]) toInsert);
             Integer id = jdbcTemplate.query("select currval" +
                             "(pg_get_serial_sequence('exercises','id'));",
                     (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
@@ -260,9 +261,9 @@ public class DataBaseService {
         Exercise toDelete = getExerciseById(id);
         if (toDelete != null) {
             jdbcTemplate.update("DELETE FROM images WHERE exercise = ?",
-                    new Integer[]{id});
+                    (Object[]) new Integer[]{id});
             jdbcTemplate.update("DELETE FROM exercises WHERE id = ?",
-                    new Integer[]{id});
+                    (Object[]) new Integer[]{id});
             log.info("Exercise '" + toDelete.getName() + "' with ID: '"
                     + toDelete.getId() + "' deleted!");
         }
@@ -274,7 +275,7 @@ public class DataBaseService {
      *
      * @param name String name fragment to search for.
      * @return List of all found exercises; empty list if nothing was found;
-     *          null if the Parameter was empty.
+     * null if the Parameter was empty.
      */
     public List<Exercise> getExerciseListByName(String name) {
         if (name != null && !name.isEmpty()) {
@@ -304,14 +305,125 @@ public class DataBaseService {
                     (rs, rowNum) -> new String[]{rs.getString("path"), rs.getString("img_type")}));
             if (!paths.isEmpty()) {
                 for (String[] s : paths) {
-                   if (s[1].equals("muscle")) {
-                       exercise.addMuscleImgPath(s[0]);
-                   } else {
-                       exercise.addOtherImgPath(s[0]);
-                   }
+                    if (s[1].equals("muscle")) {
+                        exercise.addMuscleImgPath(s[0]);
+                    } else {
+                        exercise.addOtherImgPath(s[0]);
+                    }
                 }
             }
         }
         return exercises;
+    }
+
+    // TrainingsPlanTemplate
+
+    public Integer insertPlanTemplate(String name, String descpription,
+                                      String author, Boolean oneShotPlan,
+                                      Integer numTrainSessions, Integer exercisesPerSession) {
+        if (name == null || author == null || (oneShotPlan && numTrainSessions > 1)) {
+            throw new IllegalArgumentException();
+        } else {
+            Object[] insertValues = new Object[]{name, descpription, author, oneShotPlan, numTrainSessions,
+                    exercisesPerSession};
+            jdbcTemplate.update("insert into plan_templates(name,description," +
+                    "author,one_shot_plan,num_train_sessions," +
+                    "exercises_per_session) values (?,?,?,?,?,?)", insertValues);
+            Integer id = jdbcTemplate.query("select currval" +
+                            "(pg_get_serial_sequence('plan_templates','id'));",
+                    (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+            log.info("Plan Template '" + name + "' created with Id: " + id + " !");
+            return id;
+        }
+    }
+
+    public TrainingsPlanTemplate getPlanTemplateByID(Integer id) {
+        LinkedList<TrainingsPlanTemplate> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM plan_templates WHERE id = ?",
+                new Integer[]{id},
+                (resultSet, i) -> new TrainingsPlanTemplate(id, resultSet.getString("name"), resultSet.getString(
+                        "description"), getUserByEmail(resultSet.getString("author")),
+                        resultSet.getBoolean("one_shot_plan"), resultSet.getInt("num_train_sessions"),
+                        resultSet.getInt("exercises_per_session"),getSessionsOfTemplate(id))));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
+    }
+
+    public void deletePlanTemplateByID(Integer id) {
+        TrainingsPlanTemplate toDelete = getPlanTemplateByID(id);
+        if (toDelete != null) {
+            jdbcTemplate.update("DELETE FROM plan_templates WHERE id = ?",
+                    (Object[]) new Integer[]{id});
+            log.info("Plan Template '" + toDelete.getName() + "' with ID: '"
+                    + toDelete.getId() + "' deleted!");
+        }
+    }
+
+    // Trainings Session
+
+    public Integer insertTrainingsSession(int planTemplate, int ordering) {
+        if (sessionOrderValid(planTemplate, ordering)) {
+            Integer[] insertValues = new Integer[]{planTemplate, ordering};
+            jdbcTemplate.update("insert into trainings_sessions(plan_template,ordering) values (?,?)",
+                    (Object[]) insertValues);
+            Integer id = jdbcTemplate.query("select currval" +
+                            "(pg_get_serial_sequence('plan_templates','id'));",
+                    (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+            log.info("Trainings Session created with Id: " + id + " !");
+            return id;
+        } else {
+            throw new IllegalArgumentException("Order of The Session Wrong! Order Already exists or isn't in the valid number range!");
+        }
+    }
+
+    private boolean sessionOrderValid(int idPlanTemplate, int ordering) {
+        if (ordering > 15 || ordering < 1) {
+            return false;
+        }
+        TrainingsPlanTemplate planTemplate = getPlanTemplateByID(idPlanTemplate);
+        boolean orderingNotPresent = true;
+        if (planTemplate.getTrainingsSessions().isEmpty()) {
+            for (TrainingsSession ts : planTemplate.getTrainingsSessions()) {
+                orderingNotPresent = (ts.getOrdering() != ordering);
+            }
+        }
+        return orderingNotPresent;
+    }
+
+    public TrainingsSession getTrainingsSessionById(int id) {
+        LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM trainings_sessions WHERE id = ?",
+                new Integer[]{id},
+                (resultSet, i) -> new TrainingsSession(id, resultSet.getInt("plan_template"),
+                        resultSet.getInt("ordering"), getExInstancesOfSession(id))));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
+    }
+
+
+    public LinkedList<TrainingsSession> getSessionsOfTemplate(int idOfTemplate) {
+        LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM trainings_sessions WHERE plan_template = ?",
+                new Integer[]{idOfTemplate},
+                (resultSet, i) -> new TrainingsSession(resultSet.getInt("id"),
+                        idOfTemplate,
+                        resultSet.getInt("ordering"),getExInstancesOfSession(resultSet.getInt("id")))));
+        return toReturn;
+    }
+
+    // Exercises Instances
+
+    private LinkedList<ExerciseInstance> getExInstancesOfSession(int idOfSession) {
+        LinkedList<ExerciseInstance> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM exercise_instances WHERE trainings_session = ?",
+                new Integer[]{idOfSession},
+                new BeanPropertyRowMapper<>()));
+        return toReturn;
     }
 }

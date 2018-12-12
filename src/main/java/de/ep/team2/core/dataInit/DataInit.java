@@ -30,12 +30,14 @@ public class DataInit {
         initTables();
         fillUsers();
         fillExercises();
+        fillPlanTemplates();
+        fillTrainingSessions();
     }
 
     private void initTables() {
         log.info("Creating tables");
         // Users
-        jdbcTemplate.execute("DROP TABLE IF EXISTS users");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS users CASCADE ");
         jdbcTemplate.execute("CREATE TABLE users(" +
                 "id SERIAL, email VARCHAR(255) NOT NULL ," +
                 " first_name VARCHAR(255), last_name VARCHAR(255) ," +
@@ -61,12 +63,20 @@ public class DataInit {
         // Plan Templates
         jdbcTemplate.execute("DROP TABLE IF EXISTS plan_templates cascade ");
         jdbcTemplate.execute("CREATE TABLE plan_templates(" +
-                "id SERIAL NOT NULL PRIMARY KEY)");
+                "id SERIAL NOT NULL PRIMARY KEY," +
+                "name varchar(255) NOT NULL," +
+                "description varchar(2000)," +
+                "author varchar(255) references users NOT NULL," +
+                "one_shot_plan boolean," +
+                "num_train_sessions integer NOT NULL," +
+                "exercises_per_session integer NOT NULL)");
         // Training Sessions
         jdbcTemplate.execute("DROP TABLE IF EXISTS trainings_sessions cascade ");
         jdbcTemplate.execute("CREATE TABLE trainings_sessions(" +
                 "id SERIAL NOT NULL PRIMARY KEY," +
-                "plan_template integer not null references plan_templates)");
+                "plan_template integer not null references plan_templates," +
+                "ordering integer not null, " +
+                "CHECK (ordering <= 15 AND ordering >= 1))");
         // Exercise Instance
         jdbcTemplate.execute("DROP TABLE IF EXISTS exercise_instances CASCADE ");
         jdbcTemplate.execute("CREATE TABLE exercise_instances(" +
@@ -165,5 +175,14 @@ public class DataInit {
                         "Berühre den Boden unten mit deiner Brust, nicht mit " +
                         "dem Kopf.", WeightType.SELF_WEIGHT,
                 "https://www.youtube.com/embed/e_1BDnOVKso", paths2);
+    }
+
+    private void fillPlanTemplates() {
+        DataBaseService.getInstance().insertPlanTemplate("Test Plan", "Ein Plan zum Test",
+                "felix@gmail.com",false,5,5);
+    }
+
+    private void fillTrainingSessions() {
+        DataBaseService.getInstance().insertTrainingsSession(1,1);
     }
 }
