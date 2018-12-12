@@ -18,6 +18,8 @@ import java.util.List;
  */
 public class DataInit {
 
+    public static final int MAX_SETS = 7;
+
     private JdbcTemplate jdbcTemplate;
     private Logger log;
     private UserService userService = new UserService();
@@ -32,6 +34,7 @@ public class DataInit {
 
     private void initTables() {
         log.info("Creating tables");
+        // Users
         jdbcTemplate.execute("DROP TABLE IF EXISTS users");
         jdbcTemplate.execute("CREATE TABLE users(" +
                 "id SERIAL, email VARCHAR(255) NOT NULL ," +
@@ -40,6 +43,7 @@ public class DataInit {
                 " enabled boolean not null default false, " +
                 " role varchar(20) not null," +
                 " primary key(email))");
+        // Exercises
         jdbcTemplate.execute("DROP TABLE IF EXISTS exercises CASCADE ");
         jdbcTemplate.execute("CREATE TABLE exercises(" +
                 "id SERIAL NOT NULL PRIMARY KEY," +
@@ -47,12 +51,40 @@ public class DataInit {
                 "description VARCHAR(2000)," +
                 "weight_type varchar(15) NOT NULL," +
                 "video_link varchar(400))");
+        // Images
         jdbcTemplate.execute("DROP TABLE IF EXISTS images");
         jdbcTemplate.execute("CREATE TABLE images(" +
                 "exercise integer references exercises not null," +
                 "path varchar(400) PRIMARY KEY," +
                 "img_type varchar(10) NOT NULL)");
         initImages();
+        // Plan Templates
+        jdbcTemplate.execute("DROP TABLE IF EXISTS plan_templates cascade ");
+        jdbcTemplate.execute("CREATE TABLE plan_templates(" +
+                "id SERIAL NOT NULL PRIMARY KEY)");
+        // Training Sessions
+        jdbcTemplate.execute("DROP TABLE IF EXISTS trainings_sessions cascade ");
+        jdbcTemplate.execute("CREATE TABLE trainings_sessions(" +
+                "id SERIAL NOT NULL PRIMARY KEY," +
+                "plan_template integer not null references plan_templates)");
+        // Exercise Instance
+        jdbcTemplate.execute("DROP TABLE IF EXISTS exercise_instances CASCADE ");
+        jdbcTemplate.execute("CREATE TABLE exercise_instances(" +
+                "id SERIAL NOT NULL PRIMARY KEY," +
+                "is_exercise integer references exercises not null," +
+                "trainings_session integer references trainings_sessions not null," +
+                "rep_maximum integer not null," +
+                "sets integer not null," +
+                "tempo varchar(50)," +
+                "pause integer," +
+                "reps_ex1 integer," +
+                "reps_ex2 integer," +
+                "reps_ex3 integer," +
+                "reps_ex4 integer," +
+                "reps_ex5 integer," +
+                "reps_ex6 integer," +
+                "reps_ex7 integer," +
+                "CHECK (sets <= 7))");
     }
 
     private void initImages() {
