@@ -30,11 +30,6 @@ public class UsersController {
     @RequestMapping(value = "/{query}", method = RequestMethod.GET)
     public String searchUser(@PathVariable("query") String query, Model model) {
 
-        User user = (User) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
-        int id = user.getId();
-        String email = user.getEmail();
-
         UserService userService = new UserService();
         User searchedUser = null;
         String errorMsg = "Email oder ID ist nicht valide!";
@@ -55,6 +50,14 @@ public class UsersController {
         }
         model.addAttribute("user", searchedUser);
         return "mod_view_user_profile";
+    }
+
+    @RequestMapping("/")
+    public String getUserProfile() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        int id = user.getId();
+        return "redirect:/users/" + id;
     }
 
     /**
