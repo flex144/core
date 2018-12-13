@@ -42,13 +42,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Autowired
-    public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication().dataSource(dataSource)
-                .usersByUsernameQuery("select email, password, enabled from users where email=?")
-                .authoritiesByUsernameQuery("select email, role from users where email=?");
-    }
-
     /**
      * Method configures Spring Security. It secures that only authenticated users can access the website, except
      * the paths "/login" and "/registration". "/resources/**" is excluded so that Stylesheets can be loaded.
@@ -62,7 +55,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .authorizeRequests()
                     .antMatchers("/mods/**").hasRole("MOD")
-                    .antMatchers("/user/**").authenticated()
+                    .antMatchers("/user/**", "/users/**", "/exercises/**").authenticated()
                     .anyRequest().authenticated()
                 .and()
                     .authorizeRequests()

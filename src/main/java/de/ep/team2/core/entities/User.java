@@ -68,6 +68,10 @@ public class User implements UserDetails {
 
     public void setRole (String role) { this.role = role; }
 
+    public String getPassword() { return password; }
+
+    public void setPassword(String password) {this.password = password; }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         final Set<GrantedAuthority> grntAuth = new HashSet<GrantedAuthority>();
@@ -81,40 +85,19 @@ public class User implements UserDetails {
         return grntAuth;
     }
 
-    public String getPassword() { return password; }
+    @Override
+    public String getUsername() { return getEmail(); }
 
     @Override
-    public String getUsername() {
-        return email;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    public void setPassword(String password) {this.password = password; }
-
-    public static void main(String[] args) {
-        User test = new User (1,"test", "test", "test",
-                "pw", "ROLE_USER");
-        Collection<? extends GrantedAuthority> auth = test.getAuthorities();
-        System.out.println(auth.toString());
-    }
+    public boolean isEnabled() { return true; }
 
 }
