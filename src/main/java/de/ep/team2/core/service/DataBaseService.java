@@ -62,7 +62,7 @@ public class DataBaseService {
      */
     public User getUserById(Integer id) {
         LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT id, email, first_name, last_name FROM users WHERE id " +
+                "SELECT id, email, first_name, last_name, role FROM users WHERE id " +
                         "= ?",
                 new Integer[]{id},
                 new BeanPropertyRowMapper<>(User.class)

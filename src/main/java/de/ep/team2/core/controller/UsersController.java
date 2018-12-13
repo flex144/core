@@ -90,6 +90,29 @@ public class UsersController {
     }
 
     /**
+     * Promotes a user to a moderator if he exists and the ID is valid.
+     *
+     * @param id Id of the user to promote
+     * @param model The model thymeleaf users.
+     * @return The user's profile at success; "error" when an error occurred.
+     */
+    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    public String setMod(@PathVariable("id") String id, Model model) {
+        UserService userService = new UserService();
+        if (!isInteger(id)) {
+            model.addAttribute("error", "ID nicht valide!");
+            return "error";
+        } else if (userService.getUserByID(Integer.parseInt(id)) == null) {
+            model.addAttribute("error", "Benutzer existiert nicht!");
+            return "error";
+        } else {
+            userService.changeToMod(Integer.parseInt(id));
+            model.addAttribute("users", userService.getAllUsers());
+            return "redirect:/users/" + id;
+        }
+    }
+
+    /**
      * Adds a new User to the Database if the email is unique and valid.
      * If an error occurs it adds a fitting error message to the model
      * so thymeleaf can display it.
