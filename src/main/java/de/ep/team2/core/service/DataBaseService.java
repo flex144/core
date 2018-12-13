@@ -89,7 +89,7 @@ public class DataBaseService {
      */
     public User getUserByEmail(String email) {
         LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT id, email, first_name, last_name, password FROM users WHERE " +
+                "SELECT id, email, first_name, last_name, password, role FROM users WHERE " +
                         "email = ?",
                 new String[]{email.toLowerCase()},
                 new BeanPropertyRowMapper<>(User.class)));
