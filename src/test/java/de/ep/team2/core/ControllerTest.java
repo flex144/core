@@ -42,13 +42,6 @@ public class ControllerTest {
         assertTrue("expected status code = 200; current status code = " + status, status == 200);
     }
 
-    @WithMockUser
-    @Test
-    public void getUser() throws Exception {
-        ResultActions action = mvc.perform(get("/users/1"));
-        assertTrue(action.andReturn().getResponse().getContentAsString().contains("Heinrich"));
-    }
-
     @Test
     public void getUserPageWithoutLogin () throws Exception {
         ResultActions action = mvc.perform(get("/user/home"));

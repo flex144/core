@@ -11,9 +11,16 @@ public class UserDetailsImpl implements UserDetailsService {
 
     private UserService userService = new UserService();
 
+    /**
+     * Looks for User in the database via email, since we have no username.
+     *
+     * @param email Email from the searched user.
+     * @return Searched User.
+     * @throws UsernameNotFoundException
+     */
     @Override
-    public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.getUserByEmail(username);
+    public User loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userService.getUserByEmail(email);
         return user;
      }
 

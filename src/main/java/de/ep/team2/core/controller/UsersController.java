@@ -19,6 +19,7 @@ public class UsersController {
      * Searches for a specific User in the DB and binds its attributes to the
      * model,
      * to read them with Thymeleaf.
+     * Checks if user is authorized to view the profile.
      *
      * @param query Email or ID of the user searched for. Provided via URL.
      * @param model Used by Thymeleaf to get the data.
@@ -52,6 +53,11 @@ public class UsersController {
         return "mod_view_user_profile";
     }
 
+    /**
+     * Searches for the users ID and redirects him to his profile.
+     *
+     * @return Profile Website.
+     */
     @RequestMapping("/")
     public String getUserProfile() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication()
