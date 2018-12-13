@@ -7,13 +7,13 @@ public class TrainingsSession {
     private int id;
     private int planTemplateID;
     private int ordering;
-    private LinkedList<ExerciseInstance> exerciseInsatnces;
+    private LinkedList<ExerciseInstance> exerciseInstances;
 
-    public TrainingsSession(int id, int planTemplateID, int ordering, LinkedList<ExerciseInstance> exerciseInsatnces) {
+    public TrainingsSession(int id, int planTemplateID, int ordering, LinkedList<ExerciseInstance> exerciseInstances) {
         this.id = id;
         this.planTemplateID = planTemplateID;
         this.ordering = ordering;
-        this.exerciseInsatnces = exerciseInsatnces;
+        this.exerciseInstances = exerciseInstances;
     }
 
     public int getId() {
@@ -40,11 +40,11 @@ public class TrainingsSession {
         this.ordering = ordering;
     }
 
-    public LinkedList<ExerciseInstance> getExerciseInsatnces() {
-        return exerciseInsatnces;
+    public LinkedList<ExerciseInstance> getExerciseInstances() {
+        return exerciseInstances;
     }
 
-    public void setExerciseInsatnces(LinkedList<ExerciseInstance> exerciseInsatnces) {
-        this.exerciseInsatnces = exerciseInsatnces;
+    public void setExerciseInstances(LinkedList<ExerciseInstance> exerciseInstances) {
+        this.exerciseInstances = exerciseInstances;
     }
 }

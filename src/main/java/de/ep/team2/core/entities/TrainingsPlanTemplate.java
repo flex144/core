@@ -4,6 +4,8 @@ import java.util.LinkedList;
 
 public class TrainingsPlanTemplate {
 
+    // todo trainingsfokus
+
     private int id;
     private String name;
     private String description;
@@ -24,6 +26,9 @@ public class TrainingsPlanTemplate {
         this.numTrainSessions = numTrainSessions;
         this.exercisesPerSession = exercisesPerSession;
         this.trainingsSessions = trainingsSessions;
+    }
+
+    public TrainingsPlanTemplate() {
     }
 
     public int getId() {

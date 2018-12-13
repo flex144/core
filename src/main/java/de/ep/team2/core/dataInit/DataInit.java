@@ -32,6 +32,7 @@ public class DataInit {
         fillExercises();
         fillPlanTemplates();
         fillTrainingSessions();
+        fillExerciseInstances();
     }
 
     private void initTables() {
@@ -184,5 +185,9 @@ public class DataInit {
 
     private void fillTrainingSessions() {
         DataBaseService.getInstance().insertTrainingsSession(1,1);
+    }
+
+    private void fillExerciseInstances() {
+        DataBaseService.getInstance().insertExerciseInstance(1,1,15,3,new Integer[]{12,12,15},"Schnell",90);
     }
 }

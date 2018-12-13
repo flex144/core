@@ -132,7 +132,8 @@ public class DataBaseServiceUnitTests {
 
     @Test
     public void getTemplateByID() {
-        assertEquals("Test Plan", DataBaseService.getInstance().getPlanTemplateByID(1).getName());
+        TrainingsPlanTemplate test = DataBaseService.getInstance().getPlanTemplateByID(1);
+        assertEquals("Test Plan", test.getName());
     }
 
     @Test

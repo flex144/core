@@ -11,6 +11,8 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -124,7 +126,8 @@ public class DataBaseService {
                     "Database!");
             throw new IllegalArgumentException("Email already in the Database!");
         }
-        jdbcTemplate.update("INSERT INTO users(email, first_name, last_name, password, enabled, role) " +
+        jdbcTemplate.update("INSERT INTO users(email, first_name, last_name, password, enabled, " +
+                "role) " +
                 "VALUES (?,?,?,?,?,?)", toInsert);
         log.info("User '" + firstName + " " + lastName + "' with mail: '"
                 + email + "' inserted in Table 'users' with Id "
@@ -155,7 +158,8 @@ public class DataBaseService {
         User toChange = getUserById(id);
         if (toChange != null) {
             jdbcTemplate.update("UPDATE users SET role = 'ROLE_MOD' WHERE id = ?", id);
-            log.info("User '" + toChange.getFirstName() + " " + toChange.getLastName() + "' is now Mod!");
+            log.info("User '" + toChange.getFirstName() + " " + toChange.getLastName() + "' is " +
+                    "now Mod!");
         }
     }
 
@@ -324,7 +328,8 @@ public class DataBaseService {
         if (name == null || author == null || (oneShotPlan && numTrainSessions > 1)) {
             throw new IllegalArgumentException();
         } else {
-            Object[] insertValues = new Object[]{name, descpription, author, oneShotPlan, numTrainSessions,
+            Object[] insertValues = new Object[]{name, descpription, author, oneShotPlan,
+                    numTrainSessions,
                     exercisesPerSession};
             jdbcTemplate.update("insert into plan_templates(name,description," +
                     "author,one_shot_plan,num_train_sessions," +
@@ -341,10 +346,12 @@ public class DataBaseService {
         LinkedList<TrainingsPlanTemplate> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM plan_templates WHERE id = ?",
                 new Integer[]{id},
-                (resultSet, i) -> new TrainingsPlanTemplate(id, resultSet.getString("name"), resultSet.getString(
-                        "description"), getUserByEmail(resultSet.getString("author")),
-                        resultSet.getBoolean("one_shot_plan"), resultSet.getInt("num_train_sessions"),
-                        resultSet.getInt("exercises_per_session"),getSessionsOfTemplate(id))));
+                (resultSet, i) -> new TrainingsPlanTemplate(id, resultSet.getString("name"),
+                        resultSet.getString(
+                                "description"), getUserByEmail(resultSet.getString("author")),
+                        resultSet.getBoolean("one_shot_plan"), resultSet.getInt(
+                        "num_train_sessions"),
+                        resultSet.getInt("exercises_per_session"), getSessionsOfTemplate(id))));
         if (toReturn.isEmpty()) {
             return null;
         } else {
@@ -367,7 +374,8 @@ public class DataBaseService {
     public Integer insertTrainingsSession(int planTemplate, int ordering) {
         if (sessionOrderValid(planTemplate, ordering)) {
             Integer[] insertValues = new Integer[]{planTemplate, ordering};
-            jdbcTemplate.update("insert into trainings_sessions(plan_template,ordering) values (?,?)",
+            jdbcTemplate.update("insert into trainings_sessions(plan_template,ordering) values " +
+                            "(?,?)",
                     (Object[]) insertValues);
             Integer id = jdbcTemplate.query("select currval" +
                             "(pg_get_serial_sequence('plan_templates','id'));",
@@ -375,7 +383,8 @@ public class DataBaseService {
             log.info("Trainings Session created with Id: " + id + " !");
             return id;
         } else {
-            throw new IllegalArgumentException("Order of The Session Wrong! Order Already exists or isn't in the valid number range!");
+            throw new IllegalArgumentException("Order of The Session Wrong! Order Already exists " +
+                    "or isn't in the valid number range!");
         }
     }
 
@@ -385,7 +394,7 @@ public class DataBaseService {
         }
         TrainingsPlanTemplate planTemplate = getPlanTemplateByID(idPlanTemplate);
         boolean orderingNotPresent = true;
-        if (planTemplate.getTrainingsSessions().isEmpty()) {
+        if (!planTemplate.getTrainingsSessions().isEmpty()) {
             for (TrainingsSession ts : planTemplate.getTrainingsSessions()) {
                 orderingNotPresent = (ts.getOrdering() != ordering);
             }
@@ -413,17 +422,55 @@ public class DataBaseService {
                 new Integer[]{idOfTemplate},
                 (resultSet, i) -> new TrainingsSession(resultSet.getInt("id"),
                         idOfTemplate,
-                        resultSet.getInt("ordering"),getExInstancesOfSession(resultSet.getInt("id")))));
+                        resultSet.getInt("ordering"), getExInstancesOfSession(resultSet.getInt(
+                        "id")))));
         return toReturn;
     }
 
     // Exercises Instances
 
     private LinkedList<ExerciseInstance> getExInstancesOfSession(int idOfSession) {
-        LinkedList<ExerciseInstance> toReturn = new LinkedList<>(jdbcTemplate.query(
+        return new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM exercise_instances WHERE trainings_session = ?",
                 new Integer[]{idOfSession},
-                new BeanPropertyRowMapper<>()));
-        return toReturn;
+                (resultSet, i) -> {
+                    Integer[] reps = new Integer[7];
+                    for (int j = 1; j < 8; j++) {
+                        reps[j-1] = resultSet.getInt(String.format("reps_ex%d",j));
+                    }
+                    return new ExerciseInstance(resultSet.getInt("is_exercise"),
+                            resultSet.getInt("trainings_session"), resultSet.getInt("id"),
+                            resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
+                            resultSet.getString("tempo"), resultSet.getInt("pause"));
+                }));
+    }
+
+    public Integer insertExerciseInstance(int isExerciseID, int trainingsSessionID,
+                                          int repetitionMaximum, int sets, Integer[] reps,
+                                          String tempo, int pauseInSec) {
+        ArrayList<Object> insertValues = new ArrayList<>();
+        insertValues.ensureCapacity(13);
+        insertValues.add(isExerciseID);
+        insertValues.add(trainingsSessionID);
+        insertValues.add(repetitionMaximum);
+        insertValues.add(sets);
+        insertValues.add(tempo);
+        insertValues.add(pauseInSec);
+        if (reps.length > 7) {
+            throw new IllegalArgumentException("to many sets!");
+        }
+        insertValues.addAll(Arrays.asList(reps));
+        for (int i = insertValues.size(); i < 13; i++) {
+            insertValues.add(null);
+        }
+        jdbcTemplate.update("INSERT INTO exercise_instances(is_exercise, trainings_session, " +
+                "rep_maximum, sets, tempo, pause, reps_ex1, reps_ex2, reps_ex3, reps_ex4, " +
+                "reps_ex5, reps_ex6, reps_ex7) values (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                insertValues.toArray());
+        Integer id = jdbcTemplate.query("select currval" +
+                        "(pg_get_serial_sequence('exercise_instances','id'));",
+                (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+        log.info("Exercise Instance created with Id: " + id + " !");
+        return id;
     }
 }

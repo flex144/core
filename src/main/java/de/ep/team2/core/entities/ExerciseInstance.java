@@ -2,41 +2,41 @@ package de.ep.team2.core.entities;
 
 public class ExerciseInstance {
 
-    private Exercise isExercise;
+    private int isExerciseID;
     private int trainingsSessionID;
     private int id;
-    private int repetitionMaxiumum;
+    private int repetitionMaximum;
     private int sets;
-    private int[] reps;
+    private Integer[] reps;
     private String tempo;
     private int pauseInSec;
 
-    public ExerciseInstance(Exercise isExercise,
-                            int trainingsSessionID, int id, int repetitionMaxiumum,
-                            int sets, int[] reps, String tempo, int pauseInSec) {
-        this.isExercise = isExercise;
+    public ExerciseInstance(int isExerciseID, int trainingsSessionID, int id,
+                            int repetitionMaxiumum, int sets, Integer[] reps,
+                            String tempo, int pauseInSec) {
+        this.isExerciseID = isExerciseID;
         this.trainingsSessionID = trainingsSessionID;
         this.id = id;
-        this.repetitionMaxiumum = repetitionMaxiumum;
+        this.repetitionMaximum = repetitionMaxiumum;
         this.sets = sets;
         this.reps = reps;
         this.tempo = tempo;
         this.pauseInSec = pauseInSec;
     }
 
-    public Exercise getIsExercise() {
-        return isExercise;
+    public int getIsExerciseID() {
+        return isExerciseID;
     }
 
-    public void setIsExercise(Exercise isExercise) {
-        this.isExercise = isExercise;
+    public void setIsExerciseID(int isExerciseID) {
+        this.isExerciseID = isExerciseID;
     }
 
-    public Integer getTrainingsSession() {
+    public int getTrainingsSessionID() {
         return trainingsSessionID;
     }
 
-    public void setTrainingsSession(int trainingsSessionID) {
+    public void setTrainingsSessionID(int trainingsSessionID) {
         this.trainingsSessionID = trainingsSessionID;
     }
 
@@ -48,12 +48,12 @@ public class ExerciseInstance {
         this.id = id;
     }
 
-    public int getRepetitionMaxiumum() {
-        return repetitionMaxiumum;
+    public int getRepetitionMaximum() {
+        return repetitionMaximum;
     }
 
-    public void setRepetitionMaxiumum(int repetitionMaxiumum) {
-        this.repetitionMaxiumum = repetitionMaxiumum;
+    public void setRepetitionMaximum(int repetitionMaximum) {
+        this.repetitionMaximum = repetitionMaximum;
     }
 
     public int getSets() {
@@ -64,11 +64,11 @@ public class ExerciseInstance {
         this.sets = sets;
     }
 
-    public int[] getReps() {
+    public Integer[] getReps() {
         return reps;
     }
 
-    public void setReps(int[] reps) {
+    public void setReps(Integer[] reps) {
         this.reps = reps;
     }
 
