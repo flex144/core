@@ -33,10 +33,20 @@
         <h2>Erstelle eine neue Trainingsplanvorlage</h2>
         &ensp;
         <p style="font-size: 12pt">Gib zuerst die allgemeinen Daten zu deinem Plan an, die Bezeichnung, den Planfokus und die Anzahl
-        der Trainingseinheiten</p><br>
+        der Trainingseinheiten</p>
+        <br>
         <p style="font-size: 12pt">Um Übungen zu deinem Plan hinzuzufügen, fülle das Formular <mark>"Übung bearbeiten"</mark> aus
             und klicke auf den Button <mark>"Übung hinzufügen"</mark>. Falls du eine noch nicht vorhandene Übung in deinem Plan verwenden willst,
-            drücke den Button <mark>"Neue Übungsart"</mark> um direkt eine Neue zu erstellen.</p><br>
+            drücke den Button <mark>"Neue Übungsart"</mark> um direkt eine Neue zu erstellen.</p>
+        <br>
+        <p style="font-size: 12pt">
+            Um die Sätze und die Wiederholungen für eine Übung anzugeben, gib die Wiederholungen mit <mark>"/"</mark>
+            getrennt voneinander an und die Anzahl der Sätze für diese Übung wird daraus automatisch berechnet.<br>
+        </p>
+        <p class="text-muted" style="font-size: 12pt">
+            (Beispiel: Wiederholungen: <mark>12/12/13/15</mark> => <mark>4</mark> Sätze)
+        </p>
+        <br>
         <p style="font-size: 12pt">Wenn du am Ende mit deinem Plan zufrieden bist,
             speichere diesen mit einem Klick auf den Button <mark>"Plan speichern"</mark>.</p>
         <br><br>
@@ -79,7 +89,7 @@
                 <br>
                 <div class="form-group">
                     <div class="form-check">
-                        <label class="form-check-label" for="singleDayCheck">Eintagesplan</label>
+                        <label class="form-check-label" for="singleDayCheck">Eintagesplan:</label>
                         <input type="checkbox" class="form-check-input" id="singleDayCheck" 
                                onchange="checkboxChanged()" style="margin-left: 20px">
                         <input type="text" id="prevUnitAmount" value="3" hidden disabled>
@@ -139,7 +149,7 @@
                             <th>Übung</th>
                             <th>Ausführung</th>
                             <th>TE</th>
-                            <th>Sätze - Wiederholungen</th>
+                            <th>Wiederholungen</th>
                             <th>Tempo</th>
                             <th>Pause</th>
                         </tr>
@@ -172,7 +182,7 @@
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <ul id="setInputs" class="list-group"></ul>
+                                    <ul id="repeatsInputs" class="list-group"></ul>
                                 </div>
                             </td>
                             <td>
@@ -427,7 +437,7 @@
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            <ul id="viewSetInputs" class="list-group"></ul>
+                                            <ul id="viewRepeatsInputs" class="list-group"></ul>
                                         </div>
                                     </td>
                                     <td>
@@ -547,7 +557,7 @@
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            <ul id="plan1SetInputs" class="list-group"></ul>
+                                            <ul id="plan1RepeatsInputs" class="list-group"></ul>
                                         </div>
                                     </td>
                                     <td>
@@ -606,7 +616,7 @@
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            <ul id="plan2SetInputs" class="list-group"></ul>
+                                            <ul id="plan2RepeatsInputs" class="list-group"></ul>
                                         </div>
                                     </td>
                                     <td>
@@ -665,7 +675,7 @@
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            <ul id="plan3SetInputs" class="list-group"></ul>
+                                            <ul id="plan3RepeatsInputs" class="list-group"></ul>
                                         </div>
                                     </td>
                                     <td>
@@ -693,6 +703,53 @@
                                     Schließen
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal to ask if the plan should be converted to a single day plan -->
+<div class="modal fade" id="modalConvertPlan">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4>Konvertieren des Plans zu einem Eintagesplan</h4>
+                    </div>
+                    <!-- Panel body the option to converted the plan to a single day plan -->
+                    <div class="panel-body">
+                        <!-- question if the plan should be converted to a single day plan -->
+                        <p style="font-size: 16px">
+                            Sie haben die Anzahl an Trainingseinheiten für diese Planvorlage auf 1 gesetzt.
+                            Möchten sie die Planvorlage in eine Vorlage für einen Eintagesplan umwandeln?
+                        </p>
+                        <br>
+                        <!-- Remark that the changes can be reverted at any time -->
+                        <p class="text-muted" style="font-size: 16px">
+                            Sie können diese Änderung jederzeit rückgängig machen, indem sie den Haken
+                            bei dem Eintagesplan wieder entfernen.
+                        </p>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-primary btn-block"
+                                        id="buttonConvertPlanToSingleDay" onclick="convertPlanToSingleDay()"
+                                        data-dismiss="modal">
+                                    Umwandeln
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-default btn-block"
+                                        data-dismiss="modal">
+                                    Abbrechen
+                                </button>
+                            </div>
+                            <div class="col-md-2"></div>
                         </div>
                     </div>
                 </div>
@@ -774,19 +831,41 @@
      */
     $(document).ready(updateTeInputs())
 
+    /**
+     * Function to be executed when the checkbox for a single day plan is checked.
+     * It sets the TE to 1 and disables the TE-buttons
+     */
     function checkboxChanged() {
         if($('#singleDayCheck').prop('checked')) {
+            // Store the previous amount of TE´s in a hidden input field
             $('#prevUnitAmount').val(document.getElementById("inputUnit").value);
+            // Set TE amount to 1
             $('#inputUnit').val(1);
+            // Update the input fields according to the new TE amount
             updateTeInputs()
+            // Disable the TE-buttons
             $('#btnDecrement').prop('disabled', true);
             $('#btnIncrement').prop('disabled', true);
         } else {
+            // Set TE amount to the previous value before setting it to 1
             $('#inputUnit').val(document.getElementById("prevUnitAmount").value);
+            // Update the input fields according to the new TE amount
             updateTeInputs();
+            // Enable the TE-buttons
             $('#btnDecrement').prop('disabled', false);
             $('#btnIncrement').prop('disabled', false);
         }
+    }
+
+    /**
+     * Function to check the checkbox for a single day if the user confirms the conversion
+     * of the plan in the responsible modal
+     */
+    function convertPlanToSingleDay() {
+        // Set the checked value of the checkbox to true
+        $("#singleDayCheck").prop("checked", true);
+        // Execute the function checkboxChanged to perform the action associated with the checkbox
+        checkboxChanged();
     }
     
     /**
@@ -799,7 +878,7 @@
 
         // Get data lists and store them in variables for further manipulation
         var te = document.getElementById("counterTE");
-        var sets = document.getElementById("setInputs");
+        var repeats = document.getElementById("repeatsInputs");
         var tempos = document.getElementById("tempoInputs");
         var pauses = document.getElementById("pauseInputs");
 
@@ -807,8 +886,8 @@
         while (te.hasChildNodes()) {
             te.removeChild(te.lastChild);
         }
-        while (sets.hasChildNodes()) {
-            sets.removeChild(sets.lastChild);
+        while (repeats.hasChildNodes()) {
+            repeats.removeChild(repeats.lastChild);
         }
         while (tempos.hasChildNodes()) {
             tempos.removeChild(tempos.lastChild);
@@ -817,19 +896,19 @@
             pauses.removeChild(pauses.lastChild);
         }
 
-        // loop to add example input fields to the TE/Set/Tempo/Pause columns in the exercise form
+        // loop to add example input fields to the TE/Repeats/Tempo/Pause columns in the exercise form
         for (var i=0;i<number;i++){
             // create unique id´s
             var counterTEId = "counter" + i;
-            var setInputId = "setInput" + i;
+            var repeatsInputId = "repeatsInput" + i;
             var tempoInputId = "tempoInput" + i;
             var pauseInputId = "pauseInput" + i;
 
             // Add the input fields to the lists
             $('#counterTE').append(
                 '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
-            $('#setInputs').append(
-                '<li>' + '<input id="'+setInputId+'" type="text" class="form-control">' + '</li>');
+            $('#repeatsInputs').append(
+                '<li>' + '<input id="'+repeatsInputId+'" type="text" class="form-control">' + '</li>');
             $('#tempoInputs').append(
                 '<li>' + '<input id="'+tempoInputId+'" type="text" class="form-control">' + '</li>');
             $('#pauseInputs').append(
@@ -870,10 +949,10 @@
 
         // Loop to empty the dynamically created input fields
         for (var i=0;i<number;i++){
-            var currentSetInput = "#setInput" + i;
+            var currentRepeatsInput = "#repeatsInput" + i;
             var currentTempoInput = "#tempoInput" + i;
             var currentPauseInput = "#pauseInput" + i;
-            $(currentSetInput).val('');
+            $(currentRepeatsInput).val('');
             $(currentTempoInput).val('');
             $(currentPauseInput).val('');
         }
@@ -908,6 +987,11 @@
         if (oldValue > 1) {
             // Decrease the value by 1
             var newValue = parseFloat(oldValue) - 1;
+            // Check if the TE amount has been reduced to 1
+            if (newValue == 1) {
+                // Open modal to ask if the editor wants to convert the plan to a single day plan
+                $('#modalConvertPlan').modal({});
+            }
         } else {
             // Alert to inform the user that the bottom limit is reached
             alert("Ein Trainingsplan kann nicht aus weniger als einer Trainingseinheit bestehen");
@@ -926,7 +1010,7 @@
 
         // Get data lists and store them in variables for further manipulation
         var te = document.getElementById("viewCounterTE");
-        var sets = document.getElementById("viewSetInputs");
+        var repeats = document.getElementById("viewRepeatsInputs");
         var tempos = document.getElementById("viewTempoInputs");
         var pauses = document.getElementById("viewPauseInputs");
 
@@ -934,8 +1018,8 @@
         while (te.hasChildNodes()) {
             te.removeChild(te.lastChild);
         }
-        while (sets.hasChildNodes()) {
-            sets.removeChild(sets.lastChild);
+        while (repeats.hasChildNodes()) {
+            repeats.removeChild(repeats.lastChild);
         }
         while (tempos.hasChildNodes()) {
             tempos.removeChild(tempos.lastChild);
@@ -944,19 +1028,19 @@
             pauses.removeChild(pauses.lastChild);
         }
 
-        // loop to add example values to the TE/Set/Tempo/Pause columns in viewExercise table
+        // loop to add example values to the TE/Repeats/Tempo/Pause columns in viewExercise table
         for (var i=0;i<number;i++){
             // create unique id´s
             var counterTEId = "viewCounter" + i;
-            var setInputId = "viewSetInput" + i;
+            var repeatsInputId = "viewRepeatsInput" + i;
             var tempoInputId = "viewTempoInput" + i;
             var pauseInputId = "viewPauseInput" + i;
 
             // Add the examples to the lists
             $('#viewCounterTE').append(
                 '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
-            $('#viewSetInputs').append(
-                '<li>' + '<input id="'+setInputId+'" disabled value="3 - '+(10+i)+'" type="text" class="form-control">' + '</li>');
+            $('#viewRepeatsInputs').append(
+                '<li>' + '<input id="'+repeatsInputId+'" disabled value="3 - '+(10+i)+'" type="text" class="form-control">' + '</li>');
             $('#viewTempoInputs').append(
                 '<li>' + '<input id="'+tempoInputId+'" disabled value="90" type="text" class="form-control">' + '</li>');
             $('#viewPauseInputs').append(
@@ -973,17 +1057,17 @@
 
         // Get data lists and store them in variables for further manipulation
         var te1 = document.getElementById("plan1CounterTE");
-        var sets1 = document.getElementById("plan1SetInputs");
+        var repeats1 = document.getElementById("plan1RepeatsInputs");
         var tempos1 = document.getElementById("plan1TempoInputs");
         var pauses1 = document.getElementById("plan1PauseInputs");
 
         var te2 = document.getElementById("plan2CounterTE");
-        var sets2 = document.getElementById("plan2SetInputs");
+        var repeats2 = document.getElementById("plan2RepeatsInputs");
         var tempos2 = document.getElementById("plan2TempoInputs");
         var pauses2 = document.getElementById("plan2PauseInputs");
 
         var te3 = document.getElementById("plan3CounterTE");
-        var sets3 = document.getElementById("plan3SetInputs");
+        var repeats3 = document.getElementById("plan3RepeatsInputs");
         var tempos3 = document.getElementById("plan3TempoInputs");
         var pauses3 = document.getElementById("plan3PauseInputs");
 
@@ -991,8 +1075,8 @@
         while (te1.hasChildNodes()) {
             te1.removeChild(te1.lastChild);
         }
-        while (sets1.hasChildNodes()) {
-            sets1.removeChild(sets1.lastChild);
+        while (repeats1.hasChildNodes()) {
+            repeats1.removeChild(repeats1.lastChild);
         }
         while (tempos1.hasChildNodes()) {
             tempos1.removeChild(tempos1.lastChild);
@@ -1004,8 +1088,8 @@
         while (te2.hasChildNodes()) {
             te2.removeChild(te2.lastChild);
         }
-        while (sets2.hasChildNodes()) {
-            sets2.removeChild(sets2.lastChild);
+        while (repeats2.hasChildNodes()) {
+            repeats2.removeChild(repeats2.lastChild);
         }
         while (tempos2.hasChildNodes()) {
             tempos2.removeChild(tempos2.lastChild);
@@ -1017,8 +1101,8 @@
         while (te3.hasChildNodes()) {
             te3.removeChild(te3.lastChild);
         }
-        while (sets3.hasChildNodes()) {
-            sets3.removeChild(sets3.lastChild);
+        while (repeats3.hasChildNodes()) {
+            repeats3.removeChild(repeats3.lastChild);
         }
         while (tempos3.hasChildNodes()) {
             tempos3.removeChild(tempos3.lastChild);
@@ -1027,29 +1111,29 @@
             pauses3.removeChild(pauses3.lastChild);
         }
 
-        // loop to add example values to the TE/Set/Tempo/Pause columns in viewPlan table
+        // loop to add example values to the TE/Repeats/Tempo/Pause columns in viewPlan table
         for (var i=0;i<number;i++){
             // create unique id´s
             var counterTEId1 = "plan1Counter" + i;
-            var setInputId1 = "plan1SetInput" + i;
+            var repeatsInputId1 = "plan1RepeatsInput" + i;
             var tempoInputId1 = "plan1TempoInput" + i;
             var pauseInputId1 = "plan1PauseInput" + i;
 
             var counterTEId2 = "plan2Counter" + i;
-            var setInputId2 = "plan2SetInput" + i;
+            var repeatsInputId2 = "plan2RepeatsInput" + i;
             var tempoInputId2 = "plan2TempoInput" + i;
             var pauseInputId2 = "plan2PauseInput" + i;
 
             var counterTEId3 = "plan3Counter" + i;
-            var setInputId3 = "plan3SetInput" + i;
+            var repeatsInputId3 = "plan3RepeatsInput" + i;
             var tempoInputId3 = "plan3TempoInput" + i;
             var pauseInputId3 = "plan3PauseInput" + i;
 
             // Add the examples to the lists
             $('#plan1CounterTE').append(
                 '<li>' + '<input id="'+counterTEId1+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
-            $('#plan1SetInputs').append(
-                '<li>' + '<input id="'+setInputId1+'" disabled value="3 - '+(10+i)+'" type="text" class="form-control">' + '</li>');
+            $('#plan1RepeatsInputs').append(
+                '<li>' + '<input id="'+repeatsInputId1+'" disabled value="3 - '+(10+i)+'" type="text" class="form-control">' + '</li>');
             $('#plan1TempoInputs').append(
                 '<li>' + '<input id="'+tempoInputId1+'" disabled value="60" type="text" class="form-control">' + '</li>');
             $('#plan1PauseInputs').append(
@@ -1057,8 +1141,8 @@
 
             $('#plan2CounterTE').append(
                 '<li>' + '<input id="'+counterTEId2+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
-            $('#plan2SetInputs').append(
-                '<li>' + '<input id="'+setInputId2+'" disabled value="3 - '+(15+i)+'" type="text" class="form-control">' + '</li>');
+            $('#plan2RepeatsInputs').append(
+                '<li>' + '<input id="'+repeatsInputId2+'" disabled value="3 - '+(15+i)+'" type="text" class="form-control">' + '</li>');
             $('#plan2TempoInputs').append(
                 '<li>' + '<input id="'+tempoInputId2+'" disabled value="90" type="text" class="form-control">' + '</li>');
             $('#plan2PauseInputs').append(
@@ -1066,8 +1150,8 @@
 
             $('#plan3CounterTE').append(
                 '<li>' + '<input id="'+counterTEId3+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
-            $('#plan3SetInputs').append(
-                '<li>' + '<input id="'+setInputId3+'" disabled value="3 - '+(20+i)+'" type="text" class="form-control">' + '</li>');
+            $('#plan3RepeatsInputs').append(
+                '<li>' + '<input id="'+repeatsInputId3+'" disabled value="3 - '+(20+i)+'" type="text" class="form-control">' + '</li>');
             $('#plan3TempoInputs').append(
                 '<li>' + '<input id="'+tempoInputId3+'" disabled value="90" type="text" class="form-control">' + '</li>');
             $('#plan3PauseInputs').append(
