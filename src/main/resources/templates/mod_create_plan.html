@@ -21,6 +21,14 @@
         ul {
             list-style-type: none;
         }
+        .bootstrap-tagsinput {
+            width: 100% !important;
+            border: none;
+            box-shadow: none;
+        }
+        .bootstrap-tagsinput input {
+            display: none;
+        }
     </style>
 </head>
 
@@ -54,14 +62,14 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="planName">Planbezeichnung:</label>
+                    <label for="planName" style="font-size: 11pt">Planbezeichnung:</label>
                     <input  type="text" class="form-control" id="planName"
                             placeholder="Hier Bezeichnung eingeben...">
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group-inline">
-                    <label for="focus">Trainingsfokus:</label>
+                    <label for="focus" style="font-size: 11pt">Trainingsfokus:</label>
                     <select id="focus" class="form-control" required>
                         <option selected disabled hidden>Wähle eine Option aus...</option>
                         <option>Muskelaufbau</option>
@@ -73,7 +81,7 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="inputUnit">Trainingseinheiten: </label>
+                    <label for="inputUnit" style="font-size: 11pt">Trainingseinheiten: </label>
                     <button type="button" class="btn decrement-button" id="btnDecrement"
                             onclick="decrement(); updateTeInputs()">
                         <span class="glyphicon glyphicon-minus"></span>
@@ -89,7 +97,8 @@
                 <br>
                 <div class="form-group">
                     <div class="form-check">
-                        <label class="form-check-label" for="singleDayCheck">Eintagesplan:</label>
+                        <label class="form-check-label" for="singleDayCheck" style="font-size: 11pt">
+                            Eintagesplan:</label>
                         <input type="checkbox" class="form-check-input" id="singleDayCheck" 
                                onchange="checkboxChanged()" style="margin-left: 20px">
                         <input type="text" id="prevUnitAmount" value="3" hidden disabled>
@@ -108,7 +117,8 @@
                     Übung bearbeiten
                 </div>
                 <div class="col-md-2">
-                    <button type="button" id="addExercise" value="Add" class="btn btn-primary btn-block">
+                    <button type="button" id="buttonAddExercise" value="Add" onclick="addExerciseToPlan()"
+                            class="btn btn-primary btn-block">
                         <span class="glyphicon glyphicon-plus-sign"></span>
                         Übung hinzufügen
                     </button>
@@ -160,7 +170,8 @@
                                 <input id="inputOrder" type="text" class="form-control" />
                             </td>
                             <td>
-                                <input id="inputExercise" type="text" name="exercise" class="form-control" list="stored_exercises">
+                                <input id="inputExercise" type="text" name="exercise"
+                                       class="form-control" list="stored_exercises">
                                     <datalist id="stored_exercises">
                                         <option value="Liegestütze" />
                                         <option value="Klimmzüge" />
@@ -173,7 +184,22 @@
                                 </input>
                             </td>
                             <td>
-
+                                <input id="inputExecution" type="text" name="executions"
+                                       class="form-control" list="stored_executions" onchange="addTag()">
+                                <datalist id="stored_executions">
+                                    <option value="Rückwärts" />
+                                    <option value="Am Platz" />
+                                    <option value="Alternierend" />
+                                    <option value="Stange hinten" />
+                                    <option value="Fußspitze nach innen" />
+                                    <option value="Kurzhantel" />
+                                </datalist>
+                                </input>
+                                <div id="tagBlock">
+                                    <br>
+                                    <h5 id="tagHeader">Hinzugefügte Ausführungen:</h5>
+                                    <input type="text" data-role="tagsinput" id="tags" class="form-control">
+                                </div>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -256,7 +282,7 @@
                     </button>
                 </div>
                 <div class="col-md-2">
-                    <button type="button" id="savePlan" class="btn btn-success btn-block">
+                    <button type="button" id="savePlan" class="btn btn-success btn-block" onclick="resetPlan()">
                         <span class="glyphicon glyphicon-floppy-save"></span>
                          Plan speichern
                     </button>
@@ -760,76 +786,90 @@
 
 <script>
     /**
-     * Function to open the form to create a new exercise without the possibility
-     * to close the modal by clicking outside of it or esc.
+     * Execute various functions when the page is loaded
      */
     $(document).ready(function(){
+        // Open the modal to create a new exercise without the possibility
+        // to close the modal by clicking outside of it or esc
         $('.launch-modal').click(function(){
             // launch the modalExerciseForm as static modal to avoid closing by accident
             $('#modalExerciseForm').modal({
                 backdrop: 'static'
             });
         });
+        // Execute function updateTeInputs when document is loaded
+        updateTeInputs()
+        // Hide the empty display block for the exercise execution tags
+        document.getElementById("tagBlock").style.display = "none";
     });
 
+    $('#tags').tagsinput({
+        tagClass: 'label label-warning'
+    });
+
+    $('#tags').on('itemRemoved', function() {
+        if (document.getElementById("tags").value.length == 0) {
+            document.getElementById("tagBlock").style.display = "none";
+        }
+    });
+
+    function addTag() {
+        var newTag = document.getElementById("inputExecution").value;
+        $('#tags').tagsinput('add', newTag);
+        $('#inputExecution').val('');
+        document.getElementById("tagBlock").style.display = "block";
+    }
+
     /**
-     * Function to add function to button addExercise in order to add an exercise
-     * to the final plan. After adding the exercise it calls the function resetForm()
-     * to reset the input fields and calls the function checkPlanEmpty().
+     * Function to add an exercise to the final plan. After adding the exercise it calls
+     * the function resetForm() to reset the input fields and calls the function checkPlanEmpty().
      */
-    $(document).ready(function(){
-        $('#addExercise').click(function(){
-            // Get the entered values of the exercise form
-            var newExerciseOrder = $('#inputOrder').val();
-            var newExerciseName = $('#inputExercise').val();
-            // Create new list element in final plan containing the entered values and a button to view details
-            $('#planExerciseOrder').append(
-                '<li style="padding-top: .3em; padding-bottom: .3em">' +
-                '<input type="text" value="'+newExerciseOrder+'" class="form-control" disabled>' + '</li>');
-            $('#planExerciseName').append(
-                '<li style="padding-top: .3em; padding-bottom: .3em">' +
-                '<input type="text" value="'+newExerciseName+'" class="form-control" disabled>' + '</li>');
-            $('#planButtonExerciseDetails').append(
-                '<li style="padding-top: .3em; padding-bottom: .3em">' +
-                '<button type="button" class="btn btn-primary btn-block" data-toggle="modal" ' +
-                'data-target="#modalDetailsExercise" onclick="getExerciseDetails()">' +
-                '<span class="glyphicon glyphicon-zoom-in"></span>' + ' Details' + '</button>' + '</li>');
-            // Reset the exercise form after adding the contents to the final plan
-            resetForm();
-            // Call checkPlanEmpty to disable the TE buttons after adding an element with fixed TE
-            checkPlanEmpty();
-        });
-    });
+    function addExerciseToPlan(){
+        // Get the entered values of the exercise form
+        var newExerciseOrder = $('#inputOrder').val();
+        var newExerciseName = $('#inputExercise').val();
+        // Create new list element in final plan containing the entered values and a button to view details
+        $('#planExerciseOrder').append(
+            '<li style="padding-top: .3em; padding-bottom: .3em">' +
+            '<input type="text" value="'+newExerciseOrder+'" class="form-control" disabled>' + '</li>');
+        $('#planExerciseName').append(
+            '<li style="padding-top: .3em; padding-bottom: .3em">' +
+            '<input type="text" value="'+newExerciseName+'" class="form-control" disabled>' + '</li>');
+        $('#planButtonExerciseDetails').append(
+            '<li style="padding-top: .3em; padding-bottom: .3em">' +
+            '<button type="button" class="btn btn-primary btn-block" data-toggle="modal" ' +
+            'data-target="#modalDetailsExercise" onclick="getExerciseDetails()">' +
+            '<span class="glyphicon glyphicon-zoom-in"></span>' + ' Details' + '</button>' + '</li>');
+        // Reset the exercise form after adding the contents to the final plan
+        resetForm();
+        // Call checkPlanEmpty to disable the TE buttons after adding an element with fixed TE
+        checkPlanEmpty();
+    }
 
     /**
-     * Temporary function, that adds function to delete all elements in the final plan
+     * Temporary function to delete all elements in the final plan
      * and call the function checkPlanEmpty() to the button savePlan
      */
-    $(document).ready(function () {
-        $('#savePlan').click(function () {
-            // Create a reference on the lists in the final plan
-            var addedOrders = document.getElementById("planExerciseOrder");
-            var addedExercises = document.getElementById("planExerciseName");
-            var addedDetailButtons = document.getElementById("planButtonExerciseDetails");
-            // Remove all list elements in the final plan
-            while (addedOrders.hasChildNodes()) {
-                addedOrders.removeChild(addedOrders.lastChild);
-            }
-            while (addedExercises.hasChildNodes()) {
-                addedExercises.removeChild(addedExercises.lastChild);
-            }
-            while (addedDetailButtons.hasChildNodes()) {
-                addedDetailButtons.removeChild(addedDetailButtons.lastChild);
-            }
-            // call checkPlanEmpty to reset the TE buttons
-            checkPlanEmpty()
-        })
-    })
+    function resetPlan() {
+        // Create a reference on the lists in the final plan
+        var addedOrders = document.getElementById("planExerciseOrder");
+        var addedExercises = document.getElementById("planExerciseName");
+        var addedDetailButtons = document.getElementById("planButtonExerciseDetails");
+        // Remove all list elements in the final plan
+        while (addedOrders.hasChildNodes()) {
+            addedOrders.removeChild(addedOrders.lastChild);
+        }
+        while (addedExercises.hasChildNodes()) {
+            addedExercises.removeChild(addedExercises.lastChild);
+        }
+        while (addedDetailButtons.hasChildNodes()) {
+            addedDetailButtons.removeChild(addedDetailButtons.lastChild);
+        }
+        // call checkPlanEmpty to reset the TE buttons
+        checkPlanEmpty()
+    }
 
-    /**
-     * Execute function updateTeInputs when document is loaded
-     */
-    $(document).ready(updateTeInputs())
+
 
     /**
      * Function to be executed when the checkbox for a single day plan is checked.
@@ -929,10 +969,14 @@
             // Disable the TE buttons
             $('#btnDecrement').prop('disabled', true);
             $('#btnIncrement').prop('disabled', true);
+            // Disable the single day checkbox
+            $('#singleDayCheck').prop('disabled', true);
         } else {
             // Enable the TE buttons
             $('#btnDecrement').prop('disabled', false);
             $('#btnIncrement').prop('disabled', false);
+            // Enable the single day checkbox
+            $('#singleDayCheck').prop('disabled', false)
         }
     }
 
@@ -956,6 +1000,9 @@
             $(currentTempoInput).val('');
             $(currentPauseInput).val('');
         }
+
+        $('#tags').tagsinput('removeAll');
+        document.getElementById("tagBlock").style.display = "none";
     }
 
     /**
