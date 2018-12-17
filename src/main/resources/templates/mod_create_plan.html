@@ -171,8 +171,8 @@
                             </td>
                             <td>
                                 <input id="inputExercise" type="text" name="exercise"
-                                       class="form-control" list="stored_exercises">
-                                    <datalist id="stored_exercises">
+                                       class="form-control" list="storedExercises">
+                                    <datalist id="storedExercises">
                                         <option value="Liegestütze" />
                                         <option value="Klimmzüge" />
                                         <option value="Leg-Press" />
@@ -184,9 +184,18 @@
                                 </input>
                             </td>
                             <td>
-                                <input id="inputExecution" type="text" name="executions"
-                                       class="form-control" list="stored_executions" onchange="addTag()">
-                                <datalist id="stored_executions">
+                                <div class="input-group">
+                                    <input id="inputExecution" type="text" name="executions"
+                                           class="form-control" list="storedExecutions" onchange="addTag()">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-success" type="submit" id="buttonNewExecution"
+                                                data-toggle="modal" data-target="#modalExecutionForm">
+                                            <span class="glyphicon glyphicon-plus-sign"></span>
+                                            Neu
+                                        </button>
+                                    </div>
+                                </div>
+                                <datalist id="storedExecutions">
                                     <option value="Rückwärts" />
                                     <option value="Am Platz" />
                                     <option value="Alternierend" />
@@ -359,8 +368,32 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
                 <button type="button" class="btn btn-primary">Speichern</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal with formular to create a new type of execution -->
+<div class="modal fade" id="modalExecutionForm">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Neue Ausführungsart erstellen</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inputExecutionName">Bezeichnung der Ausführung:</label>
+                    <input  type="text" class="form-control" id="inputExecutionName" autofocus
+                            placeholder="Hier die Bezeichnung für die neue Ausführungsart eingeben...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="addExecution()" data-dismiss="modal">
+                    Speichern</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
             </div>
         </div>
     </div>
@@ -803,21 +836,58 @@
         document.getElementById("tagBlock").style.display = "none";
     });
 
+    /**
+     * Set tags in the tag-input field "tags" to the colorset "warning" (yellow)
+     */
     $('#tags').tagsinput({
         tagClass: 'label label-warning'
     });
 
+    /**
+     * Function to hide the div block containing the tag-input field "tags" if there are no tags in it
+     */
     $('#tags').on('itemRemoved', function() {
+        // Check if the tag-input field "tags" is empty
         if (document.getElementById("tags").value.length == 0) {
+            // Hide div block containing tag-input field "tags"
             document.getElementById("tagBlock").style.display = "none";
         }
     });
 
+    /**
+     * Function to set the the initial focus on the input field "inputExecutionName" when
+     * opening the modal "modalExecutionForm"
+     */
+    $('#modalExecutionForm').on('shown.bs.modal', function () {
+        $('#inputExecutionName').focus();
+    })
+
+    /**
+     * Function to add a new Tag to the tag-input field "tags"
+     */
     function addTag() {
+        // Get the name of the new tag from the input field "inputExecution"
         var newTag = document.getElementById("inputExecution").value;
+        // Add the stored tag to the tag-input field "tags"
         $('#tags').tagsinput('add', newTag);
+        // Reset the input field "inputExecution"
         $('#inputExecution').val('');
+        // Show the block containing the tag-input field and the caption
         document.getElementById("tagBlock").style.display = "block";
+    }
+
+    /**
+     * Function to create a new type of execution to choose from in the datalist "storedExecutions"
+     */
+    function addExecution() {
+        // Get the name of the new execution from the input field "inputExecutionName"
+        var newExecution = document.getElementById("inputExecutionName").value;
+        // Create a new option with the stored execution name in the datalist "storedEcexutions
+        $('#storedExecutions').append(
+            '<option value="'+newExecution+'" />'
+        );
+        // Reset the input field
+        $('#inputExecutionName').val('');
     }
 
     /**
