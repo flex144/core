@@ -1,18 +1,23 @@
 package de.ep.team2.core.dtos;
 
-import java.util.List;
+import de.ep.team2.core.entities.Exercise;
+import de.ep.team2.core.service.ExerciseService;
+
+import java.util.ArrayList;
 
 public class CreatePlanDto {
 
     private String planName;
-    private String trainingsFocus; // todo
+    private String trainingsFocus; // todo as enum
+    private Integer id; // todo hidden field for id
     private Integer sessionNums;
     private String category;
-    private String exerciseID;
+    private String exerciseName;
+    private Integer exerciseID; // todo pass id instead of name
     private String description;
-    private List<String> sets;
-    private List<String> tempo;
-    private List<Integer> pause;
+    private ArrayList<String> sets;
+    private ArrayList<String> tempo;
+    private ArrayList<Integer> pause;
 
     public String getPlanName() {
         return planName;
@@ -28,6 +33,14 @@ public class CreatePlanDto {
 
     public void setTrainingsFocus(String trainingsFocus) {
         this.trainingsFocus = trainingsFocus;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getSessionNums() {
@@ -46,11 +59,19 @@ public class CreatePlanDto {
         this.category = category;
     }
 
-    public String getExerciseID() {
+    public String getExerciseName() {
+        return exerciseName;
+    }
+
+    public void setExerciseName(String exerciseName) {
+        this.exerciseName = exerciseName;
+    }
+
+    public Integer getExerciseID() {
         return exerciseID;
     }
 
-    public void setExerciseID(String exerciseID) {
+    public void setExerciseID(Integer exerciseID) {
         this.exerciseID = exerciseID;
     }
 
@@ -62,27 +83,42 @@ public class CreatePlanDto {
         this.description = description;
     }
 
-    public List<String> getSets() {
+    public ArrayList<String> getSets() {
         return sets;
     }
 
-    public void setSets(List<String> sets) {
+    public void setSets(ArrayList<String> sets) {
         this.sets = sets;
     }
 
-    public List<String> getTempo() {
+    public ArrayList<String> getTempo() {
         return tempo;
     }
 
-    public void setTempo(List<String> tempo) {
+    public void setTempo(ArrayList<String> tempo) {
         this.tempo = tempo;
     }
 
-    public List<Integer> getPause() {
+    public ArrayList<Integer> getPause() {
         return pause;
     }
 
-    public void setPause(List<Integer> pause) {
+    public void setPause(ArrayList<Integer> pause) {
         this.pause = pause;
+    }
+
+    public Integer nameToId() {
+        if (exerciseName != null) {
+            ExerciseService service = new ExerciseService();
+            Exercise exercise = service.getExerciseByName(exerciseName);
+            if (exercise != null) {
+                exerciseID = exercise.getId();
+            } else {
+                throw new IllegalArgumentException("Exercise doesn't exist!");
+            }
+        } else {
+            throw new IllegalArgumentException("No exercise name provided!");
+        }
+        return exerciseID;
     }
 }

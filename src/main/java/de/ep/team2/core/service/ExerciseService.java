@@ -106,11 +106,15 @@ public class ExerciseService {
         return DataBaseService.getInstance().getAllExercises();
     }
 
-    public List<Exercise> getExercisesByName(String name) {
+    public List<Exercise> getExerciseListByName(String name) {
         if (name == null || name.equals("")) {
             return getAllExercises();
         } else {
             return DataBaseService.getInstance().getExerciseListByName(name);
         }
+    }
+
+    public Exercise getExerciseByName(String name) {
+        return DataBaseService.getInstance().getExerciseByName(name);
     }
 }

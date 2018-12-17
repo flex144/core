@@ -65,7 +65,7 @@ public class DataInit {
         jdbcTemplate.execute("DROP TABLE IF EXISTS plan_templates cascade ");
         jdbcTemplate.execute("CREATE TABLE plan_templates(" +
                 "id SERIAL NOT NULL PRIMARY KEY," +
-                "name varchar(255) NOT NULL," +
+                "name varchar(255) NOT NULL UNIQUE," +
                 "description varchar(2000)," +
                 "author varchar(255) references users NOT NULL," +
                 "one_shot_plan boolean," +

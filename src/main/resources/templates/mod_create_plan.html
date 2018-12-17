@@ -59,6 +59,9 @@
             <br><br>
             <!-- Input fields for general data of the plan -->
             <div class="row">
+                <p th:if="${errorMsg}" th:text="${errorMsg}" style="color: red"></p>
+            </div>
+            <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="planName">Planbezeichnung:</label>
@@ -91,6 +94,9 @@
                                 onclick="increment(); updateTeInputs()">
                             <span class="glyphicon glyphicon-plus"></span>
                         </button>
+                        <input type="text" name="trainingUnits" id="idTemplate"
+                               style="width: 30px; border: 3px solid darkgray; text-align: center;
+                           font-weight: bold" th:field="*{id}">
                     </div>
                 </div>
             </div>
@@ -161,9 +167,9 @@
                             <td>
                                 <input id="inputExercise" type="text" class="form-control"
                                        list="stored_exercises"
-                                       name="exerciseName" required th:field="*{exerciseID}">
+                                       name="exerciseName" required th:field="*{exerciseName}">
                                 <datalist id="stored_exercises">
-                                    <option th:each="exercise : ${allExercises}" th:value="${exercise.name}"/>
+                                    <option th:each="exercise : ${allExercises}" th:value="${exercise.getName()}" th:text="${exercise.name}"/> <!-- todo namen anzeigen -->
                                 </datalist>
                                 </input>
                             </td>

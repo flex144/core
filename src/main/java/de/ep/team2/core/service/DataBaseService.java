@@ -7,10 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -351,12 +348,20 @@ public class DataBaseService {
                                 "description"), getUserByEmail(resultSet.getString("author")),
                         resultSet.getBoolean("one_shot_plan"), resultSet.getInt(
                         "num_train_sessions"),
-                        resultSet.getInt("exercises_per_session"), getSessionsOfTemplate(id))));
+                        resultSet.getInt("exercises_per_session"), getSessionsOfTemplateWithInstances(id))));
         if (toReturn.isEmpty()) {
             return null;
         } else {
             return toReturn.getFirst();
         }
+    }
+
+    public boolean isTemplateInDatabase(String name) {
+        LinkedList<Integer> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT id FROM plan_templates WHERE name = ?",
+                new String[]{name},
+                (resultSet, i) -> 1));
+        return !toReturn.isEmpty();
     }
 
     public void deletePlanTemplateByID(Integer id) {
@@ -369,6 +374,28 @@ public class DataBaseService {
         }
     }
 
+    public Integer increaseNumOfExercises(Integer idOfTemplate) {
+       Integer numOfExes = new LinkedList<>(jdbcTemplate.query(
+                "SELECT exercises_per_session FROM plan_templates WHERE id = ?",
+                new Integer[]{idOfTemplate},
+                (resultSet,i) -> resultSet.getInt("exercises_per_session"))).getFirst();
+        numOfExes++;
+        jdbcTemplate.update("update plan_templates set exercises_per_session = ? where id = ?",
+                (Object[]) new Integer[]{numOfExes,idOfTemplate});
+        return numOfExes;
+    }
+
+    public Integer decreaseNumOfExercises(Integer idOfTemplate) {
+        Integer numOfExes = new LinkedList<>(jdbcTemplate.query(
+                "SELECT exercises_per_session FROM plan_templates WHERE id = ?",
+                new Integer[]{idOfTemplate},
+                (resultSet,i) -> resultSet.getInt("exercises_per_session"))).getFirst();
+        numOfExes--;
+        jdbcTemplate.update("update plan_templates set exercises_per_session = ? where id = ?",
+                (Object[]) new Integer[]{numOfExes,idOfTemplate});
+        return numOfExes;
+    }
+
     // Trainings Session
 
     public Integer insertTrainingsSession(int planTemplate, int ordering) {
@@ -378,7 +405,7 @@ public class DataBaseService {
                             "(?,?)",
                     (Object[]) insertValues);
             Integer id = jdbcTemplate.query("select currval" +
-                            "(pg_get_serial_sequence('plan_templates','id'));",
+                            "(pg_get_serial_sequence('trainings_sessions','id'));",
                     (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
             log.info("Trainings Session created with Id: " + id + " !");
             return id;
@@ -416,14 +443,24 @@ public class DataBaseService {
     }
 
 
-    public LinkedList<TrainingsSession> getSessionsOfTemplate(int idOfTemplate) {
+    public LinkedList<TrainingsSession> getSessionsOfTemplateWithInstances(int idOfTemplate) {
         LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT * FROM trainings_sessions WHERE plan_template = ?",
+                "SELECT * FROM trainings_sessions WHERE plan_template = ? ORDER BY ordering",
                 new Integer[]{idOfTemplate},
                 (resultSet, i) -> new TrainingsSession(resultSet.getInt("id"),
                         idOfTemplate,
                         resultSet.getInt("ordering"), getExInstancesOfSession(resultSet.getInt(
                         "id")))));
+        return toReturn;
+    }
+
+    public LinkedList<TrainingsSession> getOnlySessionsOfTemplate(int idOfTemplate) {
+        LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM trainings_sessions WHERE plan_template = ? ORDER BY ordering",
+                new Integer[]{idOfTemplate},
+                (resultSet, i) -> new TrainingsSession(resultSet.getInt("id"),
+                        idOfTemplate,
+                        resultSet.getInt("ordering"), null)));
         return toReturn;
     }
 
@@ -447,7 +484,7 @@ public class DataBaseService {
 
     public Integer insertExerciseInstance(int isExerciseID, int trainingsSessionID,
                                           int repetitionMaximum, int sets, Integer[] reps,
-                                          String tempo, int pauseInSec) {
+                                          String tempo, Integer pauseInSec) {
         ArrayList<Object> insertValues = new ArrayList<>();
         insertValues.ensureCapacity(13);
         insertValues.add(isExerciseID);
