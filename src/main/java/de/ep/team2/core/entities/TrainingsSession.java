@@ -1,19 +1,26 @@
 package de.ep.team2.core.entities;
 
-import java.util.LinkedList;
-
 public class TrainingsSession {
 
     private int id;
-    private int planTemplateID;
     private int ordering;
-    private LinkedList<ExerciseInstance> exerciseInstances;
+    private int exerciseInstanceId;
+    private int repetitionMaximum;
+    private int sets;
+    private Integer[] reps;
+    private String tempo;
+    private int pauseInSec;
 
-    public TrainingsSession(int id, int planTemplateID, int ordering, LinkedList<ExerciseInstance> exerciseInstances) {
+    public TrainingsSession(int id, int ordering, int exerciseInstanceId, int repetitionMaximum,
+                            int sets, Integer[] reps, String tempo, int pauseInSec) {
         this.id = id;
-        this.planTemplateID = planTemplateID;
         this.ordering = ordering;
-        this.exerciseInstances = exerciseInstances;
+        this.exerciseInstanceId = exerciseInstanceId;
+        this.repetitionMaximum = repetitionMaximum;
+        this.sets = sets;
+        this.reps = reps;
+        this.tempo = tempo;
+        this.pauseInSec = pauseInSec;
     }
 
     public int getId() {
@@ -24,14 +31,6 @@ public class TrainingsSession {
         this.id = id;
     }
 
-    public Integer getPlanTemplateID() {
-        return planTemplateID;
-    }
-
-    public void setPlanTemplateID(int planTemplateID) {
-        this.planTemplateID = planTemplateID;
-    }
-
     public int getOrdering() {
         return ordering;
     }
@@ -40,11 +39,51 @@ public class TrainingsSession {
         this.ordering = ordering;
     }
 
-    public LinkedList<ExerciseInstance> getExerciseInstances() {
-        return exerciseInstances;
+    public int getExerciseInstanceId() {
+        return exerciseInstanceId;
     }
 
-    public void setExerciseInstances(LinkedList<ExerciseInstance> exerciseInstances) {
-        this.exerciseInstances = exerciseInstances;
+    public void setExerciseInstanceId(int exerciseInstanceId) {
+        this.exerciseInstanceId = exerciseInstanceId;
+    }
+
+    public int getRepetitionMaximum() {
+        return repetitionMaximum;
+    }
+
+    public void setRepetitionMaximum(int repetitionMaximum) {
+        this.repetitionMaximum = repetitionMaximum;
+    }
+
+    public int getSets() {
+        return sets;
+    }
+
+    public void setSets(int sets) {
+        this.sets = sets;
+    }
+
+    public Integer[] getReps() {
+        return reps;
+    }
+
+    public void setReps(Integer[] reps) {
+        this.reps = reps;
+    }
+
+    public String getTempo() {
+        return tempo;
+    }
+
+    public void setTempo(String tempo) {
+        this.tempo = tempo;
+    }
+
+    public int getPauseInSec() {
+        return pauseInSec;
+    }
+
+    public void setPauseInSec(int pauseInSec) {
+        this.pauseInSec = pauseInSec;
     }
 }

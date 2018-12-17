@@ -71,13 +71,6 @@ public class DataInit {
                 "one_shot_plan boolean," +
                 "num_train_sessions integer NOT NULL," +
                 "exercises_per_session integer NOT NULL)");
-        // Training Sessions
-        jdbcTemplate.execute("DROP TABLE IF EXISTS trainings_sessions cascade ");
-        jdbcTemplate.execute("CREATE TABLE trainings_sessions(" +
-                "id SERIAL NOT NULL PRIMARY KEY," +
-                "plan_template integer not null references plan_templates," +
-                "ordering integer not null, " +
-                "CHECK (ordering <= 15 AND ordering >= 1))");
         // Exercise Instance
         jdbcTemplate.execute("DROP TABLE IF EXISTS exercise_instances CASCADE ");
         jdbcTemplate.execute("CREATE TABLE exercise_instances(" +
@@ -85,7 +78,13 @@ public class DataInit {
                 "is_exercise integer references exercises not null," +
                 "category varchar(50)," +
                 "description varchar(2000)," +
-                "trainings_session integer references trainings_sessions not null," +
+                "plan_template integer not null references plan_templates)");
+        // Training Sessions
+        jdbcTemplate.execute("DROP TABLE IF EXISTS trainings_sessions cascade ");
+        jdbcTemplate.execute("CREATE TABLE trainings_sessions(" +
+                "id SERIAL NOT NULL PRIMARY KEY," +
+                "exercise_instance integer references exercise_instances not null," +
+                "ordering integer not null," +
                 "rep_maximum integer not null," +
                 "sets integer not null," +
                 "tempo varchar(50)," +
@@ -97,7 +96,8 @@ public class DataInit {
                 "reps_ex5 integer," +
                 "reps_ex6 integer," +
                 "reps_ex7 integer," +
-                "CHECK (sets <= 7))");
+                "CHECK (sets <= 7)," +
+                "CHECK (ordering <= 15 AND ordering >= 1))");
     }
 
     private void initImages() {
@@ -181,15 +181,15 @@ public class DataInit {
     }
 
     private void fillPlanTemplates() {
-        DataBaseService.getInstance().insertPlanTemplate("Test Plan", "Muskelaufbau",
-                "felix@gmail.com",false,5,5);
+        //DataBaseService.getInstance().insertPlanTemplate("Test Plan", "Muskelaufbau",
+        //        "felix@gmail.com",false,5,5);
     }
 
     private void fillTrainingSessions() {
-        DataBaseService.getInstance().insertTrainingsSession(1,1);
+        //DataBaseService.getInstance().insertTrainingsSession(1,1);
     }
 
     private void fillExerciseInstances() {
-        DataBaseService.getInstance().insertExerciseInstance(1,"A1","mach schnell!",1,15,3,new Integer[]{12,12,15},"Schnell",90);
+        //DataBaseService.getInstance().insertExerciseInstance(1,"A1","mach schnell!",1,15,3,new Integer[]{12,12,15},"Schnell",90);
     }
 }

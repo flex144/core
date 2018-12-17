@@ -349,7 +349,7 @@ public class DataBaseService {
                         resultSet.getBoolean("one_shot_plan"), resultSet.getInt(
                         "num_train_sessions"),
                         resultSet.getInt("exercises_per_session"),
-                        getSessionsOfTemplateWithInstances(id))));
+                        getExInstancesOfTemplate(id))));
         if (toReturn.isEmpty()) {
             return null;
         } else {
@@ -424,104 +424,40 @@ public class DataBaseService {
         return numOfExes;
     }
 
-    // Trainings Session
-
-    public Integer insertTrainingsSession(int planTemplate, int ordering) {
-        if (sessionOrderValid(planTemplate, ordering)) {
-            Integer[] insertValues = new Integer[]{planTemplate, ordering};
-            jdbcTemplate.update("insert into trainings_sessions(plan_template,ordering) values " +
-                            "(?,?)",
-                    (Object[]) insertValues);
-            Integer id = jdbcTemplate.query("select currval" +
-                            "(pg_get_serial_sequence('trainings_sessions','id'));",
-                    (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
-            log.info("Trainings Session created with Id: " + id + " !");
-            return id;
-        } else {
-            throw new IllegalArgumentException("Order of The Session Wrong! Order Already exists " +
-                    "or isn't in the valid number range!");
-        }
-    }
-
-    private boolean sessionOrderValid(int idPlanTemplate, int ordering) {
-        if (ordering > 15 || ordering < 1) {
-            return false;
-        }
-        TrainingsPlanTemplate planTemplate = getPlanTemplateAndSessionsByID(idPlanTemplate);
-        boolean orderingNotPresent = true;
-        if (!planTemplate.getTrainingsSessions().isEmpty()) {
-            for (TrainingsSession ts : planTemplate.getTrainingsSessions()) {
-                orderingNotPresent = (ts.getOrdering() != ordering);
-            }
-        }
-        return orderingNotPresent;
-    }
-
-    public TrainingsSession getTrainingsSessionById(int id) {
-        LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT * FROM trainings_sessions WHERE id = ?",
-                new Integer[]{id},
-                (resultSet, i) -> new TrainingsSession(id, resultSet.getInt("plan_template"),
-                        resultSet.getInt("ordering"), getExInstancesOfSession(id))));
-        if (toReturn.isEmpty()) {
-            return null;
-        } else {
-            return toReturn.getFirst();
-        }
-    }
-
-
-    public LinkedList<TrainingsSession> getSessionsOfTemplateWithInstances(int idOfTemplate) {
-        LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT * FROM trainings_sessions WHERE plan_template = ? ORDER BY ordering",
-                new Integer[]{idOfTemplate},
-                (resultSet, i) -> new TrainingsSession(resultSet.getInt("id"),
-                        idOfTemplate,
-                        resultSet.getInt("ordering"), getExInstancesOfSession(resultSet.getInt(
-                        "id")))));
-        return toReturn;
-    }
-
-    public LinkedList<TrainingsSession> getOnlySessionsOfTemplate(int idOfTemplate) {
-        LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT * FROM trainings_sessions WHERE plan_template = ? ORDER BY ordering",
-                new Integer[]{idOfTemplate},
-                (resultSet, i) -> new TrainingsSession(resultSet.getInt("id"),
-                        idOfTemplate,
-                        resultSet.getInt("ordering"), null)));
-        return toReturn;
-    }
-
     // Exercises Instances
 
-    private LinkedList<ExerciseInstance> getExInstancesOfSession(int idOfSession) {
+    private LinkedList<ExerciseInstance> getExInstancesOfTemplate(int idOfTemplate) {
         return new LinkedList<>(jdbcTemplate.query(
-                "SELECT * FROM exercise_instances WHERE trainings_session = ?",
-                new Integer[]{idOfSession},
-                (resultSet, i) -> {
-                    Integer[] reps = new Integer[7];
-                    for (int j = 1; j < 8; j++) {
-                        reps[j - 1] = resultSet.getInt(String.format("reps_ex%d", j));
-                    }
-                    return new ExerciseInstance(resultSet.getInt("is_exercise"),
-                            resultSet.getString("category"),
-                            resultSet.getString("description"),
-                            resultSet.getInt("trainings_session"), resultSet.getInt("id"),
-                            resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
-                            resultSet.getString("tempo"), resultSet.getInt("pause"));
-                }));
+                "SELECT * FROM exercise_instances WHERE plan_template = ?",
+                new Integer[]{idOfTemplate},
+                (resultSet, i) -> new ExerciseInstance(idOfTemplate, resultSet.getInt(
+                        "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
+                        resultSet.getString("description"),
+                        getSessionsOfExerciseInstance(resultSet.getInt("id")))));
     }
 
     public Integer insertExerciseInstance(int isExerciseID, String category, String description,
-                                          int trainingsSessionID,
+                                          int templateId) {
+        Object[] insertValues = new Object[]{isExerciseID, category, description, templateId};
+        jdbcTemplate.update("INSERT INTO exercise_instances(is_exercise, category, description, " +
+                        "plan_template) values (?,?,?,?)",
+                insertValues);
+        Integer id = jdbcTemplate.query("select currval" +
+                        "(pg_get_serial_sequence('exercise_instances','id'));",
+                (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+        log.info("Exercise Instance created with Id: " + id + " !");
+        return id;
+    }
+
+    // Trainings Session
+
+    public Integer insertTrainingsSession(int exerciseInstanceID, int ordering,
                                           int repetitionMaximum, int sets, Integer[] reps,
                                           String tempo, Integer pauseInSec) {
         ArrayList<Object> insertValues = new ArrayList<>();
-        insertValues.ensureCapacity(15);
-        insertValues.add(isExerciseID);
-        insertValues.add(category);
-        insertValues.add(description);
-        insertValues.add(trainingsSessionID);
+        insertValues.ensureCapacity(13);
+        insertValues.add(exerciseInstanceID);
+        insertValues.add(ordering);
         insertValues.add(repetitionMaximum);
         insertValues.add(sets);
         insertValues.add(tempo);
@@ -530,19 +466,72 @@ public class DataBaseService {
             throw new IllegalArgumentException("to many sets!");
         }
         insertValues.addAll(Arrays.asList(reps));
-        for (int i = insertValues.size(); i < 15; i++) {
+        for (int i = insertValues.size(); i < 13; i++) {
             insertValues.add(null);
         }
-        jdbcTemplate.update("INSERT INTO exercise_instances(is_exercise, category, description, " +
-                        "trainings_session, " +
-                        "rep_maximum, sets, tempo, pause, reps_ex1, reps_ex2, reps_ex3, reps_ex4," +
-                        " " +
-                        "reps_ex5, reps_ex6, reps_ex7) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        jdbcTemplate.update(
+                "insert into trainings_sessions(exercise_instance, ordering, rep_maximum, " +
+                        "sets, tempo, pause, reps_ex1, reps_ex2, reps_ex3, reps_ex4,reps_ex5," +
+                        " reps_ex6, reps_ex7) values " +
+                        "(?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 insertValues.toArray());
         Integer id = jdbcTemplate.query("select currval" +
-                        "(pg_get_serial_sequence('exercise_instances','id'));",
+                        "(pg_get_serial_sequence('trainings_sessions','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
-        log.info("Exercise Instance created with Id: " + id + " !");
+        log.info("Trainings Session created with Id: " + id + " !");
         return id;
+    }
+
+    /*
+    private boolean sessionOrderValid(int idExerciseInstance, int ordering) {
+        if (ordering > 15 || ordering < 1) {
+            return false;
+        }
+        ExerciseInstance exerciseInstance = getPlanTemplateAndSessionsByID(idPlanTemplate);
+        boolean orderingNotPresent = true;
+        if (!planTemplate.getTrainingsSessions().isEmpty()) {
+            for (TrainingsSession ts : planTemplate.getTrainingsSessions()) {
+                orderingNotPresent = (ts.getOrdering() != ordering);
+            }
+        }
+        return orderingNotPresent;
+    }
+    */
+
+    public TrainingsSession getTrainingsSessionById(int id) {
+        LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM trainings_sessions WHERE id = ?",
+                new Integer[]{id},
+                (resultSet, i) -> {
+                    Integer[] reps = new Integer[7];
+                    for (int j = 1; j < 8; j++) {
+                        reps[j - 1] = resultSet.getInt(String.format("reps_ex%d", j));
+                    }
+                    return new TrainingsSession(id, resultSet.getInt("ordering"),
+                            resultSet.getInt("exercise_instance"),
+                            resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
+                            resultSet.getString("tempo"), resultSet.getInt("pause"));
+                }));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
+    }
+
+    public LinkedList<TrainingsSession> getSessionsOfExerciseInstance(int idOfInstance) {
+        return new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM trainings_sessions WHERE exercise_instance = ?",
+                new Integer[]{idOfInstance},
+                (resultSet, i) -> {
+                    Integer[] reps = new Integer[7];
+                    for (int j = 1; j < 8; j++) {
+                        reps[j - 1] = resultSet.getInt(String.format("reps_ex%d", j));
+                    }
+                    return new TrainingsSession(idOfInstance, resultSet.getInt("ordering"),
+                            resultSet.getInt("exercise_instance"),
+                            resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
+                            resultSet.getString("tempo"), resultSet.getInt("pause"));
+                }));
     }
 }

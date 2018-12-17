@@ -1,31 +1,32 @@
 package de.ep.team2.core.entities;
 
+import java.util.LinkedList;
+
 public class ExerciseInstance {
 
+    private int planTemplateID;
     private int isExerciseID;
+    private int id;
     private String category;
     private String description;
-    private int trainingsSessionID;
-    private int id;
-    private int repetitionMaximum;
-    private int sets;
-    private Integer[] reps;
-    private String tempo;
-    private int pauseInSec;
+    private LinkedList<TrainingsSession> trainingsSessions;
 
-    public ExerciseInstance(int isExerciseID, String category, String description,
-                            int trainingsSessionID, int id, int repetitionMaximum, int sets,
-                            Integer[] reps, String tempo, int pauseInSec) {
+    public ExerciseInstance(int planTemplateID, int isExerciseID, int id, String category,
+                            String description, LinkedList<TrainingsSession> trainingsSessions) {
+        this.planTemplateID = planTemplateID;
         this.isExerciseID = isExerciseID;
+        this.id = id;
         this.category = category;
         this.description = description;
-        this.trainingsSessionID = trainingsSessionID;
-        this.id = id;
-        this.repetitionMaximum = repetitionMaximum;
-        this.sets = sets;
-        this.reps = reps;
-        this.tempo = tempo;
-        this.pauseInSec = pauseInSec;
+        this.trainingsSessions = trainingsSessions;
+    }
+
+    public int getPlanTemplateID() {
+        return planTemplateID;
+    }
+
+    public void setPlanTemplateID(int planTemplateID) {
+        this.planTemplateID = planTemplateID;
     }
 
     public int getIsExerciseID() {
@@ -34,6 +35,14 @@ public class ExerciseInstance {
 
     public void setIsExerciseID(int isExerciseID) {
         this.isExerciseID = isExerciseID;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getCategory() {
@@ -52,59 +61,11 @@ public class ExerciseInstance {
         this.description = description;
     }
 
-    public int getTrainingsSessionID() {
-        return trainingsSessionID;
+    public LinkedList<TrainingsSession> getTrainingsSessions() {
+        return trainingsSessions;
     }
 
-    public void setTrainingsSessionID(int trainingsSessionID) {
-        this.trainingsSessionID = trainingsSessionID;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getRepetitionMaximum() {
-        return repetitionMaximum;
-    }
-
-    public void setRepetitionMaximum(int repetitionMaximum) {
-        this.repetitionMaximum = repetitionMaximum;
-    }
-
-    public int getSets() {
-        return sets;
-    }
-
-    public void setSets(int sets) {
-        this.sets = sets;
-    }
-
-    public Integer[] getReps() {
-        return reps;
-    }
-
-    public void setReps(Integer[] reps) {
-        this.reps = reps;
-    }
-
-    public String getTempo() {
-        return tempo;
-    }
-
-    public void setTempo(String tempo) {
-        this.tempo = tempo;
-    }
-
-    public int getPauseInSec() {
-        return pauseInSec;
-    }
-
-    public void setPauseInSec(int pauseInSec) {
-        this.pauseInSec = pauseInSec;
+    public void setTrainingsSessions(LinkedList<TrainingsSession> trainingsSessions) {
+        this.trainingsSessions = trainingsSessions;
     }
 }

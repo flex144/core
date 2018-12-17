@@ -15,7 +15,7 @@ public class PlanService {
             dto.setId(insertNewPlan(dto));
         } else {
             changePlanNameAndFocusOnChange(dto);
-            addSessionsAndInstancesToExistingPlan(dto, dto.getId());
+            addInstanceAndSessionToExistingPlan(dto, dto.getId());
         }
         return dto;
     }
@@ -37,28 +37,29 @@ public class PlanService {
 
     private Integer insertNewPlan(CreatePlanDto dto) {
         DataBaseService db = DataBaseService.getInstance();
-        Integer id;
+        Integer idTemplate;
         User user = (User) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         String mail = user.getEmail();
-        id = db.insertPlanTemplate(dto.getPlanName(), dto.getTrainingsFocus(), mail,
+        idTemplate = db.insertPlanTemplate(dto.getPlanName(), dto.getTrainingsFocus(), mail,
                 (dto.getSessionNums() == 1), dto.getSessionNums(), 1);
+        Integer exInstanceId = db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(),
+                dto.getDescription(), idTemplate);
         for (int i = 0; i < dto.getSessionNums(); i++) {
-            int idOfTs = db.insertTrainingsSession(id, i + 1);
             Integer[] reps = parseSets(dto.getSets().get(i));
-            db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(), dto.getDescription(), idOfTs, 15, reps.length, reps,
+            db.insertTrainingsSession(exInstanceId, i+1, 15, reps.length, reps,
                     dto.getTempo().get(i), dto.getPause().get(i));
         }
-        return id;
+        return idTemplate;
     }
 
-    private void addSessionsAndInstancesToExistingPlan(CreatePlanDto dto, Integer idOfTemplate) {
+    private void addInstanceAndSessionToExistingPlan(CreatePlanDto dto, Integer idOfTemplate) {
         DataBaseService db = DataBaseService.getInstance();
-        LinkedList<TrainingsSession> sessions = db.getOnlySessionsOfTemplate(idOfTemplate);
+        Integer exInstanceId = db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(),
+                dto.getDescription(), dto.getId());
         for (int i = 0; i < dto.getSessionNums(); i++) {
-            int idOfTs = sessions.get(i).getId();
             Integer[] reps = parseSets(dto.getSets().get(i));
-            db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(), dto.getDescription(), idOfTs, 15, reps.length, reps,
+            db.insertTrainingsSession(exInstanceId, i+1, 15, reps.length, reps,
                     dto.getTempo().get(i), dto.getPause().get(i));
         }
         db.increaseNumOfExercises(idOfTemplate);

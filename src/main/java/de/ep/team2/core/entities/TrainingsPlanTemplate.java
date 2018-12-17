@@ -11,11 +11,11 @@ public class TrainingsPlanTemplate {
     private boolean oneShotPlan;
     private int numTrainSessions;
     private int exercisesPerSession;
-    private LinkedList<TrainingsSession> trainingsSessions;
+    private LinkedList<ExerciseInstance> exerciseInstances;
 
     public TrainingsPlanTemplate(int id, String name, String trainingsFocus, User author, boolean oneShotPlan,
                                  int numTrainSessions, int exercisesPerSession,
-                                 LinkedList<TrainingsSession> trainingsSessions) {
+                                 LinkedList<ExerciseInstance> exerciseInstances) {
         this.id = id;
         this.name = name;
         this.trainingsFocus = trainingsFocus;
@@ -23,7 +23,7 @@ public class TrainingsPlanTemplate {
         this.oneShotPlan = oneShotPlan;
         this.numTrainSessions = numTrainSessions;
         this.exercisesPerSession = exercisesPerSession;
-        this.trainingsSessions = trainingsSessions;
+        this.exerciseInstances = exerciseInstances;
     }
 
     public TrainingsPlanTemplate() {
@@ -85,11 +85,11 @@ public class TrainingsPlanTemplate {
         this.exercisesPerSession = exercisesPerSession;
     }
 
-    public LinkedList<TrainingsSession> getTrainingsSessions() {
-        return trainingsSessions;
+    public LinkedList<ExerciseInstance> getTrainingsSessions() {
+        return exerciseInstances;
     }
 
-    public void setTrainingsSessions(LinkedList<TrainingsSession> trainingsSessions) {
-        this.trainingsSessions = trainingsSessions;
+    public void setTrainingsSessions(LinkedList<ExerciseInstance> trainingsSessions) {
+        this.exerciseInstances = exerciseInstances;
     }
 }
