@@ -4,23 +4,21 @@ import java.util.LinkedList;
 
 public class TrainingsPlanTemplate {
 
-    // todo trainingsfokus
-
     private int id;
     private String name;
-    private String description;
+    private String trainingsFocus;
     private User author;
     private boolean oneShotPlan;
     private int numTrainSessions;
     private int exercisesPerSession;
     private LinkedList<TrainingsSession> trainingsSessions;
 
-    public TrainingsPlanTemplate(int id, String name, String description, User author, boolean oneShotPlan,
+    public TrainingsPlanTemplate(int id, String name, String trainingsFocus, User author, boolean oneShotPlan,
                                  int numTrainSessions, int exercisesPerSession,
                                  LinkedList<TrainingsSession> trainingsSessions) {
         this.id = id;
         this.name = name;
-        this.description = description;
+        this.trainingsFocus = trainingsFocus;
         this.author = author;
         this.oneShotPlan = oneShotPlan;
         this.numTrainSessions = numTrainSessions;
@@ -47,12 +45,12 @@ public class TrainingsPlanTemplate {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getTrainingsFocus() {
+        return trainingsFocus;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTrainingsFocus(String trainingsFocus) {
+        this.trainingsFocus = trainingsFocus;
     }
 
     public User getAuthor() {

@@ -3,6 +3,8 @@ package de.ep.team2.core.entities;
 public class ExerciseInstance {
 
     private int isExerciseID;
+    private String category;
+    private String description;
     private int trainingsSessionID;
     private int id;
     private int repetitionMaximum;
@@ -11,13 +13,15 @@ public class ExerciseInstance {
     private String tempo;
     private int pauseInSec;
 
-    public ExerciseInstance(int isExerciseID, int trainingsSessionID, int id,
-                            int repetitionMaxiumum, int sets, Integer[] reps,
-                            String tempo, int pauseInSec) {
+    public ExerciseInstance(int isExerciseID, String category, String description,
+                            int trainingsSessionID, int id, int repetitionMaximum, int sets,
+                            Integer[] reps, String tempo, int pauseInSec) {
         this.isExerciseID = isExerciseID;
+        this.category = category;
+        this.description = description;
         this.trainingsSessionID = trainingsSessionID;
         this.id = id;
-        this.repetitionMaximum = repetitionMaxiumum;
+        this.repetitionMaximum = repetitionMaximum;
         this.sets = sets;
         this.reps = reps;
         this.tempo = tempo;
@@ -30,6 +34,22 @@ public class ExerciseInstance {
 
     public void setIsExerciseID(int isExerciseID) {
         this.isExerciseID = isExerciseID;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getTrainingsSessionID() {

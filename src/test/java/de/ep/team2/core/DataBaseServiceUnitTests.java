@@ -132,26 +132,26 @@ public class DataBaseServiceUnitTests {
 
     @Test
     public void getTemplateByID() {
-        TrainingsPlanTemplate test = DataBaseService.getInstance().getPlanTemplateByID(1);
+        TrainingsPlanTemplate test = DataBaseService.getInstance().getPlanTemplateAndSessionsByID(1);
         assertEquals("Test Plan", test.getName());
     }
 
     @Test
     public void insertTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        assertNull(db.getPlanTemplateByID(2));
+        assertNull(db.getPlanTemplateAndSessionsByID(2));
         db.insertPlanTemplate("Hallo2",null,"felix@gmail.com",false,5,5);
-        assertEquals("Hallo2", db.getPlanTemplateByID(2).getName());
+        assertEquals("Hallo2", db.getPlanTemplateAndSessionsByID(2).getName());
     }
 
     @Test
     public void deleteTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        assertNull(db.getPlanTemplateByID(3));
+        assertNull(db.getPlanTemplateAndSessionsByID(3));
         db.insertPlanTemplate("Hallo3",null,"felix@gmail.com",false,5,5);
-        assertEquals("Hallo3", db.getPlanTemplateByID(3).getName());
+        assertEquals("Hallo3", db.getPlanTemplateAndSessionsByID(3).getName());
         db.deletePlanTemplateByID(3);
-        assertNull(db.getPlanTemplateByID(3));
+        assertNull(db.getPlanTemplateAndSessionsByID(3));
     }
 
     // Trainings Sessions

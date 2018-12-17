@@ -66,7 +66,7 @@ public class DataInit {
         jdbcTemplate.execute("CREATE TABLE plan_templates(" +
                 "id SERIAL NOT NULL PRIMARY KEY," +
                 "name varchar(255) NOT NULL UNIQUE," +
-                "description varchar(2000)," +
+                "trainings_focus varchar(255)," +
                 "author varchar(255) references users NOT NULL," +
                 "one_shot_plan boolean," +
                 "num_train_sessions integer NOT NULL," +
@@ -83,6 +83,8 @@ public class DataInit {
         jdbcTemplate.execute("CREATE TABLE exercise_instances(" +
                 "id SERIAL NOT NULL PRIMARY KEY," +
                 "is_exercise integer references exercises not null," +
+                "category varchar(50)," +
+                "description varchar(2000)," +
                 "trainings_session integer references trainings_sessions not null," +
                 "rep_maximum integer not null," +
                 "sets integer not null," +
@@ -179,7 +181,7 @@ public class DataInit {
     }
 
     private void fillPlanTemplates() {
-        DataBaseService.getInstance().insertPlanTemplate("Test Plan", "Ein Plan zum Test",
+        DataBaseService.getInstance().insertPlanTemplate("Test Plan", "Muskelaufbau",
                 "felix@gmail.com",false,5,5);
     }
 
@@ -188,6 +190,6 @@ public class DataInit {
     }
 
     private void fillExerciseInstances() {
-        DataBaseService.getInstance().insertExerciseInstance(1,1,15,3,new Integer[]{12,12,15},"Schnell",90);
+        DataBaseService.getInstance().insertExerciseInstance(1,"A1","mach schnell!",1,15,3,new Integer[]{12,12,15},"Schnell",90);
     }
 }
