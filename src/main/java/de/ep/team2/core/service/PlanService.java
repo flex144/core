@@ -2,14 +2,20 @@ package de.ep.team2.core.service;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
-import de.ep.team2.core.entities.TrainingsSession;
 import de.ep.team2.core.entities.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.LinkedList;
-
 public class PlanService {
 
+    /**
+     * Checks if the Template is already existing by looking at the id of the dto which is null when
+     * a new template should be created. Forwards the dto then to suited methods which will add
+     * the data to the database.
+     *
+     * @param dto dto which holds the data provided by the user.
+     * @return Returns the same dto which was provided at the beginning if the template hasn't
+     * already existed adds the id of the new template to the dto.
+     */
     public CreatePlanDto createPlan(CreatePlanDto dto) {
         if (dto.getId() == null) {
             dto.setId(insertNewPlan(dto));
@@ -47,7 +53,7 @@ public class PlanService {
                 dto.getDescription(), idTemplate);
         for (int i = 0; i < dto.getSessionNums(); i++) {
             Integer[] reps = parseSets(dto.getSets().get(i));
-            db.insertTrainingsSession(exInstanceId, i+1, 15, reps.length, reps,
+            db.insertTrainingsSession(exInstanceId, i + 1, 15, reps.length, reps,
                     dto.getTempo().get(i), dto.getPause().get(i));
         }
         return idTemplate;
@@ -59,12 +65,20 @@ public class PlanService {
                 dto.getDescription(), dto.getId());
         for (int i = 0; i < dto.getSessionNums(); i++) {
             Integer[] reps = parseSets(dto.getSets().get(i));
-            db.insertTrainingsSession(exInstanceId, i+1, 15, reps.length, reps,
+            db.insertTrainingsSession(exInstanceId, i + 1, 15, reps.length, reps,
                     dto.getTempo().get(i), dto.getPause().get(i));
         }
         db.increaseNumOfExercises(idOfTemplate);
     }
 
+    /**
+     * removes all spaces, splits the string at the char '/' and tries to parse the results to
+     * integers.
+     * NumberFormatException not catched.
+     *
+     * @param sets String to parse to integers.
+     * @return Array representing the String.
+     */
     private Integer[] parseSets(String sets) {
         String[] splitted = sets.trim().replaceAll("\\s+", "").split("/");
         Integer[] toReturn = new Integer[splitted.length];

@@ -89,13 +89,13 @@ public class DataInit {
                 "sets integer not null," +
                 "tempo varchar(50)," +
                 "pause integer," +
-                "reps_ex1 integer," +
-                "reps_ex2 integer," +
-                "reps_ex3 integer," +
-                "reps_ex4 integer," +
-                "reps_ex5 integer," +
-                "reps_ex6 integer," +
-                "reps_ex7 integer," +
+                "reps_set1 integer," +
+                "reps_set2 integer," +
+                "reps_set3 integer," +
+                "reps_set4 integer," +
+                "reps_set5 integer," +
+                "reps_set6 integer," +
+                "reps_set7 integer," +
                 "CHECK (sets <= 7)," +
                 "CHECK (ordering <= 15 AND ordering >= 1))");
     }

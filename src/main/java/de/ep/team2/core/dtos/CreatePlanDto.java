@@ -13,7 +13,7 @@ public class CreatePlanDto {
     private Integer sessionNums;
     private String category;
     private String exerciseName;
-    private Integer exerciseID; // todo pass id instead of name
+    private Integer exerciseID;
     private String description;
     private ArrayList<String> sets;
     private ArrayList<String> tempo;
@@ -107,12 +107,18 @@ public class CreatePlanDto {
         this.pause = pause;
     }
 
+    /**
+     * Checks if the Exercise name of this object is set and if an exercise with this name exists.
+     * When not Throws an Exception. Otherwise takes the id of the exercise saved in the database and sets it as the exercise id of this object.
+     *
+     * @return The Id of the exercise which is determined by {@code exerciseName}.
+     */
     public Integer nameToId() {
-        if (exerciseName != null) {
+        if (this.exerciseName != null) {
             ExerciseService service = new ExerciseService();
-            Exercise exercise = service.getExerciseByName(exerciseName);
+            Exercise exercise = service.getExerciseByName(this.exerciseName);
             if (exercise != null) {
-                exerciseID = exercise.getId();
+                this.exerciseID = exercise.getId();
             } else {
                 throw new IllegalArgumentException("Exercise doesn't exist!");
             }

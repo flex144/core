@@ -319,6 +319,18 @@ public class DataBaseService {
 
     // TrainingsPlanTemplate
 
+    /**
+     * Inserts a new Trainings plan Template in teh Database with the provided values.
+     *
+     * @param name unique name of the template.
+     * @param trainingsFocus focus of the trainingsplan.
+     * @param author email of the mod who created the template.
+     * @param oneShotPlan boolean if the plan has more than one trainings session.
+     * @param numTrainSessions duration of the plan in sessions.
+     * @param exercisesPerSession how many exercises have to be done in one session.
+     *                            (number increases initial 1)
+     * @return id od the just inserted template.
+     */
     public Integer insertPlanTemplate(String name, String trainingsFocus,
                                       String author, Boolean oneShotPlan,
                                       Integer numTrainSessions, Integer exercisesPerSession) {
@@ -339,6 +351,12 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Searches for a Template and appends all connected exercises and Sessions by searching for them too.
+     *
+     * @param id id of the the template to search for.
+     * @return TrainingsPlanTemplate object with all connected exercises and Sessions.
+     */
     public TrainingsPlanTemplate getPlanTemplateAndSessionsByID(Integer id) {
         LinkedList<TrainingsPlanTemplate> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM plan_templates WHERE id = ?",
@@ -357,6 +375,12 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Searches for an Template but returns only the template, doesn't search for the connected exercises and sessions.
+     *
+     * @param id id of the the template to search for.
+     * @return TrainingsPlanTemplate object.
+     */
     public TrainingsPlanTemplate getOnlyPlanTemplateById(Integer id) {
         LinkedList<TrainingsPlanTemplate> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM plan_templates WHERE id = ?",
@@ -374,16 +398,34 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * renames a template in the Database.
+     *
+     * @param newName new name of the template.
+     * @param idToRename id of the template to be renamed.
+     */
     public void renameTemplate(String newName, Integer idToRename) {
         jdbcTemplate.update("update plan_templates set name = ? where id = ?",
                 newName, idToRename);
     }
 
+    /**
+     * sets a new focus on a template in the database.
+     *
+     * @param newFocus new focus of the template.
+     * @param idToRename id of the template to be altered.
+     */
     public void changeTrainingsFocus(String newFocus, Integer idToRename) {
         jdbcTemplate.update("update plan_templates set trainings_focus = ? where id = ?",
                 newFocus, idToRename);
     }
 
+    /**
+     * checks if a template with the given name is already in teh database.
+     *
+     * @param name name to look for.
+     * @return true if name is already in the database, false otherwise.
+     */
     public boolean isTemplateInDatabase(String name) {
         LinkedList<Integer> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT id FROM plan_templates WHERE name = ?",
@@ -392,6 +434,11 @@ public class DataBaseService {
         return !toReturn.isEmpty();
     }
 
+    /**
+     * deletes a Template form the database without removing connected exercise Instances or sessions.
+     *
+     * @param id id of the template to be deleted.
+     */
     public void deletePlanTemplateByID(Integer id) {
         TrainingsPlanTemplate toDelete = getPlanTemplateAndSessionsByID(id);
         if (toDelete != null) {
@@ -402,6 +449,12 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Increases the value of number of exercises by 1 and returns the value after the increase.
+     *
+     * @param idOfTemplate id of template where the value should be increased.
+     * @return number of exercises after the increase.
+     */
     public Integer increaseNumOfExercises(Integer idOfTemplate) {
         Integer numOfExes = new LinkedList<>(jdbcTemplate.query(
                 "SELECT exercises_per_session FROM plan_templates WHERE id = ?",
@@ -413,6 +466,12 @@ public class DataBaseService {
         return numOfExes;
     }
 
+    /**
+     * Decreases the value of number of exercises by 1 an returns the value after the decrease.
+     *
+     * @param idOfTemplate id of template where the value should be decreased.
+     * @return number of exercises after the decrease.
+     */
     public Integer decreaseNumOfExercises(Integer idOfTemplate) {
         Integer numOfExes = new LinkedList<>(jdbcTemplate.query(
                 "SELECT exercises_per_session FROM plan_templates WHERE id = ?",
@@ -426,6 +485,13 @@ public class DataBaseService {
 
     // Exercises Instances
 
+    /**
+     * Returns a List of all exercise instances which are connected to a given template.
+     * Also searches for the Sessions of the Exercise instances and adds them to the Object.
+     *
+     * @param idOfTemplate id of the template whose exercise instances should be returned.
+     * @return Linked List of the Instances with the sessions of this exercise connected to it.
+     */
     private LinkedList<ExerciseInstance> getExInstancesOfTemplate(int idOfTemplate) {
         return new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM exercise_instances WHERE plan_template = ?",
@@ -436,6 +502,15 @@ public class DataBaseService {
                         getSessionsOfExerciseInstance(resultSet.getInt("id")))));
     }
 
+    /**
+     * Inserts a new Exercise instance in the database with the provided data.
+     *
+     * @param isExerciseID reference to the table exercises which Exercise this exercise instance is.
+     * @param category category of the exercise instance(tells in which order the exercises should be done)
+     * @param description details to the exercise instance.
+     * @param templateId id of the plan template which contains this exercise instance.
+     * @return Id of the just inserted exercise instance.
+     */
     public Integer insertExerciseInstance(int isExerciseID, String category, String description,
                                           int templateId) {
         Object[] insertValues = new Object[]{isExerciseID, category, description, templateId};
@@ -451,6 +526,18 @@ public class DataBaseService {
 
     // Trainings Session
 
+    /**
+     * Inserts a new Trainings session in the Database with the provided data.
+     *
+     * @param exerciseInstanceID id of the exercise instance the session belongs to.
+     * @param ordering indicates in which sequence the sessions have to be performed.
+     * @param repetitionMaximum used to determine the weights for each individual user.
+     * @param sets number of the sets.
+     * @param reps array with the size {@code sets} where the repetitions of the single sets are saved.
+     * @param tempo tempo in which the exercise should be executed.
+     * @param pauseInSec pause time between the sets in seconds.
+     * @return Id of the just inserted Trainings session.
+     */
     public Integer insertTrainingsSession(int exerciseInstanceID, int ordering,
                                           int repetitionMaximum, int sets, Integer[] reps,
                                           String tempo, Integer pauseInSec) {
@@ -471,8 +558,8 @@ public class DataBaseService {
         }
         jdbcTemplate.update(
                 "insert into trainings_sessions(exercise_instance, ordering, rep_maximum, " +
-                        "sets, tempo, pause, reps_ex1, reps_ex2, reps_ex3, reps_ex4,reps_ex5," +
-                        " reps_ex6, reps_ex7) values " +
+                        "sets, tempo, pause, reps_set1, reps_set2, reps_set3, reps_set4,reps_set5," +
+                        " reps_set6, reps_set7) values " +
                         "(?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 insertValues.toArray());
         Integer id = jdbcTemplate.query("select currval" +
@@ -482,43 +569,12 @@ public class DataBaseService {
         return id;
     }
 
-    /*
-    private boolean sessionOrderValid(int idExerciseInstance, int ordering) {
-        if (ordering > 15 || ordering < 1) {
-            return false;
-        }
-        ExerciseInstance exerciseInstance = getPlanTemplateAndSessionsByID(idPlanTemplate);
-        boolean orderingNotPresent = true;
-        if (!planTemplate.getTrainingsSessions().isEmpty()) {
-            for (TrainingsSession ts : planTemplate.getTrainingsSessions()) {
-                orderingNotPresent = (ts.getOrdering() != ordering);
-            }
-        }
-        return orderingNotPresent;
-    }
-    */
-
-    public TrainingsSession getTrainingsSessionById(int id) {
-        LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT * FROM trainings_sessions WHERE id = ?",
-                new Integer[]{id},
-                (resultSet, i) -> {
-                    Integer[] reps = new Integer[7];
-                    for (int j = 1; j < 8; j++) {
-                        reps[j - 1] = resultSet.getInt(String.format("reps_ex%d", j));
-                    }
-                    return new TrainingsSession(id, resultSet.getInt("ordering"),
-                            resultSet.getInt("exercise_instance"),
-                            resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
-                            resultSet.getString("tempo"), resultSet.getInt("pause"));
-                }));
-        if (toReturn.isEmpty()) {
-            return null;
-        } else {
-            return toReturn.getFirst();
-        }
-    }
-
+    /**
+     * returns a list of all Sessions connected to a specific exercise instance.
+     *
+     * @param idOfInstance id of the exercise instance.
+     * @return linked list of all to the instance connected sessions.
+     */
     public LinkedList<TrainingsSession> getSessionsOfExerciseInstance(int idOfInstance) {
         return new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM trainings_sessions WHERE exercise_instance = ?",

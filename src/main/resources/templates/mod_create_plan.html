@@ -162,20 +162,20 @@
                         <tr>
                             <td>
                                 <input id="inputOrder" type="text" class="form-control"
-                                       name="categoryName" required th:field="*{category}"/>
+                                       name="categoryName" th:field="*{category}"/>
                             </td>
                             <td>
                                 <input id="inputExercise" type="text" class="form-control"
                                        list="stored_exercises"
                                        name="exerciseName" required th:field="*{exerciseName}">
                                 <datalist id="stored_exercises">
-                                    <option th:each="exercise : ${allExercises}" th:value="${exercise.getName()}" th:text="${exercise.name}"/> <!-- todo namen anzeigen -->
+                                    <option th:each="exercise : ${allExercises}" th:value="${exercise.getName()}" th:text="${exercise.name}"/>
                                 </datalist>
                                 </input>
                             </td>
                             <td>
                                 <textarea id="inputDescription" class="form-control" rows="4"
-                                          name="descriptionName" required th:field="*{description}"></textarea>
+                                          name="descriptionName" th:field="*{description}"></textarea>
                             </td>
                             <td>
                                 <div class="form-group">
