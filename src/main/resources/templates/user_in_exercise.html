@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -11,6 +11,9 @@
           integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
           crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <div th:include="/fragments/navbar :: navbar_style"></div>
+
     <style>
         /********************container Styles**********************/
         html, body {
@@ -72,11 +75,120 @@
 <div id="exerciseModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-
-            </div>
             <div class="modal-body">
                 <!--- TODO get data from DB--->
+                <div class="container">
+                    <div class="jumbotron">
+                        <div>
+                            <table class="table table-striped table-bordered" id="user">
+                                <tbody>
+                                <tr>
+                                    <th>ID</th>
+                                    <td><p th:text="${exercise.getId()}"></p></td>
+                                </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <td><p th:text="${exercise.getName()}"></p></td>
+                                </tr>
+                                <tr>
+                                    <th>Gewichtsart</th>
+                                    <td><p th:text="${exercise.getWeightType().getValue()}"></p></td>
+                                </tr>
+                                <tr>
+                                    <th>Muskelgruppen</th>
+                                    <td><p>Brust, Trizeps</p></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div class="panel panel-default" th:if="${!exercise.getDescription().equals('')}">
+                                <div class="panel-heading">
+                                    Beschreibung:
+                                </div>
+                                <div class="panel-body">
+                                    <p th:text="${exercise.getDescription()}"></p>
+                                </div>
+                            </div>
+                            <div class="panel panel-default" th:if="${!exercise.getVideoLink().equals('')}">
+                                <div class="panel-heading">
+                                    Beispielvideo:
+                                </div>
+                                <div class="panel-body">
+                                    <div class="embed-responsive embed-responsive-16by9">
+                                        <iframe th:if="${!exercise.getVideoLink().equals('')}" width="560" height="315"
+                                                th:src="${exercise.getVideoLink()}"
+                                                frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default" th:if="${!exercise.getMuscleImgPaths().isEmpty()}">
+                                <div class="panel-heading">
+                                    <p th:if="${!exercise.getMuscleImgPaths().isEmpty()}">
+                                        Muskelgruppen Bilder:</p>
+                                </div>
+                                <div class="panel-body">
+
+                                    <div th:each="path : ${exercise.getMuscleImgPaths()}"
+                                         class="image">
+                                        <img th:src="@{${path}}"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default" th:if="${!exercise.getOtherImgPaths().isEmpty()}">
+                                <div class="panel-heading">
+                                    <p th:if="${!exercise.getOtherImgPaths().isEmpty()}">Andere
+                                        Bilder:</p>
+                                </div>
+                                <div class="panel-body">
+                                    <div th:each="path : ${exercise.getOtherImgPaths()}"
+                                         class="image">
+                                        <img th:src="@{${path}}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="confirm_delete">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-body">
+                                <form th:object="${exercise}"
+                                      th:action="@{/exercises/{path}(path=${exercise.id})}"
+                                      th:method="delete" id="deleteForm">
+                                    <div class="panel panel-danger">
+                                        <div class="panel-heading">
+                                            <h4>Löschen bestätigen</h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <p style="font-size: 16px">
+                                                Wollen sie die aktuelle Übung wirklich löschen?
+                                            </p>
+                                            <p class="text-danger" style="font-size: 12px">
+                                                Diese Aktion kann nicht rückgängig gemacht
+                                                werden!
+                                            </p>
+                                            <br>
+                                            <div class="row">
+                                                <div class="col-md-2"></div>
+                                                <div class="col-md-4">
+                                                    <button type="button"
+                                                            class="btn btn-danger btn-block"
+                                                            id="submitForm">Löschen
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button type="button"
+                                                            class="btn btn-default btn-block"
+                                                            data-dismiss="modal">Abbrechen
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-2"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button"
@@ -233,14 +345,14 @@
         <div style="width: 10%;"></div>
         <div style="width: 30%;">
             <button type="button"
-                    class="btn btn-block btn-danger">
-                Zurück
+                    class="btn btn-block btn-danger fullsize" id="backButton" >
+                <span class="buttonBack"></span>
             </button>
         </div>
         <div style="width: 30%;"></div>
         <div style="width: 30%;">
             <button type="button"
-                    class="btn btn-block btn-success" id="startButton" onclick="exerciseFunction()" style="font-size: small">
+                    class="btn btn-block btn-success fullsize" id="startButton" onclick="exerciseFunction()" style="font-size: small">
                 <span class="buttonName"></span>
             </button>
         </div>
@@ -266,6 +378,7 @@
     var labelValue = currentCounter + "/" + setCounter;
     var pauseTimeValue = 90;
     var buttonTitle = "Starten";
+    var buttonBackTitle = "Zurück";
     var done = false;
 
 
@@ -277,6 +390,7 @@
         evaluationBox.style.display = "none";
         document.querySelector('.value').innerHTML = labelValue;
         document.querySelector('.buttonName').innerHTML = buttonTitle;
+        document.querySelector('.buttonBack').innerHTML = buttonBackTitle;
         document.querySelector('.pauseTime').innerHTML = pauseTimeValue + " s";
     }
 
@@ -322,6 +436,7 @@
     /*** Rep Counter functions***/
     /*** update Values on each input***/
     function updateReps() {
+        console.log(parseFloat(document.getElementById('repInput').value));
         valueCheck = Math.ceil(document.getElementById('repInput').value);
         if(valueCheck < 2* totalReps && valueCheck> 0){
             currentReps = valueCheck;
@@ -332,6 +447,7 @@
             valueCheck = currentReps;
             document.getElementById('repInput').value = currentReps;
         }
+        console.log(document.getElementById('repInput').value)
     }
 
     /*** Decrease Values on each click***/
@@ -372,7 +488,7 @@
             currentCounter++;
         }else{
             currentCounter++;
-            buttonTitle = "Satz " + currentCounter +" beenden";
+            buttonTitle = "Satz " + currentCounter + " beenden";
             document.getElementById('buttonDecrease').disabled = false;
             document.getElementById('buttonIncrease').disabled = false;
             document.getElementById('repInput').disabled = false;
@@ -386,6 +502,7 @@
         labelValue = currentCounter + "/" + setCounter;
         document.querySelector('.value').innerHTML = labelValue;
         document.querySelector('.buttonName').innerHTML = buttonTitle;
+        document.querySelector('.buttonBack').innerHTML = "Abbrechen";
         stopTimer();
     }
 </script>

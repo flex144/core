@@ -1,0 +1,267 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Your personalized training page</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <style>
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        .highlightedContainer {
+            background: #fd8900; /*light orange*/
+            border: 2px solid #2E2E2E;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .fullsize{
+            width: 100%;
+            height: 100%;
+            text-align: center;
+        }
+
+        .containerColor{
+            background: #ecf0f1;
+            border: solid 2px #2E2E2E;
+        }
+
+        .tableCentered{
+            height: 100%;
+            width: 15%;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="infoModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p> latin words latin words latin words  latin words latin words
+                    latin words latin words latin words  latin words latin words
+                    latin words latin words latin words  latin words latin words</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-block btn-danger" data-dismiss="modal">
+                    Zurück
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="highlightedContainer" id="container_header"
+     style="height: 10%;">
+    <div style="width: 80%;">
+        <h2 th:text=>Trainingsplan nr. </h2>
+    </div>
+    <div style="width: 5%"></div>
+    <button data-toggle="modal" data-target="#infoModal" class="btn btn-info">
+        i
+    </button>
+</div>
+
+<div class="container" id="container_content" style="height: 70%;
+        overflow-x: fragments; overflow-y: scroll; text-align: center;
+        padding: 5px">
+
+    <!--- TODO Thymeleafe requests--->
+    <div class="container" style="padding-bottom: 2px; height: 15%" id="exercise"
+         th:each th:onclick="" th:id=>
+        <!--- TODO remove test class after thymeleafe works--->
+        <div class="containerColor fullsize farbTest1" >
+            <table class="fullsize" >
+                <tr class="fullsize" style="display: flex">
+                    <!--- TODO Maybe get status from DB? --->
+                    <td class="tableCentered" >
+                            <label class="btn active">
+                                <input type="checkbox" name="" id=""
+                                       autocomplete="off" disabled style="transform: scale(2)">
+                            </label>
+                    </td>
+                    <td class="tableCentered ">
+                        <!--- TODO remove test class after thymeleafe works--->
+                        <h3 class="numbertest1" th:text>A1</h3>
+                    </td>
+                    <td class="tableCentered" style="width: 50%;">
+                        <h3 th:text>Klimmzüge</h3>
+                    </td>
+                    <td class="tableCentered" style="width: 20%">
+                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
+                        <button data-toggle="modal" data-target="#infoModal" class="btn btn-info">
+                            i
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="container" style="padding-bottom: 2px; height: 15%">
+        <div class="containerColor fullsize farbTest1">
+            <table class="fullsize" >
+                <tr class="fullsize" style="display: flex">
+                    <td class="tableCentered" >
+                        x
+                    </td>
+                    <td class="tableCentered" >
+                        <h3 class="numbertest1">A2</h3>
+                    </td>
+                    <td class="tableCentered" style="width: 50%;">
+                        <h3>Klimmzüge</h3>
+                    </td>
+                    <td class="tableCentered" style="width: 20%">
+                        <button data-toggle="modal" data-target="#infoModal" class="btn btn-info">
+                            i
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="container" style="padding-bottom: 2px; height: 15%">
+        <div class="containerColor fullsize farbTest2">
+            <table class="fullsize" >
+                <tr class="fullsize" style="display: flex">
+                    <td class="tableCentered" >
+                        x
+                    </td>
+                    <td class="tableCentered">
+                        <h3 class="numbertest2">B1</h3>
+                    </td>
+                    <td class="tableCentered" style="width: 50%;">
+                        <h3>Klimmzüge</h3>
+                    </td>
+                    <td class="tableCentered" style="width: 20%">
+                        <button data-toggle="modal" data-target="#infoModal" class="btn btn-info">
+                            i
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="container" style="padding-bottom: 2px; height: 15%">
+        <div class="containerColor fullsize farbTest3">
+            <table class="fullsize" >
+                <tr class="fullsize" style="display: flex">
+                    <td class="tableCentered" >
+                        x
+                    </td>
+                    <td class="tableCentered">
+                        <h3 class="numbertest3">C1</h3>
+                    </td>
+                    <td class="tableCentered" style="width: 50%;">
+                        <h3>Klimmzüge</h3>
+                    </td>
+                    <td class="tableCentered" style="width: 20%">
+                        <button data-toggle="modal" data-target="#infoModal" class="btn btn-info">
+                            i
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="highlightedContainer" id="container_timer" style="height: 20%;">
+    <!---
+    <div id="container_timerBox" style="width: 100%;">
+        <h1><span id="time">00:00</span></h1>
+    </div> --->
+    <div class="container fullsize row">
+        <div style="width: 50%; height: 100%; padding: 5%;">
+            <button type="button"
+                    class="btn btn-block btn-danger fullsize" id="backButton"
+                    style="height: 100%; min-height: 50px">
+                Zurück
+            </button>
+        </div>
+        <div style="width: 50%; height: 100%; padding: 5%;">
+            <button type="button"
+                    class="btn btn-block btn-success fullsize" id="startButton"
+                    style="height: 100%; min-height: 50px">
+                Training <br> starten
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var numberOfTotalSuperSets = 9;
+
+    document.onLoad(initializeData());
+    function initializeData() {
+        for (var i = 0; i < numberOfTotalSuperSets; i++){
+            colourCoding(i + 1);
+        }
+
+    }
+
+
+    /*TODO forEach element in List that thymeleaf returns*/
+
+    /*Colours all Elements of the same class in the same Colours*/
+    function colourCoding(numberOfThisSuperSet){
+        var numbertest = "numbertest" + numberOfThisSuperSet;
+        var farbtest = "farbTest" + numberOfThisSuperSet;
+        var listOfThisOrder = document.getElementsByClassName(numbertest);
+        for (var i = 0; i < listOfThisOrder.length; i++) {
+            document.getElementsByClassName(farbtest)[i].style.background = rainbow(numberOfTotalSuperSets,numberOfThisSuperSet);
+        }
+    }
+
+    function thymeleafColourCoding(orderValue, idValue){
+        var colorDecider = orderValue.charCodeAt(0) - 64;
+        /*TODO change Selector to one that addresses without Selection value*/
+        document.getElementById(idValue).style.background = rainbow(numberOfTotalSuperSets, colorDecider);
+
+    }
+
+
+    /*Chooses colours evenly distributed from a spectrum*/
+    function rainbow(numOfSteps, step) {
+        var r, g, b;
+        var h = step / numOfSteps;
+        var i = ~~(h * 6);
+        var f = h * 6 - i;
+        var q = 1 - f;
+        switch(i % 6){
+            case 0: r = 1; g = f; b = 0; break;
+            case 1: r = q; g = 1; b = 0; break;
+            case 2: r = 0; g = 1; b = f; break;
+            case 3: r = 0; g = q; b = 1; break;
+            case 4: r = f; g = 0; b = 1; break;
+            case 5: r = 1; g = 0; b = q; break;
+        }
+        var c = "#" + ("00" + (~ ~(r * 255)).toString(16)).slice(-2) + ("00" + (~ ~(g * 255)).toString(16)).slice(-2) + ("00" + (~ ~(b * 255)).toString(16)).slice(-2);
+        return (c);
+    }
+
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+</body>
+</html>
