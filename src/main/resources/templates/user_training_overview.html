@@ -51,9 +51,13 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <p> latin words latin words latin words  latin words latin words
-                    latin words latin words latin words  latin words latin words
-                    latin words latin words latin words  latin words latin words</p>
+                <div class="jumbotron">
+                    <h3>Es ist empfohlen dem Plan möglichst präzise zu folgen</h3>
+                    <h5>Nur durch richtige Ausführung der Übungen, mit guter Form und
+                        empfohlenen Anzahlen/Gewichten wird guter Vortschritt erreicht.</h5>
+                    <h5>Übungen in der selben Farbe sind in einem sogennanten 'Super Set'.</h5>
+                    <h5>Übungen in einem Superset sollten abgeschlossen werden, bevor das nächste Superset begonnen wird.</h5>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button"
@@ -68,8 +72,14 @@
 
 <div class="highlightedContainer" id="container_header"
      style="height: 10%;">
-    <div style="width: 80%;">
-        <h2 th:text=>Trainingsplan nr. </h2>
+    <div style="width: 70%;">
+        <h3 th:text=>Trainingsplan nr. </h3>
+    </div>
+    <div style="width: 10%;">
+        <div style="font-size: smaller; height: 20%">set:</div>
+        <div style="height: 80%">
+            <h4><span id="currentOrder" ></span></h4>
+        </div>
     </div>
     <div style="width: 5%"></div>
     <button data-toggle="modal" data-target="#infoModal" class="btn btn-info">
@@ -81,23 +91,27 @@
         overflow-x: fragments; overflow-y: scroll; text-align: center;
         padding: 5px">
 
-    <!--- TODO Thymeleafe requests--->
+    <!---
+        TODO thymeleaf Each Container has to execute
+        "thymeleafColourCoding(orderValue, idValue)"
+        TODO thymeleaf call clickedOnExercise() onClick
+    --->
     <div class="container" style="padding-bottom: 2px; height: 15%" id="exercise"
          th:each th:onclick="" th:id=>
-        <!--- TODO remove test class after thymeleafe works--->
+        <!--- TODO thymeleaf remove test class after it is implemented--->
         <div class="containerColor fullsize farbTest1" >
-            <table class="fullsize" >
-                <tr class="fullsize" style="display: flex">
-                    <!--- TODO Maybe get status from DB? --->
+            <table class="fullsize" id="table">
+                <tr class="fullsize" style="display: flex" id="row">
+                    <!--- TODO Session save Status --->
                     <td class="tableCentered" >
                             <label class="btn active">
                                 <input type="checkbox" name="" id=""
                                        autocomplete="off" disabled style="transform: scale(2)">
                             </label>
                     </td>
-                    <td class="tableCentered ">
-                        <!--- TODO remove test class after thymeleafe works--->
-                        <h3 class="numbertest1" th:text>A1</h3>
+                    <td class="tableCentered" id="column">
+                        <!--- TODO thymeleaf remove test class after implementation--->
+                        <h3 class="numbertest1" id="orderNumber" th:text th:id>A1</h3>
                     </td>
                     <td class="tableCentered" style="width: 50%;">
                         <h3 th:text>Klimmzüge</h3>
@@ -205,7 +219,34 @@
     </div>
 </div>
 
+<!--- TODO save done exercises and current order with session--->
+
 <script>
+    function clickedOnExercise(){
+        var currentOrder = document.getElementById(orderOfExercise).innerHTML;
+        var id = this.id;
+        var thisExerciseOrder = "orderNumber" + id;
+        var clickedOrder = document.getElementById(thisExerciseOrder).innerHTML;
+        if (currentOrder == clickedOrder){
+            updateCurrentOrder(id);
+            /*TODO load exercise throught controller*/
+        } else{
+            if (confirm("Übungen im selben Superset (selbe Farbe), sollten zusammen gemacht werden. Bist du dir sicher das du ein anderes Superset starten willst?")) {
+                updateCurrentOrder(id);
+                /*TODO load exercise throught controller*/
+            } else {
+            }
+        }
+    }
+
+    function updateCurrentOrder(id){
+        var orderOfExercise = "orderNumber" + id;
+        document.getElementById(orderOfExercise).innerHTML;
+    }
+</script>
+
+<script>
+
 
     var numberOfTotalSuperSets = 9;
 
@@ -218,7 +259,6 @@
     }
 
 
-    /*TODO forEach element in List that thymeleaf returns*/
 
     /*Colours all Elements of the same class in the same Colours*/
     function colourCoding(numberOfThisSuperSet){
@@ -232,7 +272,6 @@
 
     function thymeleafColourCoding(orderValue, idValue){
         var colorDecider = orderValue.charCodeAt(0) - 64;
-        /*TODO change Selector to one that addresses without Selection value*/
         document.getElementById(idValue).style.background = rainbow(numberOfTotalSuperSets, colorDecider);
 
     }
