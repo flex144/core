@@ -1,5 +1,6 @@
 package de.ep.team2.core.controller;
 
+import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.UserService;
@@ -22,7 +23,14 @@ public class ModController {
     }
 
     @RequestMapping(value = {"/createplan"}, method = RequestMethod.GET)
-    public String createPlan() {
+    public String createPlan(Model model) {
+        ExerciseService service = new ExerciseService();
+        if (!model.containsAttribute("createDto")) {
+            CreatePlanDto dto = new CreatePlanDto();
+            dto.setSessionNums(6);
+            model.addAttribute("createDto", dto);
+        }
+        model.addAttribute("allExercises", service.getAllExercises());
         return "mod_create_plan";
     }
 
@@ -49,7 +57,7 @@ public class ModController {
     @PostMapping(value = {"/searchexercise"})
     public String searchExercise(@RequestParam("nameUebung") String name, Model model) {
         ExerciseService service = new ExerciseService();
-        List<Exercise> toReturn = service.getExercisesByName(name);
+        List<Exercise> toReturn = service.getExerciseListByName(name);
         if (toReturn.isEmpty()) {
             model.addAttribute("message","Keine passenden Übungen gefunden!");
         }

@@ -43,7 +43,7 @@ public class LoginTests {
     @Test
     public void login() throws Exception {
         //test if existing user can log in
-        RequestBuilder requestBuilder = formLogin().user("timo@gmail.com").password("hello");
+        RequestBuilder requestBuilder = formLogin().user("timo@gmail123.com").password("123");
         ResultActions action = mvc.perform(requestBuilder);
         action
             .andDo(print())
@@ -58,6 +58,7 @@ public class LoginTests {
                 .andExpect(status().is(302));
         redirectUrl = action.andReturn().getResponse().getHeader("Location");
         assertTrue("redirect to /login?error", redirectUrl.equals("/login?error"));
+        //test
     }
 
     /**

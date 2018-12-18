@@ -18,6 +18,8 @@ import java.util.List;
  */
 public class DataInit {
 
+    public static final int MAX_SETS = 7;
+
     private JdbcTemplate jdbcTemplate;
     private Logger log;
     private UserService userService = new UserService();
@@ -28,11 +30,15 @@ public class DataInit {
         initTables();
         fillUsers();
         fillExercises();
+        fillPlanTemplates();
+        fillTrainingSessions();
+        fillExerciseInstances();
     }
 
     private void initTables() {
         log.info("Creating tables");
-        jdbcTemplate.execute("DROP TABLE IF EXISTS users");
+        // Users
+        jdbcTemplate.execute("DROP TABLE IF EXISTS users CASCADE ");
         jdbcTemplate.execute("CREATE TABLE users(" +
                 "id SERIAL, email VARCHAR(255) NOT NULL ," +
                 " first_name VARCHAR(255), last_name VARCHAR(255) ," +
@@ -40,6 +46,7 @@ public class DataInit {
                 " enabled boolean not null default false, " +
                 " role varchar(20) not null," +
                 " primary key(email))");
+        // Exercises
         jdbcTemplate.execute("DROP TABLE IF EXISTS exercises CASCADE ");
         jdbcTemplate.execute("CREATE TABLE exercises(" +
                 "id SERIAL NOT NULL PRIMARY KEY," +
@@ -47,12 +54,50 @@ public class DataInit {
                 "description VARCHAR(2000)," +
                 "weight_type varchar(15) NOT NULL," +
                 "video_link varchar(400))");
+        // Images
         jdbcTemplate.execute("DROP TABLE IF EXISTS images");
         jdbcTemplate.execute("CREATE TABLE images(" +
                 "exercise integer references exercises not null," +
                 "path varchar(400) PRIMARY KEY," +
                 "img_type varchar(10) NOT NULL)");
         initImages();
+        // Plan Templates
+        jdbcTemplate.execute("DROP TABLE IF EXISTS plan_templates cascade ");
+        jdbcTemplate.execute("CREATE TABLE plan_templates(" +
+                "id SERIAL NOT NULL PRIMARY KEY," +
+                "name varchar(255) NOT NULL UNIQUE," +
+                "trainings_focus varchar(255)," +
+                "author varchar(255) references users NOT NULL," +
+                "one_shot_plan boolean," +
+                "num_train_sessions integer NOT NULL," +
+                "exercises_per_session integer NOT NULL)");
+        // Exercise Instance
+        jdbcTemplate.execute("DROP TABLE IF EXISTS exercise_instances CASCADE ");
+        jdbcTemplate.execute("CREATE TABLE exercise_instances(" +
+                "id SERIAL NOT NULL PRIMARY KEY," +
+                "is_exercise integer references exercises not null," +
+                "category varchar(50)," +
+                "description varchar(2000)," +
+                "plan_template integer not null references plan_templates)");
+        // Training Sessions
+        jdbcTemplate.execute("DROP TABLE IF EXISTS trainings_sessions cascade ");
+        jdbcTemplate.execute("CREATE TABLE trainings_sessions(" +
+                "id SERIAL NOT NULL PRIMARY KEY," +
+                "exercise_instance integer references exercise_instances not null," +
+                "ordering integer not null," +
+                "rep_maximum integer not null," +
+                "sets integer not null," +
+                "tempo varchar(50)," +
+                "pause integer," +
+                "reps_set1 integer," +
+                "reps_set2 integer," +
+                "reps_set3 integer," +
+                "reps_set4 integer," +
+                "reps_set5 integer," +
+                "reps_set6 integer," +
+                "reps_set7 integer," +
+                "CHECK (sets <= 7)," +
+                "CHECK (ordering <= 15 AND ordering >= 1))");
     }
 
     private void initImages() {
@@ -133,5 +178,18 @@ public class DataInit {
                         "Berühre den Boden unten mit deiner Brust, nicht mit " +
                         "dem Kopf.", WeightType.SELF_WEIGHT,
                 "https://www.youtube.com/embed/e_1BDnOVKso", paths2);
+    }
+
+    private void fillPlanTemplates() {
+        //DataBaseService.getInstance().insertPlanTemplate("Test Plan", "Muskelaufbau",
+        //        "felix@gmail.com",false,5,5);
+    }
+
+    private void fillTrainingSessions() {
+        //DataBaseService.getInstance().insertTrainingsSession(1,1);
+    }
+
+    private void fillExerciseInstances() {
+        //DataBaseService.getInstance().insertExerciseInstance(1,"A1","mach schnell!",1,15,3,new Integer[]{12,12,15},"Schnell",90);
     }
 }

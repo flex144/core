@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class UserController {
 
     @RequestMapping("/home")
-    public String startUp() {
-        return "user_startup_page";
-    }
+    public String startUp() { return "user_startup_page"; }
 
     @RequestMapping("/new")
     public String newUser() {

@@ -1,8 +1,10 @@
 package de.ep.team2.core;
 
 
+import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
+import de.ep.team2.core.service.UserService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,6 +21,9 @@ import static org.junit.Assert.assertNull;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DataBaseServiceUnitTests {
+
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
 
     // User
 
@@ -47,11 +52,13 @@ public class DataBaseServiceUnitTests {
 
     @Test
     public void deleteUserById() {
+        UserService userService = new UserService();
         DataBaseService db = DataBaseService.getInstance();
         assertNotNull(db.getUserById(1));
         db.deleteUserById(1);
         assertNull(db.getUserById(1));
-        db.insertUser("timo@gmail123.com", "Timo", "Heinrich", "123");
+        db.insertUser("timo@gmail123.com", "Timo", "Heinrich",
+                userService.encode("123"));
     }
 
     @Test
@@ -79,9 +86,6 @@ public class DataBaseServiceUnitTests {
                 .contains("HalloTest1234567"));
         db.deleteExerciseById(db.getExerciseListByName("HalloTest1234567").get(0).getId());
     }
-
-    @Rule
-    public ExpectedException expectedEx = ExpectedException.none();
 
     @Test
     public void insertSameExercise() {
@@ -122,5 +126,43 @@ public class DataBaseServiceUnitTests {
     public void getExerciseByName() {
         assertEquals("Bankdrücken",
                 DataBaseService.getInstance().getExerciseByName("Bankdrücken").getName());
+    }
+
+    // Trainingsplan Templates
+
+    @Test
+    public void getTemplateByID() {
+        TrainingsPlanTemplate test = DataBaseService.getInstance().getPlanTemplateAndSessionsByID(1);
+        assertEquals("Test Plan", test.getName());
+    }
+
+    @Test
+    public void insertTemplate() {
+        DataBaseService db = DataBaseService.getInstance();
+        assertNull(db.getPlanTemplateAndSessionsByID(2));
+        db.insertPlanTemplate("Hallo2",null,"felix@gmail.com",false,5,5);
+        assertEquals("Hallo2", db.getPlanTemplateAndSessionsByID(2).getName());
+    }
+
+    @Test
+    public void deleteTemplate() {
+        DataBaseService db = DataBaseService.getInstance();
+        assertNull(db.getPlanTemplateAndSessionsByID(3));
+        db.insertPlanTemplate("Hallo3",null,"felix@gmail.com",false,5,5);
+        assertEquals("Hallo3", db.getPlanTemplateAndSessionsByID(3).getName());
+        db.deletePlanTemplateByID(3);
+        assertNull(db.getPlanTemplateAndSessionsByID(3));
+    }
+
+    // Trainings Sessions
+
+
+    @Test
+    public void insertTrainingsSession() {
+        /*expectedEx.expect(RuntimeException.class);
+        expectedEx.expectMessage("Order of The Session Wrong! Order Already exists or isn't in the " +
+                "valid number range!");
+        DataBaseService.getInstance().insertTrainingsSession(1,2);
+        DataBaseService.getInstance().insertTrainingsSession(1,2);*/
     }
 }
