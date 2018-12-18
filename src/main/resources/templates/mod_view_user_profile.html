@@ -44,6 +44,11 @@
                 <span class="glyphicon glyphicon-stats"></span>
                  Statistiken des Nutzers
             </a>
+            <a type="button" class="btn btn-default" data-toggle="modal"
+               data-target="#confirm_mod" sec:authorize="hasRole('MOD')">
+                <span class="glyphicon glyphicon-education"></span>
+                Zum Moderator Befördern
+            </a>
             <a class="btn btn-danger" data-toggle="modal" data-target="#confirm_delete"
                sec:authorize="hasRole('MOD')">
                 <span class="glyphicon glyphicon-remove"></span>
@@ -69,6 +74,11 @@
                 <tr>
                     <th>Last name</th>
                     <td><p th:text="${user.lastName}"/></td>
+                </tr>
+                <tr>
+                    <th>Rolle</th>
+                    <td th:if="${user.role == 'ROLE_MOD'}"><p>Moderator</p></td>
+                    <td th:if="${user.role == 'ROLE_USER'}"><p>Nutzer</p></td>
                 </tr>
                 </tbody>
             </table>
@@ -149,10 +159,52 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="confirm_mod">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- body (form) -->
+            <div class="modal-body">
+                <form th:object="${user}" th:action="@{/users/{path}(path=${user.id})}" th:method="put"
+                      id="moderatorForm">
+                    <div class="panel panel-warning">
+                        <div class="panel-heading">
+                            <h4>Beförderung bestätigen</h4>
+                        </div>
+                        <div class="panel-body">
+                            <p style="font-size: 16px">
+                                Wollen sie den aktuellen Nutzer wirklich zum Moderator machen?
+                            </p>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-warning btn-block"
+                                            id="submitMod">Befördern</button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-default btn-block"
+                                            data-dismiss="modal">Abbrechen</button>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     document.getElementById("submitForm").onclick = function() {
         document.getElementById("deleteForm").submit();
     }
+
+    document.getElementById("submitMod").onclick = function() {
+        document.getElementById("moderatorForm").submit();
+    }
+
 </script>
 
 </body>
