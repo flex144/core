@@ -227,7 +227,7 @@
                         </thead>
                         <tbody>
                         <tr th:each="exercise : ${plan.exerciseInstances}">
-                            <td>
+                            <td th:text="${exercise.category}">
                                 <div class="form-group">
                                     <ul id="planExerciseOrder" class="list-group"></ul>
                                 </div>
@@ -546,15 +546,15 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td>
-                                        <input type="text" class="form-control"
-                                               value="A1" disabled/>
+                                    <td th:text="${exercise.category}">
                                     </td>
+
                                     <td th:text="${exercise.name}">
                                     </td>
+
                                     <td>
                                         <textarea class="form-control"
-                                                  rows="4" disabled>Rückwärts, am Platz, alternierend, Kurzhantel
+                                                  rows="4" disabled th:text="${exercise.description}">
                                         </textarea>
                                     </td>
 
@@ -566,7 +566,11 @@
 
                                     <td >
                                         <div class="form-group" th:each="sessions : ${exercise.trainingsSessions}">
-                                            <ul class="list-group"></ul>
+                                            <ul class="list-group">
+                                                <nobr th:each="rep : ${sessions.reps}">
+                                                    <nobr th:if="${rep} != 0" th:text="${rep} + ' /'"></nobr>
+                                                </nobr>
+                                            </ul>
                                         </div>
                                     </td>
 
