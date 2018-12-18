@@ -194,7 +194,7 @@
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <ul id="pauseInputs" class="list-group"></ul> <!-- todo only numeric input -->
+                                    <ul id="pauseInputs" class="list-group" ></ul> <!-- todo only numeric input -->
                                 </div>
                             </td>
                         </tr>
@@ -226,13 +226,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        <tr th:each="exercise : ${planExercises}">
                             <td>
                                 <div class="form-group">
                                     <ul id="planExerciseOrder" class="list-group"></ul>
                                 </div>
                             </td>
-                            <td>
+                            <td th:text="${exercise.name}">
                                 <div class="form-group">
                                     <ul id="planExerciseName" class="list-group"></ul>
                                 </div>
@@ -523,7 +523,7 @@
                     <div class="panel-body">
                         <div class="col-md-12">
                             <table class="table table-bordered table-condensed" border="1"
-                                   width="100%">
+                                   width="100%" th:each="exercise : ${planExercises}">
                                 <colgroup>
                                     <col width="5%">
                                     <col width="15%">
@@ -533,7 +533,7 @@
                                     <col width="5%">
                                     <col width="5%">
                                 </colgroup>
-                                <thead>
+                                <thead >
                                 <tr>
                                     <th>Ordnung</th>
                                     <th>Übung</th>
@@ -550,158 +550,35 @@
                                         <input type="text" class="form-control"
                                                value="A1" disabled/>
                                     </td>
-                                    <td>
-                                        <input type="text" class="form-control"
-                                               value="Ausfallschritte" disabled/>
+                                    <td th:text="${exercise.name}">
                                     </td>
                                     <td>
                                         <textarea class="form-control"
                                                   rows="4" disabled>Rückwärts, am Platz, alternierend, Kurzhantel
                                         </textarea>
                                     </td>
-                                    <td>
+
+                                    <td >
                                         <div class="form-group">
-                                            <ul id="plan1CounterTE" class="list-group"></ul>
+                                            <ul id="viewPauseInputs" class="list-group"></ul>
                                         </div>
                                     </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="plan1SetInputs" class="list-group"></ul>
-                                        </div>
+
+                                    <td >
                                     </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="plan1TempoInputs" class="list-group"></ul>
-                                        </div>
+
+                                    <tr th:each="sessions : ${exercise.trainingsSessions}">
+                                        <p th:text="${sessions.tempo}"></p>
+                                    </tr>
+
+                                    <td th:each="sessions : ${exercise.trainingsSessions}" th:text="${sessions.pauseInSec}">
+
                                     </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="plan1PauseInputs" class="list-group"></ul>
-                                        </div>
-                                    </td>
+
                                 </tr>
                                 </tbody>
                             </table>
-                            <table class="table table-bordered table-condensed" border="1"
-                                   width="100%">
-                                <colgroup>
-                                    <col width="5%">
-                                    <col width="15%">
-                                    <col width="30%">
-                                    <col width="7%">
-                                    <col width="23%">
-                                    <col width="5%">
-                                    <col width="5%">
-                                </colgroup>
-                                <thead>
-                                <tr>
-                                    <th>Ordnung</th>
-                                    <th>Übung</th>
-                                    <th>Ausführung</th>
-                                    <th>TE</th>
-                                    <th>Sätze - Wiederholungen</th>
-                                    <th>Tempo</th>
-                                    <th>Pause</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <input type="text" class="form-control"
-                                               value="A2" disabled/>
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control"
-                                               value="Leg-Curl" disabled/>
-                                    </td>
-                                    <td>
-                                        <textarea class="form-control"
-                                                  rows="4" disabled>Fußspitze nach innen
-                                        </textarea>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="plan2CounterTE" class="list-group"></ul>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="plan2SetInputs" class="list-group"></ul>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="plan2TempoInputs" class="list-group"></ul>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="plan2PauseInputs" class="list-group"></ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <table class="table table-bordered table-condensed" border="1"
-                                   width="100%">
-                                <colgroup>
-                                    <col width="5%">
-                                    <col width="15%">
-                                    <col width="30%">
-                                    <col width="7%">
-                                    <col width="23%">
-                                    <col width="5%">
-                                    <col width="5%">
-                                </colgroup>
-                                <thead>
-                                <tr>
-                                    <th>Ordnung</th>
-                                    <th>Übung</th>
-                                    <th>Ausführung</th>
-                                    <th>TE</th>
-                                    <th>Sätze - Wiederholungen</th>
-                                    <th>Tempo</th>
-                                    <th>Pause</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <input type="text" class="form-control"
-                                               value="B1" disabled/>
-                                    </td>
-                                    <td>
-                                        <input type="text" class="form-control"
-                                               value="Kniebeuge" disabled/>
-                                    </td>
-                                    <td>
-                                        <textarea class="form-control"
-                                                  rows="4" disabled>Stange hinten
-                                        </textarea>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="plan3CounterTE" class="list-group"></ul>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="plan3SetInputs" class="list-group"></ul>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="plan3TempoInputs" class="list-group"></ul>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="plan3PauseInputs" class="list-group"></ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+
                         </div>
                     </div>
                     <!-- Panel footer with button to close the modal positioned on the right -->

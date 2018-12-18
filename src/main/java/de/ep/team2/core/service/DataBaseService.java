@@ -494,12 +494,16 @@ public class DataBaseService {
      */
     private LinkedList<ExerciseInstance> getExInstancesOfTemplate(int idOfTemplate) {
         return new LinkedList<>(jdbcTemplate.query(
-                "SELECT * FROM exercise_instances WHERE plan_template = ?",
+                "SELECT ei.id, ei.is_exercise, ei.category, ei.description, ex.name" +
+                        " FROM exercise_instances ei, exercises ex " +
+                        " WHERE ei.plan_template = ? " +
+                        " AND ei.is_exercise = ex.id ",
                 new Integer[]{idOfTemplate},
                 (resultSet, i) -> new ExerciseInstance(idOfTemplate, resultSet.getInt(
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
                         resultSet.getString("description"),
-                        getSessionsOfExerciseInstance(resultSet.getInt("id")))));
+                        getSessionsOfExerciseInstance(resultSet.getInt("id")),
+                        resultSet.getString("name"))));
     }
 
     /**
@@ -582,7 +586,7 @@ public class DataBaseService {
                 (resultSet, i) -> {
                     Integer[] reps = new Integer[7];
                     for (int j = 1; j < 8; j++) {
-                        reps[j - 1] = resultSet.getInt(String.format("reps_ex%d", j));
+                        reps[j - 1] = resultSet.getInt(String.format("reps_set%d", j));
                     }
                     return new TrainingsSession(idOfInstance, resultSet.getInt("ordering"),
                             resultSet.getInt("exercise_instance"),

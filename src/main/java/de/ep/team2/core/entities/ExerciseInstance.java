@@ -7,18 +7,21 @@ public class ExerciseInstance {
     private int planTemplateID;
     private int isExerciseID;
     private int id;
+    private String name;
     private String category;
     private String description;
     private LinkedList<TrainingsSession> trainingsSessions;
 
     public ExerciseInstance(int planTemplateID, int isExerciseID, int id, String category,
-                            String description, LinkedList<TrainingsSession> trainingsSessions) {
+                            String description, LinkedList<TrainingsSession> trainingsSessions,
+                            String name) {
         this.planTemplateID = planTemplateID;
         this.isExerciseID = isExerciseID;
         this.id = id;
         this.category = category;
         this.description = description;
         this.trainingsSessions = trainingsSessions;
+        this.name = name;
     }
 
     public int getPlanTemplateID() {
@@ -43,6 +46,14 @@ public class ExerciseInstance {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCategory() {

@@ -1,6 +1,8 @@
 package de.ep.team2.core.controller;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
+import de.ep.team2.core.entities.TrainingsPlanTemplate;
+import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.PlanService;
 import org.springframework.stereotype.Controller;
@@ -27,12 +29,26 @@ public class TrainingsController {
     public String trainingsPlanCreate(@ModelAttribute("createDto") CreatePlanDto dto,
                                       RedirectAttributes redirectAttributes) {
         PlanService service = new PlanService();
+        DataBaseService dbService = DataBaseService.getInstance();
         String checkArgs = checkIfArgsValid(dto);
+
         if (checkArgs.equals("valid!")) {
             dto.nameToId();
             redirectAttributes.addFlashAttribute("createDto", service.createPlan(dto));
+            //Add Exercises to the thymeleaf model
+            TrainingsPlanTemplate tpt = dbService
+                    .getPlanTemplateAndSessionsByID(dto.getId());
+            redirectAttributes.addFlashAttribute("planExercises",
+                    tpt.getTrainingsSessions());
             return "redirect:/mods/createplan";
         } else {
+            if (dto.getId() != null) {
+                //Add Exercises to the thymeleaf model
+                TrainingsPlanTemplate tpt = dbService
+                        .getPlanTemplateAndSessionsByID(dto.getId());
+                redirectAttributes.addFlashAttribute("planExercises",
+                        tpt.getTrainingsSessions());
+            }
             redirectAttributes.addFlashAttribute("createDto", dto);
             redirectAttributes.addFlashAttribute("errorMsg", checkArgs);
             return "redirect:/mods/createplan";
