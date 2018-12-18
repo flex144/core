@@ -47,21 +47,21 @@
 </head>
 <body>
 
+<!--- Modal containing general Information --->
 <div id="infoModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="jumbotron">
-                    <h3>Es ist empfohlen dem Plan möglichst präzise zu folgen</h3>
-                    <h5>Nur durch richtige Ausführung der Übungen, mit guter Form und
-                        empfohlenen Anzahlen/Gewichten wird guter Vortschritt erreicht.</h5>
-                    <h5>Übungen in der selben Farbe sind in einem sogennanten 'Super Set'.</h5>
-                    <h5>Übungen in einem Superset sollten abgeschlossen werden, bevor das nächste Superset begonnen wird.</h5>
+                <div class="jumbotron" style="text-align: center;">
+                    <h4>Es ist empfohlen dem Plan möglichst präzise zu folgen.</h4>
+                    <h6>Nur durch richtige Ausführung der Übungen, mit guter Form und empfohlenen Anzahlen/Gewichten wird guter Vortschritt erreicht.</h6>
+                    <h6>Übungen in der selben Farbe sind in einem sogennanten 'Super Set'.</h6>
+                    <h6>Übungen in einem Superset sollten abgeschlossen werden, bevor das nächste Superset begonnen wird.</h6>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button"
-                        class="btn btn-block btn-danger" data-dismiss="modal">
+                        class="btn btn-block btn-warning" data-dismiss="modal">
                     Zurück
                 </button>
             </div>
@@ -69,7 +69,31 @@
     </div>
 </div>
 
+<!--- Modal used to warn user before leaving the training --->
+<div id="exitModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="jumbotron" style="text-align: center;">
+                    <h4>Training wirklich abbrechen?</h4>
+                </div>
+                <button type="button"
+                        class="btn btn-block btn-secondary" data-dismiss="modal">
+                    Weitermachen
+                </button>
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-block btn-danger" onclick="exitTraining()">
+                        Abbrechen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!--- Page Header --->
+<!--- TODO Thymeleaf load #TE --->
 <div class="highlightedContainer" id="container_header"
      style="height: 10%;">
     <div style="width: 70%;">
@@ -87,15 +111,19 @@
     </button>
 </div>
 
+
+<!---
+    TODO thymeleaf Each Container has to execute
+    "thymeleafColourCoding(orderValue, idValue)"
+    with orderValue being e.g. 'A1'
+    and idValue being the thymeleafID of this element
+    TODO thymeleaf call clickedOnExercise() onClick
+--->
+<!--- Template for thymeleaf data to load into --->
 <div class="container" id="container_content" style="height: 70%;
         overflow-x: fragments; overflow-y: scroll; text-align: center;
         padding: 5px">
 
-    <!---
-        TODO thymeleaf Each Container has to execute
-        "thymeleafColourCoding(orderValue, idValue)"
-        TODO thymeleaf call clickedOnExercise() onClick
-    --->
     <div class="container" style="padding-bottom: 2px; height: 15%" id="exercise"
          th:each th:onclick="" th:id=>
         <!--- TODO thymeleaf remove test class after it is implemented--->
@@ -128,6 +156,7 @@
     </div>
 
 
+    <!--- To showacase colours, delet after funcitonality integrated--->
     <div class="container" style="padding-bottom: 2px; height: 15%">
         <div class="containerColor fullsize farbTest1">
             <table class="fullsize" >
@@ -196,24 +225,40 @@
     </div>
 </div>
 
+
+    <!--- Buttons to leave/star the exercise --->
 <div class="highlightedContainer" id="container_timer" style="height: 20%;">
     <!---
     <div id="container_timerBox" style="width: 100%;">
         <h1><span id="time">00:00</span></h1>
     </div> --->
     <div class="container fullsize row">
-        <div style="width: 50%; height: 100%; padding: 5%;">
+        <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingBack">
             <button type="button"
                     class="btn btn-block btn-danger fullsize" id="backButton"
-                    style="height: 100%; min-height: 50px">
+                    style="height: 100%; min-height: 50px" onclick="exitTraining()">
                 Zurück
             </button>
         </div>
-        <div style="width: 50%; height: 100%; padding: 5%;">
+        <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingStart">
             <button type="button"
                     class="btn btn-block btn-success fullsize" id="startButton"
-                    style="height: 100%; min-height: 50px">
+                    style="height: 100%; min-height: 50px" onclick="startTraining()">
                 Training <br> starten
+            </button>
+        </div>
+        <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingExit">
+            <button type="button"
+                    class="btn btn-block btn-danger fullsize"
+                    style="height: 100%; min-height: 50px" data-toggle="modal" data-target="#exitModal">
+                Traing <br> abbrechen
+            </button>
+        </div>
+        <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingFinished">
+            <button type="button"
+                    class="btn btn-block btn-success fullsize"
+                    style="height: 100%; min-height: 50px" onclick="startTraining()" disabled>
+                Abschließen
             </button>
         </div>
     </div>
@@ -221,7 +266,20 @@
 
 <!--- TODO save done exercises and current order with session--->
 
+<!--- Button functionality --->
 <script>
+    function startTraining(){
+        /*TODO maybe enable clicking on exercises*/
+        document.getElementById('button_trainingStart').style.display = "none";
+        document.getElementById('button_trainingBack').style.display = "none";
+        document.getElementById('button_trainingExit').style.display = "inherit";
+        document.getElementById('button_trainingFinished').style.display = "inherit";
+    }
+
+    function exitTraining() {
+        window.location = "testseite_verlinkung.html";
+    }
+
     function clickedOnExercise(){
         var currentOrder = document.getElementById(orderOfExercise).innerHTML;
         var id = this.id;
@@ -243,22 +301,21 @@
         var orderOfExercise = "orderNumber" + id;
         document.getElementById(orderOfExercise).innerHTML;
     }
+
 </script>
 
+<!--- Colouring every row --->
 <script>
-
-
     var numberOfTotalSuperSets = 9;
 
     document.onLoad(initializeData());
     function initializeData() {
+        document.getElementById('button_trainingExit').style.display = "none";
+        document.getElementById('button_trainingFinished').style.display = "none";
         for (var i = 0; i < numberOfTotalSuperSets; i++){
             colourCoding(i + 1);
         }
-
     }
-
-
 
     /*Colours all Elements of the same class in the same Colours*/
     function colourCoding(numberOfThisSuperSet){
@@ -270,12 +327,11 @@
         }
     }
 
+    /*Colours Elements using Data from thymeleaf*/
     function thymeleafColourCoding(orderValue, idValue){
         var colorDecider = orderValue.charCodeAt(0) - 64;
         document.getElementById(idValue).style.background = rainbow(numberOfTotalSuperSets, colorDecider);
-
     }
-
 
     /*Chooses colours evenly distributed from a spectrum*/
     function rainbow(numOfSteps, step) {

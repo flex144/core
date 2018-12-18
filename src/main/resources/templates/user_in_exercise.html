@@ -12,8 +12,6 @@
           crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <div th:include="/fragments/navbar :: navbar_style"></div>
-
     <style>
         /********************container Styles**********************/
         html, body {
@@ -77,19 +75,17 @@
 <div id="exerciseModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="panel panel-default" th:if="${!exercise.getName().equals('')}">
-                    <div class="panel-heading">
-                        Name:
-                    </div>
-                    <div class="panel-body">
-                        <p th:text="${exercise.getName()}"></p>
-                    </div>
-                </div>
-            </div>
             <div class="modal-body">
                 <div class="container">
                     <div class="jumbotron">
+                        <div class="panel panel-default" th:if="${!exercise.getName().equals('')}">
+                            <div class="panel-heading">
+                                Name:
+                            </div>
+                            <div class="panel-body">
+                                <p th:text="${exercise.getName()}"></p>
+                            </div>
+                        </div>
                         <div>
                             <div class="panel panel-default" th:if="${!exercise.getDescription().equals('')}">
                                 <div class="panel-heading">
@@ -181,11 +177,24 @@
                     </div>
                 </div>
             </div>
+            <div class="container" id="toggledAlert" >
+                <div>
+                    <h5 style="color: red; text-align: center; background: #e3f2fd; border: 1px solid black;">
+                        Es ist nicht empfohlen die alternativen Übungne zu wählen.
+                        Wenn die Entscheidung aus gesundheitlichen Gründen folgt,
+                        so kontaktieren sie einen Trainer.
+                    </h5>
+                </div>
+                <button type="button"
+                        class="btn btn-secondary" onclick="enableSave()">
+                    Ok
+                </button>
+            </div>
             <div class="modal-footer">
                 <div class="container">
                     <button type="button"
-                            class="btn btn-block btn-success" style="font-size: small" onclick="safeAlternativeExercise()" disabled hidden>
-                        Speichern
+                            class="btn btn-block btn-success" style="font-size: small" onclick="safeAlternativeExercise()" disabled id="button_saveExercise">
+                        Übung festlegen
                     </button>
                     <button type="button"
                             class="btn btn-block btn-warning" data-toggle="button" aria-pressed="false" style="font-size: small" onclick="toggleExercise()">
@@ -194,6 +203,34 @@
                     <button type="button"
                             class="btn btn-block btn-danger" data-dismiss="modal" style="font-size: small" >
                         Zurück
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="leavePageModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="jumbotron" style="text-align: center;">
+                    <h4>Willst du die Übung abbrechen und zur Trainingsplanseite Zurückkehren?</h4>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="container" style="width: 45%;">
+                    <button type="button"
+                            class="btn btn-block btn-danger" onclick="leavePage()">
+                        Zum Plan
+                        <!--- TODO controller link back to plan, no changes made to current session-->
+                    </button>
+                </div>
+                <div class="container" style="width: 45%;">
+                    <button type="button"
+                            class="btn btn-block btn-success" data-dismiss="modal">
+                        Weitermachen
                     </button>
                 </div>
             </div>
@@ -212,7 +249,6 @@
         i
     </button>
 </div>
-
 
 <!--- Picture / Notice to current exercise --->
 <div class="greyContainer" id="container_planInstructions"
@@ -258,7 +294,7 @@
 
 <!--- Adjustable Repition counter for the current set --->
 <div style="height: 10%;">
-    <div class="row" style="height: 60%">
+    <div class="row" style="height: 60%; width: 100%;">
         <div style="width: 30%; height: 100%">
             <button type="button"
                     class="btn btn-secondary fullsize" onclick="decreaseReps()" id="buttonDecrease" disabled>
@@ -289,12 +325,12 @@
     <div class="colourlessContainer" id="container_timerBox">
         <div style="width: 30%;  height: 100%; padding: 1%">
             <button type="button" style="width: 100%; height: 45%"
-                    class="btn-block btn-success" id="buttonRecommended"
+                    class="btn-block btn-secondary" id="buttonRecommended"
                     onclick="recommendedTime()" disabled>
                 Empfohlene Zeit
             </button>
             <button type="button" style="width: 100%; height: 45%"
-                    class="btn-block btn-success" id="buttonStop"
+                    class="btn-block btn-secondary" id="buttonStop"
                     onclick="stopTimer()" disabled>
                 Zurücksetzen
             </button>
@@ -304,12 +340,12 @@
         </div>
         <div style="width: 30%;  height: 100%; padding: 1%">
             <button type="button" style="width: 100%; height: 45%"
-                    class="btn-block btn-success" id="button60s"
+                    class="btn-block btn-secondary" id="button60s"
                     onclick="parseTime(60)" disabled>
                 60s
             </button>
             <button type="button" style="width: 100%; height: 45%"
-                    class="btn-block btn-success" id="button30s"
+                    class="btn-block btn-secondary" id="button30s"
                     onclick="parseTime(30)" disabled>
                 30s
             </button>
@@ -346,10 +382,16 @@
     </div>
     <div class="row" style="width: 100%; height: 80%;">
         <div style="width: 10%;"></div>
-        <div style="width: 30%;">
+        <div style="width: 30%;" id="backButton">
             <button type="button"
-                    class="btn btn-block btn-danger fullsize" id="backButton" >
-                <span class="buttonBack"></span>
+                    class="btn btn-block btn-danger fullsize"  onclick="leavePage()">
+                Zurück
+            </button>
+        </div>
+        <div style="width: 30%;" id="exitButton">
+            <button type="button"
+                    class="btn btn-block btn-danger fullsize"  data-toggle="modal" data-target="#leavePageModal">
+                Abbrechen
             </button>
         </div>
         <div style="width: 30%;"></div>
@@ -363,11 +405,40 @@
 </div>
 
 <script>
+
+    var warningHidden = true;
+
+    document.onLoad(initialLoad());
+    function initialLoad(){
+        warningHidden = true;
+        document.getElementById('toggledAlert').style.display = "none";
+        document.getElementById('button_saveExercise').style.display = "none";
+        document.getElementById('exitButton').style.display = "none";
+    }
+
+    function enableSave(){
+        document.getElementById('button_saveExercise').disabled = false;
+    }
+
+    function leavePage(){
+        window.location = "user_training_overview.html"
+    }
+
     function safeAlternativeExercise() {
         /*TODO write data to DB */
     }
 
     function toggleExercise() {
+        if (warningHidden){
+            warningHidden = false;
+            document.getElementById('toggledAlert').style.display = "inherit";
+            document.getElementById('button_saveExercise').style.display = "inherit";
+        } else{
+            warningHidden = true;
+            document.getElementById('toggledAlert').style.display = "none";
+            document.getElementById('button_saveExercise').style.display = "none";
+            document.getElementById('button_saveExercise').disabled = true;
+        }
         /*TODO Decision load alternative from the getgo and hide it, or only load on request (HOW?) */
     }
 
@@ -479,15 +550,17 @@
         document.getElementById('repInput').value = currentReps;
     }
 
+
     /*** Evaluation/Timer Toggle***/
     /*** Change Values on each click***/
     function exerciseFunction(){
         /***Can't send empty/illegal inputs***/
         if( !( valueCheck < 2* totalReps && valueCheck> 0) ){
             alert("Please enter a valid repition number before proceeding");
+            valueCheck = currentReps;
         }
         else if (done){
-            window.location ="/user/home";
+            window.location ="user_training_overview.html";
         }else if (currentCounter == setCounter){
             timerBox.style.display = "none";
             evaluationBox.style.display = "inherit";
@@ -511,11 +584,12 @@
             document.getElementById('buttonStop').disabled = false;
         }
         currentReps = totalReps;
-        document.getElementById('repInput').value = currentReps;
         labelValue = currentCounter + "/" + setCounter;
+        document.getElementById('repInput').value = currentReps;
+        document.getElementById('backButton').style.display = "none";
+        document.getElementById('exitButton').style.display = "inherit";
         document.querySelector('.value').innerHTML = labelValue;
         document.querySelector('.buttonName').innerHTML = buttonTitle;
-        document.querySelector('.buttonBack').innerHTML = "Abbrechen";
         stopTimer();
     }
 </script>
