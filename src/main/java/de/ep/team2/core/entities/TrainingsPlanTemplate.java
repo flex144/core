@@ -85,7 +85,7 @@ public class TrainingsPlanTemplate {
         this.exercisesPerSession = exercisesPerSession;
     }
 
-    public LinkedList<ExerciseInstance> getTrainingsSessions() {
+    public LinkedList<ExerciseInstance> getExerciseInstances() {
         return exerciseInstances;
     }
 

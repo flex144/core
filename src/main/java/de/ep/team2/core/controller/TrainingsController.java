@@ -38,16 +38,14 @@ public class TrainingsController {
             //Add Exercises to the thymeleaf model
             TrainingsPlanTemplate tpt = dbService
                     .getPlanTemplateAndSessionsByID(dto.getId());
-            redirectAttributes.addFlashAttribute("planExercises",
-                    tpt.getTrainingsSessions());
+            redirectAttributes.addFlashAttribute("plan", tpt);
             return "redirect:/mods/createplan";
         } else {
             if (dto.getId() != null) {
                 //Add Exercises to the thymeleaf model
                 TrainingsPlanTemplate tpt = dbService
                         .getPlanTemplateAndSessionsByID(dto.getId());
-                redirectAttributes.addFlashAttribute("planExercises",
-                        tpt.getTrainingsSessions());
+                redirectAttributes.addFlashAttribute("plan", tpt);
             }
             redirectAttributes.addFlashAttribute("createDto", dto);
             redirectAttributes.addFlashAttribute("errorMsg", checkArgs);

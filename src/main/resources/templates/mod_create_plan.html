@@ -210,7 +210,7 @@
                 Aktueller Trainingsplan
             </div>
             <div class="panel-body">
-                <div class="col-md-12">
+                <div class="col-md-12" th:if="${plan}">
                     <!-- Table to list the added exercises in the final plan -->
                     <table class="table table-bordered table-condensed" border="1" width="100%">
                         <colgroup>
@@ -226,7 +226,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="exercise : ${planExercises}">
+                        <tr th:each="exercise : ${plan.exerciseInstances}">
                             <td>
                                 <div class="form-group">
                                     <ul id="planExerciseOrder" class="list-group"></ul>
@@ -498,7 +498,7 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="panel panel-success">
+                <div class="panel panel-success" th:if="${plan}">
                     <!-- Panel header with title and general date for the final plan -->
                     <div class="panel-heading">
                         <div class="row">
@@ -507,15 +507,15 @@
                             </div>
                             <div class="col-md-3">
                                 <input class="form-control" type="text" id="viewPlanName"
-                                       value="Planname" disabled/>
+                                       th:value="${plan.name}" disabled/>
                             </div>
                             <div class="col-md-3">
                                 <input class="form-control" type="text" id="viewPlanFocus"
-                                       value="Muskelfokus" disabled/>
+                                       th:value="${plan.trainingsFocus}" disabled/>
                             </div>
                             <div class="col-md-3">
                                 <input class="form-control" type="text" id="viewPlanTE"
-                                       value="AnzahlTE" disabled/>
+                                       th:value="${plan.numTrainSessions}" disabled/>
                             </div>
                         </div>
                     </div>
@@ -523,7 +523,7 @@
                     <div class="panel-body">
                         <div class="col-md-12">
                             <table class="table table-bordered table-condensed" border="1"
-                                   width="100%" th:each="exercise : ${planExercises}">
+                                   width="100%" th:each="exercise : ${plan.exerciseInstances}">
                                 <colgroup>
                                     <col width="5%">
                                     <col width="15%">
@@ -559,20 +559,27 @@
                                     </td>
 
                                     <td >
-                                        <div class="form-group">
-                                            <ul id="viewPauseInputs" class="list-group"></ul>
+                                        <div class="form-group" th:each="sessions, iStat : ${exercise.trainingsSessions}">
+                                            <ul class="list-group" th:text="${iStat.count}"></ul>
                                         </div>
                                     </td>
 
                                     <td >
+                                        <div class="form-group" th:each="sessions : ${exercise.trainingsSessions}">
+                                            <ul class="list-group"></ul>
+                                        </div>
                                     </td>
 
-                                    <tr th:each="sessions : ${exercise.trainingsSessions}">
-                                        <p th:text="${sessions.tempo}"></p>
-                                    </tr>
+                                    <td >
+                                        <div class="form-group" th:each="sessions : ${exercise.trainingsSessions}">
+                                            <ul class="list-group" th:text="${sessions.tempo}"></ul>
+                                        </div>
+                                    </td>
 
-                                    <td th:each="sessions : ${exercise.trainingsSessions}" th:text="${sessions.pauseInSec}">
-
+                                    <td >
+                                        <div class="form-group" th:each="sessions : ${exercise.trainingsSessions}">
+                                            <ul class="list-group" th:text="${sessions.pauseInSec}"></ul>
+                                        </div>
                                     </td>
 
                                 </tr>
