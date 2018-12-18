@@ -198,13 +198,23 @@ public class FrontEndSeleniumTests {
         // Check if inputs after the 5th one have disappeared
         assertTrue(driver.findElements(By.id("repeatsInput5")).isEmpty());
 
+        /* Test for alert if amount of training units is increased over 15 */
+        for(int i=0; i<11; i++) {
+            driver.findElement(By.id("btnIncrement")).click();
+        }
+        // Switch driver to alert window
+        driver.switchTo().alert();
+        // Accept the alert to close the alert window
+        driver.switchTo().alert().accept();
+        // Switch driver back to the previous window
+        driver.switchTo().defaultContent();
+
         /* Test for modalConvertPlan */
 
         // Decrease the te-amount to 1 to trigger the modal
-        driver.findElement(By.id("btnDecrement")).click();
-        driver.findElement(By.id("btnDecrement")).click();
-        driver.findElement(By.id("btnDecrement")).click();
-        driver.findElement(By.id("btnDecrement")).click();
+        for(int i=0; i<14; i++) {
+            driver.findElement(By.id("btnDecrement")).click();
+        }
         // Check if modal to convert the plan to a single day plan has opened
         modal = driver.findElement(By.id("modalConvertPlan"));
         assertTrue(modal.isDisplayed());
@@ -213,6 +223,17 @@ public class FrontEndSeleniumTests {
         waitDuration(200);
         // Check if modal closed correctly
         assertFalse(modal.isDisplayed());
+
+        /* Test for alert if amount of training units is decreased below 1 */
+
+        // Try to decrease the amount below 1
+        driver.findElement(By.id("btnDecrement")).click();
+        // Switch driver to alert window
+        driver.switchTo().alert();
+        // Accept the alert to close the alert window
+        driver.switchTo().alert().accept();
+        // Switch driver back to the previous window
+        driver.switchTo().defaultContent();
 
         /* Test for the singleDayCheckbox */
 
