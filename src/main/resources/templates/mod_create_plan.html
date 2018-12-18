@@ -99,7 +99,7 @@
                     <div class="form-check">
                         <label class="form-check-label" for="singleDayCheck" style="font-size: 11pt">
                             Eintagesplan:</label>
-                        <input type="checkbox" class="form-check-input" id="singleDayCheck" 
+                        <input type="checkbox" class="form-check-input" id="singleDayCheck"
                                onchange="checkboxChanged()" style="margin-left: 20px">
                         <input type="text" id="prevUnitAmount" value="3" hidden disabled>
                     </div>
@@ -131,7 +131,7 @@
                     </button>
                 </div>
                 <div class="col-md-2">
-                    <button type="button" data-toggle="modal"
+                    <button type="button" data-toggle="modal" id="buttonCreateExercise"
                             class="btn btn-success btn-block launch-modal">
                         <span class="glyphicon glyphicon-plus-sign"></span>
                          Neue Übungsart
@@ -207,7 +207,7 @@
                                 <div id="tagBlock">
                                     <br>
                                     <h5 id="tagHeader">Hinzugefügte Ausführungen:</h5>
-                                    <input type="text" data-role="tagsinput" id="tags" class="form-control">
+                                    <input type="text" data-role="tagsinput" id="tags" value="" class="form-control">
                                 </div>
                             </td>
                             <td>
@@ -369,7 +369,10 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary">Speichern</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
+                <button type="button" class="btn btn-default" id="buttonCloseExerciseForm"
+                        data-dismiss="modal">
+                    Schließen
+                </button>
             </div>
         </div>
     </div>
@@ -393,7 +396,8 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-success" onclick="addExecution()" data-dismiss="modal">
                     Speichern</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
+                <button type="button" class="btn btn-default" id="buttonCloseExecutionModal"
+                        data-dismiss="modal">Schließen</button>
             </div>
         </div>
     </div>
@@ -530,7 +534,7 @@
                                 </button>
                             </div>
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-default btn-block"
+                                <button type="button" class="btn btn-default btn-block" id="btnCloseModalShowDetails"
                                         data-dismiss="modal">
                                     Schließen
                                 </button>
@@ -757,7 +761,7 @@
                         <div class="row">
                             <div class="col-md-8"></div>
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-default btn-block"
+                                <button type="button" class="btn btn-default btn-block" id="btnCloseModalViewPlan"
                                         data-dismiss="modal">
                                     Schließen
                                 </button>
@@ -803,7 +807,7 @@
                                 </button>
                             </div>
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-default btn-block"
+                                <button type="button" class="btn btn-default btn-block" id="btnCloseModalConvertPlan"
                                         data-dismiss="modal">
                                     Abbrechen
                                 </button>
