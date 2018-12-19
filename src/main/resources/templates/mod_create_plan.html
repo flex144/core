@@ -68,7 +68,7 @@
                 <div class="form-group">
                     <label for="planName">Planbezeichnung:</label>
                     <input  type="text" class="form-control" id="planName"
-                            placeholder="Hier Bezeichnung eingeben...">
+                            placeholder="Hier Bezeichnung eingeben..." th:field="*{planName}">
                 </div>
             </div>
             <div class="col-md-4">
@@ -89,13 +89,25 @@
                             onclick="decrement(); updateTeInputs()">
                         <span class="glyphicon glyphicon-minus"></span>
                     </button>
-                    <input type="text" name="trainingUnits" id="inputUnit" value="6"
+                    <input type="text" name="trainingUnits" id="inputUnit" th:field="*{sessionNums}"
                            style="width: 30px; border: 3px solid darkgray; text-align: center;
-                           font-weight: bold" disabled>
+                           font-weight: bold" >
                     <button type="button" class="btn increment-button" id="btnIncrement"
                             onclick="increment(); updateTeInputs()">
                         <span class="glyphicon glyphicon-plus"></span>
                     </button>
+                    <input th:field="*{id}" style="width: 30px; border: 3px solid darkgray; text-align: center;
+                           font-weight: bold">
+                </div>
+                <br>
+                <div class="form-group">
+                    <div class="form-check">
+                        <label class="form-check-label" for="singleDayCheck" style="font-size: 11pt">
+                            Eintagesplan:</label>
+                        <input type="checkbox" class="form-check-input" id="singleDayCheck"
+                               onchange="checkboxChanged()" style="margin-left: 20px">
+                        <input type="text" id="prevUnitAmount" value="3" hidden disabled>
+                    </div>
                 </div>
             </div>
         </div>
@@ -106,8 +118,14 @@
         <!-- Panel header with title and buttons to add or create exercises and to reset the form -->
         <div class="panel-heading">
             <div class="row">
-                <div class="col-md-6" style="margin-top: 6px">
+                <div class="col-md-4" style="margin-top: 6px">
                     Übung bearbeiten
+                </div>
+                <div class="col-md-2">
+                    <button type="button" id="submitDelete" class="btn btn-danger btn-block">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        Löschen
+                    </button>
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary btn-block">
@@ -704,10 +722,6 @@
 </div>
 
 <script>
-    document.getElementById("submitDelete").onclick = function() {
-        document.getElementById("formDelete").submit();
-    }
-
     /**
      * Execute various functions when the page is loaded
      */
@@ -724,6 +738,9 @@
         updateTeInputs()
         // Hide the empty display block for the exercise execution tags
         document.getElementById("tagBlock").style.display = "none";
+        document.getElementById("submitDelete").onclick = function() {
+            document.getElementById("formDelete").submit();
+        }
     });
 
     /**
@@ -1053,124 +1070,6 @@
             $('#viewPauseInputs').append(
                 '<li>' + '<input id="'+pauseInputId+'" disabled value="60" type="text" class="form-control">' + '</li>');
         }
-    }
-
-    /**
-     * Temporary function to add example-content to the modal for plan preview
-     */
-    function fillPlan() {
-        // Get the number of TE´s
-        var number = document.getElementById("inputUnit").value;
-
-        // Get data lists and store them in variables for further manipulation
-        var te1 = document.getElementById("plan1CounterTE");
-        var sets1 = document.getElementById("plan1SetInputs");
-        var tempos1 = document.getElementById("plan1TempoInputs");
-        var pauses1 = document.getElementById("plan1PauseInputs");
-
-        var te2 = document.getElementById("plan2CounterTE");
-        var sets2 = document.getElementById("plan2SetInputs");
-        var tempos2 = document.getElementById("plan2TempoInputs");
-        var pauses2 = document.getElementById("plan2PauseInputs");
-
-        var te3 = document.getElementById("plan3CounterTE");
-        var sets3 = document.getElementById("plan3SetInputs");
-        var tempos3 = document.getElementById("plan3TempoInputs");
-        var pauses3 = document.getElementById("plan3PauseInputs");
-
-        // 12 loops to reset the example data in the viewPlan table
-        while (te1.hasChildNodes()) {
-            te1.removeChild(te1.lastChild);
-        }
-        while (sets1.hasChildNodes()) {
-            sets1.removeChild(sets1.lastChild);
-        }
-        while (tempos1.hasChildNodes()) {
-            tempos1.removeChild(tempos1.lastChild);
-        }
-        while (pauses1.hasChildNodes()) {
-            pauses1.removeChild(pauses1.lastChild);
-        }
-
-        while (te2.hasChildNodes()) {
-            te2.removeChild(te2.lastChild);
-        }
-        while (sets2.hasChildNodes()) {
-            sets2.removeChild(sets2.lastChild);
-        }
-        while (tempos2.hasChildNodes()) {
-            tempos2.removeChild(tempos2.lastChild);
-        }
-        while (pauses2.hasChildNodes()) {
-            pauses2.removeChild(pauses2.lastChild);
-        }
-
-        while (te3.hasChildNodes()) {
-            te3.removeChild(te3.lastChild);
-        }
-        while (sets3.hasChildNodes()) {
-            sets3.removeChild(sets3.lastChild);
-        }
-        while (tempos3.hasChildNodes()) {
-            tempos3.removeChild(tempos3.lastChild);
-        }
-        while (pauses3.hasChildNodes()) {
-            pauses3.removeChild(pauses3.lastChild);
-        }
-
-        // loop to add example values to the TE/Repeats/Tempo/Pause columns in viewPlan table
-        for (var i=0;i<number;i++){
-            // create unique id´s
-            var counterTEId1 = "plan1Counter" + i;
-            var setInputId1 = "plan1SetInput" + i;
-            var tempoInputId1 = "plan1TempoInput" + i;
-            var pauseInputId1 = "plan1PauseInput" + i;
-
-            var counterTEId2 = "plan2Counter" + i;
-            var setInputId2 = "plan2SetInput" + i;
-            var tempoInputId2 = "plan2TempoInput" + i;
-            var pauseInputId2 = "plan2PauseInput" + i;
-
-            var counterTEId3 = "plan3Counter" + i;
-            var setInputId3 = "plan3SetInput" + i;
-            var tempoInputId3 = "plan3TempoInput" + i;
-            var pauseInputId3 = "plan3PauseInput" + i;
-
-            // Add the examples to the lists
-            $('#plan1CounterTE').append(
-                '<li>' + '<input id="'+counterTEId1+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
-            $('#plan1SetInputs').append(
-                '<li>' + '<input id="'+setInputId1+'" disabled value="3 - '+(10+i)+'" type="text" class="form-control">' + '</li>');
-            $('#plan1TempoInputs').append(
-                '<li>' + '<input id="'+tempoInputId1+'" disabled value="60" type="text" class="form-control">' + '</li>');
-            $('#plan1PauseInputs').append(
-                '<li>' + '<input id="'+pauseInputId1+'" disabled value="60" type="text" class="form-control">' + '</li>');
-
-            $('#plan2CounterTE').append(
-                '<li>' + '<input id="'+counterTEId2+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
-            $('#plan2SetInputs').append(
-                '<li>' + '<input id="'+setInputId2+'" disabled value="3 - '+(15+i)+'" type="text" class="form-control">' + '</li>');
-            $('#plan2TempoInputs').append(
-                '<li>' + '<input id="'+tempoInputId2+'" disabled value="90" type="text" class="form-control">' + '</li>');
-            $('#plan2PauseInputs').append(
-                '<li>' + '<input id="'+pauseInputId2+'" disabled value="45" type="text" class="form-control">' + '</li>');
-
-            $('#plan3CounterTE').append(
-                '<li>' + '<input id="'+counterTEId3+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
-            $('#plan3SetInputs').append(
-                '<li>' + '<input id="'+setInputId3+'" disabled value="3 - '+(20+i)+'" type="text" class="form-control">' + '</li>');
-            $('#plan3TempoInputs').append(
-                '<li>' + '<input id="'+tempoInputId3+'" disabled value="90" type="text" class="form-control">' + '</li>');
-            $('#plan3PauseInputs').append(
-                '<li>' + '<input id="'+pauseInputId3+'" disabled value="30" type="text" class="form-control">' + '</li>');
-        }
-        // Get the values of the general plan data and write it into the viewPlan panel header
-        var planName = document.getElementById("planName").value;
-        var planFocus = document.getElementById("focus").value;
-        var planTE = document.getElementById("inputUnit").value;
-        $('#viewPlanName').val(planName);
-        $('#viewPlanfocus').val(planFocus);
-        $('#viewPlanTE').val("Trainingseinheiten: "+planTE);
     }
 </script>
 </body>
