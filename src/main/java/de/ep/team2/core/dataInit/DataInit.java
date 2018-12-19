@@ -181,8 +181,8 @@ public class DataInit {
     }
 
     private void fillPlanTemplates() {
-        //DataBaseService.getInstance().insertPlanTemplate("Test Plan", "Muskelaufbau",
-        //        "felix@gmail.com",false,5,5);
+        DataBaseService.getInstance().insertPlanTemplate("Test Plan", "muscle",
+                "felix@gmail.com",false,5,5);
     }
 
     private void fillTrainingSessions() {

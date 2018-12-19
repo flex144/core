@@ -7,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-
+import org.springframework.jdbc.core.RowMapper;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -351,13 +353,24 @@ public class DataBaseService {
         }
     }
 
+    class PlanTemplateMapperNoChildren implements RowMapper<TrainingsPlanTemplate> {
+
+        @Override
+        public TrainingsPlanTemplate mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new TrainingsPlanTemplate(rs.getInt("id"), rs.getString("name"),
+                    rs.getString("trainings_focus"), getUserByEmail(rs.getString("author")),
+                    rs.getBoolean("one_shot_plan"), rs.getInt("num_train_sessions"),
+                    rs.getInt("exercises_per_session"), null);
+        }
+    }
+
     /**
      * Searches for a Template and appends all connected exercises and Sessions by searching for them too.
      *
      * @param id id of the the template to search for.
      * @return TrainingsPlanTemplate object with all connected exercises and Sessions.
      */
-    public TrainingsPlanTemplate getPlanTemplateAndSessionsByID(Integer id) {
+    public TrainingsPlanTemplate getPlanTemplateAndSessionsByID(int id) {
         LinkedList<TrainingsPlanTemplate> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM plan_templates WHERE id = ?",
                 new Integer[]{id},
@@ -381,21 +394,27 @@ public class DataBaseService {
      * @param id id of the the template to search for.
      * @return TrainingsPlanTemplate object.
      */
-    public TrainingsPlanTemplate getOnlyPlanTemplateById(Integer id) {
+    public TrainingsPlanTemplate getOnlyPlanTemplateById(int id) {
         LinkedList<TrainingsPlanTemplate> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM plan_templates WHERE id = ?",
                 new Integer[]{id},
-                (resultSet, i) -> new TrainingsPlanTemplate(id, resultSet.getString("name"),
-                        resultSet.getString(
-                                "trainings_focus"), getUserByEmail(resultSet.getString("author")),
-                        resultSet.getBoolean("one_shot_plan"), resultSet.getInt(
-                        "num_train_sessions"),
-                        resultSet.getInt("exercises_per_session"), null)));
+                new PlanTemplateMapperNoChildren()));
         if (toReturn.isEmpty()) {
             return null;
         } else {
             return toReturn.getFirst();
         }
+    }
+
+    public LinkedList<TrainingsPlanTemplate> getOnlyPlanTemplateListByName(String name) {
+        String sql = String.format("SELECT * FROM plan_templates WHERE lower(name) " +
+                "LIKE '%%%s%%'", name.toLowerCase());
+        return new LinkedList<>(jdbcTemplate.query(sql, new PlanTemplateMapperNoChildren()));
+    }
+
+    public LinkedList<TrainingsPlanTemplate> getAllPlanTemplatesNoChildren() {
+        return new LinkedList<>(jdbcTemplate.query("Select * FROM plan_templates",
+                new PlanTemplateMapperNoChildren()));
     }
 
     /**
@@ -404,7 +423,7 @@ public class DataBaseService {
      * @param newName new name of the template.
      * @param idToRename id of the template to be renamed.
      */
-    public void renameTemplate(String newName, Integer idToRename) {
+    public void renameTemplate(String newName, int idToRename) {
         jdbcTemplate.update("update plan_templates set name = ? where id = ?",
                 newName, idToRename);
     }
@@ -415,7 +434,7 @@ public class DataBaseService {
      * @param newFocus new focus of the template.
      * @param idToRename id of the template to be altered.
      */
-    public void changeTrainingsFocus(String newFocus, Integer idToRename) {
+    public void changeTrainingsFocus(String newFocus, int idToRename) {
         jdbcTemplate.update("update plan_templates set trainings_focus = ? where id = ?",
                 newFocus, idToRename);
     }
@@ -439,8 +458,8 @@ public class DataBaseService {
      *
      * @param id id of the template to be deleted.
      */
-    public void deletePlanTemplateByID(Integer id) {
-        TrainingsPlanTemplate toDelete = getPlanTemplateAndSessionsByID(id);
+    public void deletePlanTemplateByID(int id) {
+        TrainingsPlanTemplate toDelete = getOnlyPlanTemplateById(id);
         if (toDelete != null) {
             jdbcTemplate.update("DELETE FROM plan_templates WHERE id = ?",
                     (Object[]) new Integer[]{id});
@@ -455,7 +474,7 @@ public class DataBaseService {
      * @param idOfTemplate id of template where the value should be increased.
      * @return number of exercises after the increase.
      */
-    public Integer increaseNumOfExercises(Integer idOfTemplate) {
+    public Integer increaseNumOfExercises(int idOfTemplate) {
         Integer numOfExes = new LinkedList<>(jdbcTemplate.query(
                 "SELECT exercises_per_session FROM plan_templates WHERE id = ?",
                 new Integer[]{idOfTemplate},
@@ -472,7 +491,7 @@ public class DataBaseService {
      * @param idOfTemplate id of template where the value should be decreased.
      * @return number of exercises after the decrease.
      */
-    public Integer decreaseNumOfExercises(Integer idOfTemplate) {
+    public Integer decreaseNumOfExercises(int idOfTemplate) {
         Integer numOfExes = new LinkedList<>(jdbcTemplate.query(
                 "SELECT exercises_per_session FROM plan_templates WHERE id = ?",
                 new Integer[]{idOfTemplate},
@@ -492,7 +511,7 @@ public class DataBaseService {
      * @param idOfTemplate id of the template whose exercise instances should be returned.
      * @return Linked List of the Instances with the sessions of this exercise connected to it.
      */
-    private LinkedList<ExerciseInstance> getExInstancesOfTemplate(int idOfTemplate) {
+    public LinkedList<ExerciseInstance> getExInstancesOfTemplate(int idOfTemplate) {
         return new LinkedList<>(jdbcTemplate.query(
                 "SELECT ei.id, ei.is_exercise, ei.category, ei.description, ex.name" +
                         " FROM exercise_instances ei, exercises ex " +
@@ -526,6 +545,27 @@ public class DataBaseService {
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
         log.info("Exercise Instance created with Id: " + id + " !");
         return id;
+    }
+
+    public ExerciseInstance getExercisInstanceById(int id) {
+        return new LinkedList<>(jdbcTemplate.query(
+                "SELECT ei.id, ei.is_exercise, ei.category, ei.description, ei.plan_template, ex.name" +
+                        " FROM exercise_instances ei, exercises ex " +
+                        " WHERE ei.id = ? " +
+                        " AND ei.is_exercise = ex.id ",
+                new Integer[]{id},
+                (resultSet, i) -> new ExerciseInstance(resultSet.getInt("plan_template"), resultSet.getInt(
+                        "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
+                        resultSet.getString("description"),
+                        getSessionsOfExerciseInstance(resultSet.getInt("id")),
+                        resultSet.getString("name")))).getFirst();
+    }
+
+    public void deleteExerciseInstanceByID(int id) {
+            jdbcTemplate.update("DELETE FROM exercise_instances WHERE id = ?",
+                    (Object[]) new Integer[]{id});
+
+
     }
 
     // Trainings Session
@@ -588,10 +628,38 @@ public class DataBaseService {
                     for (int j = 1; j < 8; j++) {
                         reps[j - 1] = resultSet.getInt(String.format("reps_set%d", j));
                     }
-                    return new TrainingsSession(idOfInstance, resultSet.getInt("ordering"),
+                    return new TrainingsSession(resultSet.getInt("id"), resultSet.getInt("ordering"),
                             resultSet.getInt("exercise_instance"),
                             resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
                             resultSet.getString("tempo"), resultSet.getInt("pause"));
                 }));
+    }
+
+    public TrainingsSession getTrainingsSessionById(int id) {
+        LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM trainings_sessions WHERE id = ?",
+                new Integer[]{id},
+                (resultSet, i) -> {
+                    Integer[] reps = new Integer[7];
+                    for (int j = 1; j < 8; j++) {
+                        reps[j - 1] = resultSet.getInt(String.format("reps_set%d", j));
+                    }
+                    return new TrainingsSession(id, resultSet.getInt("ordering"),
+                            resultSet.getInt("exercise_instance"),
+                            resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
+                            resultSet.getString("tempo"), resultSet.getInt("pause"));
+                }));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
+    }
+
+    public void deleteTrainingsSessionById(int id) {
+        jdbcTemplate.update("DELETE FROM trainings_sessions WHERE id = ?",
+                (Object[]) new Integer[]{id});
+        log.info("Trainings-session with ID: '"
+                + id + "' deleted!");
     }
 }

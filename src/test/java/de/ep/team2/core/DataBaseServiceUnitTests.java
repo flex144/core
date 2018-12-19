@@ -131,38 +131,45 @@ public class DataBaseServiceUnitTests {
     // Trainingsplan Templates
 
     @Test
-    public void getTemplateByID() {
-        TrainingsPlanTemplate test = DataBaseService.getInstance().getPlanTemplateAndSessionsByID(1);
-        assertEquals("Test Plan", test.getName());
-    }
-
-    @Test
     public void insertTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        assertNull(db.getPlanTemplateAndSessionsByID(2));
-        db.insertPlanTemplate("Hallo2",null,"felix@gmail.com",false,5,5);
-        assertEquals("Hallo2", db.getPlanTemplateAndSessionsByID(2).getName());
+        Integer id = db.insertPlanTemplate("Hallo2","muscle","felix@gmail.com",false,5,5);
+        assertEquals("Hallo2", db.getOnlyPlanTemplateById(id).getName());
     }
 
     @Test
     public void deleteTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        assertNull(db.getPlanTemplateAndSessionsByID(3));
-        db.insertPlanTemplate("Hallo3",null,"felix@gmail.com",false,5,5);
-        assertEquals("Hallo3", db.getPlanTemplateAndSessionsByID(3).getName());
-        db.deletePlanTemplateByID(3);
-        assertNull(db.getPlanTemplateAndSessionsByID(3));
+        Integer id = db.insertPlanTemplate("Hallo3","stamina","felix@gmail.com",false,5,5);
+        assertEquals("Hallo3", db.getOnlyPlanTemplateById(id).getName());
+        db.deletePlanTemplateByID(id);
+        assertNull(db.getOnlyPlanTemplateById(id));
     }
 
-    // Trainings Sessions
+    @Test
+    public void renameTemplate() {
+        DataBaseService db = DataBaseService.getInstance();
+        Integer id = db.insertPlanTemplate("Hallo3","stamina","felix@gmail.com",false,5,5);
+        assertEquals("Hallo3", db.getOnlyPlanTemplateById(id).getName());
+        db.renameTemplate("TestTest3",id);
+        assertEquals("TestTest3", db.getOnlyPlanTemplateById(id).getName());
+        db.deletePlanTemplateByID(id);
+    }
 
+    @Test
+    public void changeTrainingsFocusTemplate() {
+        DataBaseService db = DataBaseService.getInstance();
+        Integer id = db.insertPlanTemplate("Hallo4","stamina","felix@gmail.com",false,5,5);
+        assertEquals("stamina", db.getOnlyPlanTemplateById(id).getTrainingsFocus());
+        db.changeTrainingsFocus("muscle",id);
+        assertEquals("muscle", db.getOnlyPlanTemplateById(id).getTrainingsFocus());
+        db.deletePlanTemplateByID(id);
+    }
+
+    // Exercise Instance
 
     @Test
     public void insertTrainingsSession() {
-        /*expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Order of The Session Wrong! Order Already exists or isn't in the " +
-                "valid number range!");
-        DataBaseService.getInstance().insertTrainingsSession(1,2);
-        DataBaseService.getInstance().insertTrainingsSession(1,2);*/
+
     }
 }

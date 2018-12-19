@@ -1,9 +1,13 @@
 package de.ep.team2.core.service;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
+import de.ep.team2.core.entities.ExerciseInstance;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
+import de.ep.team2.core.entities.TrainingsSession;
 import de.ep.team2.core.entities.User;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.LinkedList;
 
 public class PlanService {
 
@@ -24,6 +28,36 @@ public class PlanService {
             addInstanceAndSessionToExistingPlan(dto, dto.getId());
         }
         return dto;
+    }
+
+    public void deleteTemplateAndChildrenById(int id) {
+        DataBaseService db = DataBaseService.getInstance();
+        TrainingsPlanTemplate tempToDelete = db.getPlanTemplateAndSessionsByID(id);
+        for (ExerciseInstance ei : tempToDelete.getExerciseInstances()) {
+            for (TrainingsSession ts : ei.getTrainingsSessions()) {
+                db.deleteTrainingsSessionById(ts.getId());
+            }
+            db.deleteExerciseInstanceByID(ei.getId());
+        }
+        db.deletePlanTemplateByID(id);
+    }
+
+    public LinkedList<TrainingsPlanTemplate> getPlanTemplateListByName(String name) {
+        DataBaseService db = DataBaseService.getInstance();
+        if (name == null || name.equals("")) {
+            return db.getAllPlanTemplatesNoChildren();
+        } else {
+            return db.getOnlyPlanTemplateListByName(name);
+        }
+    }
+
+    public TrainingsPlanTemplate getPlanTemplateAndSessionsByID(Integer id) {
+        TrainingsPlanTemplate toReturn =  DataBaseService.getInstance().getPlanTemplateAndSessionsByID(id);
+        if (toReturn == null) {
+            throw new IllegalArgumentException("Plan with Id " + id + "not found!");
+        } else {
+            return toReturn;
+        }
     }
 
     private void changePlanNameAndFocusOnChange(CreatePlanDto dto) {

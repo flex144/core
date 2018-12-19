@@ -6,9 +6,8 @@ import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.PlanService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -29,21 +28,20 @@ public class TrainingsController {
     public String trainingsPlanCreate(@ModelAttribute("createDto") CreatePlanDto dto,
                                       RedirectAttributes redirectAttributes) {
         PlanService service = new PlanService();
-        DataBaseService dbService = DataBaseService.getInstance();
         String checkArgs = checkIfArgsValid(dto);
 
         if (checkArgs.equals("valid!")) {
             dto.nameToId();
             redirectAttributes.addFlashAttribute("createDto", service.createPlan(dto));
             //Add Exercises to the thymeleaf model
-            TrainingsPlanTemplate tpt = dbService
+            TrainingsPlanTemplate tpt = service
                     .getPlanTemplateAndSessionsByID(dto.getId());
             redirectAttributes.addFlashAttribute("plan", tpt);
             return "redirect:/mods/createplan";
         } else {
             if (dto.getId() != null) {
                 //Add Exercises to the thymeleaf model
-                TrainingsPlanTemplate tpt = dbService
+                TrainingsPlanTemplate tpt = service
                         .getPlanTemplateAndSessionsByID(dto.getId());
                 redirectAttributes.addFlashAttribute("plan", tpt);
             }
@@ -51,6 +49,28 @@ public class TrainingsController {
             redirectAttributes.addFlashAttribute("errorMsg", checkArgs);
             return "redirect:/mods/createplan";
         }
+    }
+
+    @GetMapping("/plans/{id}")
+    public String showPlan(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        PlanService service = new PlanService();
+        TrainingsPlanTemplate tpt = service
+                .getPlanTemplateAndSessionsByID(id);
+        redirectAttributes.addFlashAttribute("plan", tpt);
+        CreatePlanDto dto = new CreatePlanDto();
+        dto.setId(id);
+        dto.setPlanName(tpt.getName());
+        dto.setTrainingsFocus(tpt.getTrainingsFocus());
+        dto.setSessionNums(tpt.getNumTrainSessions());
+        redirectAttributes.addFlashAttribute("createDto", dto);
+        return "redirect:/mods/createplan";
+    }
+
+    @DeleteMapping("/plans/{id}")
+    public String deletePlanAndChildren(@PathVariable("id") Integer id) {
+        PlanService service = new PlanService();
+        service.deleteTemplateAndChildrenById(id);
+        return "redirect:/mods/searchplan";
     }
 
     /**

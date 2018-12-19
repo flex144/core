@@ -117,9 +117,7 @@
                         </button>
                     </div>
                     <div class="col-md-2">
-                        <button type="button" id="buttonResetModal" data-toggle="modal"
-                                data-target="#modalConfirmResetForm"
-                                class="btn btn-warning btn-block">
+                        <button type="button" id="submitDelete" class="btn btn-warning btn-block">
                             <span class="glyphicon glyphicon-trash"></span>
                             Formular leeren
                         </button>
@@ -609,8 +607,14 @@
         </div>
     </div>
 </div>
+<form th:action="@{/mods/plans/{path}(path=${createDto.getId()})}" th:method="delete" id="formDelete">
+</form>
 
 <script>
+    document.getElementById("submitDelete").onclick = function() {
+        document.getElementById("formDelete").submit();
+    }
+
     /**
      * Function to open the form to create a new exercise without the possibility
      * to close the modal by clicking outside of it or esc.

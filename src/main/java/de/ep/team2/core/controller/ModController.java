@@ -3,6 +3,7 @@ package de.ep.team2.core.controller;
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.service.ExerciseService;
+import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -65,8 +66,15 @@ public class ModController {
         return "mod_exercise_search";
     }
 
-    @RequestMapping(value = {"/searchplan"}, method = RequestMethod.GET)
-    public String searchPlan() {
+    @GetMapping(value = {"/searchplan"})
+    public String getSearchPlan() {
+        return "mod_plan_search";
+    }
+
+    @PostMapping(value = {"/searchplan"})
+    public String postSearchPlan(@RequestParam("planName") String name, Model model) {
+        PlanService service = new PlanService();
+        model.addAttribute("planList", service.getPlanTemplateListByName(name));
         return "mod_plan_search";
     }
 
