@@ -77,8 +77,16 @@ public class DataInit {
                 "id SERIAL NOT NULL PRIMARY KEY," +
                 "is_exercise integer references exercises not null," +
                 "category varchar(50)," +
-                "description varchar(2000)," +
                 "plan_template integer not null references plan_templates)");
+        // Execution Tags for Instance
+        jdbcTemplate.execute("DROP TABLE IF EXISTS execution_tags CASCADE ");
+        jdbcTemplate.execute("CREATE TABLE execution_tags(" +
+                "id SERIAL NOT NULL PRIMARY KEY," +
+                "name varchar(255) NOT NULL UNIQUE)");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS ex_tags_map CASCADE ");
+        jdbcTemplate.execute("CREATE TABLE ex_tags_map(" +
+                "ex_inst_id INTEGER NOT NULL," +
+                "ex_tag_id INTEGER NOT NULL)");
         // Training Sessions
         jdbcTemplate.execute("DROP TABLE IF EXISTS trainings_sessions cascade ");
         jdbcTemplate.execute("CREATE TABLE trainings_sessions(" +

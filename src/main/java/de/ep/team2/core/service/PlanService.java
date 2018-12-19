@@ -84,7 +84,7 @@ public class PlanService {
         idTemplate = db.insertPlanTemplate(dto.getPlanName(), dto.getTrainingsFocus(), mail,
                 (dto.getSessionNums() == 1), dto.getSessionNums(), 1);
         Integer exInstanceId = db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(),
-                dto.getDescription(), idTemplate);
+                dto.getTags(), idTemplate);
         for (int i = 0; i < dto.getSessionNums(); i++) {
             Integer[] reps = parseSets(dto.getSets().get(i));
             db.insertTrainingsSession(exInstanceId, i + 1, 15, reps.length, reps,
@@ -96,7 +96,7 @@ public class PlanService {
     private void addInstanceAndSessionToExistingPlan(CreatePlanDto dto, Integer idOfTemplate) {
         DataBaseService db = DataBaseService.getInstance();
         Integer exInstanceId = db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(),
-                dto.getDescription(), dto.getId());
+                dto.getTags(), dto.getId());
         for (int i = 0; i < dto.getSessionNums(); i++) {
             Integer[] reps = parseSets(dto.getSets().get(i));
             db.insertTrainingsSession(exInstanceId, i + 1, 15, reps.length, reps,

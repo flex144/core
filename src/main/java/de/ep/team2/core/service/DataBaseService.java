@@ -513,16 +513,23 @@ public class DataBaseService {
      */
     public LinkedList<ExerciseInstance> getExInstancesOfTemplate(int idOfTemplate) {
         return new LinkedList<>(jdbcTemplate.query(
-                "SELECT ei.id, ei.is_exercise, ei.category, ei.description, ex.name" +
+                "SELECT ei.id, ei.is_exercise, ei.category, ex.name" +
                         " FROM exercise_instances ei, exercises ex " +
                         " WHERE ei.plan_template = ? " +
                         " AND ei.is_exercise = ex.id ",
                 new Integer[]{idOfTemplate},
                 (resultSet, i) -> new ExerciseInstance(idOfTemplate, resultSet.getInt(
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
-                        resultSet.getString("description"),
+                        getTagsOfExInstance(resultSet.getInt("id")),
                         getSessionsOfExerciseInstance(resultSet.getInt("id")),
                         resultSet.getString("name"))));
+    }
+
+    private LinkedList<String> getTagsOfExInstance(int id) {
+        return new LinkedList<>(jdbcTemplate.query("SELECT et.name FROM execution_tags et," +
+                        "ex_tags_map etm WHERE etm.ex_inst_id = ? AND etm.ex_tag_id = et.id",
+                new Integer[]{id},
+                (rs, i) -> rs.getString("name")));
     }
 
     /**
@@ -530,21 +537,46 @@ public class DataBaseService {
      *
      * @param isExerciseID reference to the table exercises which Exercise this exercise instance is.
      * @param category category of the exercise instance(tells in which order the exercises should be done)
-     * @param description details to the exercise instance.
+     * @param tags tags for the execution of the exercise.
      * @param templateId id of the plan template which contains this exercise instance.
      * @return Id of the just inserted exercise instance.
      */
-    public Integer insertExerciseInstance(int isExerciseID, String category, String description,
+    public Integer insertExerciseInstance(int isExerciseID, String category, LinkedList<String> tags,
                                           int templateId) {
-        Object[] insertValues = new Object[]{isExerciseID, category, description, templateId};
-        jdbcTemplate.update("INSERT INTO exercise_instances(is_exercise, category, description, " +
-                        "plan_template) values (?,?,?,?)",
+        Object[] insertValues = new Object[]{isExerciseID, category, templateId};
+        jdbcTemplate.update("INSERT INTO exercise_instances(is_exercise, category, " +
+                        "plan_template) values (?,?,?)",
                 insertValues);
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('exercise_instances','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+        addTagsToExercise(tags, id);
         log.info("Exercise Instance created with Id: " + id + " !");
         return id;
+    }
+
+    private void addTagsToExercise(LinkedList<String> tags, int idOfEx) {
+        LinkedList<String> presentTags = getAllTagNames();
+        for (String tag : tags) {
+            int idOfTag;
+            if (presentTags.contains(tag)) {
+                 idOfTag = jdbcTemplate.query("SELECT id FROM execution_tags WHERE name = ?",
+                        new String[]{tag}, (rs, i) -> rs.getInt("id")).get(0);
+            } else {
+                jdbcTemplate.update("INSERT INTO execution_tags(name) values (?)",
+                        (Object[]) new String[]{tag});
+                idOfTag = jdbcTemplate.query("select currval" +
+                                "(pg_get_serial_sequence('execution_tags','id'));",
+                        (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+            }
+            jdbcTemplate.update("INSERT INTO ex_tags_map(ex_inst_id, ex_tag_id) values (?,?)",
+                    (Object[]) new Integer[]{idOfEx, idOfTag});
+        }
+    }
+
+    public LinkedList<String> getAllTagNames() {
+        return new LinkedList<>(jdbcTemplate.query("SELECT name FROM execution_tags",
+                (rs, i) -> rs.getString("name")));
     }
 
     public ExerciseInstance getExercisInstanceById(int id) {
@@ -556,7 +588,7 @@ public class DataBaseService {
                 new Integer[]{id},
                 (resultSet, i) -> new ExerciseInstance(resultSet.getInt("plan_template"), resultSet.getInt(
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
-                        resultSet.getString("description"),
+                        getTagsOfExInstance(resultSet.getInt("id")),
                         getSessionsOfExerciseInstance(resultSet.getInt("id")),
                         resultSet.getString("name")))).getFirst();
     }

@@ -177,7 +177,7 @@
                     <tbody>
                         <tr>
                             <td>
-                                <input id="inputOrder" type="text" class="form-control" />
+                                <input id="inputOrder" type="text" class="form-control" th:field="*{category}"/>
                             </td>
                             <td>
                                 <input id="inputExercise" type="text" class="form-control"
@@ -212,7 +212,7 @@
                                 <div id="tagBlock">
                                     <br>
                                     <h5 id="tagHeader">Hinzugefügte Ausführungen:</h5>
-                                    <input type="text" data-role="tagsinput" id="tags" value="" class="form-control">
+                                    <input type="text" data-role="tagsinput" id="tags" value="" class="form-control" name="tags">
                                 </div>
                             </td>
                             <td>
@@ -617,7 +617,7 @@
                                     </td>
                                     <td>
                                         <textarea class="form-control"
-                                                  rows="4" disabled th:text="${exercise.description}">
+                                                  rows="4" disabled>
                                         </textarea>
                                     </td>
 
@@ -847,8 +847,9 @@
     }
 
 
-
     /**
+     * TODO verhindert dass pause und tempo leer bleiben.
+     *
      * Function to be executed when the checkbox for a single day plan is checked.
      * It sets the TE to 1 and disables the TE-buttons
      */

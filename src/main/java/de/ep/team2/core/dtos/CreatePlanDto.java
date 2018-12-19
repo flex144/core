@@ -3,7 +3,7 @@ package de.ep.team2.core.dtos;
 import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.service.ExerciseService;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class CreatePlanDto {
 
@@ -14,10 +14,10 @@ public class CreatePlanDto {
     private String category;
     private String exerciseName;
     private Integer exerciseID;
-    private String description;
-    private ArrayList<String> sets;
-    private ArrayList<String> tempo;
-    private ArrayList<Integer> pause;
+    private LinkedList<String> sets;
+    private LinkedList<String> tempo;
+    private LinkedList<Integer> pause;
+    private LinkedList<String> tags;
 
     public String getPlanName() {
         return planName;
@@ -75,36 +75,36 @@ public class CreatePlanDto {
         this.exerciseID = exerciseID;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public ArrayList<String> getSets() {
+    public LinkedList<String> getSets() {
         return sets;
     }
 
-    public void setSets(ArrayList<String> sets) {
+    public void setSets(LinkedList<String> sets) {
         this.sets = sets;
     }
 
-    public ArrayList<String> getTempo() {
+    public LinkedList<String> getTempo() {
         return tempo;
     }
 
-    public void setTempo(ArrayList<String> tempo) {
+    public void setTempo(LinkedList<String> tempo) {
         this.tempo = tempo;
     }
 
-    public ArrayList<Integer> getPause() {
+    public LinkedList<Integer> getPause() {
         return pause;
     }
 
-    public void setPause(ArrayList<Integer> pause) {
+    public void setPause(LinkedList<Integer> pause) {
         this.pause = pause;
+    }
+
+    public LinkedList<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(LinkedList<String> tags) {
+        this.tags = tags;
     }
 
     /**
