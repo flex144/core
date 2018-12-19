@@ -6,10 +6,11 @@
 
     <title>Planvorlage erstellen</title>
 
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
 
     <div th:include="/fragments/navbar :: navbar_style"></div>
 
@@ -17,13 +18,16 @@
         #inputUnit:disabled {
             background-color: white;
         }
-
         ul {
             list-style-type: none;
         }
-
-        textarea {
-            resize: none;
+        .bootstrap-tagsinput {
+            width: 100% !important;
+            border: none;
+            box-shadow: none;
+        }
+        .bootstrap-tagsinput input {
+            display: none;
         }
     </style>
 </head>
@@ -33,147 +37,165 @@
 
 <div class="container">
     <form th:action="@{/mods/plans}" method="post" th:object="${createDto}">
-        <!-- Jumbotron with information for the page and inputs for general data for the plan -->
+    <!-- Jumbotron with information for the page and inputs for general data for the plan -->
         <div class="jumbotron">
             <h2>Erstelle eine neue Trainingsplanvorlage</h2>
             &ensp;
-            <p style="font-size: 12pt">Gib zuerst die allgemeinen Daten zu deinem Plan an, die
-                Bezeichnung, den Planfokus und die Anzahl
-                der Trainingseinheiten</p><br>
-            <p style="font-size: 12pt">Um Übungen zu deinem Plan hinzuzufügen, fülle das Formular
-                <mark>"Übung bearbeiten"</mark>
-                aus
-                und klicke auf den Button
-                <mark>"Übung hinzufügen"</mark>
-                . Falls du eine noch nicht vorhandene Übung in deinem Plan verwenden willst,
-                drücke den Button
-                <mark>"Neue Übungsart"</mark>
-                um direkt eine Neue zu erstellen.
+            <p style="font-size: 12pt">Gib zuerst die allgemeinen Daten zu deinem Plan an, die Bezeichnung, den Planfokus und die Anzahl
+                der Trainingseinheiten</p>
+            <br>
+            <p style="font-size: 12pt">Um Übungen zu deinem Plan hinzuzufügen, fülle das Formular <mark>"Übung bearbeiten"</mark> aus
+                und klicke auf den Button <mark>"Übung hinzufügen"</mark>. Falls du eine noch nicht vorhandene Übung in deinem Plan verwenden willst,
+                drücke den Button <mark>"Neue Übungsart"</mark> um direkt eine Neue zu erstellen.</p>
+            <br>
+            <p style="font-size: 12pt">
+                Um die Sätze und die Wiederholungen für eine Übung anzugeben, gib die Wiederholungen mit <mark>"/"</mark>
+                getrennt voneinander an und die Anzahl der Sätze für diese Übung wird daraus automatisch berechnet.<br>
+            </p>
+            <p class="text-muted" style="font-size: 12pt">
+                (Beispiel: Wiederholungen: <mark>12/12/13/15</mark> => <mark>4</mark> Sätze)
             </p>
             <br>
             <p style="font-size: 12pt">Wenn du am Ende mit deinem Plan zufrieden bist,
-                speichere diesen mit einem Klick auf den Button
-                <mark>"Plan speichern"</mark>
-                .
-            </p>
+                speichere diesen mit einem Klick auf den Button <mark>"Plan speichern"</mark>.</p>
             <br><br>
-            <!-- Input fields for general data of the plan -->
-            <div class="row">
-                <p th:if="${errorMsg}" th:text="${errorMsg}" style="color: red"></p>
+        <!-- Input fields for general data of the plan -->
+        <div class="row">
+            <p th:if="${errorMsg}" th:text="${errorMsg}" style="color: red"></p>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="planName">Planbezeichnung:</label>
+                    <input  type="text" class="form-control" id="planName"
+                            placeholder="Hier Bezeichnung eingeben...">
+                </div>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="planName">Planbezeichnung:</label>
-                        <input type="text" class="form-control" id="planName" required
-                               placeholder="Hier Bezeichnung eingeben..." th:field="*{planName}">
-                    </div>
+            <div class="col-md-4">
+                <div class="form-group-inline">
+                    <label for="focus">Trainingsfokus:</label>
+                    <select id="focus" class="form-control" required th:field="*{trainingsFocus}">
+                        <option th:value="null" selected disabled hidden>Wähle eine Option aus...</option>
+                        <option th:value="muscle">Muskelaufbau</option>
+                        <option th:value="stamina">Ausdauer</option>
+                        <option th:value="pain">Schmerzreduktion</option>
+                    </select>
                 </div>
-                <div class="col-md-4">
-                    <div class="form-group-inline">
-                        <label for="focus">Trainingsfokus:</label>
-                        <select id="focus" class="form-control" required th:field="*{trainingsFocus}">
-                            <option th:value="null" selected disabled hidden>Wähle eine Option aus...</option>
-                            <option th:value="muscle">Muskelaufbau</option>
-                            <option th:value="stamina">Ausdauer</option>
-                            <option th:value="pain">Schmerzreduktion</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="inputUnit">Trainingseinheiten: </label>
-                        <button type="button" class="btn decrement-button" id="btnDecrement"
-                                onclick="decrement(); updateTeInputs()">
-                            <span class="glyphicon glyphicon-minus"></span>
-                        </button>
-                        <input type="text" name="trainingUnits" id="inputUnit"
-                               style="width: 30px; border: 3px solid darkgray; text-align: center;
-                           font-weight: bold" th:field="*{sessionNums}"> <!-- todo removed disabled -->
-                        <button type="button" class="btn increment-button" id="btnIncrement"
-                                onclick="increment(); updateTeInputs()">
-                            <span class="glyphicon glyphicon-plus"></span>
-                        </button>
-                        <input type="text" name="trainingUnits" id="idTemplate"
-                               style="width: 30px; border: 3px solid darkgray; text-align: center;
-                           font-weight: bold" th:field="*{id}">
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="inputUnit">Trainingseinheiten: </label>
+                    <button type="button" class="btn decrement-button" id="btnDecrement"
+                            onclick="decrement(); updateTeInputs()">
+                        <span class="glyphicon glyphicon-minus"></span>
+                    </button>
+                    <input type="text" name="trainingUnits" id="inputUnit" value="6"
+                           style="width: 30px; border: 3px solid darkgray; text-align: center;
+                           font-weight: bold" disabled>
+                    <button type="button" class="btn increment-button" id="btnIncrement"
+                            onclick="increment(); updateTeInputs()">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- panel with form to customize an exercise, add it to the plan and create a new exercise -->
-        <div class="panel panel-default">
-            <!-- Panel header with title and buttons to add or create exercises and to reset the form -->
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-md-6" style="margin-top: 6px">
-                        Übung bearbeiten
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary btn-block">
-                            <span class="glyphicon glyphicon-plus-sign"></span>
-                            Übung hinzufügen
-                        </button>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="button" id="submitDelete" class="btn btn-warning btn-block">
-                            <span class="glyphicon glyphicon-trash"></span>
-                            Formular leeren
-                        </button>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="button" data-toggle="modal"
-                                class="btn btn-success btn-block launch-modal">
-                            <span class="glyphicon glyphicon-plus-sign"></span>
-                            Neue Übungsart
-                        </button>
-                    </div>
+    <!-- panel with form to customize an exercise, add it to the plan and create a new exercise -->
+    <div class="panel panel-default">
+        <!-- Panel header with title and buttons to add or create exercises and to reset the form -->
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-6" style="margin-top: 6px">
+                    Übung bearbeiten
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span class="glyphicon glyphicon-plus-sign"></span>
+                        Übung hinzufügen
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" id="buttonResetModal" data-toggle="modal" data-target="#modalConfirmResetForm"
+                            class="btn btn-warning btn-block">
+                        <span class="glyphicon glyphicon-trash"></span>
+                         Formular leeren
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <button type="button" data-toggle="modal"
+                            class="btn btn-success btn-block launch-modal">
+                        <span class="glyphicon glyphicon-plus-sign"></span>
+                         Neue Übungsart
+                    </button>
                 </div>
             </div>
-            <!-- panel with form to customize and add an exercise to the plan -->
-            <div class="panel-body">
-                <div class="col-md-12">
-                    <!-- table for input forms to customize an exercise -->
-                    <table class="table table-bordered table-condensed" border="1" width="100%">
-                        <colgroup>
-                            <col width="5%">
-                            <col width="10%">
-                            <col width="30%">
-                            <col width="5%">
-                            <col width="30%">
-                            <col width="5%">
-                            <col width="5%">
-                        </colgroup>
-                        <thead>
+        </div>
+        <!-- panel with form to customize and add an exercise to the plan -->
+        <div class="panel-body">
+            <div class="col-md-12">
+                <!-- table for input forms to customize an exercise -->
+                <table class="table table-bordered table-condensed" border="1" width="100%">
+                    <colgroup>
+                        <col width="5%">
+                        <col width="10%">
+                        <col width="30%">
+                        <col width="5%">
+                        <col width="30%">
+                        <col width="5%">
+                        <col width="5%">
+                    </colgroup>
+                    <thead>
                         <tr>
                             <th>Ordnung</th>
                             <th>Übung</th>
                             <th>Ausführung</th>
                             <th>TE</th>
-                            <th>Sätze - Wiederholungen</th>
+                            <th>Wiederholungen</th>
                             <th>Tempo</th>
                             <th>Pause</th>
                         </tr>
-                        </thead>
-                        <tbody>
+                    </thead>
+                    <tbody>
                         <tr>
                             <td>
-                                <input id="inputOrder" type="text" class="form-control"
-                                       name="categoryName" th:field="*{category}"/>
+                                <input id="inputOrder" type="text" class="form-control" />
                             </td>
                             <td>
                                 <input id="inputExercise" type="text" class="form-control"
-                                       list="stored_exercises"
+                                       list="storedExercises"
                                        name="exerciseName" required th:field="*{exerciseName}">
-                                <datalist id="stored_exercises">
+                                <datalist id="storedExercises">
                                     <option th:each="exercise : ${allExercises}" th:value="${exercise.getName()}" th:text="${exercise.name}"/>
                                 </datalist>
                                 </input>
                             </td>
                             <td>
-                                <textarea id="inputDescription" class="form-control" rows="4"
-                                          name="descriptionName" th:field="*{description}"></textarea>
+                                <div class="input-group">
+                                    <input id="inputExecution" type="text" name="executions"
+                                           class="form-control" list="storedExecutions" onchange="addTag()">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-success" type="submit" id="buttonNewExecution"
+                                                data-toggle="modal" data-target="#modalExecutionForm">
+                                            <span class="glyphicon glyphicon-plus-sign"></span>
+                                            Neu
+                                        </button>
+                                    </div>
+                                </div>
+                                <datalist id="storedExecutions">
+                                    <option value="Rückwärts" />
+                                    <option value="Am Platz" />
+                                    <option value="Alternierend" />
+                                    <option value="Stange hinten" />
+                                    <option value="Fußspitze nach innen" />
+                                    <option value="Kurzhantel" />
+                                </datalist>
+                                </input>
+                                <div id="tagBlock">
+                                    <br>
+                                    <h5 id="tagHeader">Hinzugefügte Ausführungen:</h5>
+                                    <input type="text" data-role="tagsinput" id="tags" value="" class="form-control">
+                                </div>
                             </td>
                             <td>
                                 <div class="form-group">
@@ -182,7 +204,7 @@
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <ul id="setInputs" class="list-group"></ul>
+                                    <ul id="repsInputs" class="list-group"></ul>
                                 </div>
                             </td>
                             <td>
@@ -196,11 +218,11 @@
                                 </div>
                             </td>
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
+                    </tbody>
+                </table>
             </div>
         </div>
+    </div>
 
         <!-- panel with overview of final plan and button to save the plan -->
         <div class="panel panel-success">
@@ -256,7 +278,7 @@
                         </button>
                     </div>
                     <div class="col-md-2">
-                        <button type="button" id="savePlan" class="btn btn-success btn-block">
+                        <button type="button" id="savePlan" class="btn btn-success btn-block" onclick="resetPlan()">
                             <span class="glyphicon glyphicon-floppy-save"></span>
                             Plan speichern
                         </button>
@@ -337,9 +359,36 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Schließen
-                </button>
                 <button type="button" class="btn btn-primary">Speichern</button>
+                <button type="button" class="btn btn-default" id="buttonCloseExerciseForm"
+                        data-dismiss="modal">
+                    Schließen
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal with formular to create a new type of execution -->
+<div class="modal fade" id="modalExecutionForm">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Neue Ausführungsart erstellen</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inputExecutionName">Bezeichnung der Ausführung:</label>
+                    <input  type="text" class="form-control" id="inputExecutionName" autofocus
+                            placeholder="Hier die Bezeichnung für die neue Ausführungsart eingeben...">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="addExecution()" data-dismiss="modal">
+                    Speichern</button>
+                <button type="button" class="btn btn-default" id="buttonCloseExecutionModal"
+                        data-dismiss="modal">Schließen</button>
             </div>
         </div>
     </div>
@@ -399,8 +448,7 @@
                     <!-- Panel body with an example exercise to show the detail view -->
                     <div class="panel-body">
                         <div class="col-md-12">
-                            <table class="table table-bordered table-condensed" border="1"
-                                   width="100%">
+                            <table class="table table-bordered table-condensed" border="1" width="100%">
                                 <colgroup>
                                     <col width="5%">
                                     <col width="15%">
@@ -443,7 +491,7 @@
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            <ul id="viewSetInputs" class="list-group"></ul>
+                                            <ul id="viewRepsInputs" class="list-group"></ul>
                                         </div>
                                     </td>
                                     <td>
@@ -477,7 +525,7 @@
                                 </button>
                             </div>
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-default btn-block"
+                                <button type="button" class="btn btn-default btn-block" id="btnCloseModalShowDetails"
                                         data-dismiss="modal">
                                     Schließen
                                 </button>
@@ -531,7 +579,7 @@
                                     <col width="5%">
                                     <col width="5%">
                                 </colgroup>
-                                <thead >
+                                <thead>
                                 <tr>
                                     <th>Ordnung</th>
                                     <th>Übung</th>
@@ -549,7 +597,6 @@
 
                                     <td th:text="${exercise.name}">
                                     </td>
-
                                     <td>
                                         <textarea class="form-control"
                                                   rows="4" disabled th:text="${exercise.description}">
@@ -583,7 +630,6 @@
                                             <ul class="list-group" th:text="${sessions.pauseInSec}"></ul>
                                         </div>
                                     </td>
-
                                 </tr>
                                 </tbody>
                             </table>
@@ -595,7 +641,7 @@
                         <div class="row">
                             <div class="col-md-8"></div>
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-default btn-block"
+                                <button type="button" class="btn btn-default btn-block" id="btnCloseModalViewPlan"
                                         data-dismiss="modal">
                                     Schließen
                                 </button>
@@ -610,82 +656,217 @@
 <form th:action="@{/mods/plans/{path}(path=${createDto.getId()})}" th:method="delete" id="formDelete">
 </form>
 
+<!-- Modal to ask if the plan should be converted to a single day plan -->
+<div class="modal fade" id="modalConvertPlan">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4>Konvertieren des Plans zu einem Eintagesplan</h4>
+                    </div>
+                    <!-- Panel body the option to converted the plan to a single day plan -->
+                    <div class="panel-body">
+                        <!-- question if the plan should be converted to a single day plan -->
+                        <p style="font-size: 16px">
+                            Sie haben die Anzahl an Trainingseinheiten für diese Planvorlage auf 1 gesetzt.
+                            Möchten sie die Planvorlage in eine Vorlage für einen Eintagesplan umwandeln?
+                        </p>
+                        <br>
+                        <!-- Remark that the changes can be reverted at any time -->
+                        <p class="text-muted" style="font-size: 16px">
+                            Sie können diese Änderung jederzeit rückgängig machen, indem sie den Haken
+                            bei dem Eintagesplan wieder entfernen.
+                        </p>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-primary btn-block"
+                                        id="buttonConvertPlanToSingleDay" onclick="convertPlanToSingleDay()"
+                                        data-dismiss="modal">
+                                    Umwandeln
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-default btn-block" id="btnCloseModalConvertPlan"
+                                        data-dismiss="modal">
+                                    Abbrechen
+                                </button>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     document.getElementById("submitDelete").onclick = function() {
         document.getElementById("formDelete").submit();
     }
 
     /**
-     * Function to open the form to create a new exercise without the possibility
-     * to close the modal by clicking outside of it or esc.
+     * Execute various functions when the page is loaded
      */
-    $(document).ready(function () {
-        $('.launch-modal').click(function () {
+    $(document).ready(function(){
+        // Open the modal to create a new exercise without the possibility
+        // to close the modal by clicking outside of it or esc
+        $('.launch-modal').click(function(){
             // launch the modalExerciseForm as static modal to avoid closing by accident
             $('#modalExerciseForm').modal({
                 backdrop: 'static'
             });
         });
+        // Execute function updateTeInputs when document is loaded
+        updateTeInputs()
+        // Hide the empty display block for the exercise execution tags
+        document.getElementById("tagBlock").style.display = "none";
     });
 
     /**
-     * Function to add function to button addExercise in order to add an exercise
-     * to the final plan. After adding the exercise it calls the function resetForm()
-     * to reset the input fields and calls the function checkPlanEmpty().
+     * Set tags in the tag-input field "tags" to the colorset "warning" (yellow)
      */
-    $(document).ready(function () {
-        $('#addExercise').click(function () {
-            // Get the entered values of the exercise form
-            var newExerciseOrder = $('#inputOrder').val();
-            var newExerciseName = $('#inputExercise').val();
-            // Create new list element in final plan containing the entered values and a button to view details
-            $('#planExerciseOrder').append(
-                '<li style="padding-top: .3em; padding-bottom: .3em">' +
-                '<input type="text" value="' + newExerciseOrder + '" class="form-control" disabled>' + '</li>');
-            $('#planExerciseName').append(
-                '<li style="padding-top: .3em; padding-bottom: .3em">' +
-                '<input type="text" value="' + newExerciseName + '" class="form-control" disabled>' + '</li>');
-            $('#planButtonExerciseDetails').append(
-                '<li style="padding-top: .3em; padding-bottom: .3em">' +
-                '<button type="button" class="btn btn-primary btn-block" data-toggle="modal" ' +
-                'data-target="#modalDetailsExercise" onclick="getExerciseDetails()">' +
-                '<span class="glyphicon glyphicon-zoom-in"></span>' + ' Details' + '</button>' + '</li>');
-            // Reset the exercise form after adding the contents to the final plan
-            resetForm();
-            // Call checkPlanEmpty to disable the TE buttons after adding an element with fixed TE
-            checkPlanEmpty();
-        });
+    $('#tags').tagsinput({
+        tagClass: 'label label-warning'
     });
 
     /**
-     * Temporary function, that adds function to delete all elements in the final plan
-     * and call the function checkPlanEmpty() to the button savePlan
+     * Function to hide the div block containing the tag-input field "tags" if there are no tags in it
      */
-    $(document).ready(function () {
-        $('#savePlan').click(function () {
-            // Create a reference on the lists in the final plan
-            var addedOrders = document.getElementById("planExerciseOrder");
-            var addedExercises = document.getElementById("planExerciseName");
-            var addedDetailButtons = document.getElementById("planButtonExerciseDetails");
-            // Remove all list elements in the final plan
-            while (addedOrders.hasChildNodes()) {
-                addedOrders.removeChild(addedOrders.lastChild);
-            }
-            while (addedExercises.hasChildNodes()) {
-                addedExercises.removeChild(addedExercises.lastChild);
-            }
-            while (addedDetailButtons.hasChildNodes()) {
-                addedDetailButtons.removeChild(addedDetailButtons.lastChild);
-            }
-            // call checkPlanEmpty to reset the TE buttons
-            checkPlanEmpty()
-        })
+    $('#tags').on('itemRemoved', function() {
+        // Check if the tag-input field "tags" is empty
+        if (document.getElementById("tags").value.length == 0) {
+            // Hide div block containing tag-input field "tags"
+            document.getElementById("tagBlock").style.display = "none";
+        }
+    });
+
+    /**
+     * Function to set the the initial focus on the input field "inputExecutionName" when
+     * opening the modal "modalExecutionForm"
+     */
+    $('#modalExecutionForm').on('shown.bs.modal', function () {
+        $('#inputExecutionName').focus();
     })
 
     /**
-     * Execute function updateTeInputs when document is loaded
+     * Function to add a new Tag to the tag-input field "tags"
      */
-    $(document).ready(updateTeInputs())
+    function addTag() {
+        // Get the name of the new tag from the input field "inputExecution"
+        var newTag = document.getElementById("inputExecution").value;
+        // Add the stored tag to the tag-input field "tags"
+        $('#tags').tagsinput('add', newTag);
+        // Reset the input field "inputExecution"
+        $('#inputExecution').val('');
+        // Show the block containing the tag-input field and the caption
+        document.getElementById("tagBlock").style.display = "block";
+    }
+
+    /**
+     * Function to create a new type of execution to choose from in the datalist "storedExecutions"
+     */
+    function addExecution() {
+        // Get the name of the new execution from the input field "inputExecutionName"
+        var newExecution = document.getElementById("inputExecutionName").value;
+        // Create a new option with the stored execution name in the datalist "storedEcexutions
+        $('#storedExecutions').append(
+            '<option value="'+newExecution+'" />'
+        );
+        // Reset the input field
+        $('#inputExecutionName').val('');
+    }
+
+    /**
+     * Function to add an exercise to the final plan. After adding the exercise it calls
+     * the function resetForm() to reset the input fields and calls the function checkPlanEmpty().
+     */
+    function addExerciseToPlan(){
+        // Get the entered values of the exercise form
+        var newExerciseOrder = $('#inputOrder').val();
+        var newExerciseName = $('#inputExercise').val();
+        // Create new list element in final plan containing the entered values and a button to view details
+        $('#planExerciseOrder').append(
+            '<li style="padding-top: .3em; padding-bottom: .3em">' +
+            '<input type="text" value="'+newExerciseOrder+'" class="form-control" disabled>' + '</li>');
+        $('#planExerciseName').append(
+            '<li style="padding-top: .3em; padding-bottom: .3em">' +
+            '<input type="text" value="'+newExerciseName+'" class="form-control" disabled>' + '</li>');
+        $('#planButtonExerciseDetails').append(
+            '<li style="padding-top: .3em; padding-bottom: .3em">' +
+            '<button type="button" class="btn btn-primary btn-block" data-toggle="modal" ' +
+            'data-target="#modalDetailsExercise" onclick="getExerciseDetails()">' +
+            '<span class="glyphicon glyphicon-zoom-in"></span>' + ' Details' + '</button>' + '</li>');
+        // Reset the exercise form after adding the contents to the final plan
+        resetForm();
+        // Call checkPlanEmpty to disable the TE buttons after adding an element with fixed TE
+        checkPlanEmpty();
+    }
+
+    /**
+     * Temporary function to delete all elements in the final plan
+     * and call the function checkPlanEmpty() to the button savePlan
+     */
+    function resetPlan() {
+        // Create a reference on the lists in the final plan
+        var addedOrders = document.getElementById("planExerciseOrder");
+        var addedExercises = document.getElementById("planExerciseName");
+        var addedDetailButtons = document.getElementById("planButtonExerciseDetails");
+        // Remove all list elements in the final plan
+        while (addedOrders.hasChildNodes()) {
+            addedOrders.removeChild(addedOrders.lastChild);
+        }
+        while (addedExercises.hasChildNodes()) {
+            addedExercises.removeChild(addedExercises.lastChild);
+        }
+        while (addedDetailButtons.hasChildNodes()) {
+            addedDetailButtons.removeChild(addedDetailButtons.lastChild);
+        }
+        // call checkPlanEmpty to reset the TE buttons
+        checkPlanEmpty()
+    }
+
+
+
+    /**
+     * Function to be executed when the checkbox for a single day plan is checked.
+     * It sets the TE to 1 and disables the TE-buttons
+     */
+    function checkboxChanged() {
+        if($('#singleDayCheck').prop('checked')) {
+            // Store the previous amount of TE´s in a hidden input field
+            $('#prevUnitAmount').val(document.getElementById("inputUnit").value);
+            // Set TE amount to 1
+            $('#inputUnit').val(1);
+            // Update the input fields according to the new TE amount
+            updateTeInputs()
+            // Disable the TE-buttons
+            $('#btnDecrement').prop('disabled', true);
+            $('#btnIncrement').prop('disabled', true);
+        } else {
+            // Set TE amount to the previous value before setting it to 1
+            $('#inputUnit').val(document.getElementById("prevUnitAmount").value);
+            // Update the input fields according to the new TE amount
+            updateTeInputs();
+            // Enable the TE-buttons
+            $('#btnDecrement').prop('disabled', false);
+            $('#btnIncrement').prop('disabled', false);
+        }
+    }
+
+    /**
+     * Function to check the checkbox for a single day if the user confirms the conversion
+     * of the plan in the responsible modal
+     */
+    function convertPlanToSingleDay() {
+        // Set the checked value of the checkbox to true
+        $("#singleDayCheck").prop("checked", true);
+        // Execute the function checkboxChanged to perform the action associated with the checkbox
+        checkboxChanged();
+    }
 
     /**
      * Deletes current input fields in the exercise form and creates new fields according to
@@ -697,7 +878,7 @@
 
         // Get data lists and store them in variables for further manipulation
         var te = document.getElementById("counterTE");
-        var sets = document.getElementById("setInputs");
+        var reps = document.getElementById("repsInputs");
         var tempos = document.getElementById("tempoInputs");
         var pauses = document.getElementById("pauseInputs");
 
@@ -705,8 +886,8 @@
         while (te.hasChildNodes()) {
             te.removeChild(te.lastChild);
         }
-        while (sets.hasChildNodes()) {
-            sets.removeChild(sets.lastChild);
+        while (reps.hasChildNodes()) {
+            reps.removeChild(reps.lastChild);
         }
         while (tempos.hasChildNodes()) {
             tempos.removeChild(tempos.lastChild);
@@ -715,19 +896,19 @@
             pauses.removeChild(pauses.lastChild);
         }
 
-        // loop to add example input fields to the TE/Set/Tempo/Pause columns in the exercise form
-        for (var i = 0; i < number; i++) {
+        // loop to add example input fields to the TE/Repeats/Tempo/Pause columns in the exercise form
+        for (var i=0;i<number;i++){
             // create unique id´s
             var counterTEId = "counter" + i;
-            var setInputId = "setInput" + i;
+            var repsInputId = "repsInput" + i;
             var tempoInputId = "tempoInput" + i;
             var pauseInputId = "pauseInput" + i;
 
             // Add the input fields to the lists
             $('#counterTE').append(
-                '<li>' + '<input id="' + counterTEId + '" disabled value="' + (i + 1) + '" class="form-control">' + '</li>');
-            $('#setInputs').append(
-                '<li>' + '<input id="' + setInputId + '" name="sets" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+            $('#repsInputs').append(
+                '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
             $('#tempoInputs').append(
                 '<li>' + '<input id="' + tempoInputId + '" name="tempo" type="text" class="form-control">' + '</li>');
             $('#pauseInputs').append(
@@ -748,10 +929,14 @@
             // Disable the TE buttons
             $('#btnDecrement').prop('disabled', true);
             $('#btnIncrement').prop('disabled', true);
+            // Disable the single day checkbox
+            $('#singleDayCheck').prop('disabled', true);
         } else {
             // Enable the TE buttons
             $('#btnDecrement').prop('disabled', false);
             $('#btnIncrement').prop('disabled', false);
+            // Enable the single day checkbox
+            $('#singleDayCheck').prop('disabled', false)
         }
     }
 
@@ -767,14 +952,17 @@
         $('#inputDescription').val('');
 
         // Loop to empty the dynamically created input fields
-        for (var i = 0; i < number; i++) {
-            var currentSetInput = "#setInput" + i;
+        for (var i=0;i<number;i++){
+            var currentRepsInput = "#repsInput" + i;
             var currentTempoInput = "#tempoInput" + i;
             var currentPauseInput = "#pauseInput" + i;
-            $(currentSetInput).val('');
+            $(currentRepsInput).val('');
             $(currentTempoInput).val('');
             $(currentPauseInput).val('');
         }
+
+        $('#tags').tagsinput('removeAll');
+        document.getElementById("tagBlock").style.display = "none";
     }
 
     /**
@@ -803,13 +991,18 @@
         // Get the current amount of TE´s
         var oldValue = document.getElementById("inputUnit").value;
         // Test if the bottom limit is reached
-        if (oldValue > 3) {
+        if (oldValue > 1) {
             // Decrease the value by 1
             var newValue = parseFloat(oldValue) - 1;
+            // Check if the TE amount has been reduced to 1
+            if (newValue == 1) {
+                // Open modal to ask if the editor wants to convert the plan to a single day plan
+                $('#modalConvertPlan').modal({});
+            }
         } else {
             // Alert to inform the user that the bottom limit is reached
-            alert("Ein Trainingsplan kann nicht aus weniger als 3 Trainingseinheiten bestehen");
-            var newValue = 3;
+            alert("Ein Trainingsplan kann nicht aus weniger als einer Trainingseinheit bestehen");
+            var newValue = 1;
         }
         // Write new TE amount in the input field
         document.getElementById("inputUnit").value = newValue;
@@ -824,7 +1017,7 @@
 
         // Get data lists and store them in variables for further manipulation
         var te = document.getElementById("viewCounterTE");
-        var sets = document.getElementById("viewSetInputs");
+        var reps = document.getElementById("viewRepsInputs");
         var tempos = document.getElementById("viewTempoInputs");
         var pauses = document.getElementById("viewPauseInputs");
 
@@ -832,8 +1025,8 @@
         while (te.hasChildNodes()) {
             te.removeChild(te.lastChild);
         }
-        while (sets.hasChildNodes()) {
-            sets.removeChild(sets.lastChild);
+        while (reps.hasChildNodes()) {
+            reps.removeChild(reps.lastChild);
         }
         while (tempos.hasChildNodes()) {
             tempos.removeChild(tempos.lastChild);
@@ -842,23 +1035,23 @@
             pauses.removeChild(pauses.lastChild);
         }
 
-        // loop to add example values to the TE/Set/Tempo/Pause columns in viewExercise table
-        for (var i = 0; i < number; i++) {
+        // loop to add example values to the TE/Repeats/Tempo/Pause columns in viewExercise table
+        for (var i=0;i<number;i++){
             // create unique id´s
             var counterTEId = "viewCounter" + i;
-            var setInputId = "viewSetInput" + i;
+            var repsInputId = "viewRepsInput" + i;
             var tempoInputId = "viewTempoInput" + i;
             var pauseInputId = "viewPauseInput" + i;
 
             // Add the examples to the lists
             $('#viewCounterTE').append(
-                '<li>' + '<input id="' + counterTEId + '" disabled value="' + (i + 1) + '" class="form-control">' + '</li>');
-            $('#viewSetInputs').append(
-                '<li>' + '<input id="' + setInputId + '" disabled value="3 - ' + (10 + i) + '" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+            $('#viewRepsInputs').append(
+                '<li>' + '<input id="'+repsInputId+'" disabled value="3 - '+(10+i)+'" type="text" class="form-control">' + '</li>');
             $('#viewTempoInputs').append(
-                '<li>' + '<input id="' + tempoInputId + '" disabled value="90" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+tempoInputId+'" disabled value="90" type="text" class="form-control">' + '</li>');
             $('#viewPauseInputs').append(
-                '<li>' + '<input id="' + pauseInputId + '" disabled value="60" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+pauseInputId+'" disabled value="60" type="text" class="form-control">' + '</li>');
         }
     }
 
@@ -925,8 +1118,8 @@
             pauses3.removeChild(pauses3.lastChild);
         }
 
-        // loop to add example values to the TE/Set/Tempo/Pause columns in viewPlan table
-        for (var i = 0; i < number; i++) {
+        // loop to add example values to the TE/Repeats/Tempo/Pause columns in viewPlan table
+        for (var i=0;i<number;i++){
             // create unique id´s
             var counterTEId1 = "plan1Counter" + i;
             var setInputId1 = "plan1SetInput" + i;
@@ -945,31 +1138,31 @@
 
             // Add the examples to the lists
             $('#plan1CounterTE').append(
-                '<li>' + '<input id="' + counterTEId1 + '" disabled value="' + (i + 1) + '" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+counterTEId1+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
             $('#plan1SetInputs').append(
-                '<li>' + '<input id="' + setInputId1 + '" disabled value="3 - ' + (10 + i) + '" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+setInputId1+'" disabled value="3 - '+(10+i)+'" type="text" class="form-control">' + '</li>');
             $('#plan1TempoInputs').append(
-                '<li>' + '<input id="' + tempoInputId1 + '" disabled value="60" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+tempoInputId1+'" disabled value="60" type="text" class="form-control">' + '</li>');
             $('#plan1PauseInputs').append(
-                '<li>' + '<input id="' + pauseInputId1 + '" disabled value="60" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+pauseInputId1+'" disabled value="60" type="text" class="form-control">' + '</li>');
 
             $('#plan2CounterTE').append(
-                '<li>' + '<input id="' + counterTEId2 + '" disabled value="' + (i + 1) + '" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+counterTEId2+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
             $('#plan2SetInputs').append(
-                '<li>' + '<input id="' + setInputId2 + '" disabled value="3 - ' + (15 + i) + '" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+setInputId2+'" disabled value="3 - '+(15+i)+'" type="text" class="form-control">' + '</li>');
             $('#plan2TempoInputs').append(
-                '<li>' + '<input id="' + tempoInputId2 + '" disabled value="90" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+tempoInputId2+'" disabled value="90" type="text" class="form-control">' + '</li>');
             $('#plan2PauseInputs').append(
-                '<li>' + '<input id="' + pauseInputId2 + '" disabled value="45" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+pauseInputId2+'" disabled value="45" type="text" class="form-control">' + '</li>');
 
             $('#plan3CounterTE').append(
-                '<li>' + '<input id="' + counterTEId3 + '" disabled value="' + (i + 1) + '" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+counterTEId3+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
             $('#plan3SetInputs').append(
-                '<li>' + '<input id="' + setInputId3 + '" disabled value="3 - ' + (20 + i) + '" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+setInputId3+'" disabled value="3 - '+(20+i)+'" type="text" class="form-control">' + '</li>');
             $('#plan3TempoInputs').append(
-                '<li>' + '<input id="' + tempoInputId3 + '" disabled value="90" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+tempoInputId3+'" disabled value="90" type="text" class="form-control">' + '</li>');
             $('#plan3PauseInputs').append(
-                '<li>' + '<input id="' + pauseInputId3 + '" disabled value="30" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+pauseInputId3+'" disabled value="30" type="text" class="form-control">' + '</li>');
         }
         // Get the values of the general plan data and write it into the viewPlan panel header
         var planName = document.getElementById("planName").value;
@@ -977,7 +1170,7 @@
         var planTE = document.getElementById("inputUnit").value;
         $('#viewPlanName').val(planName);
         $('#viewPlanfocus').val(planFocus);
-        $('#viewPlanTE').val("Trainingseinheiten: " + planTE);
+        $('#viewPlanTE').val("Trainingseinheiten: "+planTE);
     }
 </script>
 </body>
