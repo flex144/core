@@ -269,32 +269,6 @@ public class FrontEndSeleniumTests {
         // Check if exercise was added
         assertFalse(driver.findElements(By.id("planExerciseOrder")).isEmpty());
 
-        /* Test for modalDetailsExercise */
-
-        // Open modal to show the details of an added exercise
-        driver.findElement(By.xpath(".//*[text()[contains(.,\"Details\")]]")).click();
-        // Check if the correct modal opened
-        modal = driver.findElement(By.id("modalDetailsExercise"));
-        assertTrue(modal.isDisplayed());
-        // Close the modal
-        driver.findElement(By.id("btnCloseModalShowDetails")).click();
-        waitDuration(200);
-        // Check if the modal closed correctly
-        assertFalse(modal.isDisplayed());
-
-        /* Test for modalViewFinalPlan */
-
-        // Open modal to show a preview of the final plan
-        driver.findElement(By.id("previewPlan")).click();
-        // Check if the correct modal opened
-        modal = driver.findElement(By.id("modalViewFinalPlan"));
-        assertTrue(modal.isDisplayed());
-        // Close the modal
-        driver.findElement(By.id("btnCloseModalViewPlan")).click();
-        waitDuration(200);
-        // Check if the modal closed correctly
-        assertFalse(modal.isDisplayed());
-
         driver.quit();
     }
 }
