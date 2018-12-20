@@ -34,6 +34,8 @@ public class UserService {
         DataBaseService.getInstance().insertUser(email, firstName, lastName, password);
     }
 
+    public void changeToMod(int id) { DataBaseService.getInstance().changeToMod(id);}
+
     /**
      * This method is used for registration. It checks whether an email is valid, if the given passwords match
      * and if the email isn't already registered. When there is no error, it creates a new User in the Database.
