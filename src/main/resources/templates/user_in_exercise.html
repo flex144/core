@@ -54,6 +54,10 @@
             text-align: center;
         }
 
+        .btn-secondary{
+            font-size: smaller;
+        }
+
         /******************** Table Styles **********************/
         #exerciseDetails {
             text-align: center;
@@ -78,117 +82,85 @@
             <div class="modal-body">
                 <div class="container">
                     <div class="jumbotron">
-                        <div class="panel panel-default" th:if="${!exercise.getName().equals('')}">
+                        <div class="panel panel-default">
                             <div class="panel-heading">
                                 Name:
                             </div>
                             <div class="panel-body">
-                                <p th:text="${exercise.getName()}"></p>
+                                <p></p>
                             </div>
                         </div>
                         <div>
-                            <div class="panel panel-default" th:if="${!exercise.getDescription().equals('')}">
+                            <div class="panel panel-default">
                                 <div class="panel-heading">
                                     Beschreibung:
                                 </div>
                                 <div class="panel-body">
-                                    <p th:text="${exercise.getDescription()}"></p>
+                                    <p ></p>
                                 </div>
                             </div>
-                            <div class="panel panel-default" th:if="${!exercise.getVideoLink().equals('')}">
+                            <div class="panel panel-default" >
                                 <div class="panel-heading">
                                     Beispielvideo:
                                 </div>
                                 <div class="panel-body">
                                     <div class="embed-responsive embed-responsive-16by9">
-                                        <iframe th:if="${!exercise.getVideoLink().equals('')}" width="560" height="315"
-                                                th:src="${exercise.getVideoLink()}"
+                                        <iframe  width="560" height="315"
                                                 frameborder="0" allowfullscreen></iframe>
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel panel-default" th:if="${!exercise.getMuscleImgPaths().isEmpty()}">
+                            <div class="panel panel-default">
                                 <div class="panel-heading">
-                                    <p th:if="${!exercise.getMuscleImgPaths().isEmpty()}">
+                                    <p>
                                         Muskelgruppen Bilder:</p>
                                 </div>
                                 <div class="panel-body">
 
-                                    <div th:each="path : ${exercise.getMuscleImgPaths()}"
+                                    <div
                                          class="image">
-                                        <img th:src="@{${path}}"/>
+                                        <img/>
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel panel-default" th:if="${!exercise.getOtherImgPaths().isEmpty()}">
+                            <div class="panel panel-default" >
                                 <div class="panel-heading">
-                                    <p th:if="${!exercise.getOtherImgPaths().isEmpty()}">Andere
+                                    <p>Andere
                                         Bilder:</p>
                                 </div>
                                 <div class="panel-body">
-                                    <div th:each="path : ${exercise.getOtherImgPaths()}"
+                                    <div
                                          class="image">
-                                        <img th:src="@{${path}}"/>
+                                        <img/>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal fade" id="confirm_delete">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-body">
-                                <form th:object="${exercise}"
-                                      th:action="@{/exercises/{path}(path=${exercise.id})}"
-                                      th:method="delete" id="deleteForm">
-                                    <div class="panel panel-danger">
-                                        <div class="panel-heading">
-                                            <h4>Löschen bestätigen</h4>
-                                        </div>
-                                        <div class="panel-body">
-                                            <p style="font-size: 16px">
-                                                Wollen sie die aktuelle Übung wirklich löschen?
-                                            </p>
-                                            <p class="text-danger" style="font-size: 12px">
-                                                Diese Aktion kann nicht rückgängig gemacht
-                                                werden!
-                                            </p>
-                                            <br>
-                                            <div class="row">
-                                                <div class="col-md-2"></div>
-                                                <div class="col-md-4">
-                                                    <button type="button"
-                                                            class="btn btn-danger btn-block"
-                                                            id="submitForm">Löschen
-                                                    </button>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button type="button"
-                                                            class="btn btn-default btn-block"
-                                                            data-dismiss="modal">Abbrechen
-                                                    </button>
-                                                </div>
-                                                <div class="col-md-2"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="container" id="toggledAlert" >
-                <div>
+                <div class="container">
                     <h5 style="color: red; text-align: center; background: #e3f2fd; border: 1px solid black;">
                         Es ist nicht empfohlen die alternativen Übungne zu wählen.
                         Wenn die Entscheidung aus gesundheitlichen Gründen folgt,
                         so kontaktieren sie einen Trainer.
                     </h5>
+                    <div class="row">
+                        <div class="container" style="width: 80%">
+                            <div class="form-group">
+                                <select id="weightType" class="form-control">
+                                    <option>Diese Übung</option>
+                                    <option>Alternative Xyz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" style="width: 20%"
+                                class="btn btn-secondary" onclick="enableSave()">
+                            Ok
+                        </button>
+                    </div>
                 </div>
-                <button type="button"
-                        class="btn btn-secondary" onclick="enableSave()">
-                    Ok
-                </button>
             </div>
             <div class="modal-footer">
                 <div class="container">
@@ -201,7 +173,7 @@
                         Alternative
                     </button>
                     <button type="button"
-                            class="btn btn-block btn-danger" data-dismiss="modal" style="font-size: small" >
+                            class="btn btn-block btn-danger" data-dismiss="modal" style="font-size: small" id="closeInfoModal">
                         Zurück
                     </button>
                 </div>
@@ -209,7 +181,6 @@
         </div>
     </div>
 </div>
-
 
 <div id="leavePageModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -221,15 +192,15 @@
             </div>
             <div class="modal-footer">
                 <div class="container" style="width: 45%;">
-                    <button type="button"
-                            class="btn btn-block btn-danger" onclick="leavePage()">
+                    <a type="button"
+                            class="btn btn-block btn-danger" th:href="@{/user/plan/overview}">
                         Zum Plan
                         <!--- TODO controller link back to plan, no changes made to current session-->
-                    </button>
+                    </a>
                 </div>
                 <div class="container" style="width: 45%;">
                     <button type="button"
-                            class="btn btn-block btn-success" data-dismiss="modal">
+                            class="btn btn-block btn-success" data-dismiss="modal" id="continueButton">
                         Weitermachen
                     </button>
                 </div>
@@ -242,19 +213,19 @@
 <div class="highlightedContainer" id="container_planExerciseName"
      style="height: 10%;">
     <div style="width: 80%;">
-        <h2 th:text>Klimmzüge</h2>
+        <h2>Klimmzüge</h2>
     </div>
     <div style="width: 5%"></div>
-    <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
+    <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info" id="infoButton">
         i
     </button>
 </div>
 
-<!--- Picture / Notice to current exercise --->
+<!--- Description to current exercise --->
 <div class="greyContainer" id="container_planInstructions"
      style="height: 10%;">
     <div  id="container_planDetails" style="
-            overflow-y: scroll; overflow-x: fragments;" th:text>
+            overflow-y: scroll; overflow-x: fragments;">
         Massive anmerkungen zum text obwohl hier wahrscheinlich nie mehr als
         ein zwei wörter stehen wird
     </div>
@@ -266,33 +237,33 @@
     <table id="exerciseDetails" class="table-striped table-bordered">
         <tr>
             <td>Gewicht</td>
-            <td th:text>Eigen</td>
+            <td>Eigen</td>
         </tr>
         <tr>
             <td>Tempo</td>
-            <td th:text>Langsam</td>
+            <td>Langsam</td>
         </tr>
         <tr>
             <td>Pause</td>
             <td>
-                <span class="pauseTime" th:text></span></td>
+                <span class="pauseTime" ></span></td>
         </tr>
         <tr>
             <td>Sätze</td>
             <td>
-                <span class="value" th:text></span>
+                <span class="value"></span>
             </td>
         </tr>
         <tr>
             <td>Wiederholungen</td>
             <td>
-                <span class="doneReps" th:text></span>
+                <span class="doneReps" id="neededReps"></span>
             </td>
         </tr>
     </table>
 </div>
 
-<!--- Adjustable Repition counter for the current set --->
+<!--- Adjustable repition counter for the current set --->
 <div style="height: 10%;">
     <div class="row" style="height: 60%; width: 100%;">
         <div style="width: 30%; height: 100%">
@@ -355,21 +326,21 @@
     <!--- Evaluation --->
     <div id="container_evaluationBox" class="fullsize">
         <div class="container fullsize">
-            <div class="btn-group btn-group-toggle fullsize" data-toggle="buttons">
-                <button class="btn btn-secondary fullsize">
-                    <input type="radio"> sehr <br> ein <br>fach
+            <div class="btn-group btn-group-toggle fullsize" data-toggle="buttons" id="radioButtonGroup">
+                <button class="btn btn-secondary fullsize" name="radioButton">
+                    <input type="radio" id="difficulty1"> sehr <br> ein <br>fach
                 </button>
-                <button class="btn btn-secondary fullsize">
-                    <input type="radio"> zu <br> ein <br>fach
+                <button class="btn btn-secondary fullsize" name="radioButton">
+                    <input type="radio" id="difficulty2"> zu <br> ein <br>fach
                 </button>
-                <button class="btn btn-secondary fullsize active">
-                    <input type="radio"> passt
+                <button class="btn btn-secondary fullsize active" name="radioButton">
+                    <input type="radio" id="difficulty3"> passt
                 </button>
-                <button class="btn btn-secondary fullsize">
-                    <input type="radio"> zu <br> hart
+                <button class="btn btn-secondary fullsize" name="radioButton">
+                    <input type="radio" id="difficulty4"> zu <br> hart
                 </button>
-                <button class="btn btn-secondary fullsize">
-                    <input type="radio"> Viel <br> zu <br> hart
+                <button class="btn btn-secondary fullsize" name="radioButton">
+                    <input type="radio" id="difficulty5"> Viel <br> zu <br> hart
                 </button>
             </div>
         </div>
@@ -390,7 +361,7 @@
         </div>
         <div style="width: 30%;" id="exitButton">
             <button type="button"
-                    class="btn btn-block btn-danger fullsize"  data-toggle="modal" data-target="#leavePageModal">
+                    class="btn btn-block btn-danger fullsize"  data-toggle="modal" data-target="#leavePageModal" id="exitExerciseButton">
                 Abbrechen
             </button>
         </div>
@@ -404,8 +375,8 @@
     </div>
 </div>
 
+<!--- Button functionality and display --->
 <script>
-
     var warningHidden = true;
 
     document.onLoad(initialLoad());
@@ -421,7 +392,7 @@
     }
 
     function leavePage(){
-        window.location = "user_training_overview.html"
+        window.location = "overview";
     }
 
     function safeAlternativeExercise() {
@@ -478,8 +449,10 @@
         document.querySelector('.pauseTime').innerHTML = pauseTimeValue + " s";
     }
 
-    /*** Stopwatch functions***/
-    /*** JS needed for the stopwatch to work***/
+    /***
+     * Stopwatch functions
+     * JS needed for the stopwatch to work
+     ***/
     function startTimer(duration, display) {
         var timer = duration, minutes, seconds;
         timerID = setInterval(function () {
@@ -516,9 +489,10 @@
         parseTime(pauseTimeValue);
     }
 
-
-    /*** Rep Counter functions***/
-    /*** update Values on each input***/
+    /***
+     * Rep Counter functions
+     * update Values on each input
+     ***/
     function updateReps() {
         console.log(parseFloat(document.getElementById('repInput').value));
         valueCheck = Math.ceil(document.getElementById('repInput').value);
@@ -550,9 +524,10 @@
         document.getElementById('repInput').value = currentReps;
     }
 
-
-    /*** Evaluation/Timer Toggle***/
-    /*** Change Values on each click***/
+    /***
+     *Evaluation/Timer Toggle*
+     *Change Values on each click
+     * ***/
     function exerciseFunction(){
         /***Can't send empty/illegal inputs***/
         if( !( valueCheck < 2* totalReps && valueCheck> 0) ){
@@ -560,7 +535,7 @@
             valueCheck = currentReps;
         }
         else if (done){
-            window.location ="user_training_overview.html";
+            window.location ="overview";
         }else if (currentCounter == setCounter){
             timerBox.style.display = "none";
             evaluationBox.style.display = "inherit";

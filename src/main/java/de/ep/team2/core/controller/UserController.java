@@ -24,4 +24,12 @@ public class UserController {
     public String planEvalu() {
         return "user_exercise_evaluation";
     }
+
+    @RequestMapping("/plan/overview")
+    public String openTraining() {
+        return "user_training_overview";
+    }
+
+    @RequestMapping("/plan/exercise")
+    public String openExercise() {return "user_in_exercise";}
 }

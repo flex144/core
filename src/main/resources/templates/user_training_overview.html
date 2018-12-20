@@ -1,6 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -82,10 +81,10 @@
                     Weitermachen
                 </button>
                 <div class="modal-footer">
-                    <button type="button"
-                            class="btn btn-block btn-danger" onclick="exitTraining()">
+                    <a type="button"
+                            class="btn btn-block btn-danger" th:href="@{/user/home}">
                         Abbrechen
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -97,7 +96,8 @@
 <div class="highlightedContainer" id="container_header"
      style="height: 10%;">
     <div style="width: 70%;">
-        <h3 th:text=>Trainingsplan nr. </h3>
+        <!---th:text=--->
+        <h3>Trainingsplan nr. </h3>
     </div>
     <div style="width: 10%;">
         <div style="font-size: smaller; height: 20%">set:</div>
@@ -124,11 +124,11 @@
         overflow-x: fragments; overflow-y: scroll; text-align: center;
         padding: 5px">
 
-    <div class="container" style="padding-bottom: 2px; height: 15%" id="exercise"
-         th:each th:onclick="" th:id=>
+    <div class="container" style="padding-bottom: 2px; height: 15%" id="exercise">
+        <!---  th:each th:onclick="" th:id= --->
         <!--- TODO thymeleaf remove test class after it is implemented--->
         <div class="containerColor fullsize farbTest1" >
-            <table class="fullsize" id="table">
+            <table class="fullsize" id="table" >
                 <tr class="fullsize" style="display: flex" id="row">
                     <!--- TODO Session save Status --->
                     <td class="tableCentered" >
@@ -137,12 +137,14 @@
                                        autocomplete="off" disabled style="transform: scale(2)">
                             </label>
                     </td>
-                    <td class="tableCentered" id="column">
+                    <td class="tableCentered" id="column" onclick="loadExercise()">
                         <!--- TODO thymeleaf remove test class after implementation--->
-                        <h3 class="numbertest1" id="orderNumber" th:text th:id>A1</h3>
+                        <!--- th:text th:id--->
+                        <h3 class="numbertest1" id="orderNumber">A1</h3>
                     </td>
-                    <td class="tableCentered" style="width: 50%;">
-                        <h3 th:text>Klimmzüge</h3>
+                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
+                        <!--- th:text--->
+                        <h3>Klimmzüge</h3>
                     </td>
                     <td class="tableCentered" style="width: 20%">
                         <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
@@ -236,7 +238,7 @@
         <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingBack">
             <button type="button"
                     class="btn btn-block btn-danger fullsize" id="backButton"
-                    style="height: 100%; min-height: 50px" onclick="exitTraining()">
+                    style="height: 100%; min-height: 50px" th:href="@{/user/home}">
                 Zurück
             </button>
         </div>
@@ -265,6 +267,12 @@
 </div>
 
 <!--- TODO save done exercises and current order with session--->
+<script>
+    function loadExercise() {
+        window.location = "exercise"
+    }
+</script>
+
 
 <!--- Button functionality --->
 <script>
@@ -276,16 +284,14 @@
         document.getElementById('button_trainingFinished').style.display = "inherit";
     }
 
-    function exitTraining() {
-        window.location = "testseite_verlinkung.html";
-    }
-
+    /**/
     function clickedOnExercise(){
+
         var currentOrder = document.getElementById(orderOfExercise).innerHTML;
         var id = this.id;
         var thisExerciseOrder = "orderNumber" + id;
         var clickedOrder = document.getElementById(thisExerciseOrder).innerHTML;
-        if (currentOrder == clickedOrder){
+        if ((currentOrder == clickedOrder) || currentOrder == ""){
             updateCurrentOrder(id);
             /*TODO load exercise throught controller*/
         } else{
@@ -297,6 +303,7 @@
         }
     }
 
+    /*Set's the Order of the id it's used on*/
     function updateCurrentOrder(id){
         var orderOfExercise = "orderNumber" + id;
         document.getElementById(orderOfExercise).innerHTML;
