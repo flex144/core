@@ -79,4 +79,18 @@ public class ExerciseInstance {
     public void setTrainingsSessions(LinkedList<TrainingsSession> trainingsSessions) {
         this.trainingsSessions = trainingsSessions;
     }
+
+    public String tagsToString() {
+        String toReturn = "";
+
+        for (int i = 0; i < tags.size(); i++) {
+            toReturn = toReturn + tags.get(i);
+            if (i != tags.size() - 1) {
+                toReturn = toReturn + ", ";
+            }
+        }
+
+        return toReturn;
+    }
+
 }

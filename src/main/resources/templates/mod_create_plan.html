@@ -241,7 +241,7 @@
                                            class="form-control" list="storedExecutions" onchange="addTag()">
                                     <div class="input-group-btn">
                                         <button class="btn btn-success" id="buttonAddExecution"
-                                                onclick="addExecution()" onclick="addTag()">
+                                                onclick="addTag()">
                                             <span class="glyphicon glyphicon-plus"></span>
                                             Add
                                         </button>
@@ -254,14 +254,15 @@
                                 <br>
                                 <button type="button" data-toggle="modal" id="buttonNewExecution"
                                         class="btn btn-success btn-md"
-                                        data-toggle="modal" data-target="#modalExecutionForm">
+                                        data-target="#modalExecutionForm">
                                     <span class="glyphicon glyphicon-plus-sign"></span>
                                     Neue Ausführung
                                 </button>
                                 <div id="tagBlock">
                                     <br>
                                     <h5 id="tagHeader">Hinzugefügte Ausführungen:</h5>
-                                    <input type="text" data-role="tagsinput" id="tags" value="" class="form-control" name="tags">
+                                    <input type="text" data-role="tagsinput" id="tags" value=""
+                                           class="form-control tagsPlanInput" name="tags">
                                 </div>
                             </td>
                             <td>
@@ -326,7 +327,14 @@
                             </td>
                             <td>
                                 <div class="form-group">
-                                    <ul id="planButtonExerciseDetails" class="list-group"></ul>
+                                    <ul id="planButtonExerciseDetails" class="list-group">
+                                        <button type="button"
+                                                class="btn btn-success btn-block detailModal"
+                                                th:onclick="'javascript:updateDetails(\'' + ${exercise.id} + '\')'">
+                                            <span class="glyphicon glyphicon-plus-sign"></span>
+                                            Details
+                                        </button>
+                                    </ul>
                                 </div>
                             </td>
                         </tr>
@@ -338,8 +346,7 @@
                     <div class="col-md-8"></div>
                     <div class="col-md-2">
                         <button type="button" id="previewPlan" class="btn btn-primary btn-block"
-                                data-toggle="modal" data-target="#modalViewFinalPlan"
-                                onclick="fillPlan()">
+                                onclick="updateDetails('previewPlan')">
                             <span class="glyphicon glyphicon-blackboard"></span>
                             Planvorschau
                         </button>
@@ -504,6 +511,7 @@
 </div>
 
 <!-- Modal to view the details of an example exercise -->
+<!--
 <div class="modal fade" id="modalDetailsExercise">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -513,9 +521,11 @@
                         <h4>Detailansicht</h4>
                     </div>
                     <!-- Panel body with an example exercise to show the detail view -->
-                    <div class="panel-body">
+                    <!--
+                    <div class="panel-body" th:if="${plan}">
                         <div class="col-md-12">
-                            <table class="table table-bordered table-condensed" border="1" width="100%">
+                            <table class="table table-bordered table-condensed detailExerciseTable" border="1"
+                                   width="100%" th:each="exercise : ${plan.exerciseInstances}">
                                 <colgroup>
                                     <col width="5%">
                                     <col width="15%">
@@ -540,35 +550,42 @@
                                 <tr>
                                     <td>
                                         <input id="viewOrder" type="text" class="form-control"
-                                               value="A1" disabled/>
+                                               th:value="${exercise.category}" disabled/>
                                     </td>
                                     <td>
                                         <input id="viewExercise" type="text" class="form-control"
-                                               value="Liegestütze" disabled/>
+                                               th:value="${exercise.name}" disabled/>
                                     </td>
                                     <td>
                                         <textarea id="viewDescription" class="form-control"
                                                   rows="4" disabled>Auf geraden Rücken achten!
                                         </textarea>
                                     </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="viewCounterTE" class="list-group"></ul>
+                                    <td >
+                                        <div class="form-group" th:each="sessions, iStat : ${exercise.trainingsSessions}">
+                                            <ul class="list-group" th:text="${iStat.count}"></ul>
                                         </div>
                                     </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="viewRepsInputs" class="list-group"></ul>
+
+                                    <td >
+                                        <div class="form-group" th:each="sessions : ${exercise.trainingsSessions}">
+                                            <ul class="list-group">
+                                                <nobr th:each="rep : ${sessions.reps}">
+                                                    <nobr th:if="${rep} != 0" th:text="${rep} + ' /'"></nobr>
+                                                </nobr>
+                                            </ul>
                                         </div>
                                     </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="viewTempoInputs" class="list-group"></ul>
+
+                                    <td >
+                                        <div class="form-group" th:each="sessions : ${exercise.trainingsSessions}">
+                                            <ul class="list-group" th:text="${sessions.tempo}"></ul>
                                         </div>
                                     </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <ul id="viewPauseInputs" class="list-group"></ul>
+
+                                    <td >
+                                        <div class="form-group" th:each="sessions : ${exercise.trainingsSessions}">
+                                            <ul class="list-group" th:text="${sessions.pauseInSec}"></ul>
                                         </div>
                                     </td>
                                 </tr>
@@ -577,6 +594,7 @@
                         </div>
                     </div>
                     <!-- Panel footer with Buttons to interact with the shown exercise -->
+                    <!--
                     <div class="panel-footer">
                         <div class="row">
                             <div class="col-md-4">
@@ -600,11 +618,14 @@
                             <div class="col-md-2"></div>
                         </div>
                     </div>
+                    -->
+<!--
                 </div>
             </div>
         </div>
     </div>
 </div>
+-->
 
 <!-- Modal to view the details of an example plan -->
 <div class="modal fade" id="modalViewFinalPlan">
@@ -616,7 +637,7 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-md-3">
-                                <h4>Planvorschau</h4>
+                                <h4 id="planOrExercise">Planvorschau</h4>
                             </div>
                             <div class="col-md-3">
                                 <input class="form-control" type="text" id="viewPlanName"
@@ -635,8 +656,9 @@
                     <!-- Panel body containing 3 example exercises for an example plan -->
                     <div class="panel-body">
                         <div class="col-md-12">
-                            <table class="table table-bordered table-condensed" border="1"
-                                   width="100%" th:each="exercise : ${plan.exerciseInstances}">
+                            <table class="table table-bordered table-condensed detail detailExerciseTable" border="1"
+                                   width="100%" th:each="exercise : ${plan.exerciseInstances}"
+                                   th:id="${exercise.id}">
                                 <colgroup>
                                     <col width="5%">
                                     <col width="15%">
@@ -665,13 +687,19 @@
                                     <td th:text="${exercise.name}">
                                     </td>
                                     <td>
-                                        <textarea class="form-control"
-                                                  rows="4" disabled>
-                                        </textarea>
+                                        <nobr th:class="'planTagsClass' + ${exercise.id}"
+                                              th:each="tag : ${exercise.tags}" th:data="${tag}">
+                                        </nobr>
+                                        <div id="tagBlockPlan">
+                                            <input type="text" data-role="tagsinput"
+                                                   th:id="'tagsPlan' + ${exercise.id}"
+                                                   value="" class="form-control tagsPlanInput" disabled>
+                                        </div>
                                     </td>
 
                                     <td >
-                                        <div class="form-group" th:each="sessions, iStat : ${exercise.trainingsSessions}">
+                                        <div class="form-group"
+                                             th:each="sessions, iStat : ${exercise.trainingsSessions}">
                                             <ul class="list-group" th:text="${iStat.count}"></ul>
                                         </div>
                                     </td>
@@ -706,7 +734,18 @@
                     <!-- Panel footer with button to close the modal positioned on the right -->
                     <div class="panel-footer">
                         <div class="row">
-                            <div class="col-md-8"></div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-danger btn-block"
+                                        id="deleteCurrentExercise" data-dismiss="modal">
+                                    Übung löschen
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-primary btn-block"
+                                        id="editCurrentExercise" data-dismiss="modal">
+                                    Übung bearbeiten
+                                </button>
+                            </div>
                             <div class="col-md-4">
                                 <button type="button" class="btn btn-default btn-block" id="btnCloseModalViewPlan"
                                         data-dismiss="modal">
@@ -770,7 +809,7 @@
     </div>
 </div>
 
-<script>
+<script th:inline="javascript">
     /**
      * Execute various functions when the page is loaded
      */
@@ -784,7 +823,7 @@
             });
         });
         // Execute function updateTeInputs when document is loaded
-        updateTeInputs()
+        updateTeInputs();
         // Hide the empty display block for the exercise execution tags
         document.getElementById("tagBlock").style.display = "none";
         document.getElementById("submitDelete").onclick = function() {
@@ -794,12 +833,60 @@
         accordionJS();
     });
 
+    function setPlanTags(value) {
+        var x = document.getElementsByClassName("planTagsClass" + value);
+        var i;
+        for (i = 0; i < x.length; i++) {
+            var e = x[i].getAttribute('data');
+            $('#tagsPlan' + value).tagsinput('add', e);
+        }
+    }
+
     /**
      * Set tags in the tag-input field "tags" to the colorset "warning" (yellow)
      */
-    $('#tags').tagsinput({
+    $('.tagsPlanInput').tagsinput({
         tagClass: 'label label-warning'
     });
+
+
+    /**
+     * Script to show details of one exercise. The value specifies the id
+     * of the exercise instance.
+     */
+    function updateDetails(value) {
+        var x = document.getElementsByClassName("detailExerciseTable");
+        var i;
+
+        if (value === "previewPlan") {
+            for (i = 0; i < x.length; i++) {
+                var y = document.getElementById(x[i].id);
+                y.style.display = "block";
+            }
+            setPlanTags(value);
+            document.getElementById("planOrExercise").innerText = "Planvorschau";
+            document.getElementById("editCurrentExercise").style.display = "none";
+            document.getElementById("deleteCurrentExercise").style.display = "none";
+        } else {
+            for (i = 0; i < x.length; i++) {
+                var y = document.getElementById(x[i].id);
+                if (y.id === value) {
+                    y.style.display = "block";
+                } else {
+                    y.style.display = "none";
+                }
+            }
+            setPlanTags(value);
+            document.getElementById("planOrExercise").innerText = "Übungsdetails";
+            document.getElementById("editCurrentExercise").style.display = "block";
+            document.getElementById("deleteCurrentExercise").style.display = "block";
+        }
+        $(document).ready(function () {
+            $('#modalViewFinalPlan').modal({
+                backdrop: 'static'
+            });
+        });
+    }
 
     /**
      * Function to hide the div block containing the tag-input field "tags" if there are no tags in it
@@ -818,7 +905,7 @@
      */
     $('#modalExecutionForm').on('shown.bs.modal', function () {
         $('#inputExecutionName').focus();
-    })
+    });
 
     /**
      * Function to add a new Tag to the tag-input field "tags"
@@ -935,7 +1022,7 @@
             // Set TE amount to 1
             $('#inputUnit').val(1);
             // Update the input fields according to the new TE amount
-            updateTeInputs()
+            updateTeInputs();
             // Disable the TE-buttons
             $('#btnDecrement').prop('disabled', true);
             $('#btnIncrement').prop('disabled', true);
@@ -1148,5 +1235,6 @@
         }
     }
 </script>
+
 </body>
 </html>
