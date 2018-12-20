@@ -267,7 +267,7 @@
         <tr>
             <td>Pause</td>
             <td>
-                <span class="pauseTime" ></span></td>
+                <span id="pauseTime" ></span></td>
         </tr>
         <tr>
             <td>Sätze</td>
@@ -472,9 +472,9 @@
         document.querySelector('.doneReps').innerHTML = totalReps;
         evaluationBox.style.display = "none";
         document.querySelector('.value').innerHTML = labelValue;
+        document.getElementById('pauseTime').innerHTML = pauseTimeValue + " " +"s";
         document.querySelector('.buttonName').innerHTML = buttonTitle;
         document.querySelector('.buttonBack').innerHTML = buttonBackTitle;
-        document.querySelector('.pauseTime').innerHTML = pauseTimeValue + " s";
     }
 
     /***
