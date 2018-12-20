@@ -12,7 +12,10 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <!-- Imports for Bootstrap table -->
+    <!---
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
+    Removed Bootstrap table js, otherwise linking a row is not working.
+    --->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.css"></script>
 
     <div th:include="/fragments/navbar :: navbar_style"></div>
@@ -21,7 +24,7 @@
 <body>
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
-<form class="form-horizontal">
+<form class="form-horizontal" th:action="@{/mods/searchplan}" method="post" id="searchForm">
     <div class="container">
         <div class="jumbotron">
             <h2>Verzeichnis aller erstellten Trainingsplanvorlagen</h2>
@@ -30,12 +33,15 @@
             <p style="font-size: 12pt">Gib in die folgende Eingabezeile alle
                 Pläne nach bestimmten Attributen
                 zu filtern</p>
-            <input class="form-control" id="myInput" type="text"
+            <input class="form-control" id="myInput" type="text" name="planName"
                    placeholder="Suchwort eingeben..">
             <br>
             <a th:href="@{/mods/createplan}" type="button"
                class="btn btn-success btn-medium">
                 <span class="glyphicon glyphicon-plus-sign"></span> Neue Vorlage</a>
+            <a type="button" id="submitForm"
+               class="btn btn-success btn-medium">
+                <span class="glyphicon glyphicon-search"></span> Suchen</a>
         </div>
     </div>
     <div class="container">
@@ -53,7 +59,7 @@
                     <span class="glyphicon glyphicon-sort"></span> Schwerpunkt
                 </th>
                 <th data-field="timeSpan" data-sortable="true">
-                    <span class="glyphicon glyphicon-sort"></span> Dauer
+                    <span class="glyphicon glyphicon-sort"></span> Dauer in Trainingseinheiten
                 </th>
                 <th data-field="author" data-sortable="true">
                     <span class="glyphicon glyphicon-sort"></span> Autor
@@ -61,40 +67,13 @@
             </tr>
             </thead>
             <tbody id="myTable">
-            <tr>
-                <td>001</td>
-                <td>Einstiegstraining</td>
-                <td>Muskelaufbau</td>
-                <td>1 Tag</td>
-                <td>Paul Friedrich</td>
-            </tr>
-            <tr>
-                <td>002</td>
-                <td>Anfängertraining</td>
-                <td>Muskelaufbau</td>
-                <td>1 Monat</td>
-                <td>Paul Friedrich</td>
-            </tr>
-            <tr>
-                <td>004</td>
-                <td>Konditionstraining</td>
-                <td>Ausdauersteigerung</td>
-                <td>3 Monate</td>
-                <td>Martin Maier</td>
-            </tr>
-            <tr>
-                <td>006</td>
-                <td>Training für Fortgeschrittene</td>
-                <td>Muskelaufbau</td>
-                <td>6 Wochen</td>
-                <td>Paul Friedrich</td>
-            </tr>
-            <tr>
-                <td>011</td>
-                <td>Linderung Rückenschmerzen</td>
-                <td>Schmerzreduktion</td>
-                <td>1 Monat</td>
-                <td>Martin Maier</td>
+            <tr th:each="planTemplate : ${planList}"
+                th:onclick="'javascript:rowClicked(\'' + ${planTemplate.getId()} + '\');'">
+                <td th:text="${planTemplate.getId()}"></td>
+                <td th:text="${planTemplate.getName()}"></td>
+                <td th:text="${planTemplate.getTrainingsFocus()}"></td>
+                <td th:text="${planTemplate.getNumTrainSessions()}"></td>
+                <td th:text="${planTemplate.getAuthor().getEmail()}"></td>
             </tr>
             </tbody>
         </table>
@@ -112,6 +91,18 @@
         });
     });
 </script>
+<!--- Script to link every row with the Exercise.
+--->
+<script>
+    function rowClicked(value) {
+        location.href = "/mods/plans/" + value;
+    }
+</script>
 
+<script>
+    document.getElementById("submitForm").onclick = function() {
+        document.getElementById("searchForm").submit();
+    }
+</script>
 </body>
 </html>

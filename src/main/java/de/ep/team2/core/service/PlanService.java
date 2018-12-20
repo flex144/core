@@ -1,9 +1,13 @@
 package de.ep.team2.core.service;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
+import de.ep.team2.core.entities.ExerciseInstance;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
+import de.ep.team2.core.entities.TrainingsSession;
 import de.ep.team2.core.entities.User;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.LinkedList;
 
 public class PlanService {
 
@@ -24,6 +28,57 @@ public class PlanService {
             addInstanceAndSessionToExistingPlan(dto, dto.getId());
         }
         return dto;
+    }
+
+    /**
+     * Deletes a Template and all its Children.
+     *
+     * @param id id of template to delete.
+     */
+    public void deleteTemplateAndChildrenById(int id) {
+        DataBaseService db = DataBaseService.getInstance();
+        TrainingsPlanTemplate tempToDelete = db.getPlanTemplateAndSessionsByID(id);
+        for (ExerciseInstance ei : tempToDelete.getExerciseInstances()) {
+            for (TrainingsSession ts : ei.getTrainingsSessions()) {
+                db.deleteTrainingsSessionById(ts.getId());
+            }
+            db.deleteExerciseInstanceByID(ei.getId());
+        }
+        db.deletePlanTemplateByID(id);
+    }
+
+    /**
+     * Returns a List of all templates where the name matches. No children are appended to the returned Templates.
+     *
+     * @param name name to look for.
+     * @return LinkedList of the found Templates, empty list if nothing was found.
+     */
+    public LinkedList<TrainingsPlanTemplate> getPlanTemplateListByName(String name) {
+        DataBaseService db = DataBaseService.getInstance();
+        if (name == null || name.equals("")) {
+            return db.getAllPlanTemplatesNoChildren();
+        } else {
+            return db.getOnlyPlanTemplateListByName(name);
+        }
+    }
+
+    /**
+     * Returns a Template with a specific id with all its children added to the Object.
+     *
+     * @param id id of template to return.
+     * @return Template object with all children.
+     */
+    public TrainingsPlanTemplate getPlanTemplateAndSessionsByID(Integer id) {
+        TrainingsPlanTemplate toReturn =  DataBaseService.getInstance().getPlanTemplateAndSessionsByID(id);
+        if (toReturn == null) {
+            throw new IllegalArgumentException("Plan with Id " + id + "not found!");
+        } else {
+            return toReturn;
+        }
+    }
+
+    public LinkedList<String> getAllTagNames() {
+        return DataBaseService.getInstance().getAllTagNames();
     }
 
     private void changePlanNameAndFocusOnChange(CreatePlanDto dto) {
@@ -48,9 +103,9 @@ public class PlanService {
                 .getPrincipal();
         String mail = user.getEmail();
         idTemplate = db.insertPlanTemplate(dto.getPlanName(), dto.getTrainingsFocus(), mail,
-                (dto.getSessionNums() == 1), dto.getSessionNums(), 1);
+                dto.isOneShot(), dto.getSessionNums(), 1);
         Integer exInstanceId = db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(),
-                dto.getDescription(), idTemplate);
+                dto.getTags(), idTemplate);
         for (int i = 0; i < dto.getSessionNums(); i++) {
             Integer[] reps = parseSets(dto.getSets().get(i));
             db.insertTrainingsSession(exInstanceId, i + 1, 15, reps.length, reps,
@@ -62,7 +117,7 @@ public class PlanService {
     private void addInstanceAndSessionToExistingPlan(CreatePlanDto dto, Integer idOfTemplate) {
         DataBaseService db = DataBaseService.getInstance();
         Integer exInstanceId = db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(),
-                dto.getDescription(), dto.getId());
+                dto.getTags(), dto.getId());
         for (int i = 0; i < dto.getSessionNums(); i++) {
             Integer[] reps = parseSets(dto.getSets().get(i));
             db.insertTrainingsSession(exInstanceId, i + 1, 15, reps.length, reps,

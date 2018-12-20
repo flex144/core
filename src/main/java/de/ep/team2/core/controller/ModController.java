@@ -3,6 +3,7 @@ package de.ep.team2.core.controller;
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.service.ExerciseService;
+import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,15 +23,26 @@ public class ModController {
         return "mod_startup_page";
     }
 
+    /**
+     * Handles Get request regarding the url /mods/createplan, when the site is visited the first
+     * time(without an existing dto)
+     * this method creates an empty dto adds the default value for SessionNums. adds all
+     * Exercises and tags so they can be displayed.
+     *
+     * @param model model thymeleaf uses.
+     * @return the site mod create plan.
+     */
     @RequestMapping(value = {"/createplan"}, method = RequestMethod.GET)
     public String createPlan(Model model) {
-        ExerciseService service = new ExerciseService();
+        ExerciseService exerciseService = new ExerciseService();
+        PlanService planService = new PlanService();
         if (!model.containsAttribute("createDto")) {
             CreatePlanDto dto = new CreatePlanDto();
             dto.setSessionNums(6);
             model.addAttribute("createDto", dto);
         }
-        model.addAttribute("allExercises", service.getAllExercises());
+        model.addAttribute("allExercises", exerciseService.getAllExercises());
+        model.addAttribute("allTags", planService.getAllTagNames());
         return "mod_create_plan";
     }
 
@@ -65,8 +77,23 @@ public class ModController {
         return "mod_exercise_search";
     }
 
-    @RequestMapping(value = {"/searchplan"}, method = RequestMethod.GET)
-    public String searchPlan() {
+    @GetMapping(value = {"/searchplan"})
+    public String getSearchPlan() {
+        return "mod_plan_search";
+    }
+
+    /**
+     * Searches for all Plans that match with the provided name and binds them to the thymeleaf model.
+     * When name left blank returns all plans.
+     *
+     * @param name name to search for.
+     * @param model model thymeleaf uses.
+     * @return the page mode_plan_search
+     */
+    @PostMapping(value = {"/searchplan"})
+    public String postSearchPlan(@RequestParam("planName") String name, Model model) {
+        PlanService service = new PlanService();
+        model.addAttribute("planList", service.getPlanTemplateListByName(name));
         return "mod_plan_search";
     }
 

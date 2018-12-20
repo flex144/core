@@ -1,9 +1,11 @@
 package de.ep.team2.core;
 
 
+import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
+import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,11 +56,10 @@ public class DataBaseServiceUnitTests {
     public void deleteUserById() {
         UserService userService = new UserService();
         DataBaseService db = DataBaseService.getInstance();
-        assertNotNull(db.getUserById(1));
-        db.deleteUserById(1);
-        assertNull(db.getUserById(1));
-        db.insertUser("timo@gmail123.com", "Timo", "Heinrich",
+        Integer id = db.insertUser("timo@gmail123.com", "Timo", "Heinrich",
                 userService.encode("123"));
+        db.deleteUserById(id);
+        assertNull(db.getUserById(id));
     }
 
     @Test
@@ -101,12 +102,9 @@ public class DataBaseServiceUnitTests {
     @Test
     public void deleteExercise() {
         DataBaseService db = DataBaseService.getInstance();
-        assertNotNull(db.getExerciseById(2));
-        db.deleteExerciseById(2);
-        assertNull(db.getExerciseById(2));
-        db.insertExercise("TestEx", "To balance the amount of exercises after delete",
-                WeightType.FIXED_WEIGHT,
-                null, null);
+        Integer id = db.insertExercise("test","test",WeightType.FIXED_WEIGHT,null,null);
+        db.deleteExerciseById(id);
+        assertNull(db.getExerciseById(id));
     }
 
     @Test
@@ -131,38 +129,62 @@ public class DataBaseServiceUnitTests {
     // Trainingsplan Templates
 
     @Test
-    public void getTemplateByID() {
-        TrainingsPlanTemplate test = DataBaseService.getInstance().getPlanTemplateAndSessionsByID(1);
-        assertEquals("Test Plan", test.getName());
-    }
-
-    @Test
     public void insertTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        assertNull(db.getPlanTemplateAndSessionsByID(2));
-        db.insertPlanTemplate("Hallo2",null,"felix@gmail.com",false,5,5);
-        assertEquals("Hallo2", db.getPlanTemplateAndSessionsByID(2).getName());
+        Integer id = db.insertPlanTemplate("Hallo2","muscle","felix@gmail.com",false,5,5);
+        assertEquals("Hallo2", db.getOnlyPlanTemplateById(id).getName());
     }
 
     @Test
     public void deleteTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        assertNull(db.getPlanTemplateAndSessionsByID(3));
-        db.insertPlanTemplate("Hallo3",null,"felix@gmail.com",false,5,5);
-        assertEquals("Hallo3", db.getPlanTemplateAndSessionsByID(3).getName());
-        db.deletePlanTemplateByID(3);
-        assertNull(db.getPlanTemplateAndSessionsByID(3));
+        Integer id = db.insertPlanTemplate("Hallo3","stamina","felix@gmail.com",false,5,5);
+        assertEquals("Hallo3", db.getOnlyPlanTemplateById(id).getName());
+        db.deletePlanTemplateByID(id);
+        assertNull(db.getOnlyPlanTemplateById(id));
     }
 
-    // Trainings Sessions
+    @Test
+    public void renameTemplate() {
+        DataBaseService db = DataBaseService.getInstance();
+        Integer id = db.insertPlanTemplate("Hallo3","stamina","felix@gmail.com",false,5,5);
+        assertEquals("Hallo3", db.getOnlyPlanTemplateById(id).getName());
+        db.renameTemplate("TestTest3",id);
+        assertEquals("TestTest3", db.getOnlyPlanTemplateById(id).getName());
+        db.deletePlanTemplateByID(id);
+    }
+
+    @Test
+    public void changeTrainingsFocusTemplate() {
+        DataBaseService db = DataBaseService.getInstance();
+        Integer id = db.insertPlanTemplate("Hallo4","stamina","felix@gmail.com",false,5,5);
+        assertEquals("stamina", db.getOnlyPlanTemplateById(id).getTrainingsFocus());
+        db.changeTrainingsFocus("muscle",id);
+        assertEquals("muscle", db.getOnlyPlanTemplateById(id).getTrainingsFocus());
+        db.deletePlanTemplateByID(id);
+    }
+
+    // Exercise Instance
 
 
     @Test
-    public void insertTrainingsSession() {
-        /*expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Order of The Session Wrong! Order Already exists or isn't in the " +
-                "valid number range!");
-        DataBaseService.getInstance().insertTrainingsSession(1,2);
-        DataBaseService.getInstance().insertTrainingsSession(1,2);*/
+    public void createAndDeleteInstance() {
+        DataBaseService db = DataBaseService.getInstance();
+        LinkedList<String> tags = new LinkedList<>();
+        tags.add("TestTag1");
+        tags.add("TestTag2");
+        Integer id = db.insertExerciseInstance(1, "A1", tags, 1);
+        assertEquals("TestTag1", db.getExercisInstanceById(id).getTags().getFirst());
+        db.deleteExerciseInstanceByID(id);
+        assertNull(db.getExercisInstanceById(id));
+    }
+
+    @Test
+    public void createAndDeleteSession() {
+        DataBaseService db = DataBaseService.getInstance();
+        Integer id = db.insertTrainingsSession(1,1,15,3,new Integer[]{15,15,15},"schnell",69);
+        assertEquals(69, db.getTrainingsSessionById(id).getPauseInSec());
+        db.deleteTrainingsSessionById(id);
+        assertNull(db.getTrainingsSessionById(id));
     }
 }

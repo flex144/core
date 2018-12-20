@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,8 +32,8 @@ public class DataInit {
         fillUsers();
         fillExercises();
         fillPlanTemplates();
-        fillTrainingSessions();
         fillExerciseInstances();
+        fillTrainingSessions();
     }
 
     private void initTables() {
@@ -77,8 +78,16 @@ public class DataInit {
                 "id SERIAL NOT NULL PRIMARY KEY," +
                 "is_exercise integer references exercises not null," +
                 "category varchar(50)," +
-                "description varchar(2000)," +
                 "plan_template integer not null references plan_templates)");
+        // Execution Tags for Instance
+        jdbcTemplate.execute("DROP TABLE IF EXISTS execution_tags CASCADE ");
+        jdbcTemplate.execute("CREATE TABLE execution_tags(" +
+                "id SERIAL NOT NULL PRIMARY KEY," +
+                "name varchar(255) NOT NULL UNIQUE)");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS ex_tags_map CASCADE ");
+        jdbcTemplate.execute("CREATE TABLE ex_tags_map(" +
+                "ex_inst_id INTEGER NOT NULL," +
+                "ex_tag_id INTEGER NOT NULL)");
         // Training Sessions
         jdbcTemplate.execute("DROP TABLE IF EXISTS trainings_sessions cascade ");
         jdbcTemplate.execute("CREATE TABLE trainings_sessions(" +
@@ -181,15 +190,36 @@ public class DataInit {
     }
 
     private void fillPlanTemplates() {
-        //DataBaseService.getInstance().insertPlanTemplate("Test Plan", "Muskelaufbau",
-        //        "felix@gmail.com",false,5,5);
+        DataBaseService.getInstance().insertPlanTemplate("Test Plan", "muscle",
+                "felix@gmail.com",false,6,2);
     }
 
     private void fillTrainingSessions() {
-        //DataBaseService.getInstance().insertTrainingsSession(1,1);
+        DataBaseService db = DataBaseService.getInstance();
+        //Bankdrücken
+        db.insertTrainingsSession(1,1,15,3,new Integer[]{12,12,12},"Langsam",90);
+        db.insertTrainingsSession(1,2,15,3,new Integer[]{12,12,12},"Langsam",90);
+        db.insertTrainingsSession(1,3,15,3,new Integer[]{13,13,13},"Langsam",90);
+        db.insertTrainingsSession(1,4,15,3,new Integer[]{13,13,13},"Schnell",90);
+        db.insertTrainingsSession(1,5,15,3,new Integer[]{15,14,13},"Langsam",90);
+        db.insertTrainingsSession(1,6,15,4,new Integer[]{15,14,14,15},"Langsam",90);
+        //Liegestütz
+        db.insertTrainingsSession(2,1,15,4,new Integer[]{20,25,25,20},"Langsam",90);
+        db.insertTrainingsSession(2,2,15,4,new Integer[]{22,30,30,22},"Langsam",90);
+        db.insertTrainingsSession(2,3,15,4,new Integer[]{20,30,30,35},"Langsam",90);
+        db.insertTrainingsSession(2,4,15,4,new Integer[]{30,30,30,30},"Schnell",90);
+        db.insertTrainingsSession(2,5,15,4,new Integer[]{35,35,35,35},"Langsam",90);
+        db.insertTrainingsSession(2,6,15,4,new Integer[]{35,40,40,35},"Schnell",90);
     }
 
     private void fillExerciseInstances() {
-        //DataBaseService.getInstance().insertExerciseInstance(1,"A1","mach schnell!",1,15,3,new Integer[]{12,12,15},"Schnell",90);
+        LinkedList<String> toAdd = new LinkedList<>();
+        toAdd.add("Liegend");
+        toAdd.add("Schrägbank");
+        LinkedList<String> toAdd2 = new LinkedList<>();
+        toAdd2.add("Eng");
+        DataBaseService db = DataBaseService.getInstance();
+        db.insertExerciseInstance(1, "A1", toAdd, 1);
+        db.insertExerciseInstance(2, "A2", toAdd2, 1);
     }
 }

@@ -7,18 +7,21 @@ public class ExerciseInstance {
     private int planTemplateID;
     private int isExerciseID;
     private int id;
+    private String name;
     private String category;
-    private String description;
+    private LinkedList<String> tags;
     private LinkedList<TrainingsSession> trainingsSessions;
 
     public ExerciseInstance(int planTemplateID, int isExerciseID, int id, String category,
-                            String description, LinkedList<TrainingsSession> trainingsSessions) {
+                            LinkedList<String> tags, LinkedList<TrainingsSession> trainingsSessions,
+                            String name) {
         this.planTemplateID = planTemplateID;
         this.isExerciseID = isExerciseID;
         this.id = id;
         this.category = category;
-        this.description = description;
+        this.tags = tags;
         this.trainingsSessions = trainingsSessions;
+        this.name = name;
     }
 
     public int getPlanTemplateID() {
@@ -45,6 +48,14 @@ public class ExerciseInstance {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getCategory() {
         return category;
     }
@@ -53,12 +64,12 @@ public class ExerciseInstance {
         this.category = category;
     }
 
-    public String getDescription() {
-        return description;
+    public LinkedList<String> getTags() {
+        return tags;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTags(LinkedList<String> description) {
+        this.tags = description;
     }
 
     public LinkedList<TrainingsSession> getTrainingsSessions() {
@@ -68,4 +79,18 @@ public class ExerciseInstance {
     public void setTrainingsSessions(LinkedList<TrainingsSession> trainingsSessions) {
         this.trainingsSessions = trainingsSessions;
     }
+
+    public String tagsToString() {
+        String toReturn = "";
+
+        for (int i = 0; i < tags.size(); i++) {
+            toReturn = toReturn + tags.get(i);
+            if (i != tags.size() - 1) {
+                toReturn = toReturn + ", ";
+            }
+        }
+
+        return toReturn;
+    }
+
 }
