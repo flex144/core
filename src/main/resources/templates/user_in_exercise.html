@@ -142,7 +142,7 @@
             <div class="container" id="toggledAlert" >
                 <div class="container">
                     <h5 style="color: red; text-align: center; background: #e3f2fd; border: 1px solid black;">
-                        Es ist nicht empfohlen die alternativen Übungne zu wählen.
+                        Es ist nicht empfohlen die alternativen Übungen zu wählen.
                         Wenn die Entscheidung aus gesundheitlichen Gründen folgt,
                         so kontaktieren sie einen Trainer.
                     </h5>
@@ -202,6 +202,27 @@
                     <button type="button"
                             class="btn btn-block btn-success" data-dismiss="modal" id="continueButton">
                         Weitermachen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--- Module that opens if you try to continue to the next set with an invalid repition number --->
+<div id="noValidInputModule" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="jumbotron" style="text-align: center;">
+                    <h4>Please enter a valid input.</h4>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="container" >
+                    <button type="button"
+                            class="btn btn-secondary" data-dismiss="modal" id="button_noValidInputModule">
+                        Ok
                     </button>
                 </div>
             </div>
@@ -410,22 +431,27 @@
             document.getElementById('button_saveExercise').style.display = "none";
             document.getElementById('button_saveExercise').disabled = true;
         }
-        /*TODO Decision load alternative from the getgo and hide it, or only load on request (HOW?) */
     }
 
 </script>
 
 <!--- Toggle Evaluation/Timer and Rep Counter --->
 <script>
-    /*** Needed parameters for Stopwatch functionality***/
+    /***
+     * Needed parameters for Stopwatch functionality
+     * */
     var timerID = 0;
 
-    /*** Needed parameters for Rep counter**/
+    /***
+     * Needed parameters for Rep counter
+     * */
     var totalReps = 12;
     var currentReps = totalReps;
     var valueCheck = totalReps;
 
-    /*** Needed parameters for Container Switch***/
+    /***
+     * Needed parameters for Container Switch
+     * */
     var timerBox = document.getElementById("container_timerBox");
     var evaluationBox = document.getElementById("container_evaluationBox");
     var currentCounter = 0;
@@ -437,7 +463,9 @@
     var done = false;
 
 
-    /*** Instancing first values for both scripts**/
+    /***
+     * Instancing first values for both scripts
+     * */
     document.onLoad(initializeReps());
     function initializeReps() {
         document.getElementById('repInput').value = currentReps;
@@ -470,7 +498,9 @@
         }, 1000);
     }
 
-    /*** Starts the stopwatch with the given value ***/
+    /***
+     * Starts the stopwatch with the given value
+     * */
     function parseTime(value) {
         var timeValue = value;
         display = document.querySelector('#time');
@@ -478,13 +508,17 @@
         startTimer(timeValue, display);
     }
 
-    /*** Stops the stopwatch and sets time to 0***/
+    /***
+     *  Stops the stopwatch and sets time to 0
+     * */
     function stopTimer(){
         clearInterval(timerID);
         display.textContent = "00"+ ":" + 0 + 0;
     }
 
-    /*** Starts timer with recommend time from DB**/
+    /***
+     *  Starts timer with recommend time from DB
+     * */
     function recommendedTime(){
         parseTime(pauseTimeValue);
     }
@@ -494,7 +528,6 @@
      * update Values on each input
      ***/
     function updateReps() {
-        console.log(parseFloat(document.getElementById('repInput').value));
         valueCheck = Math.ceil(document.getElementById('repInput').value);
         if(valueCheck < 2* totalReps && valueCheck> 0){
             currentReps = valueCheck;
@@ -505,10 +538,12 @@
             valueCheck = currentReps;
             document.getElementById('repInput').value = currentReps;
         }
-        console.log(document.getElementById('repInput').value)
+
     }
 
-    /*** Decrease Values on each click***/
+    /***
+     * Decrease Values on each click
+     * ***/
     function decreaseReps(){
         if(currentReps > 0){
             currentReps--;
@@ -516,7 +551,9 @@
         document.getElementById('repInput').value = currentReps;
     }
 
-    /*** Increase Values on each click***/
+    /***
+     * Increase Values on each click
+     * ***/
     function increaseReps(){
         if(currentReps < 2*totalReps){
             currentReps++;
@@ -530,8 +567,8 @@
      * ***/
     function exerciseFunction(){
         /***Can't send empty/illegal inputs***/
-        if( !( valueCheck < 2* totalReps && valueCheck> 0) ){
-            alert("Please enter a valid repition number before proceeding");
+        if( !( valueCheck <= 2* totalReps && valueCheck> 0) ){
+            $('#noValidInputModule').modal('show');
             valueCheck = currentReps;
         }
         else if (done){

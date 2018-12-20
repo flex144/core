@@ -2,9 +2,11 @@ package de.ep.team2.core;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import java.security.Key;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -15,6 +17,21 @@ public class SeleniumTestTrainingOverview {
     String title;
 
 
+    /**
+     * Function to wait a certain time continue
+     * @param durationInMs Amount of milliseconds to wait
+     */
+    private void waitDuration(long durationInMs) {
+        try {
+            Thread.sleep(durationInMs);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Function to log into the webpage as user
+     */
     public void login(){
         //System.setProperty("webdriver.gecko.driver", "C:\Users\Yannick\Documents");
         driver = new FirefoxDriver();
@@ -27,6 +44,10 @@ public class SeleniumTestTrainingOverview {
         driver.findElement(By.cssSelector("input.btn")).click();
     }
 
+
+    /**
+     * Checks if the login is succesfull
+     */
     @Test
     public void loginTest() {
         login();
@@ -36,6 +57,10 @@ public class SeleniumTestTrainingOverview {
         assertTrue(url.equals("http://localhost:8080/user/home"));
     }
 
+
+    /**
+     * Tests features that are part of the user/plan/overview
+     */
     @Test
     public void overviewPage(){
         login();
@@ -45,10 +70,47 @@ public class SeleniumTestTrainingOverview {
         title = driver.getTitle();
         assertEquals(title, "Your personalized training page");
 
-        //TODO modal and linking
+        modalCheckOverview();
+
+        driver.findElement(By.id("column")).click();
+
+        title = driver.getTitle();
+        assertEquals(title, "In exercise");
+        driver.quit();
+    }
+
+    /**
+     * Checks Modules and warnings.
+     */
+    public void modalCheckOverview(){
+        driver.findElement(By.id("openInfoModal")).click();
+        assertTrue(driver.findElement(By.id("infoModal")).isDisplayed());
+        waitDuration(800);
+        driver.findElement(By.id("leaveInfoModal")).click();
+        waitDuration(800);
+        assertTrue(!driver.findElement(By.id("infoModal")).isDisplayed());
+
+        driver.findElement(By.id("startButton")).click();
+
+        driver.findElement(By.id("exitOverview")).click();
+        assertTrue(driver.findElement(By.id("exitModal")).isDisplayed());
+        waitDuration(800);
+        driver.findElement(By.id("buttonContinue")).click();
+        waitDuration(800);
+        assertTrue(!driver.findElement(By.id("exitModal")).isDisplayed());
+
+        driver.findElement(By.id("infoButton")).click();
+        assertTrue(driver.findElement(By.id("exerciseModal")).isDisplayed());
+        waitDuration(800);
+        driver.findElement(By.id("closeInfoModal")).click();
+        waitDuration(800);
+        assertTrue(!driver.findElement(By.id("exerciseModal")).isDisplayed());
     }
 
 
+    /**
+     * Tests features that are part of the user/plan/exercise
+     */
     @Test
     public void exercisePage(){
         login();
@@ -61,32 +123,30 @@ public class SeleniumTestTrainingOverview {
         //Start the Training
         String buttonText = driver.findElement(By.id("startButton")).getText();
         assertEquals(buttonText, "Starten");
-        driver.findElement(By.id("startButton")).click();
 
-        //Go to Evaluation
-        driver.findElement(By.id("startButton")).click();
+        modalChecksExercise();
         stopwatch();
-        // repCounter();
+        repCounter();
 
-        /*
+        driver.findElement(By.id("startButton")).click();
         buttonText = driver.findElement(By.id("startButton")).getText();
         assertEquals(buttonText, "Evaluation");
         driver.findElement(By.id("startButton")).click();
 
-
-        //Check Radio Buttons
         evaluation();
-
-
-        modalChecks();
 
         //Links to correct page on exit
         driver.findElement(By.id("startButton")).click();
         title = driver.getTitle();
         assertEquals(title, "Your personalized training page");
-        */
+
+        driver.quit();
     }
 
+    /**
+     * Tests features interacting with the Repition counter,
+     * like the adjacent buttons and input element.
+     */
     public void repCounter(){
         //Test that the right value is preloaded
         String repUser = driver.findElement(By.id("repInput")).getAttribute("value");
@@ -102,6 +162,7 @@ public class SeleniumTestTrainingOverview {
         assertEquals(repUser, "0");
 
         //Restricted user input
+        driver.findElement(By.id("repInput")).sendKeys(Keys.DELETE);
         driver.findElement(By.id("repInput")).sendKeys("777");
         repUser = driver.findElement(By.id("repInput")).getAttribute("value");
         assertEquals(repStatisch, repUser);
@@ -115,26 +176,38 @@ public class SeleniumTestTrainingOverview {
         int maxvalue = 2 * neededRepitions;
         assertEquals(userRepitions, maxvalue);
 
-        /* TODO show Module opening on invalid input like "öasldkf" */
+        //Non valid Input leads to notification module
+        driver.findElement(By.id("repInput")).sendKeys(Keys.DELETE);
+        driver.findElement(By.id("repInput")).sendKeys("asdnvladsv");
+        waitDuration(800);
+        driver.findElement(By.id("startButton")).click();
+        waitDuration(200);
+        assertTrue(driver.findElement(By.id("noValidInputModule")).isDisplayed());
+        driver.findElement(By.id("button_noValidInputModule")).click();
+        waitDuration(1000);
+        assertTrue(!driver.findElement(By.id("noValidInputModule")).isDisplayed());
 
         //Value reset to default
         driver.findElement(By.id("startButton")).click();
         repUser = driver.findElement(By.id("repInput")).getAttribute("value");
-        System.out.println(repUser + "_user" + " " + repStatisch + "_statisch");
         userRepitions = Integer.parseInt(repUser);
         assertEquals(neededRepitions, userRepitions);
     }
 
+
+    /**
+     * Function to test Stopwatch buttons and display
+     */
     public void stopwatch(){
         //Timer starts at 0
         String time = driver.findElement(By.id("time")).getText();
         assertEquals(time, "00:00");
         //Timer can be set
         driver.findElement(By.id("button30s")).click();
-        //TODO Thread.wait
+        waitDuration(1000);
         assertTrue(!(driver.findElement(By.id("time")).getText()==time));
         //Reset Countdown
-        driver.findElement(By.id("buttonRecommended")).click();
+        driver.findElement(By.id("buttonStop")).click();
         assertEquals(driver.findElement(By.id("time")).getText(), time);
 
         //Timer get's properly reset
@@ -144,31 +217,49 @@ public class SeleniumTestTrainingOverview {
     }
 
 
-    public void modalChecks(){
+    /**
+     * Checks Modules and warnings.
+     */
+    public void modalChecksExercise(){
+        driver.findElement(By.id("infoButton")).click();
+        assertTrue(driver.findElement(By.id("exerciseModal")).isDisplayed());
+        waitDuration(800);
+        driver.findElement(By.id("closeInfoModal")).click();
+        waitDuration(800);
+        assertTrue(!driver.findElement(By.id("exerciseModal")).isDisplayed());
+
+        driver.findElement(By.id("startButton")).click();
+        driver.findElement(By.id("exitExerciseButton")).click();
+        assertTrue(driver.findElement(By.id("leavePageModal")).isDisplayed());
+        waitDuration(800);
+        driver.findElement(By.id("continueButton")).click();
+        waitDuration(800);
+        assertTrue(!driver.findElement(By.id("leavePageModal")).isDisplayed());
 
     }
 
+    /**
+     * Radio button functionality
+     */
     public void evaluation(){
         //TODO Buttons are not getting unselected after another one has been selected
-        //3 Selected
-        driver.findElement(By.id("difficulty3")).click();
-        boolean threeSelected = driver.findElement(By.id("difficulty3")).isSelected();
-        System.out.println("3" + threeSelected);
-        assertTrue(threeSelected);
-
         //1 not selected
         boolean oneNotSelected = driver.findElement(By.id("difficulty1")).isSelected();
         System.out.println("1" + oneNotSelected);
-
         // 1 selected
         driver.findElement(By.id("difficulty1")).click();
         boolean oneSelected = driver.findElement(By.id("difficulty1")).isSelected();
         System.out.println("1" + oneSelected);
         assertTrue(oneSelected);
-
         // 3 not selected
         boolean notThreeSelected = driver.findElement(By.id("difficulty3")).isSelected();
         System.out.println("3" + notThreeSelected);
         assertTrue(!notThreeSelected);
+        //3 Selected
+        driver.findElement(By.id("difficulty3")).click();
+        boolean threeSelected = driver.findElement(By.id("difficulty3")).isSelected();
+        System.out.println("3" + threeSelected);
+        assertTrue(threeSelected);
     }
+
 }

@@ -46,6 +46,113 @@
 </head>
 <body>
 
+<!--- Exercise Hint Modal --->
+<div id="exerciseModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="container">
+                    <div class="jumbotron">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Name:
+                            </div>
+                            <div class="panel-body">
+                                <p></p>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    Beschreibung:
+                                </div>
+                                <div class="panel-body">
+                                    <p ></p>
+                                </div>
+                            </div>
+                            <div class="panel panel-default" >
+                                <div class="panel-heading">
+                                    Beispielvideo:
+                                </div>
+                                <div class="panel-body">
+                                    <div class="embed-responsive embed-responsive-16by9">
+                                        <iframe  width="560" height="315"
+                                                 frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <p>
+                                        Muskelgruppen Bilder:</p>
+                                </div>
+                                <div class="panel-body">
+
+                                    <div
+                                            class="image">
+                                        <img/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default" >
+                                <div class="panel-heading">
+                                    <p>Andere
+                                        Bilder:</p>
+                                </div>
+                                <div class="panel-body">
+                                    <div
+                                            class="image">
+                                        <img/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container" id="toggledAlert" >
+                <div class="container">
+                    <h5 style="color: red; text-align: center; background: #e3f2fd; border: 1px solid black;">
+                        Es ist nicht empfohlen die alternativen Übungen zu wählen.
+                        Wenn die Entscheidung aus gesundheitlichen Gründen folgt,
+                        so kontaktieren sie einen Trainer.
+                    </h5>
+                    <div class="row">
+                        <div class="container" style="width: 80%">
+                            <div class="form-group">
+                                <select id="weightType" class="form-control">
+                                    <option>Diese Übung</option>
+                                    <option>Alternative Xyz</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" style="width: 20%"
+                                class="btn btn-secondary" onclick="enableSave()">
+                            Ok
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="container">
+                    <button type="button"
+                            class="btn btn-block btn-success" style="font-size: small" onclick="safeAlternativeExercise()" disabled id="button_saveExercise">
+                        Übung festlegen
+                    </button>
+                    <button type="button"
+                            class="btn btn-block btn-warning" data-toggle="button" aria-pressed="false" style="font-size: small" onclick="toggleExercise()">
+                        Alternative
+                    </button>
+                    <button type="button"
+                            class="btn btn-block btn-danger" data-dismiss="modal" style="font-size: small" id="closeInfoModal">
+                        Zurück
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--- Modal containing general Information --->
 <div id="infoModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
@@ -60,7 +167,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button"
-                        class="btn btn-block btn-warning" data-dismiss="modal">
+                        class="btn btn-block btn-warning" data-dismiss="modal" id="leaveInfoModal">
                     Zurück
                 </button>
             </div>
@@ -77,7 +184,7 @@
                     <h4>Training wirklich abbrechen?</h4>
                 </div>
                 <button type="button"
-                        class="btn btn-block btn-secondary" data-dismiss="modal">
+                        class="btn btn-block btn-secondary" data-dismiss="modal" id="buttonContinue">
                     Weitermachen
                 </button>
                 <div class="modal-footer">
@@ -106,7 +213,7 @@
         </div>
     </div>
     <div style="width: 5%"></div>
-    <button data-toggle="modal" data-target="#infoModal" class="btn btn-info">
+    <button data-toggle="modal" data-target="#infoModal" class="btn btn-info" id="openInfoModal">
         i
     </button>
 </div>
@@ -148,7 +255,7 @@
                     </td>
                     <td class="tableCentered" style="width: 20%">
                         <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
-                        <button data-toggle="modal" data-target="#infoModal" class="btn btn-info">
+                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info" id="infoButton">
                             i
                         </button>
                     </td>
@@ -156,24 +263,26 @@
             </table>
         </div>
     </div>
-
 
     <!--- To showacase colours, delet after funcitonality integrated--->
     <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize farbTest1">
+        <div class="containerColor fullsize farbTest1" >
             <table class="fullsize" >
                 <tr class="fullsize" style="display: flex">
                     <td class="tableCentered" >
-                        x
+                        <label class="btn active">
+                            <input type="checkbox" name=""
+                                   autocomplete="off" disabled style="transform: scale(2)">
+                        </label>
                     </td>
-                    <td class="tableCentered" >
+                    <td class="tableCentered"onclick="loadExercise()">
                         <h3 class="numbertest1">A2</h3>
                     </td>
-                    <td class="tableCentered" style="width: 50%;">
-                        <h3>Klimmzüge</h3>
+                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
+                        <h3>Klimmäune</h3>
                     </td>
                     <td class="tableCentered" style="width: 20%">
-                        <button data-toggle="modal" data-target="#infoModal" class="btn btn-info">
+                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
                             i
                         </button>
                     </td>
@@ -182,20 +291,23 @@
         </div>
     </div>
     <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize farbTest2">
+        <div class="containerColor fullsize farbTest2" >
             <table class="fullsize" >
                 <tr class="fullsize" style="display: flex">
                     <td class="tableCentered" >
-                        x
+                        <label class="btn active">
+                            <input type="checkbox" name=""
+                                   autocomplete="off" disabled style="transform: scale(2)">
+                        </label>
                     </td>
-                    <td class="tableCentered">
+                    <td class="tableCentered"onclick="loadExercise()">
                         <h3 class="numbertest2">B1</h3>
                     </td>
-                    <td class="tableCentered" style="width: 50%;">
-                        <h3>Klimmzüge</h3>
+                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
+                        <h3>Handstand</h3>
                     </td>
                     <td class="tableCentered" style="width: 20%">
-                        <button data-toggle="modal" data-target="#infoModal" class="btn btn-info">
+                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
                             i
                         </button>
                     </td>
@@ -204,20 +316,23 @@
         </div>
     </div>
     <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize farbTest3">
+        <div class="containerColor fullsize farbTest3" >
             <table class="fullsize" >
                 <tr class="fullsize" style="display: flex">
                     <td class="tableCentered" >
-                        x
+                        <label class="btn active">
+                            <input type="checkbox" name=""
+                                   autocomplete="off" disabled style="transform: scale(2)">
+                        </label>
                     </td>
-                    <td class="tableCentered">
+                    <td class="tableCentered"onclick="loadExercise()">
                         <h3 class="numbertest3">C1</h3>
                     </td>
-                    <td class="tableCentered" style="width: 50%;">
-                        <h3>Klimmzüge</h3>
+                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
+                        <h3>Tafel putzen</h3>
                     </td>
                     <td class="tableCentered" style="width: 20%">
-                        <button data-toggle="modal" data-target="#infoModal" class="btn btn-info">
+                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
                             i
                         </button>
                     </td>
@@ -252,7 +367,7 @@
         <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingExit">
             <button type="button"
                     class="btn btn-block btn-danger fullsize"
-                    style="height: 100%; min-height: 50px" data-toggle="modal" data-target="#exitModal">
+                    style="height: 100%; min-height: 50px" data-toggle="modal" data-target="#exitModal" id="exitOverview">
                 Traing <br> abbrechen
             </button>
         </div>
@@ -311,6 +426,34 @@
 
 </script>
 
+<script>
+
+    document.onLoad(initialLoad());
+    function initialLoad(){
+        warningHidden = true;
+        document.getElementById('toggledAlert').style.display = "none";
+        document.getElementById('button_saveExercise').style.display = "none";
+        document.getElementById('exitButton').style.display = "none";
+    }
+
+
+    function enableSave(){
+        document.getElementById('button_saveExercise').disabled = false;
+    }
+
+    function toggleExercise() {
+        if (warningHidden){
+            warningHidden = false;
+            document.getElementById('toggledAlert').style.display = "inherit";
+            document.getElementById('button_saveExercise').style.display = "inherit";
+        } else{
+            warningHidden = true;
+            document.getElementById('toggledAlert').style.display = "none";
+            document.getElementById('button_saveExercise').style.display = "none";
+            document.getElementById('button_saveExercise').disabled = true;
+        }
+    }
+</script>
 <!--- Colouring every row --->
 <script>
     var numberOfTotalSuperSets = 9;
