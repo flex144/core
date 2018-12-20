@@ -198,6 +198,29 @@
     </div>
 </div>
 
+<!--- Modal used to warn user before choosing new superset --->
+<div id="supersetModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="jumbotron" style="text-align: center;">
+                    <h4>Übungen im selben Satz sollten gemeinsam abgeschlossen werden. Trotzdem neuen Supersatz beginnen?</h4>
+                </div>
+                <button type="button"
+                        class="btn btn-block btn-secondary" data-dismiss="modal">
+                    Im Set bleiben
+                </button>
+                <div class="modal-footer">
+                    <button type="button"
+                       class="btn btn-block btn-danger" onclick="newSuperset()">
+                        Neues set
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--- Page Header --->
 <!--- TODO Thymeleaf load #TE --->
 <div class="highlightedContainer" id="container_header"
@@ -230,7 +253,6 @@
 <div class="container" id="container_content" style="height: 70%;
         overflow-x: fragments; overflow-y: scroll; text-align: center;
         padding: 5px">
-
     <div class="container" style="padding-bottom: 2px; height: 15%" id="exercise">
         <!---  th:each th:onclick="" th:id= --->
         <!--- TODO thymeleaf remove test class after it is implemented--->
@@ -244,12 +266,12 @@
                                        autocomplete="off" disabled style="transform: scale(2)">
                             </label>
                     </td>
-                    <td class="tableCentered" id="column" onclick="loadExercise()">
+                    <td class="tableCentered" id="column" onclick="clickedOnExercise()">
                         <!--- TODO thymeleaf remove test class after implementation--->
                         <!--- th:text th:id--->
                         <h3 class="numbertest1" id="orderNumber">A1</h3>
                     </td>
-                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
+                    <td class="tableCentered" style="width: 50%;" onclick="clickedOnExercise()">
                         <!--- th:text--->
                         <h3>Klimmzüge</h3>
                     </td>
@@ -345,10 +367,6 @@
 
     <!--- Buttons to leave/star the exercise --->
 <div class="highlightedContainer" id="container_timer" style="height: 20%;">
-    <!---
-    <div id="container_timerBox" style="width: 100%;">
-        <h1><span id="time">00:00</span></h1>
-    </div> --->
     <div class="container fullsize row">
         <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingBack">
             <button type="button"
@@ -381,7 +399,7 @@
     </div>
 </div>
 
-<!--- TODO save done exercises and current order with session--->
+
 <script>
     function loadExercise() {
         window.location = "exercise"
@@ -399,23 +417,28 @@
         document.getElementById('button_trainingFinished').style.display = "inherit";
     }
 
-    /**/
+    /*Sets the order and loads next page*/
     function clickedOnExercise(){
-
-        var currentOrder = document.getElementById(orderOfExercise).innerHTML;
+        var currentOrder = document.getElementById("currentOrder").innerHTML;
         var id = this.id;
         var thisExerciseOrder = "orderNumber" + id;
-        var clickedOrder = document.getElementById(thisExerciseOrder).innerHTML;
+        var clickedOrder = document.getElementById("orderNumber").innerHTML;
+        localStorage.setItem("orderValue", currentOrder);
+        console.log(currentOrder);
         if ((currentOrder == clickedOrder) || currentOrder == ""){
-            updateCurrentOrder(id);
-            /*TODO load exercise throught controller*/
+            console.log("after");
+            window.location = "exercise"
+            //updateCurrentOrder(id);
         } else{
-            if (confirm("Übungen im selben Superset (selbe Farbe), sollten zusammen gemacht werden. Bist du dir sicher das du ein anderes Superset starten willst?")) {
-                updateCurrentOrder(id);
-                /*TODO load exercise throught controller*/
-            } else {
-            }
+            $('#noValidInputModule').modal('show');
         }
+
+    }
+
+    function newSuperset(){
+        var currentOrder = document.getElementById("orderNumber").innerHTML;
+        localStorage.setItem("orderValue", currentOrder);
+        //updateCurrentOrder(id);
     }
 
     /*Set's the Order of the id it's used on*/
@@ -434,6 +457,10 @@
         document.getElementById('toggledAlert').style.display = "none";
         document.getElementById('button_saveExercise').style.display = "none";
         document.getElementById('exitButton').style.display = "none";
+
+        var currentOrder = localStorage.getItem("orderValue")
+        console.log(currentOrder + "on_load");
+        document.getElementById("currentOrder").innerHTML = currentOrder;
     }
 
 
