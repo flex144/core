@@ -23,6 +23,15 @@ public class ModController {
         return "mod_startup_page";
     }
 
+    /**
+     * Handles Get request regarding the url /mods/createplan, when the site is visited the first
+     * time(without an existing dto)
+     * this method creates an empty dto adds the default value for SessionNums. adds all
+     * Exercises and tags so they can be displayed.
+     *
+     * @param model model thymeleaf uses.
+     * @return the site mod create plan.
+     */
     @RequestMapping(value = {"/createplan"}, method = RequestMethod.GET)
     public String createPlan(Model model) {
         ExerciseService exerciseService = new ExerciseService();
@@ -73,6 +82,14 @@ public class ModController {
         return "mod_plan_search";
     }
 
+    /**
+     * Searches for all Plans that match with the provided name and binds them to the thymeleaf model.
+     * When name left blank returns all plans.
+     *
+     * @param name name to search for.
+     * @param model model thymeleaf uses.
+     * @return the page mode_plan_search
+     */
     @PostMapping(value = {"/searchplan"})
     public String postSearchPlan(@RequestParam("planName") String name, Model model) {
         PlanService service = new PlanService();

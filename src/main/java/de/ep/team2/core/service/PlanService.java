@@ -30,6 +30,11 @@ public class PlanService {
         return dto;
     }
 
+    /**
+     * Deletes a Template and all its Children.
+     *
+     * @param id id of template to delete.
+     */
     public void deleteTemplateAndChildrenById(int id) {
         DataBaseService db = DataBaseService.getInstance();
         TrainingsPlanTemplate tempToDelete = db.getPlanTemplateAndSessionsByID(id);
@@ -42,6 +47,12 @@ public class PlanService {
         db.deletePlanTemplateByID(id);
     }
 
+    /**
+     * Returns a List of all templates where the name matches. No children are appended to the returned Templates.
+     *
+     * @param name name to look for.
+     * @return LinkedList of the found Templates, empty list if nothing was found.
+     */
     public LinkedList<TrainingsPlanTemplate> getPlanTemplateListByName(String name) {
         DataBaseService db = DataBaseService.getInstance();
         if (name == null || name.equals("")) {
@@ -51,6 +62,12 @@ public class PlanService {
         }
     }
 
+    /**
+     * Returns a Template with a specific id with all its children added to the Object.
+     *
+     * @param id id of template to return.
+     * @return Template object with all children.
+     */
     public TrainingsPlanTemplate getPlanTemplateAndSessionsByID(Integer id) {
         TrainingsPlanTemplate toReturn =  DataBaseService.getInstance().getPlanTemplateAndSessionsByID(id);
         if (toReturn == null) {
@@ -58,6 +75,10 @@ public class PlanService {
         } else {
             return toReturn;
         }
+    }
+
+    public LinkedList<String> getAllTagNames() {
+        return DataBaseService.getInstance().getAllTagNames();
     }
 
     private void changePlanNameAndFocusOnChange(CreatePlanDto dto) {
@@ -120,9 +141,5 @@ public class PlanService {
             toReturn[i] = Integer.parseInt(splitted[i].trim());
         }
         return toReturn;
-    }
-
-    public LinkedList<String> getAllTagNames() {
-        return DataBaseService.getInstance().getAllTagNames();
     }
 }

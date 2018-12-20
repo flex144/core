@@ -410,12 +410,23 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Returns a List of Templates without their children where the name matches.
+     *
+     * @param name name to look for.
+     * @return List of the found exercises.
+     */
     public LinkedList<TrainingsPlanTemplate> getOnlyPlanTemplateListByName(String name) {
         String sql = String.format("SELECT * FROM plan_templates WHERE lower(name) " +
                 "LIKE '%%%s%%'", name.toLowerCase());
         return new LinkedList<>(jdbcTemplate.query(sql, new PlanTemplateMapperNoChildren()));
     }
 
+    /**
+     * Returns a List of all saved Templates without their children.
+     *
+     * @return List of all Templates without their children.
+     */
     public LinkedList<TrainingsPlanTemplate> getAllPlanTemplatesNoChildren() {
         return new LinkedList<>(jdbcTemplate.query("Select * FROM plan_templates",
                 new PlanTemplateMapperNoChildren()));
@@ -458,7 +469,8 @@ public class DataBaseService {
     }
 
     /**
-     * deletes a Template form the database without removing connected exercise Instances or sessions.
+     * deletes a Template form the database.
+     * Children will not be deleted, they have to be deleted beforehand.
      *
      * @param id id of the template to be deleted.
      */
@@ -578,14 +590,25 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Returns the names of all tags saved in the database.
+     *
+     * @return the names of all tags saved in the database.
+     */
     public LinkedList<String> getAllTagNames() {
         return new LinkedList<>(jdbcTemplate.query("SELECT name FROM execution_tags",
                 (rs, i) -> rs.getString("name")));
     }
 
+    /**
+     * Gets an Exercise instance by id and appends all linked trainings sessions.
+     *
+     * @param id id exercise instance to search for.
+     * @return exercise instance with children, null when nothing was found with this id.
+     */
     public ExerciseInstance getExercisInstanceById(int id) {
-        return new LinkedList<>(jdbcTemplate.query(
-                "SELECT ei.id, ei.is_exercise, ei.category, ei.description, ei.plan_template, ex.name" +
+        LinkedList<ExerciseInstance> toReturn =  new LinkedList<>(jdbcTemplate.query(
+                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name" +
                         " FROM exercise_instances ei, exercises ex " +
                         " WHERE ei.id = ? " +
                         " AND ei.is_exercise = ex.id ",
@@ -594,14 +617,30 @@ public class DataBaseService {
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
                         getTagsOfExInstance(resultSet.getInt("id")),
                         getSessionsOfExerciseInstance(resultSet.getInt("id")),
-                        resultSet.getString("name")))).getFirst();
+                        resultSet.getString("name"))));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
     }
 
+    /**
+     * Deletes an Exercise instance, with the given id, from the database.
+     * (If the instance exists and has no children anymore)
+     * Children will not be deleted, they have to be deleted beforehand.
+     *
+     * @param id id of exercise instance to delete.
+     */
     public void deleteExerciseInstanceByID(int id) {
+        ExerciseInstance toDelete = getExercisInstanceById(id);
+        if (toDelete != null && toDelete.getTrainingsSessions().isEmpty()) {
             jdbcTemplate.update("DELETE FROM exercise_instances WHERE id = ?",
                     (Object[]) new Integer[]{id});
-
-
+            log.info("Exercise instance with id " + id + " deleted!");
+        } else {
+            throw new IllegalArgumentException("Exercise Instance doesn't exist or still has dependent children");
+        }
     }
 
     // Trainings Session
@@ -671,6 +710,12 @@ public class DataBaseService {
                 }));
     }
 
+    /**
+     * Searches for a TrainingsSession with a the given id.
+     *
+     * @param id id to look for.
+     * @return The TrainingsSession if found otherwise null.
+     */
     public TrainingsSession getTrainingsSessionById(int id) {
         LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM trainings_sessions WHERE id = ?",
@@ -692,10 +737,21 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Deletes an trainingSession, with the given id, from the database.
+     *
+     * @param id id of trainings session to delete.
+     */
     public void deleteTrainingsSessionById(int id) {
-        jdbcTemplate.update("DELETE FROM trainings_sessions WHERE id = ?",
-                (Object[]) new Integer[]{id});
-        log.info("Trainings-session with ID: '"
-                + id + "' deleted!");
+        if (getTrainingsSessionById(id) != null) {
+            jdbcTemplate.update("DELETE FROM trainings_sessions WHERE id = ?",
+                    (Object[]) new Integer[]{id});
+            log.info("Trainings-session with ID: '"
+                    + id + "' deleted!");
+        } else {
+            throw new  IllegalArgumentException("Trainingssession doesn't exist!");
+        }
     }
+
+
 }

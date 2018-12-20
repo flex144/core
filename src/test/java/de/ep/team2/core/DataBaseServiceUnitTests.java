@@ -1,9 +1,11 @@
 package de.ep.team2.core;
 
 
+import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
+import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.junit.Rule;
 import org.junit.Test;
@@ -164,8 +166,25 @@ public class DataBaseServiceUnitTests {
 
     // Exercise Instance
 
-    @Test
-    public void insertTrainingsSession() {
 
+    @Test
+    public void createAndDeleteInstance() {
+        DataBaseService db = DataBaseService.getInstance();
+        LinkedList<String> tags = new LinkedList<>();
+        tags.add("TestTag1");
+        tags.add("TestTag2");
+        Integer id = db.insertExerciseInstance(1, "A1", tags, 1);
+        assertEquals("TestTag1", db.getExercisInstanceById(id).getTags().getFirst());
+        db.deleteExerciseInstanceByID(id);
+        assertNull(db.getExercisInstanceById(id));
+    }
+
+    @Test
+    public void createAndDeleteSession() {
+        DataBaseService db = DataBaseService.getInstance();
+        Integer id = db.insertTrainingsSession(1,1,15,3,new Integer[]{15,15,15},"schnell",69);
+        assertEquals(69, db.getTrainingsSessionById(id).getPauseInSec());
+        db.deleteTrainingsSessionById(id);
+        assertNull(db.getTrainingsSessionById(id));
     }
 }

@@ -51,6 +51,13 @@ public class TrainingsController {
         }
     }
 
+    /**
+     * Searches for an specific plan with id and binds it to thymeleaf to be displayed and modified in create plan.
+     *
+     * @param id id of plan to look for.
+     * @param redirectAttributes used to redirect attributes to other controller.
+     * @return the page mods_create-plan
+     */
     @GetMapping("/plans/{id}")
     public String showPlan(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         PlanService service = new PlanService();
@@ -66,6 +73,12 @@ public class TrainingsController {
         return "redirect:/mods/createplan";
     }
 
+    /**
+     * deletes a plan with an specific id.
+     *
+     * @param id id of plan to delete.
+     * @return the page mods_plan_search.
+     */
     @DeleteMapping("/plans/{id}")
     public String deletePlanAndChildren(@PathVariable("id") Integer id) {
         PlanService service = new PlanService();

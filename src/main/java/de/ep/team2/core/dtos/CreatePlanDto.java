@@ -9,7 +9,7 @@ public class CreatePlanDto {
 
     private String planName;
     private String trainingsFocus; // todo as enum
-    private Integer id; // todo hidden field for id
+    private Integer id;
     private Integer sessionNums;
     private String category;
     private String exerciseName;
