@@ -14,6 +14,7 @@ public class CreatePlanDto {
     private String category;
     private String exerciseName;
     private Integer exerciseID;
+    private boolean oneShot;
     private LinkedList<String> sets;
     private LinkedList<String> tempo;
     private LinkedList<Integer> pause;
@@ -73,6 +74,14 @@ public class CreatePlanDto {
 
     public void setExerciseID(Integer exerciseID) {
         this.exerciseID = exerciseID;
+    }
+
+    public boolean isOneShot() {
+        return oneShot;
+    }
+
+    public void setOneShot(boolean oneShot) {
+        this.oneShot = oneShot;
     }
 
     public LinkedList<String> getSets() {

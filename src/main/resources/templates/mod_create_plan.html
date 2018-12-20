@@ -105,7 +105,7 @@
                         <label class="form-check-label" for="singleDayCheck" style="font-size: 11pt">
                             Eintagesplan:</label>
                         <input type="checkbox" class="form-check-input" id="singleDayCheck"
-                               onchange="checkboxChanged()" style="margin-left: 20px">
+                               onchange="checkboxChanged()" style="margin-left: 20px" th:field="*{oneShot}">
                         <input type="text" id="prevUnitAmount" value="3" hidden disabled>
                     </div>
                 </div>
@@ -124,7 +124,7 @@
                 <div class="col-md-2">
                     <button type="button" id="submitDelete" class="btn btn-danger btn-block">
                         <span class="glyphicon glyphicon-trash"></span>
-                        Löschen
+                        Plan Löschen
                     </button>
                 </div>
                 <div class="col-md-2">
@@ -193,7 +193,7 @@
                                     <input id="inputExecution" type="text" name="executions"
                                            class="form-control" list="storedExecutions" onchange="addTag()">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-success" type="submit" id="buttonNewExecution"
+                                        <button class="btn btn-success" id="buttonNewExecution"
                                                 data-toggle="modal" data-target="#modalExecutionForm">
                                             <span class="glyphicon glyphicon-plus-sign"></span>
                                             Neu
@@ -201,12 +201,7 @@
                                     </div>
                                 </div>
                                 <datalist id="storedExecutions">
-                                    <option value="Rückwärts" />
-                                    <option value="Am Platz" />
-                                    <option value="Alternierend" />
-                                    <option value="Stange hinten" />
-                                    <option value="Fußspitze nach innen" />
-                                    <option value="Kurzhantel" />
+                                    <option th:each="tag : ${allTags}" th:value="${tag}"/>
                                 </datalist>
                                 </input>
                                 <div id="tagBlock">

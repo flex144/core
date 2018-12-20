@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.LinkedList;
+
 @Controller
 @RequestMapping("/mods/")
 public class TrainingsController {
@@ -79,16 +81,34 @@ public class TrainingsController {
      */
     private String checkIfArgsValid(CreatePlanDto dto) {
         ExerciseService exerciseService = new ExerciseService();
-        if (dto.getSessionNums() != dto.getSets().size() || dto.getSets().contains("")
-                || dto.getSets().contains(null)) {
-            return "Anzahl der Trainingseinheiten nicht passend!";
+        if (dto.getSessionNums() != dto.getSets().size() || dto.getSets().contains(null)
+                || dto.getSets().contains("")) {
+            return "Anzahl der angegebenen Trainingseinheiten nicht passend!";
+        } else if (dto.getSessionNums() != dto.getPause().size() || dto.getPause().contains(null)) {
+            return "Anzahl der angegebenen Pausenwerte nicht passend!";
+        } else if (dto.getSessionNums() != dto.getTempo().size() || dto.getTempo().contains(null)
+                || dto.getTempo().contains("")) {
+            return "Anzahl der angegebenen Tempowerte nicht passend!";
         } else if (!validStringsSets(dto)) {
             return "Eingabe bei Sets entspricht nicht den Vorschriften!";
         } else if (exerciseService.getExerciseByName(dto.getExerciseName()) == null) {
             return "Übung nicht Vorhanden!";
+        } else if (dto.getId() == null && !checkPlanNameUnique(dto)) {
+            return "Planname schon vorhanden!";
         } else {
             return "valid!";
         }
+    }
+
+    private boolean checkPlanNameUnique(CreatePlanDto dto) {
+        PlanService planService = new PlanService();
+        LinkedList<TrainingsPlanTemplate> plans = planService.getPlanTemplateListByName(dto.getPlanName());
+        for (TrainingsPlanTemplate plan : plans) {
+            if (plan.getName().equals(dto.getPlanName())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

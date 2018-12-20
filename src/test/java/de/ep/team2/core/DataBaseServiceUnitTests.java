@@ -54,11 +54,10 @@ public class DataBaseServiceUnitTests {
     public void deleteUserById() {
         UserService userService = new UserService();
         DataBaseService db = DataBaseService.getInstance();
-        assertNotNull(db.getUserById(1));
-        db.deleteUserById(1);
-        assertNull(db.getUserById(1));
-        db.insertUser("timo@gmail123.com", "Timo", "Heinrich",
+        Integer id = db.insertUser("timo@gmail123.com", "Timo", "Heinrich",
                 userService.encode("123"));
+        db.deleteUserById(id);
+        assertNull(db.getUserById(id));
     }
 
     @Test
@@ -101,12 +100,9 @@ public class DataBaseServiceUnitTests {
     @Test
     public void deleteExercise() {
         DataBaseService db = DataBaseService.getInstance();
-        assertNotNull(db.getExerciseById(2));
-        db.deleteExerciseById(2);
-        assertNull(db.getExerciseById(2));
-        db.insertExercise("TestEx", "To balance the amount of exercises after delete",
-                WeightType.FIXED_WEIGHT,
-                null, null);
+        Integer id = db.insertExercise("test","test",WeightType.FIXED_WEIGHT,null,null);
+        db.deleteExerciseById(id);
+        assertNull(db.getExerciseById(id));
     }
 
     @Test

@@ -82,7 +82,7 @@ public class PlanService {
                 .getPrincipal();
         String mail = user.getEmail();
         idTemplate = db.insertPlanTemplate(dto.getPlanName(), dto.getTrainingsFocus(), mail,
-                (dto.getSessionNums() == 1), dto.getSessionNums(), 1);
+                dto.isOneShot(), dto.getSessionNums(), 1);
         Integer exInstanceId = db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(),
                 dto.getTags(), idTemplate);
         for (int i = 0; i < dto.getSessionNums(); i++) {
@@ -120,5 +120,9 @@ public class PlanService {
             toReturn[i] = Integer.parseInt(splitted[i].trim());
         }
         return toReturn;
+    }
+
+    public LinkedList<String> getAllTagNames() {
+        return DataBaseService.getInstance().getAllTagNames();
     }
 }

@@ -25,13 +25,15 @@ public class ModController {
 
     @RequestMapping(value = {"/createplan"}, method = RequestMethod.GET)
     public String createPlan(Model model) {
-        ExerciseService service = new ExerciseService();
+        ExerciseService exerciseService = new ExerciseService();
+        PlanService planService = new PlanService();
         if (!model.containsAttribute("createDto")) {
             CreatePlanDto dto = new CreatePlanDto();
             dto.setSessionNums(6);
             model.addAttribute("createDto", dto);
         }
-        model.addAttribute("allExercises", service.getAllExercises());
+        model.addAttribute("allExercises", exerciseService.getAllExercises());
+        model.addAttribute("allTags", planService.getAllTagNames());
         return "mod_create_plan";
     }
 

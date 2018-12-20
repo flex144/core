@@ -118,7 +118,7 @@ public class DataBaseService {
      * @param lastName  Last Name of the User.
      * @param password  Password, as Hash, of the User.
      */
-    public void insertUser(String email, String firstName, String lastName, String password) {
+    public Integer insertUser(String email, String firstName, String lastName, String password) {
         Object[] toInsert = {email.toLowerCase(), firstName, lastName, password, true, "ROLE_USER"};
         if (getUserByEmail(email) != null) {
             log.info("Insert User failed! Email " + email + " already in the " +
@@ -128,9 +128,13 @@ public class DataBaseService {
         jdbcTemplate.update("INSERT INTO users(email, first_name, last_name, password, enabled, " +
                 "role) " +
                 "VALUES (?,?,?,?,?,?)", toInsert);
+        Integer id = jdbcTemplate.query("select currval" +
+                        "(pg_get_serial_sequence('users','id'));",
+                (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
         log.info("User '" + firstName + " " + lastName + "' with mail: '"
                 + email + "' inserted in Table 'users' with Id "
-                + getUserByEmail(email).getId() + " !");
+                + id + " !");
+        return id;
     }
 
     /**
