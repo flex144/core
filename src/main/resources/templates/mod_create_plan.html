@@ -91,18 +91,18 @@
                     </button>
                     <input type="text" name="trainingUnits" id="inputUnit" th:field="*{sessionNums}"
                            style="width: 30px; border: 3px solid darkgray; text-align: center;
-                           font-weight: bold" >
+                           font-weight: bold" readonly>
                     <button type="button" class="btn increment-button" id="btnIncrement"
                             onclick="increment(); updateTeInputs()">
                         <span class="glyphicon glyphicon-plus"></span>
                     </button>
                     <input th:field="*{id}" style="width: 30px; border: 3px solid darkgray; text-align: center;
-                           font-weight: bold">
+                           font-weight: bold" hidden>
                 </div>
                 <br>
                 <div class="form-group">
                     <div class="form-check">
-                        <label class="form-check-label" for="singleDayCheck" style="font-size: 11pt">
+                        <label class="form-check-label" for="singleDayCheck">
                             Eintagesplan:</label>
                         <input type="checkbox" class="form-check-input" id="singleDayCheck"
                                onchange="checkboxChanged()" style="margin-left: 20px" th:field="*{oneShot}">
