@@ -189,14 +189,14 @@ public class FrontEndSeleniumTests {
         driver.findElement(By.id("btnIncrement")).click();
         driver.findElement(By.id("btnIncrement")).click();
         // Check if a 8th input field for repeats has appeared (7 because id-nr starts with 0)
-        WebElement inputField = driver.findElement(By.id("repeatsInput7"));
+        WebElement inputField = driver.findElement(By.id("repsInput7"));
         assertTrue(inputField.isDisplayed());
         // Decrease the te-amount by 3 to 5 in total
         driver.findElement(By.id("btnDecrement")).click();
         driver.findElement(By.id("btnDecrement")).click();
         driver.findElement(By.id("btnDecrement")).click();
         // Check if inputs after the 5th one have disappeared
-        assertTrue(driver.findElements(By.id("repeatsInput5")).isEmpty());
+        assertTrue(driver.findElements(By.id("repsInput5")).isEmpty());
 
         /* Test for alert if amount of training units is increased over 15 */
         for(int i=0; i<11; i++) {
@@ -242,32 +242,27 @@ public class FrontEndSeleniumTests {
         // Check the checkbox
         driver.findElement(By.id("singleDayCheck")).click();
         // Check if there are not more than 1 input field for the repeats
-        assertTrue(driver.findElements(By.id("repeatsInput1")).isEmpty());
+        assertTrue(driver.findElements(By.id("repsInput1")).isEmpty());
         // Uncheck the checkbox
         driver.findElement(By.id("singleDayCheck")).click();
         // Check if there are exactly the previous 2 input fields displayed
-        assertTrue(driver.findElement(By.id("repeatsInput1")).isDisplayed());
-        assertTrue(driver.findElements(By.id("repeatsInput2")).isEmpty());
+        assertTrue(driver.findElement(By.id("repsInput1")).isDisplayed());
+        assertTrue(driver.findElements(By.id("repsInput2")).isEmpty());
 
         /* Test for adding an exercise to the plan */
         // Fill out all input fields in order to add the exercise
         driver.findElement(By.id("inputOrder")).sendKeys("B3");
         driver.findElement(By.id("inputExercise")).sendKeys("Klimmzüge");
         driver.findElement(By.id("inputExecution")).sendKeys("Am Platz\n");
-        driver.findElement(By.id("repeatsInput0")).sendKeys("15/20/20");
+        driver.findElement(By.id("repsInput0")).sendKeys("15/20/20");
         driver.findElement(By.id("inputExecution")).sendKeys("Test\n");
-        driver.findElement(By.id("repeatsInput1")).sendKeys("15/15/20/25");
+        driver.findElement(By.id("repsInput1")).sendKeys("15/15/20/25");
         driver.findElement(By.id("tempoInput0")).sendKeys("60");
         driver.findElement(By.id("tempoInput1")).sendKeys("90");
         driver.findElement(By.id("pauseInput0")).sendKeys("90");
         driver.findElement(By.id("pauseInput1")).sendKeys("60");
         // Add the entered exercise to the plan
         driver.findElement(By.id("buttonAddExercise")).click();
-        // Check if input form has been reset
-        inputValue = driver.findElement(By.id("inputOrder")).getText();
-        assertFalse(inputValue.contains("B3"));
-        // Check if exercise was added
-        assertFalse(driver.findElements(By.id("planExerciseOrder")).isEmpty());
 
         driver.quit();
     }
