@@ -14,99 +14,93 @@
     <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
 
     <style>
-        body, html {
-            height: 100%;
+        @media (min-width: 1000px) {
+            body {
+                background-color: #00ff0f;
+                background-image: url("../static/initFileBackup/Hintergründe/background_gym_5_greyscale.jpg");
+            }
         }
-        .bg-img {
-            /* The image used */
-            background-image: url("/initFileBackup/Hintergründe/background_gym_5_greyscale.jpg");
 
-            /* Control the height of the image */
-            width: 100%;
+        @media (min-width: 300px) and (max-width: 999px) {
+            body {
+                background-color: #e12f27;
+                backgound-image: url("../static/initFileBackup/Hintergründe/background_mobile_1.jpg");
+            }
+        }
+        body {
             height: 100%;
-
-            /* Center and scale the image nicely */
+            width: 100%;
+            background-size: 100%;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-            background-size: 100%;
-            position: relative;
         }
         .panel{
             border-radius: 25px;
             border: 2pt solid #2E2E2E;
         }
-        #panelContainer{
-            width: 50%;
-            height: 100%;
-        }
     </style>
 </head>
 <body>
-
-<div class="bg-img">
-    <div class="container" id="panelContainer">
-        <br><br><br>
-        <div class="panel panel-default">
-            <div class="panel-heading" style="background-color: #fd8900; color: #ecf0f1;
-                border-radius: 20px 20px 0px 0px; border: 1pt solid #2E2E2E;">
-                <h2>Willkommen auf unserer Webseite "Core"</h2>
+    <div class="container-fluid" id="panelContainer">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="visible-md visible-lg">
+                <br><br>
             </div>
-            <div class="panel-body">
-                <p style="font-size: 12pt">Hier bei uns bekommst du deinen <u>persönlichen
-                    Trainingsplan</u>. Registriere dich jetzt und trainiere
-                    ab sofort mit deinem individuellen Plan.</p>
-                <br>
-                <div th:if="${param.error}">
-                    <div class="alert alert-danger">
-                        E-Mail oder Passwort falsch!
-                    </div>
+            <br><br>
+            <div class="panel panel-default">
+                <div class="panel-heading" style="background-color: #fd8900; color: #ecf0f1;
+                border-radius: 20px 20px 0px 0px; border: 1pt solid #2E2E2E;">
+                    <h3>Willkommen auf unserer Webseite "Core"</h3>
                 </div>
-                <div th:if="${param.logout}">
-                    <div class="alert alert-info">
-                        Sie wurden ausgeloggt.
-                    </div>
-                </div>
-                <br>
-                <form th:action="@{/login}" method="post">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                        <!-- DO NOT rename "username" to "email". Otherwise Spring Security wont recognise it.
-                            Thank you.-->
-                        <input id="email" type="text" class="form-control" name="username" placeholder="Email">
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        <input id="password" type="password" class="form-control" name="password" placeholder="Password">
-                    </div>
-                    <!-- Checkbox
-                    <div  class="form-group">
-                        <div class="checkbox">
-                            <label>
-                                <input  type="checkbox">  Angemeldet bleiben
-                            </label>
+                <div class="panel-body">
+                    <p style="font-size: 12pt">Hier bei uns bekommst du deinen <u>persönlichen
+                        Trainingsplan</u>. Registriere dich jetzt und trainiere
+                        ab sofort mit deinem individuellen Plan.</p>
+                    <div th:if="${param.error}">
+                        <br>
+                        <div class="alert alert-danger">
+                            E-Mail oder Passwort falsch!
                         </div>
                     </div>
-                    -->
+                    <div th:if="${param.logout}">
+                        <br>
+                        <div class="alert alert-info">
+                            Sie wurden ausgeloggt.
+                        </div>
+                    </div>
                     <br>
-                    <div class="col-md-12">
-                        <div class="col-md-6">
-                            <input class="button btn btn-block" type="submit"
-                                   value="Login"/>
-                            <!--
-                            <button class="button btn-block" type="submit"
-                                    value="Login">Anmelden</button>
-                            -->
+                    <form th:action="@{/login}" method="post">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <!-- DO NOT rename "username" to "email". Otherwise Spring Security wont recognise it.
+                                Thank you.-->
+                            <input id="email" type="text" class="form-control" name="username" placeholder="Email">
                         </div>
-                        <div class="col-md-6">
-                            <a class="button btn btn-block" value="Registrieren"
-                                    th:href="@{/registration}">Registrieren</a>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input id="password" type="password" class="form-control" name="password" placeholder="Password">
                         </div>
-                    </div>
-                </form>
+                        <!-- Checkbox for possible later use
+                        <div  class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input  type="checkbox">  Angemeldet bleiben
+                                </label>
+                            </div>
+                        </div>
+                        -->
+                        <br>
+                        <div>
+                            <input class="button btn btn-block" type="submit" value="Anmelden"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer" style="background-color: #eee; border-radius: 0px 0px 20px 20px;">
+                    Noch keinen Account? <a value="Registrieren" th:href="@{/registration}">Jetzt Registrieren</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>
