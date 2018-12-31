@@ -10,36 +10,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-
     <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
-
-    <style>
-        @media (min-width: 1000px) {
-            body {
-                background-color: #00ff0f;
-                background-image: url("../static/initFileBackup/Hintergründe/background_gym_5_greyscale.jpg");
-            }
-        }
-
-        @media (min-width: 300px) and (max-width: 999px) {
-            body {
-                background-color: #e12f27;
-                backgound-image: url("../static/initFileBackup/Hintergründe/background_mobile_1.jpg");
-            }
-        }
-        body {
-            height: 100%;
-            width: 100%;
-            background-size: 100%;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }
-        .panel{
-            border-radius: 25px;
-            border: 2pt solid #2E2E2E;
-        }
-    </style>
 </head>
 <body>
     <div class="container-fluid" id="panelContainer">
@@ -48,9 +19,8 @@
                 <br><br>
             </div>
             <br><br>
-            <div class="panel panel-default">
-                <div class="panel-heading" style="background-color: #fd8900; color: #ecf0f1;
-                border-radius: 20px 20px 0px 0px; border: 1pt solid #2E2E2E;">
+            <div class="panel panel-login panel-default">
+                <div class="panel-heading" style="">
                     <h3>Willkommen auf unserer Webseite "Core"</h3>
                 </div>
                 <div class="panel-body">
@@ -75,11 +45,13 @@
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                             <!-- DO NOT rename "username" to "email". Otherwise Spring Security wont recognise it.
                                 Thank you.-->
-                            <input id="email" type="text" class="form-control" name="username" placeholder="Email">
+                            <input id="email" type="text" class="form-control" name="username"
+                                   placeholder="E-mail eingeben">
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="password" type="password" class="form-control" name="password" placeholder="Password">
+                            <input id="password" type="password" class="form-control" name="password"
+                                   placeholder="Passwort eingeben">
                         </div>
                         <!-- Checkbox for possible later use
                         <div  class="form-group">
@@ -96,7 +68,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="panel-footer" style="background-color: #eee; border-radius: 0px 0px 20px 20px;">
+                <div class="panel-footer">
                     Noch keinen Account? <a value="Registrieren" th:href="@{/registration}">Jetzt Registrieren</a>
                 </div>
             </div>

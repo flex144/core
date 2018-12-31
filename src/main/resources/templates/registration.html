@@ -10,95 +10,70 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-
     <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
-
-    <style>
-        body, html {
-            height: 100%;
-        }
-        .bg-img {
-            /* The image used */
-            background-image: url("/initFileBackup/Hintergründe/background_gym_5_greyscale.jpg");
-
-            /* Control the height of the image */
-            width: 100%;
-            height: 100%;
-
-            /* Center and scale the image nicely */
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: 100%;
-            position: relative;
-        }
-        .panel{
-            border-radius: 25px;
-            border: 2pt solid #2E2E2E;
-        }
-        #panelContainer{
-            width: 50%;
-            height: 100%;
-        }
-    </style>
 </head>
 <body>
-
-<div class="bg-img">
-    <div class="container" id="panelContainer">
-        <br><br><br>
-        <div class="panel panel-default">
-            <div class="panel-heading" style="background-color: #fd8900; color: #ecf0f1;
-                border-radius: 20px 20px 0px 0px; border: 1pt solid #2E2E2E;">
-                <h2>Bei "Core" registrieren</h2>
+    <div class="container-fluid">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="visible-md visible-lg">
+                <br><br>
             </div>
-            <div class="panel-body">
-                <p style="font-size: 12pt">
-                    Gib deine aktuelle E-Mail Adresse an und wähle dein Passwort für diese Webseite.
-                </p>
-                <p class="text-muted" style="font-size: 12pt">
-                    (Das Passwort muss zweimal eingegeben werden um es zu bestätigen)
-                </p>
-                <br>
-                <div th:if="${errorMessage}">
-                    <div class="alert alert-danger" th:utext="${errorMessage}"></div>
+            <br><br>
+            <div class="panel panel-login panel-default">
+                <div class="panel-heading">
+                    <h2>Bei "Core" registrieren</h2>
                 </div>
-                <div th:if="${success}">
-                    <div class="alert alert-info" th:utext="${success}"></div>
-                </div>
-                <br>
-                <form th:action="@{/registration}" th:object="${user}" method="post">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                        <!-- DO NOT rename "username" to "email". Otherwise Spring Security wont recognise it.
-                            Thank you.-->
-                        <input type="text"  class="form-control"  placeholder="E-Mail Adresse"  id="email"
-                               th:field="*{email}" required>
+                <div class="panel-body">
+                    <p style="font-size: 12pt">
+                        Gib deine aktuelle E-Mail Adresse an und wähle dein Passwort für diese Webseite.
+                    </p>
+                    <p class="text-muted" style="font-size: 12pt">
+                        (Das Passwort muss zweimal eingegeben werden um es zu bestätigen)
+                    </p>
+                    <div th:if="${errorMessage}">
+                        <br>
+                        <div class="alert alert-danger" th:utext="${errorMessage}"></div>
                     </div>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        <input type="password"  placeholder="Passwort" class="form-control"  id="password" required
-                               th:field="*{password}">
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        <input type="password"  placeholder="Passwort bestätigen" class="form-control"
-                               id="confirmPassword" required th:field="*{confirmPassword}">
+                    <div th:if="${success}">
+                        <br>
+                        <div class="alert alert-info" th:utext="${success}"></div>
                     </div>
                     <br>
-                    <div class="col-md-12">
-                        <div class="col-md-6">
-                            <a class="button btn btn-block" th:href="@{/login}">Zurück zur Anmeldung</a>
+                    <form th:action="@{/registration}" th:object="${user}" method="post">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <!-- DO NOT rename "username" to "email". Otherwise Spring Security wont recognise it.
+                                Thank you.-->
+                            <input type="text"  class="form-control"  placeholder="E-Mail eingeben"  id="email"
+                                   th:field="*{email}" required>
                         </div>
-                        <div class="col-md-6">
-                            <input class="button btn btn-block" type="submit"
-                                   value="Registrieren"/>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password"  placeholder="Passwort eingeben" class="form-control"  id="password"
+                                   required th:field="*{password}">
                         </div>
-                    </div>
-                </form>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password"  placeholder="Passwort bestätigen" class="form-control"
+                                   id="confirmPassword" required th:field="*{confirmPassword}">
+                        </div>
+                        <br>
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <a class="button btn btn-block" th:href="@{/login}">Zurück zur Anmeldung</a>
+                            </div>
+                            <div class="col-md-6">
+                                <input class="button btn btn-block" type="submit"
+                                       value="Registrieren"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer">
+                    Sie erhalten nach der Registrierung eine Bestätigungsemail
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 </html>
