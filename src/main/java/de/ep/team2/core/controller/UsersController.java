@@ -83,7 +83,16 @@ public class UsersController {
             model.addAttribute("error", "Benutzer existiert nicht!");
             return "error";
         } else {
+            User user = (User) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
             userService.deleteUserByID(Integer.parseInt(id));
+
+            //check if the logged in user deletes himself;
+            //if so, he gets redirected to the login and his session expires;
+            if (user.getId() == Integer.parseInt(id)) {
+                SecurityContextHolder.getContext().setAuthentication(null);
+                return "redirect:/login";
+            }
             model.addAttribute("users", userService.getAllUsers());
             return "mod_user_search";
         }
