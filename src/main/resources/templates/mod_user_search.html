@@ -54,7 +54,8 @@
             </thead>
             <tbody id="myTable">
                 <tr th:each="user : ${users}" style="cursor: pointer"
-                    th:onclick="'javascript:rowClicked(\'' + ${user.getId()} + '\');'">
+                    th:onclick="'javascript:rowClicked(\'' + ${user.getId()} + '\');'"
+                    th:id="${user.getId()}">
                     <td th:text="${user.getId()}"/>
                     <td th:text="${user.getEmail()}"/>
                     <td th:text="${user.getFirstName()}"/>
