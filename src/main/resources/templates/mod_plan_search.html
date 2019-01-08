@@ -73,7 +73,8 @@
                 <td th:text="${planTemplate.getName()}"></td>
                 <td th:text="${planTemplate.getTrainingsFocus()}"></td>
                 <td th:text="${planTemplate.getNumTrainSessions()}"></td>
-                <td th:text="${planTemplate.getAuthor().getEmail()}"></td>
+                <td th:if="${planTemplate.getAuthor()}" th:text="${planTemplate.author.getEmail()}"></td>
+                <td th:if="${planTemplate.getAuthor()} == null" th:text="'Gelöschtes Profil'"></td>
             </tr>
             </tbody>
         </table>

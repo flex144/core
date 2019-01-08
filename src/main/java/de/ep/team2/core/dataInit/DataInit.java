@@ -68,7 +68,7 @@ public class DataInit {
                 "id SERIAL NOT NULL PRIMARY KEY," +
                 "name varchar(255) NOT NULL UNIQUE," +
                 "trainings_focus varchar(255)," +
-                "author varchar(255) references users NOT NULL," +
+                "author varchar(255) references users ," +
                 "one_shot_plan boolean," +
                 "num_train_sessions integer NOT NULL," +
                 "exercises_per_session integer NOT NULL)");
@@ -142,6 +142,7 @@ public class DataInit {
             DataBaseService.getInstance().insertUser(o[0], o[1], o[2], o[3]);
         }
         DataBaseService.getInstance().changeToMod(3);
+
     }
 
     private void fillExercises() {
@@ -149,7 +150,10 @@ public class DataInit {
         paths.add(new String[]{"/images/Bankdrücken/Bankdruecken-Bench-Press.jpg", "muscle"});
         paths.add(new String[]{"/images/Bankdrücken/3-Narrow-grip-bench-press_zpsysfv9zvj.png", "other"});
         DataBaseService.getInstance().insertExercise("Bankdrücken", "Lege " +
-                        "dich mit dem Rücken auf die Flachbank und positioniere deinen Oberkörper so, dass sich die in der Halterung liegende Langhantel etwa auf Augenhöhe befindet. Platziere die Füße fest auf dem Boden, um Stabilität zu gewinnen. Spanne außerdem den unteren Rücken an, sodass ein leichtes Hohlkreuz entsteht.\n" +
+                        "dich mit dem Rücken auf die Flachbank und positioniere deinen Oberkörper so," +
+                        " dass sich die in der Halterung liegende Langhantel etwa auf Augenhöhe befindet. " +
+                        "Platziere die Füße fest auf dem Boden, um Stabilität zu gewinnen. Spanne außerdem den" +
+                        " unteren Rücken an, sodass ein leichtes Hohlkreuz entsteht.\n" +
                         "\n" +
                         "Wichtig ist auch die Haltung der Schulterblätter: " +
                         "Ziehe sie nach hinten, um die Schultergelenke zu " +
