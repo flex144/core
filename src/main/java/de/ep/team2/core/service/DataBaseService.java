@@ -87,15 +87,19 @@ public class DataBaseService {
      * represents the found User, if the User exists.
      */
     public User getUserByEmail(String email) {
-        LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT id, email, first_name, last_name, password, role FROM users WHERE " +
-                        "email = ?",
-                new String[]{email.toLowerCase()},
-                new BeanPropertyRowMapper<>(User.class)));
-        if (toReturn.isEmpty()) {
+        if (email == null) {
             return null;
         } else {
-            return toReturn.getFirst();
+            LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
+                    "SELECT id, email, first_name, last_name, password, role FROM users WHERE " +
+                            "email = ?",
+                    new String[]{email.toLowerCase()},
+                    new BeanPropertyRowMapper<>(User.class)));
+            if (toReturn.isEmpty()) {
+                return null;
+            } else {
+                return toReturn.getFirst();
+            }
         }
     }
 
@@ -145,11 +149,18 @@ public class DataBaseService {
     public void deleteUserById(Integer id) {
         User toDelete = getUserById(id);
         if (toDelete != null) {
+            deleteUserFromPlan(toDelete.getEmail());
             jdbcTemplate.update("DELETE FROM users WHERE id = ?",
                     (Object[]) new Integer[]{id});
             log.info("User '" + toDelete.getFirstName() + " " + toDelete.getLastName()
                     + "' with mail: '" + toDelete.getEmail() + "' deleted!");
         }
+    }
+
+    //checks if user is author of a plan template and deletes him from the plan
+    private void deleteUserFromPlan (String email) {
+        jdbcTemplate.update("UPDATE plan_templates SET author = NULL WHERE " +
+                "author = ?", email);
     }
 
     /**
@@ -366,6 +377,7 @@ public class DataBaseService {
                     rs.getBoolean("one_shot_plan"), rs.getInt("num_train_sessions"),
                     rs.getInt("exercises_per_session"), null);
         }
+
     }
 
     /**
