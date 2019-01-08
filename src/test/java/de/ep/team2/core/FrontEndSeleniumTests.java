@@ -121,6 +121,9 @@ public class FrontEndSeleniumTests {
      */
     @Test
     public void modCreatePlanTest() {
+        //Needs to be changed to own path!
+        //System.setProperty("webdriver.gecko.driver", "/Users/flex/Downloads/geckodriver");
+
         // Create new istance of Firefox driver
         WebDriver driver = new FirefoxDriver();
 
@@ -266,4 +269,59 @@ public class FrontEndSeleniumTests {
 
         driver.quit();
     }
+
+
+    /**
+     * Check if user get deleted and if they get redirected correctly.
+     */
+    @Test
+    public void checkDeletionSuccess() {
+        //Needs to be changed to own path!
+        System.setProperty("webdriver.gecko.driver", "/Users/flex/Downloads/geckodriver");
+        WebDriver driver = new FirefoxDriver();
+        loginAsUser(driver);
+
+        //locate delete button and delete own profile
+        driver.navigate().to("http://localhost:8080/users/");
+        driver.findElement(By.id("deleteButton")).click();
+        waitDuration(800);
+        driver.findElement(By.id("submitForm")).click();
+        String url = driver.getCurrentUrl();
+        assertTrue(url.equals("http://localhost:8080/login"));
+
+        //check if user can access the website, which he shouldn't be able to
+        driver.navigate().to("http://localhost:8080/user/home");
+        url = driver.getCurrentUrl();
+        assertTrue(url.equals("http://localhost:8080/login"));
+
+        //check if he can log in to the deleted profile
+        driver.navigate().to("http://localhost:8080/");
+        driver.findElement(By.id("email"))
+                .sendKeys("alex@gmail.com");
+        driver.findElement(By.id("password")).sendKeys("password");
+        driver.findElement(By.cssSelector("input.btn")).click();
+        url = driver.getCurrentUrl();
+        assertTrue(url.equals("http://localhost:8080/login?error"));
+
+        //check as moderator if the profile is deleted
+        loginAsModerator(driver);
+        driver.navigate().to("http://localhost:8080/mods/searchuser");
+        assertTrue(driver.findElements(By.id("2")).size() == 0);
+
+        //recreate profile of alex since other tests depend on it
+        driver.navigate().to("http://localhost:8080/registration");
+        driver.findElement(By.id("email"))
+                .sendKeys("alex@gmail.com");
+        driver.findElement(By.id("password"))
+                .sendKeys("password");
+        driver.findElement(By.id("confirmPassword"))
+                .sendKeys("password");
+        driver.findElement(By.id("register")).click();
+        loginAsUser(driver);
+
+        driver.quit();
+
+    }
+
+
 }

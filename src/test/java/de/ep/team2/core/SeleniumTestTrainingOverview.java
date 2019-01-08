@@ -33,10 +33,10 @@ public class SeleniumTestTrainingOverview {
      * Function to log into the webpage as user
      */
     public void login(){
-        //System.setProperty("webdriver.gecko.driver", "C:\Users\Yannick\Documents");
+        //System.setProperty("webdriver.gecko.driver", "/Users/flex/Downloads/geckodriver");
         driver = new FirefoxDriver();
 
-        //login at website as user with email "alex@gmail.com" and password "hello";
+        //login at website as user with email "alex@gmail.com" and password "password";
         driver.navigate().to("http://localhost:8080/");
         driver.findElement(By.id("email"))
                 .sendKeys("alex@gmail.com");
@@ -261,5 +261,7 @@ public class SeleniumTestTrainingOverview {
         System.out.println("3" + threeSelected);
         assertTrue(threeSelected);
     }
+
+
 
 }
