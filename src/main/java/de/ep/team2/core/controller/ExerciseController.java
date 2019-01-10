@@ -114,7 +114,12 @@ public class ExerciseController {
             model.addAttribute("error", "Übung existiert nicht!");
             return "error";
         } else {
-            service.deleteExercise(Integer.parseInt(id));
+            try {
+                service.deleteExercise(Integer.parseInt(id));
+            } catch (IllegalArgumentException exception) {
+                model.addAttribute("error", exception.getMessage());
+                return "error";
+            }
             return "redirect:/mods/searchexercise";
         }
     }

@@ -6,11 +6,10 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <!-- Filter used to display only INFO or more severe on the Console. -->
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>INFO</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>DENY</onMismatch>
+        <!-- Filter used to display only INFO or more severe on the Console.
+        (Can be changed to DEBUG to display more)-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
         </filter>
         <encoder>
             <pattern>${CONSOLE_LOG_PATTERN}</pattern>
