@@ -47,6 +47,13 @@ public class DataInit {
                 " enabled boolean not null default false, " +
                 " role varchar(20) not null," +
                 " primary key(email))");
+
+        //Confirmation Token
+        jdbcTemplate.execute("DROP TABLE IF EXISTS confirmation_token CASCADE");
+        jdbcTemplate.execute("CREATE TABLE confirmation_token (" +
+                "id SERIAL NOT NULL PRIMARY KEY, token VARCHAR(36), " +
+                "userToConfirm VARCHAR(255) REFERENCES users, createdDate DATE)");
+
         // Exercises
         jdbcTemplate.execute("DROP TABLE IF EXISTS exercises CASCADE ");
         jdbcTemplate.execute("CREATE TABLE exercises(" +

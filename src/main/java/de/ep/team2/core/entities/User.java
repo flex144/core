@@ -14,6 +14,7 @@ public class User implements UserDetails {
     private int id;
     private String email, firstName, lastName, password;
     private String role;
+    private boolean enabled;
 
     public User(int id,  String email, String firstName, String lastName, String password,
                 String role) {
@@ -23,6 +24,7 @@ public class User implements UserDetails {
         this.lastName = lastName;
         this.password = password;
         this.role = role;
+        enabled = false;
     }
 
     public User(){}
@@ -98,6 +100,6 @@ public class User implements UserDetails {
     public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() { return enabled; }
 
 }
