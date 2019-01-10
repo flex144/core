@@ -205,7 +205,7 @@ public class DataBaseService {
      */
     public ConfirmationToken findConfirmationToken(String confirmationToken) {
         LinkedList<ConfirmationToken> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT * FROM confirmation_token WHERE token = ?",
+                "SELECT id, token, usertoconfirm, createddate FROM confirmation_token WHERE token = ?",
                 new String[]{confirmationToken},
                 new BeanPropertyRowMapper<>(ConfirmationToken.class)));
         if (toReturn.isEmpty()) {

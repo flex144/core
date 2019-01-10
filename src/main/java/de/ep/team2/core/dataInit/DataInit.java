@@ -147,6 +147,7 @@ public class DataInit {
         initTestData.add(yannick);
         for (String[] o : initTestData) {
             DataBaseService.getInstance().insertUser(o[0], o[1], o[2], o[3]);
+            DataBaseService.getInstance().confirmUser(o[0]);
         }
         DataBaseService.getInstance().changeToMod(3);
     }

@@ -1,5 +1,7 @@
 package de.ep.team2.core.entities;
 
+import de.ep.team2.core.dtos.RegistrationDto;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -8,14 +10,22 @@ public class ConfirmationToken {
     private int tokenId;
     private String confirmationToken;
     private Date createdDate;
-    private User user;
+    private String emailUser;
 
     //Constructor
-    public ConfirmationToken (User user) {
-        this.user = user;
+    public ConfirmationToken (String emailUser) {
+        this.emailUser = emailUser;
         createdDate = new Date();
         confirmationToken = UUID.randomUUID().toString();
     }
+
+    public ConfirmationToken (String confirmationToken, String emailUser, Date createdDate) {
+        this.confirmationToken = confirmationToken;
+        this.emailUser = emailUser;
+        this.createdDate = createdDate;
+    }
+
+    public ConfirmationToken () {}
 
     //Getter and Setter
 
@@ -43,12 +53,12 @@ public class ConfirmationToken {
         this.createdDate = createdDate;
     }
 
-    public User getUser() {
-        return user;
+    public String getUser() {
+        return emailUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(String emailUser) {
+        this.emailUser = emailUser;
     }
 
 }
