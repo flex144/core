@@ -1,16 +1,18 @@
 package de.ep.team2.core.service;
 
 import de.ep.team2.core.entities.Exercise;
+import de.ep.team2.core.entities.ExerciseInstance;
+import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.enums.ImageType;
 import de.ep.team2.core.enums.WeightType;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Forwards requests to the Database Service and manages the Storage of the
@@ -87,19 +89,41 @@ public class ExerciseService {
      * Also deletes all saved images and the folder which belongs to the exercise
      * in static/images.
      *
+     * If the exercise is still referenced in a Plan throws an Exception with an Error message with
+     * all the Plans where it appears.
+     *
      * @param id id of the exercise to delete.
      */
     public void deleteExercise(int id) {
         DataBaseService db = DataBaseService.getInstance();
-        Exercise toDelete = db.getExerciseById(id);
-        try {
-            FileUtils.deleteDirectory(new File("src/main/resources/static/images/" +
-                    toDelete.getName()));
-        } catch (IOException exception) {
-            System.err.println(exception.getMessage());
-            return;
+        LinkedList<ExerciseInstance> dependentInstances = db.getInstancesOfExercise(id);
+        if (dependentInstances == null || dependentInstances.isEmpty()) {
+            Exercise toDelete = db.getExerciseById(id);
+            try {
+                FileUtils.deleteDirectory(new File("src/main/resources/static/images/" +
+                        toDelete.getName()));
+            } catch (IOException exception) {
+                System.err.println(exception.getMessage());
+                return;
+            }
+            db.deleteExerciseById(id);
+        } else {
+            LinkedList<TrainingsPlanTemplate> plans = new LinkedList<>();
+            LinkedList<ExerciseInstance> instances = db.getInstancesOfExercise(id);
+            for (ExerciseInstance instance : instances) {
+                plans.add(db.getOnlyPlanTemplateById(instance.getPlanTemplateID()));
+            }
+            List<TrainingsPlanTemplate> listWithoutDuplicates = plans.stream()
+                    .distinct()
+                    .collect(Collectors.toList());
+            StringBuilder textToDisplay = new StringBuilder();
+            for (TrainingsPlanTemplate template : listWithoutDuplicates) {
+                textToDisplay.append(template.getName()).append(", ");
+            }
+            throw new IllegalArgumentException("Übung kann nicht gelöscht werden da Pläne " +
+                    "existieren welche diese beinhalten. Lösche oder bearbeite zuvor diese Pläne: "
+                    + textToDisplay);
         }
-        db.deleteExerciseById(id);
     }
 
     public List<Exercise> getAllExercises() {

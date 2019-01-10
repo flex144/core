@@ -5,12 +5,12 @@ import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.UserService;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,12 +22,11 @@ public class DataInit {
     public static final int MAX_SETS = 7;
 
     private JdbcTemplate jdbcTemplate;
-    private Logger log;
+    private static final Logger log = LoggerFactory.getLogger(DataInit.class);
     private UserService userService = new UserService();
 
-    public DataInit(JdbcTemplate jdbcTemplate, Logger log) {
+    public DataInit(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.log = log;
         initTables();
         fillUsers();
         fillExercises();
@@ -37,7 +36,7 @@ public class DataInit {
     }
 
     private void initTables() {
-        log.info("Creating tables");
+        log.debug("Creating tables");
         // Users
         jdbcTemplate.execute("DROP TABLE IF EXISTS users CASCADE ");
         jdbcTemplate.execute("CREATE TABLE users(" +
@@ -47,6 +46,7 @@ public class DataInit {
                 " enabled boolean not null default false, " +
                 " role varchar(20) not null," +
                 " primary key(email))");
+        log.debug("Created table users");
         // Exercises
         jdbcTemplate.execute("DROP TABLE IF EXISTS exercises CASCADE ");
         jdbcTemplate.execute("CREATE TABLE exercises(" +
@@ -55,6 +55,7 @@ public class DataInit {
                 "description VARCHAR(2000)," +
                 "weight_type varchar(15) NOT NULL," +
                 "video_link varchar(400))");
+        log.debug("Created table exercises");
         // Images
         jdbcTemplate.execute("DROP TABLE IF EXISTS images");
         jdbcTemplate.execute("CREATE TABLE images(" +
@@ -62,6 +63,7 @@ public class DataInit {
                 "path varchar(400) PRIMARY KEY," +
                 "img_type varchar(10) NOT NULL)");
         initImages();
+        log.debug("Created table images");
         // Plan Templates
         jdbcTemplate.execute("DROP TABLE IF EXISTS plan_templates cascade ");
         jdbcTemplate.execute("CREATE TABLE plan_templates(" +
@@ -72,6 +74,7 @@ public class DataInit {
                 "one_shot_plan boolean," +
                 "num_train_sessions integer NOT NULL," +
                 "exercises_per_session integer NOT NULL)");
+        log.debug("Created table plan_templates");
         // Exercise Instance
         jdbcTemplate.execute("DROP TABLE IF EXISTS exercise_instances CASCADE ");
         jdbcTemplate.execute("CREATE TABLE exercise_instances(" +
@@ -79,15 +82,18 @@ public class DataInit {
                 "is_exercise integer references exercises not null," +
                 "category varchar(50)," +
                 "plan_template integer not null references plan_templates)");
+        log.debug("Created table exercise_instances");
         // Execution Tags for Instance
         jdbcTemplate.execute("DROP TABLE IF EXISTS execution_tags CASCADE ");
         jdbcTemplate.execute("CREATE TABLE execution_tags(" +
                 "id SERIAL NOT NULL PRIMARY KEY," +
                 "name varchar(255) NOT NULL UNIQUE)");
+        log.debug("Created table execution_tags");
         jdbcTemplate.execute("DROP TABLE IF EXISTS ex_tags_map CASCADE ");
         jdbcTemplate.execute("CREATE TABLE ex_tags_map(" +
                 "ex_inst_id INTEGER NOT NULL," +
                 "ex_tag_id INTEGER NOT NULL)");
+        log.debug("Created table ex_tags_map");
         // Training Sessions
         jdbcTemplate.execute("DROP TABLE IF EXISTS trainings_sessions cascade ");
         jdbcTemplate.execute("CREATE TABLE trainings_sessions(" +
@@ -107,6 +113,7 @@ public class DataInit {
                 "reps_set7 integer," +
                 "CHECK (sets <= 7)," +
                 "CHECK (ordering <= 15 AND ordering >= 1))");
+        log.debug("Created table trainings_sessions");
     }
 
     private void initImages() {

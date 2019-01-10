@@ -1,6 +1,5 @@
 package de.ep.team2.core.service;
 
-import de.ep.team2.core.CoreApplication;
 import de.ep.team2.core.entities.*;
 import de.ep.team2.core.enums.WeightType;
 import org.slf4j.Logger;
@@ -8,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,8 +23,7 @@ public class DataBaseService {
 
     private static DataBaseService instance;
     private JdbcTemplate jdbcTemplate;
-    private static final Logger log =
-            LoggerFactory.getLogger(CoreApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(DataBaseService.class);
 
     private DataBaseService() {
     }
@@ -125,7 +125,7 @@ public class DataBaseService {
     public Integer insertUser(String email, String firstName, String lastName, String password) {
         Object[] toInsert = {email.toLowerCase(), firstName, lastName, password, true, "ROLE_USER"};
         if (getUserByEmail(email) != null) {
-            log.info("Insert User failed! Email " + email + " already in the " +
+            log.debug("Insert User failed! Email " + email + " already in the " +
                     "Database!");
             throw new IllegalArgumentException("Email already in the Database!");
         }
@@ -135,7 +135,7 @@ public class DataBaseService {
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('users','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
-        log.info("User '" + firstName + " " + lastName + "' with mail: '"
+        log.debug("User '" + firstName + " " + lastName + "' with mail: '"
                 + email + "' inserted in Table 'users' with Id "
                 + id + " !");
         return id;
@@ -152,8 +152,11 @@ public class DataBaseService {
             deleteUserFromPlan(toDelete.getEmail());
             jdbcTemplate.update("DELETE FROM users WHERE id = ?",
                     (Object[]) new Integer[]{id});
-            log.info("User '" + toDelete.getFirstName() + " " + toDelete.getLastName()
-                    + "' with mail: '" + toDelete.getEmail() + "' deleted!");
+            User deleter = (User) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            log.debug("User '" + toDelete.getFirstName() + " " + toDelete.getLastName()
+                    + "' with mail: '" + toDelete.getEmail()
+                    + "' deleted by " + deleter.getEmail() + "!");
         }
     }
 
@@ -170,10 +173,18 @@ public class DataBaseService {
      */
     public void changeToMod(Integer id) {
         User toChange = getUserById(id);
+        String changerMail;
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            User changer = (User) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            changerMail = changer.getEmail();
+        } else {
+            changerMail = "Default";
+        }
         if (toChange != null) {
             jdbcTemplate.update("UPDATE users SET role = 'ROLE_MOD' WHERE id = ?", id);
-            log.info("User '" + toChange.getFirstName() + " " + toChange.getLastName() + "' is " +
-                    "now Mod!");
+            log.debug("User '" + toChange.getEmail() + "' was " +
+                        "upgraded to Mod by " + changerMail + "!");
         }
     }
 
@@ -210,7 +221,7 @@ public class DataBaseService {
                             insert);
                 }
             }
-            log.info("Exercise '" + name + "' inserted in Table 'exercises' with " +
+            log.debug("Exercise '" + name + "' inserted in Table 'exercises' with " +
                     "Id "
                     + id + " !");
             return id;
@@ -282,8 +293,10 @@ public class DataBaseService {
                     (Object[]) new Integer[]{id});
             jdbcTemplate.update("DELETE FROM exercises WHERE id = ?",
                     (Object[]) new Integer[]{id});
-            log.info("Exercise '" + toDelete.getName() + "' with ID: '"
-                    + toDelete.getId() + "' deleted!");
+            User deleter = (User) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            log.debug("Exercise '" + toDelete.getName() + "' with ID: '"
+                    + toDelete.getId() + "' deleted by " + deleter.getEmail() + "!");
         }
     }
 
@@ -363,7 +376,7 @@ public class DataBaseService {
             Integer id = jdbcTemplate.query("select currval" +
                             "(pg_get_serial_sequence('plan_templates','id'));",
                     (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
-            log.info("Plan Template '" + name + "' created with Id: " + id + " !");
+            log.debug("Plan Template '" + name + "' created with Id: " + id + " !");
             return id;
         }
     }
@@ -491,8 +504,10 @@ public class DataBaseService {
         if (toDelete != null) {
             jdbcTemplate.update("DELETE FROM plan_templates WHERE id = ?",
                     (Object[]) new Integer[]{id});
-            log.info("Plan Template '" + toDelete.getName() + "' with ID: '"
-                    + toDelete.getId() + "' deleted!");
+            User deleter = (User) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            log.debug("Plan Template '" + toDelete.getName() + "' with ID: '"
+                    + toDelete.getId() + "' deleted by " + deleter.getEmail() + "!");
         }
     }
 
@@ -579,7 +594,7 @@ public class DataBaseService {
                         "(pg_get_serial_sequence('exercise_instances','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
         addTagsToExercise(tags, id);
-        log.info("Exercise Instance created with Id: " + id + " !");
+        log.debug("Exercise Instance created with Id: " + id + " !");
         return id;
     }
 
@@ -637,6 +652,20 @@ public class DataBaseService {
         }
     }
 
+    public LinkedList<ExerciseInstance> getInstancesOfExercise(int idOfExercise) {
+        return new LinkedList<>(jdbcTemplate.query(
+                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name" +
+                        " FROM exercise_instances ei, exercises ex " +
+                        " WHERE ei.is_exercise = ? " +
+                        " AND ei.is_exercise = ex.id ",
+                new Integer[]{idOfExercise},
+                (resultSet, i) -> new ExerciseInstance(resultSet.getInt("plan_template"), resultSet.getInt(
+                        "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
+                        getTagsOfExInstance(resultSet.getInt("id")),
+                        getSessionsOfExerciseInstance(resultSet.getInt("id")),
+                        resultSet.getString("name"))));
+    }
+
     /**
      * Deletes an Exercise instance, with the given id, from the database.
      * (If the instance exists and has no children anymore)
@@ -649,7 +678,9 @@ public class DataBaseService {
         if (toDelete != null && toDelete.getTrainingsSessions().isEmpty()) {
             jdbcTemplate.update("DELETE FROM exercise_instances WHERE id = ?",
                     (Object[]) new Integer[]{id});
-            log.info("Exercise instance with id " + id + " deleted!");
+            User deleter = (User) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            log.debug("Exercise instance with id " + id + " deleted by " + deleter.getEmail() + "!");
         } else {
             throw new IllegalArgumentException("Exercise Instance doesn't exist or still has dependent children");
         }
@@ -696,7 +727,7 @@ public class DataBaseService {
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('trainings_sessions','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
-        log.info("Trainings Session created with Id: " + id + " !");
+        log.debug("Trainings Session created with Id: " + id + " !");
         return id;
     }
 
@@ -758,8 +789,10 @@ public class DataBaseService {
         if (getTrainingsSessionById(id) != null) {
             jdbcTemplate.update("DELETE FROM trainings_sessions WHERE id = ?",
                     (Object[]) new Integer[]{id});
-            log.info("Trainings-session with ID: '"
-                    + id + "' deleted!");
+            User deleter = (User) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            log.debug("Trainings-session with ID: '"
+                    + id + "' deleted by " + deleter.getEmail() + "!");
         } else {
             throw new  IllegalArgumentException("Trainingssession doesn't exist!");
         }

@@ -1,5 +1,8 @@
 package de.ep.team2.core.configuration;
 
+import de.ep.team2.core.entities.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -12,6 +15,8 @@ import java.io.IOException;
 
 @Component
 public class CustomAuthSuccessHandler implements AuthenticationSuccessHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(CustomAuthSuccessHandler.class);
 
     /**
      * Handles what should happen upon a successful authentication. Mods get redirected to "/mods/home". Users get
@@ -38,8 +43,12 @@ public class CustomAuthSuccessHandler implements AuthenticationSuccessHandler {
 
         //redirect accordingly
         if(mod) {
+            User loggedInUser = (User) authentication.getPrincipal();
+            log.debug("Mod " + loggedInUser.getEmail() + " logged in successfully.");
             response.sendRedirect("/mods/home");
         } else {
+            User loggedInUser = (User) authentication.getPrincipal();
+            log.debug("User " + loggedInUser.getEmail() + " logged in successfully.");
             response.sendRedirect("/user/home");
         }
     }
