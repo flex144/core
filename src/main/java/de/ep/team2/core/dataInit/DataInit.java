@@ -44,7 +44,7 @@ public class DataInit {
                 "id SERIAL, email VARCHAR(255) NOT NULL ," +
                 " first_name VARCHAR(255), last_name VARCHAR(255) ," +
                 " password varchar(60) not null, " +
-                " enabled boolean not null default false, " +
+                " enabled BOOLEAN not null default false , " +
                 " role varchar(20) not null," +
                 " primary key(email))");
 

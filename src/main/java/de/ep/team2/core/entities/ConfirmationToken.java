@@ -19,7 +19,8 @@ public class ConfirmationToken {
         confirmationToken = UUID.randomUUID().toString();
     }
 
-    public ConfirmationToken (String confirmationToken, String emailUser, Date createdDate) {
+    public ConfirmationToken (int id, String confirmationToken, String emailUser, Date createdDate) {
+        this.tokenId = id;
         this.confirmationToken = confirmationToken;
         this.emailUser = emailUser;
         this.createdDate = createdDate;

@@ -175,8 +175,8 @@ public class DataBaseService {
     public void confirmUser(String email) {
         User toChange = getUserByEmail(email);
         if (toChange != null) {
-            jdbcTemplate.update("UPDATE users SET enabled = TRUE WHERE email = ?", email);
-            log.debug("Email '" + email + "' is now verificated!");
+            jdbcTemplate.update("UPDATE users SET enabled = true WHERE email = ?", email);
+            log.info("Email '" + email + "' is now verificated!");
         }
     }
 
@@ -193,7 +193,7 @@ public class DataBaseService {
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('confirmation_token','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
-        log.debug("Token for email '" + confirmationToken.getUser() + "' has been created" +
+        log.info("Token for email '" + confirmationToken.getUser() + "' has been created" +
                 " with ID: '" + id + "' !");
     }
 
@@ -207,11 +207,22 @@ public class DataBaseService {
         LinkedList<ConfirmationToken> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT id, token, usertoconfirm, createddate FROM confirmation_token WHERE token = ?",
                 new String[]{confirmationToken},
-                new BeanPropertyRowMapper<>(ConfirmationToken.class)));
+                new TokenRowMapper()));
         if (toReturn.isEmpty()) {
             return null;
         } else {
             return toReturn.getFirst();
+        }
+    }
+
+    class TokenRowMapper implements RowMapper<ConfirmationToken> {
+        public ConfirmationToken mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ConfirmationToken token = new ConfirmationToken();
+            token.setTokenId(rs.getInt("id"));
+            token.setConfirmationToken(rs.getString("token"));
+            token.setUser(rs.getString("usertoconfirm"));
+            token.setCreatedDate(rs.getDate("createddate"));
+            return token;
         }
     }
 
