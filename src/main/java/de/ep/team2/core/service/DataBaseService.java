@@ -66,10 +66,10 @@ public class DataBaseService {
      */
     public User getUserById(Integer id) {
         LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT id, email, first_name, last_name, role FROM users WHERE id " +
+                "SELECT id, email, first_name, last_name, password, enabled, role FROM users WHERE id " +
                         "= ?",
                 new Integer[]{id},
-                new BeanPropertyRowMapper<>(User.class)
+                new UserRowMapper()
         ));
         if (toReturn.isEmpty()) {
             return null;
@@ -89,14 +89,27 @@ public class DataBaseService {
      */
     public User getUserByEmail(String email) {
         LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT id, email, first_name, last_name, password, role FROM users WHERE " +
+                "SELECT id, email, first_name, last_name, password, enabled, role FROM users WHERE " +
                         "email = ?",
                 new String[]{email.toLowerCase()},
-                new BeanPropertyRowMapper<>(User.class)));
+                new UserRowMapper()));
         if (toReturn.isEmpty()) {
             return null;
         } else {
             return toReturn.getFirst();
+        }
+    }
+
+    class UserRowMapper implements RowMapper<User> {
+        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+            User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setEmail(rs.getString("email"));
+            user.setFirstName(rs.getString("first_name"));
+            user.setPassword(rs.getString("password"));
+            user.setEnabled(rs.getBoolean("enabled"));
+            user.setRole(rs.getString("role"));
+            return user;
         }
     }
 
@@ -176,7 +189,7 @@ public class DataBaseService {
         User toChange = getUserByEmail(email);
         if (toChange != null) {
             jdbcTemplate.update("UPDATE users SET enabled = true WHERE email = ?", email);
-            log.info("Email '" + email + "' is now verificated!");
+            log.debug("Email '" + email + "' is now verificated!");
         }
     }
 
@@ -193,7 +206,7 @@ public class DataBaseService {
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('confirmation_token','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
-        log.info("Token for email '" + confirmationToken.getUser() + "' has been created" +
+        log.debug("Token for email '" + confirmationToken.getUser() + "' has been created" +
                 " with ID: '" + id + "' !");
     }
 

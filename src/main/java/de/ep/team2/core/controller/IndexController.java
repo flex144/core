@@ -4,8 +4,10 @@ import de.ep.team2.core.entities.ConfirmationToken;
 import de.ep.team2.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class IndexController {
@@ -24,18 +26,18 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/confirm", method = {RequestMethod.GET, RequestMethod.POST})
-    public ModelAndView confirmUserAccount(ModelAndView modelAndView, @RequestParam("token") String
-            confirmationToken) {
+    public String confirmUserAccount(RedirectAttributes redirectAttributes, @RequestParam("token") String
+            confirmationToken, Model model) {
         ConfirmationToken token = userService.findConfirmationToken(confirmationToken);
 
         if (token != null) {
             userService.confirmUser(token.getUser());
-            modelAndView.addObject("message", "Account has been verified!");
+            redirectAttributes.addFlashAttribute("verified", "Account wurde verifiziert");
+            return "redirect:/login";
         } else {
-            modelAndView.addObject("message", "Link is broken, or invalid!");
+            model.addAttribute("error", "Link is invalid or broken!");
+            return "error";
         }
-        modelAndView.setViewName("account_verified");
-        return modelAndView;
     }
 
 }

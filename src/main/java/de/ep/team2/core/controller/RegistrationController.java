@@ -57,9 +57,8 @@ public class RegistrationController {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(userDto.getEmail());
             mailMessage.setSubject("Complete Registration!");
-            mailMessage.setFrom("chand312902@gmail.com");
-            mailMessage.setText("To confirm your account, please click here : "
-                    + "http://localhost:8080/confirm?token=" + confirmationToken.getConfirmationToken());
+            String url = "http://localhost:8080/confirm?token=" + confirmationToken.getConfirmationToken();
+            mailMessage.setText("To confirm your account, please click here : " + url);
 
             emailSenderService.sendEmail(mailMessage);
 

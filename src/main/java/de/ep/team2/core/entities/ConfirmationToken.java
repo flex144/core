@@ -13,20 +13,14 @@ public class ConfirmationToken {
     private String emailUser;
 
     //Constructor
-    public ConfirmationToken (String emailUser) {
+    public ConfirmationToken(String emailUser) {
         this.emailUser = emailUser;
         createdDate = new Date();
         confirmationToken = UUID.randomUUID().toString();
     }
 
-    public ConfirmationToken (int id, String confirmationToken, String emailUser, Date createdDate) {
-        this.tokenId = id;
-        this.confirmationToken = confirmationToken;
-        this.emailUser = emailUser;
-        this.createdDate = createdDate;
+    public ConfirmationToken() {
     }
-
-    public ConfirmationToken () {}
 
     //Getter and Setter
 

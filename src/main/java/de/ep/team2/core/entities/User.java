@@ -16,18 +16,19 @@ public class User implements UserDetails {
     private String role;
     private boolean enabled;
 
-    public User(int id,  String email, String firstName, String lastName, String password,
-                String role) {
+    public User(int id, String email, String firstName, String lastName, String password,
+                boolean enabled, String role) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
+        this.enabled = enabled;
         this.role = role;
-        enabled = false;
     }
 
-    public User(){}
+    public User() {
+    }
 
     @Override
     public String toString() {
@@ -36,7 +37,9 @@ public class User implements UserDetails {
                 id, email, firstName, lastName);
     }
 
-    public int getId() { return id; }
+    public int getId() {
+        return id;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -66,13 +69,25 @@ public class User implements UserDetails {
         this.lastName = lastName;
     }
 
-    public String getRole () { return role; }
+    public String getRole() {
+        return role;
+    }
 
-    public void setRole (String role) { this.role = role; }
+    public void setRole(String role) {
+        this.role = role;
+    }
 
-    public String getPassword() { return password; }
+    public String getPassword() {
+        return password;
+    }
 
-    public void setPassword(String password) {this.password = password; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -88,18 +103,28 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getUsername() { return getEmail(); }
+    public String getUsername() {
+        return getEmail();
+    }
 
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
     @Override
-    public boolean isEnabled() { return enabled; }
+    public boolean isEnabled() {
+        return enabled;
+    }
 
 }
