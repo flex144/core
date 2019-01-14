@@ -10,14 +10,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <div th:include="/fragments/navbar :: navbar_style"></div>
+    <div th:include="/fragments/navbar :: style_fragment"></div>
 </head>
-
 <body>
 <div th:replace="/fragments/navbar :: navbar_user"></div>
 
 <div class="container">
-    <div class="panel panel-default">
+    <div class="panel panel-default outerPanel">
         <div class="panel-body">
             <h2>Relevante Informationen für deinen individuellen Trainingsplan angeben</h2>
             <br>

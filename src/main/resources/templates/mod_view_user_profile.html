@@ -17,11 +17,27 @@
         #user, #plan {
             background: white;
         }
+        * {
+            box-sizing: border-box;
+        }
+        .col-container {
+            display: table;
+            width: 100%;
+        }
+        .col {
+            display: table-cell;
+            padding: 5px;
+        }
+        @media only screen and (max-width: 600px) {
+            .col {
+                display: block;
+                width: 100%;
+            }
+        }
     </style>
 
-    <div th:include="/fragments/navbar :: navbar_style"></div>
+    <div th:include="/fragments/navbar :: style_fragment"></div>
 </head>
-
 <body>
 
 <div sec:authorize="hasRole('MOD')">
@@ -34,57 +50,92 @@
 
 <div class="container">
     <div class="jumbotron">
-        <div class="btn-group btn-group-justified">
-            <a th:href="@{/user/plan}" type="button"
-               class="btn btn-default">
-                <span class="glyphicon glyphicon-list-alt"></span>
-                 Plan des Nutzers
-            </a>
-            <a type="button" class="btn btn-default">
-                <span class="glyphicon glyphicon-stats"></span>
-                 Statistiken des Nutzers
-            </a>
-            <a type="button" class="btn btn-default" data-toggle="modal"
-               data-target="#confirm_mod" sec:authorize="hasRole('MOD')">
-                <span class="glyphicon glyphicon-education"></span>
-                Zum Moderator Befördern
-            </a>
-            <a class="btn btn-danger" data-toggle="modal" data-target="#confirm_delete"
-                id="deleteButton">
-                <span class="glyphicon glyphicon-remove"></span>
-                Nutzerprofil löschen
-            </a>
-        </div>
-        <br>
-        <div>
-            <table class="table table-striped table-bordered" id="user">
-                <tbody>
-                <tr>
-                    <th>User ID</th>
-                    <td><p th:text="${user.id}"/></td>
-                </tr>
-                <tr>
-                    <th>Email</th>
-                    <td><p th:text="${user.email}"/></td>
-                </tr>
-                <tr>
-                    <th>First name</th>
-                    <td><p th:text="${user.firstName}"/></td>
-                </tr>
-                <tr>
-                    <th>Last name</th>
-                    <td><p th:text="${user.lastName}"/></td>
-                </tr>
-                <tr>
-                    <th>Rolle</th>
-                    <td th:if="${user.role == 'ROLE_MOD'}"><p>Moderator</p></td>
-                    <td th:if="${user.role == 'ROLE_USER'}"><p>Nutzer</p></td>
-                </tr>
-                </tbody>
-            </table>
-
+        <div class="container-fluid">
+            <div class="col-container" sec:authorize="hasRole('MOD')">
+                <div class="col">
+                    <a th:href="@{/mods/searchuser}" type="button" class="btn btn-block btn-danger">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                        Zurück
+                    </a>
+                </div>
+                <div class="col">
+                    <a th:href="@{/user/plan}" type="button" class="btn btn-block btn-default">
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                        Plan des Nutzers
+                    </a>
+                </div>
+                <div class="col">
+                    <a type="button" class="btn btn-block btn-default">
+                        <span class="glyphicon glyphicon-stats"></span>
+                        Statistiken des Nutzers
+                    </a>
+                </div>
+                <div class="col">
+                    <a type="button" class="btn btn-block btn-default" data-toggle="modal" data-target="#confirm_mod">
+                        <span class="glyphicon glyphicon-education"></span>
+                        Zum Moderator Befördern
+                    </a>
+                </div>
+                <div class="col">
+                    <a type="button" class="btn btn-block btn-danger" data-toggle="modal"
+                       data-target="#confirm_delete">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        Nutzerprofil löschen
+                    </a>
+                </div>
+            </div>
+            <div class="col-container" sec:authorize="hasRole('USER')">
+                <div class="col">
+                    <a th:href="@{/user/plan}" type="button" class="btn btn-block btn-default">
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                        Mein Plan
+                    </a>
+                </div>
+                <div class="col">
+                    <a type="button" class="btn btn-block btn-default">
+                        <span class="glyphicon glyphicon-stats"></span>
+                        Meine Statistiken
+                    </a>
+                </div>
+                <div class="col">
+                    <a type="button" class="btn btn-block btn-danger" data-toggle="modal"
+                       data-target="#confirm_delete">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        Mein Profil löschen
+                    </a>
+                </div>
+            </div>
+            <br>
+            <div>
+                <table class="table table-striped table-bordered" id="user">
+                    <tbody>
+                    <tr>
+                        <th>User ID</th>
+                        <td><p th:text="${user.id}" style="font-size: 12pt"/></td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td><p th:text="${user.email}" style="font-size: 12pt"/></td>
+                    </tr>
+                    <tr>
+                        <th>First name</th>
+                        <td><p th:text="${user.firstName}" style="font-size: 12pt"/></td>
+                    </tr>
+                    <tr>
+                        <th>Last name</th>
+                        <td><p th:text="${user.lastName}" style="font-size: 12pt"/></td>
+                    </tr>
+                    <tr>
+                        <th>Rolle</th>
+                        <td th:if="${user.role == 'ROLE_MOD'}"><p style="font-size: 12pt">Moderator</p></td>
+                        <td th:if="${user.role == 'ROLE_USER'}"><p style="font-size: 12pt">Nutzer</p></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
+    <!--
     <div class="container">
         <table class="table table-striped table-hover table-bordered" id="plan"
                style="text-align: center">
@@ -120,7 +171,7 @@
             </tr>
             </tbody>
         </table>
-    </div>
+    </div>-->
 </div>
 
 <div class="modal fade" id="confirm_delete">
@@ -134,8 +185,11 @@
                             <h4>Löschen bestätigen</h4>
                         </div>
                         <div class="panel-body">
-                            <p style="font-size: 16px">
+                            <p style="font-size: 16px" sec:authorize="hasRole('MOD')">
                                 Wollen sie den aktuellen Nutzer wirklich löschen?
+                            </p>
+                            <p style="font-size: 16px" sec:authorize="hasRole('USER')">
+                                Wollen sie ihren Account wirklich löschen?
                             </p>
                             <p class="text-danger" style="font-size: 12px">
                                 Diese Aktion kann nicht rückgängig gemacht werden!
