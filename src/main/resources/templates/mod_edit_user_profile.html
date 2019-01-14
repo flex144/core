@@ -23,6 +23,9 @@
             display: table-cell;
             padding: 5px;
         }
+        #editProfilePanel {
+            padding-left: 30px;
+        }
         @media only screen and (max-width: 600px) {
             .col {
                 display: block;
@@ -46,32 +49,148 @@
 
 <div class="container">
     <div class="panel panel-default outerPanel">
-        <div class="panel-heading" style="padding-left: 30px" id="editProfilePanel">
+        <div class="panel-heading" id="editProfilePanel">
             <h3>Nutzerprofil bearbeiten</h3>
         </div>
         <div class="panel-body">
-            <div class="col-container">
-
+            <div class="panel panel-default">
+                <div class="panel-heading" style="font-weight: bold">
+                    Accountdaten
+                </div>
+                <div class="panel-body">
+                    <div class="col-container">
+                        <div class="col">
+                            <input class="form-control" id="currentEmail" type="email" name="currentEmail"
+                                   placeholder="Hier steht die aktuelle E-Mail Adresse">
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-primary btn-block launch-modal">
+                                <span class="glyphicon glyphicon-lock"></span>
+                                E-Mail Adresse ändern
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-primary btn-block" data-toggle="modal"
+                               data-target="#modal_change_password">
+                                <span class="glyphicon glyphicon-lock"></span>
+                                Passwort ändern
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" style="font-weight: bold">
+                    Allgemeine Daten
+                </div>
+                <div class="panel-body">
+                    <div class="col-container">
+                        <div class="col">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" style="font-weight: bold">
+                                    Nachname
+                                </div>
+                                <div class="panel-body">
+                                    <input class="form-control" id="lastnameInput" type="text" name="lastnameInput"
+                                           placeholder="Hier steht der aktuelle Nachname">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" style="font-weight: bold">
+                                    Vorname
+                                </div>
+                                <div class="panel-body">
+                                    <input class="form-control" id="firstnameInput" type="text" name="firstnameInput"
+                                           placeholder="Hier steht der aktuelle Vorname">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-container">
+                        <div class="col">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" style="font-weight: bold">
+                                    Geschlecht:
+                                </div>
+                                <div class="panel-body">
+                                    <select id="gender" class="form-control" required>
+                                        <option selected disabled hidden>Aktuelles Geschlecht ausgewählt</option>
+                                        <option>Männlich</option>
+                                        <option>Weiblich</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" style="font-weight: bold">
+                                    Geburtsdatum:
+                                </div>
+                                <div class="panel-body">
+                                    <input class="form-control" id="dateOfBirthInput" type="date" name="dateOfBirthInput"
+                                           placeholder="Hier steht das aktuelle Geburtsdatum">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" style="font-weight: bold">
+                    Körperdaten
+                </div>
+                <div class="panel-body">
+                    <div class="col-container">
+                        <div class="col">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" style="font-weight: bold">
+                                    Körpergröße (in cm)
+                                </div>
+                                <div class="panel-body">
+                                    <input class="form-control" id="heightInput" type="number" name="heightInput"
+                                           placeholder="Hier steht die aktuelle Größe">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" style="font-weight: bold">
+                                    Körpergewicht (in kg)
+                                </div>
+                                <div class="panel-body">
+                                    <input class="form-control" id="weightInput" type="number" name="weightInput"
+                                           placeholder="Hier steht das aktuelle Gewicht">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="panel-footer">
             <div class="row">
                 <div class="col-md-6">
-                    <a type="button" class="button btn btn-block" data-toggle="modal" data-target="#confirm_exit">
+                    <a type="button" class="button btn btn-block" data-toggle="modal"
+                       data-target="#modal_confirm_exit">
+                        <span class="glyphicon glyphicon-remove"></span>
                         Abbrechen
                     </a>
                 </div>
                 <div class="col-md-6">
-                    <input class="button btn btn-block" type="submit"
-                           value="Änderungen übernehmen"/>
+                    <button class="button btn btn-block" type="submit">
+                        <span class="glyphicon glyphicon-floppy-saved"></span>
+                        Änderungen übernehmen
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal with to confirm leaving the current page without saving changes -->
-<div class="modal fade" id="confirm_exit">
+<!-- Modal to confirm leaving the current page without saving changes -->
+<div class="modal fade" id="modal_confirm_exit">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <!-- body (form) -->
@@ -83,25 +202,26 @@
                     <div class="panel-body">
                         <br>
                         <p style="font-size: 16px">
-                            Wollen sie wirklich abbrechen?
+                        Wollen sie wirklich abbrechen?
                         </p>
                         <p class="text-warning" style="font-size: 12px">
                             Alle vorgenommenen Änderungen werden verworfen!
                         </p>
                         <br>
                         <div class="row">
-                            <div class="col-md-2"></div>
-                            <div class="col-md-4">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-5">
                                 <a type="button" class="btn btn-warning btn-block"><!--th:href="Link to user page"-->
-                                    Bearbeiten abbrechen
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                    Änderungen verwerfen
                                 </a>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-5">
                                 <button type="button" class="btn btn-default btn-block" data-dismiss="modal">
                                     Weiter Bearbeiten
                                 </button>
                             </div>
-                            <div class="col-md-2"></div>
+                            <div class="col-md-1"></div>
                         </div>
                     </div>
                 </div>
@@ -109,6 +229,120 @@
         </div>
     </div>
 </div>
+
+<!-- Modal to change the password -->
+<div class="modal fade" id="modal_change_password">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- body (form) -->
+            <div class="modal-body">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4>Passwort ändern</h4>
+                    </div>
+                    <div class="panel-body">
+                        <p style="font-size: 16px">
+                            Geben sie zuerst das alte Passwort ein, dann wählen sie ein neues und bestätigen dieses.
+                        </p>
+                        <br>
+                        <input type="password"  placeholder="Altes Passwort eingeben" class="form-control"
+                               id="oldPassword">
+                        <input type="password"  placeholder="Neues Passwort eingeben" class="form-control"
+                               id="newPassword">
+                        <input type="password"  placeholder="Neues Passwort bestätigen" class="form-control"
+                               id="confirmNewPassword">
+                        <br>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-5">
+                                <a type="button" class="btn btn-primary btn-block"><!--th:href="Link to user page"-->
+                                    Änderungen übernehmen
+                                </a>
+                            </div>
+                            <div class="col-md-5">
+                                <button type="button" class="btn btn-default btn-block" data-dismiss="modal">
+                                    Abbrechen
+                                </button>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal to change the email adress -->
+<div class="modal fade" id="modal_change_email">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- body (form) -->
+            <div class="modal-body">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h4>E-Mail Adresse ändern</h4>
+                    </div>
+                    <div class="panel-body">
+                        <p style="font-size: 16px">
+                            Geben sie die neue E-Mail Adresse hier an und klicken sie auf
+                            <mark>Code versenden</mark>. Anschließend gehen sie in ihr E-Mail Postfach und
+                            geben anschließend den Besätigungscode aus der erhaltenen E-mail an.
+                        </p>
+                        <br>
+                        <div class="input-group">
+                            <input type="email"  placeholder="Neue E-mail Adresse eingeben.." class="form-control"
+                                    id="newEmailInput">
+                            <div class="input-group-btn">
+                                <a type="button" id="btnSendEmailCode" class="btn btn-primary">
+                                    <span class="glyphicon glyphicon-send"></span>
+                                    Code versenden
+                                </a>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <div class="input-group">
+                                    <input type="text"  placeholder="Bestätigungscode eingeben.." class="form-control"
+                                           id="verificationCodeInput">
+                                    <div class="input-group-btn">
+                                        <a type="button" id="btnVerifyCode" class="btn btn-success">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                            Änderung bestätigen
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <a type="button" class="btn btn-danger btn-block" data-dismiss="modal">
+                            <span class="glyphicon glyphicon-remove"></span>
+                            Abbrechen
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /**
+     * Execute various functions when the page is loaded
+     */
+    $(document).ready(function(){
+        // Open the modal to change the email address without the possibility
+        // to close the modal by clicking outside of it or esc
+        $('.launch-modal').click(function(){
+            // launch the modal to change the email as static modal to avoid closing by accident
+            $('#modal_change_email').modal({
+                backdrop: 'static'
+            });
+        });
+    });
+</script>
 
 </body>
 </html>
