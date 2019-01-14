@@ -18,63 +18,76 @@
     --->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.css"></script>
 
-    <div th:include="/fragments/navbar :: navbar_style"></div>
+    <div th:include="/fragments/navbar :: style_fragment"></div>
 </head>
-
 <body>
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
 <form class="form-horizontal" th:action="@{/mods/searchexercise}" method="post" id="searchForm">
     <div class="container">
         <div class="jumbotron">
-            <h2>Liste aller verfügbaren Übungen</h2>
-            <br>
-            <br>
-            <p style="font-size: 12pt">Gib in die Eingabezeile den Namen oder einen Teil davon
-                ein um passende Übungen zu finden!</p>
-            <input class="form-control" id="myInput" type="text" name="nameUebung"
-                   placeholder="Suchwort eingeben..">
-            <p style="font-size: 25px; margin: 2%" th:if="${message}" th:utext="${message}"></p>
-            <a type="button" class="btn btn-success btn-medium" id="submitForm" style="margin-top: 2%;
-                   margin-bottom: 2%">
-                <span class="glyphicon glyphicon-search"></span> Suchen</a>
-            <br>
-            <a th:href="@{/mods/createexercise}" type="button"
-               class="btn btn-success btn-medium">
-                <span class="glyphicon glyphicon-plus-sign"></span> Neue
-                Übung</a>
+            <div class="container-fluid">
+                <h2>Liste aller verfügbaren Trainingsübungen</h2>
+                <br>
+                <br>
+                <p style="font-size: 12pt">Gib in die Eingabezeile über der Tabelleden Namen oder einen Teil davon ein
+                    um gesuchte Übungen zu finden<br>Um dir alle verfügbaren Trainingsübungen
+                    anzeigen zu lassen, klicke auf den Button <mark>"Suchen"</mark> ohne ein Suchwort
+                    anzugeben.<br><br> Um eine neue Trainingsübung zu erstellen, klicke den folgenden
+                    Button <mark>"Neue Übung"</mark>.</p>
+                <p style="font-size: 25px; margin: 2%" th:if="${message}" th:utext="${message}"></p>
+                <br>
+                <a th:href="@{/mods/createexercise}" type="button"
+                   class="btn btn-success btn-medium">
+                    <span class="glyphicon glyphicon-plus-sign"></span> Neue
+                    Übung</a>
+            </div>
         </div>
-    </div>
-    <div class="container">
-        <table id="exerciseTable" class="table table-bordered table-condensed"
-               data-toggle="table">
-            <thead>
-            <tr>
-                <th data-field="ID" data-sortable="true">
-                     ID
-                </th>
-                <th data-field="exerciseName" data-sortable="true">
-                     Übungsname
-                </th>
-                <th data-field="muscleGroups" data-sortable="true">
-                    Muskel Gruppen
-                </th>
-                <th data-field="description" data-sortable="true">
-                     Beschreibung
-                </th>
-            </tr>
-            </thead>
-            <tbody id="myTable">
-            <tr th:each="exercise : ${exercises}" style="cursor: pointer"
-                th:onclick="'javascript:rowClicked(\'' + ${exercise.getId()} + '\');'">
-                <td th:text="${exercise.getId()}"></td>
-                <td th:text="${exercise.getName()}"></td>
-                <td>Brust, Trizeps</td>
-                <td th:if="${exercise.getDescription() != null and exercise.getDescription().length() > 130}" th:text="${exercise.getDescription().substring(0,130)+'...'}"></td>
-                <td th:unless="${exercise.getDescription() != null and exercise.getDescription().length() > 130}" th:text="${exercise.getDescription()}"></td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="panel panel-default outerPanel">
+            <div class="panel-heading">
+                <div class="input-group">
+                    <input class="form-control" id="myInput" type="text" name="nameUebung"
+                           placeholder="Suchwort eingeben..">
+                    <div class="input-group-btn">
+                        <a type="button" id="submitForm" class="btn btn-success">
+                            <span class="glyphicon glyphicon-search"></span>
+                            Suchen
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <table id="exerciseTable" class="table table-bordered table-condensed"
+                       data-toggle="table">
+                    <thead>
+                    <tr>
+                        <th data-field="ID" data-sortable="true">
+                            ID
+                        </th>
+                        <th data-field="exerciseName" data-sortable="true">
+                            Übungsname
+                        </th>
+                        <th data-field="muscleGroups" data-sortable="true">
+                            Muskel Gruppen
+                        </th>
+                        <th data-field="description" data-sortable="true">
+                            Beschreibung
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="myTable">
+                    <tr th:each="exercise : ${exercises}" style="cursor: pointer"
+                        th:onclick="'javascript:rowClicked(\'' + ${exercise.getId()} + '\');'">
+                        <td th:text="${exercise.getId()}"></td>
+                        <td th:text="${exercise.getName()}"></td>
+                        <td>Brust, Trizeps</td>
+                        <td th:if="${exercise.getDescription() != null and exercise.getDescription().length() > 130}" th:text="${exercise.getDescription().substring(0,130)+'...'}"></td>
+                        <td th:unless="${exercise.getDescription() != null and exercise.getDescription().length() > 130}" th:text="${exercise.getDescription()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </form>
 
