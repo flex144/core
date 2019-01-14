@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Basic Template</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <div th:include="/fragments/navbar :: style_fragment"></div>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .col-container {
+            display: table;
+            width: 100%;
+        }
+        .col {
+            display: table-cell;
+            padding: 5px;
+        }
+        @media only screen and (max-width: 600px) {
+            .col {
+                display: block;
+                width: 100%;
+            }
+            #editProfilePanel {
+                padding-left: 0px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div sec:authorize="hasRole('MOD')">
+    <div th:replace="/fragments/navbar :: navbar_mod"></div>
+</div>
+
+<div sec:authorize="hasRole('USER')">
+    <div th:replace="/fragments/navbar :: navbar_user"></div>
+</div>
+
+<div class="container">
+    <div class="panel panel-default outerPanel">
+        <div class="panel-heading" style="padding-left: 30px" id="editProfilePanel">
+            <h3>Nutzerprofil bearbeiten</h3>
+        </div>
+        <div class="panel-body">
+            <div class="col-container">
+
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-6">
+                    <a type="button" class="button btn btn-block" data-toggle="modal" data-target="#confirm_exit">
+                        Abbrechen
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <input class="button btn btn-block" type="submit"
+                           value="Änderungen übernehmen"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal with to confirm leaving the current page without saving changes -->
+<div class="modal fade" id="confirm_exit">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- body (form) -->
+            <div class="modal-body">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h4>Abbruch bestätigen</h4>
+                    </div>
+                    <div class="panel-body">
+                        <br>
+                        <p style="font-size: 16px">
+                            Wollen sie wirklich abbrechen?
+                        </p>
+                        <p class="text-warning" style="font-size: 12px">
+                            Alle vorgenommenen Änderungen werden verworfen!
+                        </p>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-4">
+                                <a type="button" class="btn btn-warning btn-block"><!--th:href="Link to user page"-->
+                                    Bearbeiten abbrechen
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-default btn-block" data-dismiss="modal">
+                                    Weiter Bearbeiten
+                                </button>
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
