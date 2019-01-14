@@ -10,7 +10,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <div th:include="/fragments/navbar :: style_fragment"></div>
+    <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
 </head>
 <body>
     <div class="container-fluid">
@@ -60,7 +60,7 @@
                         <br>
                         <div class="col-md-12">
                             <div class="col-md-6">
-                                <a class="button btn btn-block" th:href="@{/login}">Zurück</a>
+                                <a class="button btn btn-block" th:href="@{/login}">Zurück zur Anmeldung</a>
                             </div>
                             <div class="col-md-6">
                                 <input class="button btn btn-block" type="submit"

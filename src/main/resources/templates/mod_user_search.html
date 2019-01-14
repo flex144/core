@@ -17,8 +17,9 @@
     --->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.css"></script>
 
-    <div th:include="/fragments/navbar :: style_fragment"></div>
+    <div th:include="/fragments/navbar :: navbar_style"></div>
 </head>
+
 <body>
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
@@ -26,49 +27,42 @@
       th:object="${searchtext}" method="post">
     <div class="container">
         <div class="jumbotron">
-            <div class="container-fluid">
-                <h2>Liste aller auf der Webseite registrierten Nutzer</h2>
-                <br>
-                <br>
-                <p style="font-size: 12pt">Gib in die Eingabezeile über der Liste aller Nutzer
-                    ein beliebiges Attribut des oder der gesuchten Nutzer ein um nach diesem zu filtern</p>
-            </div>
+            <h2>Liste aller auf der Webseite registrierten Nutzer</h2>
+            <br>
+            <p style="font-size: 12pt">Gib in die folgende Eingabezeile ein beliebiges Attribut des oder der gesuchten Nutzer ein</p>
+            <input class="form-control" id="myInput" type="text" placeholder="Suchwort eingeben..">
+            <br>
         </div>
-        <div class="panel panel-default outerPanel">
-            <div class="panel-heading">
-                <input class="form-control" id="myInput" type="text" placeholder="Suchwort eingeben..">
-            </div>
-            <div class="panel-body">
-                <table id="userTable" class="table table-bordered table-condensed" data-toggle="table">
-                    <thead>
-                    <tr>
-                        <th data-field="ID" data-sortable="true">
-                            ID
-                        </th>
-                        <th data-field="email" data-sortable="true">
-                            Email
-                        </th>
-                        <th data-field="firstName" data-sortable="true">
-                            Vorname
-                        </th>
-                        <th data-field="lastName" data-sortable="true">
-                            Nachname
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody id="myTable">
-                    <tr th:each="user : ${users}" style="cursor: pointer"
-                        th:onclick="'javascript:rowClicked(\'' + ${user.getId()} + '\');'"
-                        th:id="${user.getId()}">
-                        <td th:text="${user.getId()}"/>
-                        <td th:text="${user.getEmail()}"/>
-                        <td th:text="${user.getFirstName()}"/>
-                        <td th:text="${user.getLastName()}"/>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    </div>
+    <div class="container">
+        <table id="userTable" class="table table-bordered table-condensed" data-toggle="table">
+            <thead>
+                <tr>
+                    <th data-field="ID" data-sortable="true">
+                        ID
+                    </th>
+                    <th data-field="email" data-sortable="true">
+                        Email
+                    </th>
+                    <th data-field="firstName" data-sortable="true">
+                        Vorname
+                    </th>
+                    <th data-field="lastName" data-sortable="true">
+                        Nachname
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+                <tr th:each="user : ${users}" style="cursor: pointer"
+                    th:onclick="'javascript:rowClicked(\'' + ${user.getId()} + '\');'"
+                    th:id="${user.getId()}">
+                    <td th:text="${user.getId()}"/>
+                    <td th:text="${user.getEmail()}"/>
+                    <td th:text="${user.getFirstName()}"/>
+                    <td th:text="${user.getLastName()}"/>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </form>
 

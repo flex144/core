@@ -13,34 +13,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <div th:include="/fragments/navbar :: style_fragment"></div>
+    <div th:include="/fragments/navbar :: navbar_style"></div>
     <style>
-        * {
-            box-sizing: border-box;
-        }
-        .col-container {
-            display: table;
-            width: 100%;
-        }
-        .col {
-            display: table-cell;
-            padding: 5px;
-        }
-        @media only screen and (max-width: 600px) {
-            .col-outer {
-                display: block;
-                width: 100%;
-            }
-        }
-        img {
-            border: 4px solid #ddd;
-            border-radius: 50%;
-            width: 100%;
-        }
-        img:hover {
-            /*box-shadow: 0 0 5px 3px rgba(0, 140, 186, 0.5);*/
-            box-shadow: 0 0 5px 3px rgba(253, 137, 0, 0.5);
-        }
     </style>
 </head>
 
@@ -54,60 +28,63 @@
     <div th:replace="/fragments/navbar :: navbar_user"></div>
 </div>
 
-<div class="visible-md visible-lg">
-    <br><br>
-</div>
 <div class="container">
     <div class="jumbotron">
-        <div class="col-container">
-            <div class="col col-outer">
-                <div class="col-container">
-                    <div class="col overlayContainer">
-                        <a th:href="@{/user/plan/overview}">
-                            <img src="/initFileBackup/Icons/icon_plan.png" alt="training" class="image" style="width:100%">
-                            <div class="overlay">
-                                <div class="text">
-                                    Training
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col overlayContainer">
-                        <a th:href="@{/users/}">
-                            <img src="/initFileBackup/Icons/icon_profile.png" alt="profile" class="image" style="width: 100%">
-                            <div class="overlay">
-                                <div class="text">
-                                    Profil
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col col-outer">
-                <div class="col-container">
-                    <div class="col overlayContainer">
-                        <a>
-                            <img src="/initFileBackup/Icons/icon_contact.png" alt="contactTrainer">
-                            <div class="overlay">
-                                <div class="text">
-                                    Trainer <br/> kontaktieren
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col overlayContainer">
-                        <a>
-                            <img src="/initFileBackup/Icons/icon_stats.png" alt="statistics">
-                            <div class="overlay">
-                                <div class="text">
-                                    Statistiken
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <div class="container" style="text-align: center; height: 200px">
+            <h1>Willkommen zurück</h1>
+            <div > Begrüßungstext für Nutzer</div>
+        </div>
+        <div style="width: 100%; text-align: center; padding-bottom: 20px">
+            <table style="width: 100%; text-align: center; padding-bottom: 20px">
+                <tr style="height: 100px;">
+                    <td style="width: 50%; height: inherit;">
+                        <div class="container" style="height: 100%; width: 100%;">
+                            <!--------- Training Page ---------->
+                            <a th:href="@{/user/plan/overview}" type="button"
+                               class="btn btn-success" style="height: 100%; width: 100%;">
+                                <span class="glyphicon glyphicon-th-list" style="font-size: 5rem;"></span><br>
+                                Training<br>starten
+                            </a>
+                        </div>
+                    </td>
+                    <td style="width: 50%; height: inherit;">
+                        <div class="container" style="height: 100%; width: 100%;">
+                            <!--------- Social Page ---------->
+                            <a type="button"
+                               class="btn btn-info" style="height: 100%; width: 100%;">
+                                <span class="glyphicon glyphicon-thumbs-up" style="font-size: 5rem;"></span><br>
+                                Social
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="width: 100%; text-align: center; padding-bottom: 20px">
+            <table style="width: 100%; text-align: center; padding-bottom: 20px">
+                <tr style="height: 100px;">
+                    <td style="width: 50%; height: inherit;">
+                        <div class="container" style="height: 100%; width: 100%;">
+                            <!--------- Statistics Page---------->
+                            <a type="button"
+                               class="btn btn-primary" style="height: 100%; width: 100%;">
+                                <span class="glyphicon glyphicon-book" style="font-size: 5rem;"></span><br>
+                                Statistiken
+                            </a>
+                        </div>
+                    </td>
+                    <td style="width: 50%; height: inherit;">
+                        <div class="container" style="height: 100%; width: 100%;">
+                            <!--------- contacting-trainer Page ---------->
+                            <a type="button"
+                               class="btn btn-warning" style="height: 100%; width: 100%;">
+                                <span class="glyphicon glyphicon-bell" style="font-size: 5rem;"></span><br>
+                                Trainer<br>kontaktieren
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 </div>

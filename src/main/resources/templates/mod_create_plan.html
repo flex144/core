@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
 
-    <div th:include="/fragments/navbar :: style_fragment"></div>
+    <div th:include="/fragments/navbar :: navbar_style"></div>
 
     <style>
         #inputUnit:disabled {
@@ -31,7 +31,7 @@
         }
         .accordion {
             background-color: #e1e1e1;
-            border-radius: 10px;
+            border-radius: 20px;
             color: #444;
             cursor: pointer;
             padding: 18px;
@@ -44,7 +44,7 @@
         }
         .active {
             background-color: #ccc;
-            border-radius: 10px 10px 0px 0px;
+            border-radius: 20px 20px 0px 0px;
         }
 
         .accordion:hover {
@@ -66,7 +66,7 @@
         .accordionPanel {
             padding: 0 18px;
             background-color: white;
-            border-radius: 0px 0px 10px 10px;
+            border-radius: 0px 0px 20px 20px;
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.2s ease-out;
@@ -158,7 +158,7 @@
     </div>
 
     <!-- panel with form to customize an exercise, add it to the plan and create a new exercise -->
-    <div class="panel panel-default outerPanel">
+    <div class="panel panel-default">
         <!-- Panel header with title and buttons to add or create exercises and to reset the form -->
         <div class="panel-heading">
             <div class="row">
@@ -293,7 +293,7 @@
     </div>
 
         <!-- panel with overview of final plan and button to save the plan -->
-        <div class="panel panel-success outerPanel">
+        <div class="panel panel-success">
             <div class="panel-heading">
                 Aktueller Trainingsplan
             </div>

@@ -18,78 +18,66 @@
     --->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.12.1/bootstrap-table.css"></script>
 
-    <div th:include="/fragments/navbar :: style_fragment"></div>
+    <div th:include="/fragments/navbar :: navbar_style"></div>
 </head>
+
 <body>
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
 <form class="form-horizontal" th:action="@{/mods/searchplan}" method="post" id="searchForm">
     <div class="container">
         <div class="jumbotron">
-            <div class="container-fluid">
-                <h2>Verzeichnis aller erstellten Trainingsplanvorlagen</h2>
-                <br>
-                <br>
-                <p style="font-size: 12pt">Gib in die Eingabezeile über der Tabelle ein Attribut ein um alle
-                    Vorlagen nach diesem zu filtern.<br>Um dir alle verfügbaren Trainingsplanvorlagen
-                    anzeigen zu lassen, klicke auf den Button <mark>"Suchen"</mark> ohne ein Suchwort
-                    anzugeben.<br><br> Um eine neue Trainingsplanvorlage zu erstellen, klicke den folgenden
-                    Button <mark>"Neue Vorlage"</mark>.</p>
-                <br>
-                <a th:href="@{/mods/createplan}" type="button"
-                   class="btn btn-success btn-medium">
-                    <span class="glyphicon glyphicon-plus-sign"></span> Neue Vorlage</a>
-            </div>
+            <h2>Verzeichnis aller erstellten Trainingsplanvorlagen</h2>
+            <br>
+            <br>
+            <p style="font-size: 12pt">Gib in die folgende Eingabezeile alle
+                Pläne nach bestimmten Attributen
+                zu filtern</p>
+            <input class="form-control" id="myInput" type="text" name="planName"
+                   placeholder="Suchwort eingeben..">
+            <br>
+            <a th:href="@{/mods/createplan}" type="button"
+               class="btn btn-success btn-medium">
+                <span class="glyphicon glyphicon-plus-sign"></span> Neue Vorlage</a>
+            <a type="button" id="submitForm"
+               class="btn btn-success btn-medium">
+                <span class="glyphicon glyphicon-search"></span> Suchen</a>
         </div>
-        <div class="panel panel-default outerPanel">
-            <div class="panel-heading">
-                <div class="input-group">
-                    <input class="form-control" id="myInput" type="text" name="planName"
-                           placeholder="Suchwort eingeben..">
-                    <div class="input-group-btn">
-                        <a type="button" id="submitForm" class="btn btn-success">
-                            <span class="glyphicon glyphicon-search"></span>
-                            Suchen
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="panel-body">
-                <table id="planTable" class="table table-bordered table-condensed"
-                       data-toggle="table">
-                    <thead>
-                    <tr>
-                        <th data-field="ID" data-sortable="true">
-                            <span class="glyphicon glyphicon-sort"></span> ID
-                        </th>
-                        <th data-field="planName" data-sortable="true">
-                            <span class="glyphicon glyphicon-sort"></span> Übungsname
-                        </th>
-                        <th data-field="focus" data-sortable="true">
-                            <span class="glyphicon glyphicon-sort"></span> Schwerpunkt
-                        </th>
-                        <th data-field="timeSpan" data-sortable="true">
-                            <span class="glyphicon glyphicon-sort"></span> Dauer in Trainingseinheiten
-                        </th>
-                        <th data-field="author" data-sortable="true">
-                            <span class="glyphicon glyphicon-sort"></span> Autor
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody id="myTable">
-                    <tr th:each="planTemplate : ${planList}"
-                        th:onclick="'javascript:rowClicked(\'' + ${planTemplate.getId()} + '\');'">
-                        <td th:text="${planTemplate.getId()}"></td>
-                        <td th:text="${planTemplate.getName()}"></td>
-                        <td th:text="${planTemplate.getTrainingsFocus()}"></td>
-                        <td th:text="${planTemplate.getNumTrainSessions()}"></td>
-                        <td th:if="${planTemplate.getAuthor()}" th:text="${planTemplate.author.getEmail()}"></td>
-                        <td th:if="${planTemplate.getAuthor()} == null" th:text="'Gelöschtes Profil'"></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    </div>
+    <div class="container">
+        <table id="planTable" class="table table-bordered table-condensed"
+               data-toggle="table">
+            <thead>
+            <tr>
+                <th data-field="ID" data-sortable="true">
+                    <span class="glyphicon glyphicon-sort"></span> ID
+                </th>
+                <th data-field="planName" data-sortable="true">
+                    <span class="glyphicon glyphicon-sort"></span> Übungsname
+                </th>
+                <th data-field="focus" data-sortable="true">
+                    <span class="glyphicon glyphicon-sort"></span> Schwerpunkt
+                </th>
+                <th data-field="timeSpan" data-sortable="true">
+                    <span class="glyphicon glyphicon-sort"></span> Dauer in Trainingseinheiten
+                </th>
+                <th data-field="author" data-sortable="true">
+                    <span class="glyphicon glyphicon-sort"></span> Autor
+                </th>
+            </tr>
+            </thead>
+            <tbody id="myTable">
+            <tr th:each="planTemplate : ${planList}"
+                th:onclick="'javascript:rowClicked(\'' + ${planTemplate.getId()} + '\');'">
+                <td th:text="${planTemplate.getId()}"></td>
+                <td th:text="${planTemplate.getName()}"></td>
+                <td th:text="${planTemplate.getTrainingsFocus()}"></td>
+                <td th:text="${planTemplate.getNumTrainSessions()}"></td>
+                <td th:if="${planTemplate.getAuthor()}" th:text="${planTemplate.author.getEmail()}"></td>
+                <td th:if="${planTemplate.getAuthor()} == null" th:text="'Gelöschtes Profil'"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </form>
 

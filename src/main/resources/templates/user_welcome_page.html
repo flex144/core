@@ -11,7 +11,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <div th:include="/fragments/navbar :: style_fragment"></div>
+    <link href="../static/css/navbar.css"
+          th:href="@{css/navbar.css}" rel="stylesheet" media="screen">
 </head>
 <body>
 <div class="container" style="padding-top: 20px">
@@ -40,7 +41,7 @@
 
 <div class="container">
     <!-- Panel with welcome message and general information -->
-    <div class="panel panel-default outerPanel">
+    <div class="panel panel-default">
         <div class="panel-heading">
             <h2>Willkommen bei "Core"</h2>
             &ensp;
@@ -48,7 +49,7 @@
         </div>
     </div>
     <!-- Panel with information on how to create an individual trainingsplan -->
-    <div class="panel panel-default outerPanel">
+    <div class="panel panel-default">
         <div class="panel-heading">
             <h4>Trainingsplan erstellen</h4>
         </div>
@@ -59,7 +60,7 @@
         </div>
     </div>
     <!-- Panel with information on how to train with the website -->
-    <div class="panel panel-default outerPanel">
+    <div class="panel panel-default">
         <div class="panel-heading">
             <h4>Mit der Webseite trainieren</h4>
         </div>
@@ -70,7 +71,7 @@
         </div>
     </div>
     <!-- Panel with additional information -->
-    <div class="panel panel-default outerPanel">
+    <div class="panel panel-default">
         <div class="panel-heading">
             <h4>Weitere Infos</h4>
         </div>
