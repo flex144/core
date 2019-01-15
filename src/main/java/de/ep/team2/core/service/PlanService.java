@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class PlanService {
@@ -104,28 +105,46 @@ public class PlanService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         String mail = user.getEmail();
-        idTemplate = db.insertPlanTemplate(dto.getPlanName(), dto.getTrainingsFocus(), mail,
-                dto.isOneShot(), dto.getSessionNums(), 1);
+        idTemplate = db.insertPlanTemplate(dto.getPlanName(), dto.getTrainingsFocus(), dto.getTargetGroup(), mail,
+                dto.isOneShot(), dto.getRecomSessionsPerWeek(), dto.getSessionNums(), 1);
         Integer exInstanceId = db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(),
-                dto.getTags(), idTemplate);
+                dto.getRepetitionMaximum(), dto.getTags(), idTemplate);
+        createTrainingsSessions(dto, exInstanceId);
+        return idTemplate;
+    }
+
+    private void createTrainingsSessions(CreatePlanDto dto, int exInstanceId) {
+        DataBaseService db = DataBaseService.getInstance();
         for (int i = 0; i < dto.getSessionNums(); i++) {
-            Integer[] reps = parseSets(dto.getSets().get(i));
-            db.insertTrainingsSession(exInstanceId, i + 1, 15, reps.length, reps,
+            Integer[] reps = parseReps(dto.getSets().get(i));
+            Integer[] weightDiff = parseWeightDiff(dto.getWeightDiff().get(i));
+            if (!validateWeightWithReps(reps, weightDiff)) {
+                throw new IllegalArgumentException("reps and weights do not match!");
+            }
+            db.insertTrainingsSession(exInstanceId, i + 1, reps.length, weightDiff, reps,
                     dto.getTempo().get(i), dto.getPause().get(i));
         }
-        return idTemplate;
     }
 
     private void addInstanceAndSessionToExistingPlan(CreatePlanDto dto, Integer idOfTemplate) {
         DataBaseService db = DataBaseService.getInstance();
         Integer exInstanceId = db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(),
-                dto.getTags(), dto.getId());
-        for (int i = 0; i < dto.getSessionNums(); i++) {
-            Integer[] reps = parseSets(dto.getSets().get(i));
-            db.insertTrainingsSession(exInstanceId, i + 1, 15, reps.length, reps,
-                    dto.getTempo().get(i), dto.getPause().get(i));
-        }
+                dto.getRepetitionMaximum(), dto.getTags(), dto.getId());
+        createTrainingsSessions(dto, exInstanceId);
         db.increaseNumOfExercises(idOfTemplate);
+    }
+
+    private boolean validateWeightWithReps(Integer[] reps, Integer[] weightDiff) {
+        if (weightDiff.length == reps.length) {
+            return true;
+        } else if (weightDiff.length == 1 && reps.length < 1) {
+            Integer value = weightDiff[0];
+            weightDiff = new Integer[reps.length];
+            Arrays.fill(weightDiff, value);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -133,16 +152,30 @@ public class PlanService {
      * integers.
      * NumberFormatException not catched.
      *
-     * @param sets String to parse to integers.
+     * @param reps String to parse to integers.
      * @return Array representing the String.
      */
-    private Integer[] parseSets(String sets) {
-        String[] splitted = sets.trim().replaceAll("\\s+", "").split("/");
+    private Integer[] parseReps(String reps) {
+        String[] splitted = reps.trim().replaceAll("\\s+", "").split("/");
         Integer[] toReturn = new Integer[splitted.length];
         for (int i = 0; i < splitted.length; i++) {
             toReturn[i] = Integer.parseInt(splitted[i].trim());
         }
         return toReturn;
+    }
+
+    private Integer[] parseWeightDiff(String weightDiff) {
+        if (weightDiff == null || weightDiff.trim().replaceAll("\\s+","").equals("")) {
+            return new Integer[]{0};
+        } else {
+            String[] splitted = weightDiff.trim().replaceAll("\\s+", "").split("/");
+            Integer[] toReturn = new Integer[splitted.length];
+            for (int i = 0; i < splitted.length; i++) {
+                toReturn[i] = Integer.parseInt(splitted[i].trim());
+            }
+            return toReturn;
+            // TODO: 15.01.19 check one value for all and check if same as sets in new method
+        }
     }
 
     // TODO: 14.01.19 Linking fot the 2 events
@@ -176,7 +209,7 @@ public class PlanService {
                 newDto.setWeights(weights);
                 newDto.setFirstTraining(false);
                 newDto.setWeightDone(null);
-                newDto.setRepMax(trainingsSession.getRepetitionMaximum());
+                newDto.setRepMax(exInstance.getRepetitionMaximum());
                 toReturn.add(newDto);
             }
             return toReturn;

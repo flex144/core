@@ -75,8 +75,10 @@ public class DataInit {
                 "id SERIAL NOT NULL PRIMARY KEY," +
                 "name varchar(255) NOT NULL UNIQUE," +
                 "trainings_focus varchar(255)," +
+                "target_group varchar(255)," +
                 "author varchar(255) references users ," +
                 "one_shot_plan boolean," +
+                "recom_sessions_per_week integer," +
                 "num_train_sessions integer NOT NULL," +
                 "exercises_per_session integer NOT NULL)");
         log.debug("Created table plan_templates");
@@ -86,6 +88,7 @@ public class DataInit {
                 "id SERIAL NOT NULL PRIMARY KEY," +
                 "is_exercise integer references exercises not null," +
                 "category varchar(50)," +
+                "repetition_maximum integer," +
                 "plan_template integer not null references plan_templates)");
         log.debug("Created table exercise_instances");
         // Execution Tags for Instance
@@ -105,8 +108,14 @@ public class DataInit {
                 "id SERIAL NOT NULL PRIMARY KEY," +
                 "exercise_instance integer references exercise_instances not null," +
                 "ordering integer not null," +
-                "rep_maximum integer not null," +
                 "sets integer not null," +
+                "weightdiff_set1 integer," +
+                "weightdiff_set2 integer," +
+                "weightdiff_set3 integer," +
+                "weightdiff_set4 integer," +
+                "weightdiff_set5 integer," +
+                "weightdiff_set6 integer," +
+                "weightdiff_set7 integer," +
                 "tempo varchar(50)," +
                 "pause integer," +
                 "reps_set1 integer," +
@@ -229,26 +238,26 @@ public class DataInit {
     }
 
     private void fillPlanTemplates() {
-        DataBaseService.getInstance().insertPlanTemplate("Test Plan", "muscle",
-                "felix@gmail.com",false,6,2);
+        DataBaseService.getInstance().insertPlanTemplate("Test Plan", "muscle","beginner",
+                "felix@gmail.com",false,1,6,2);
     }
 
     private void fillTrainingSessions() {
         DataBaseService db = DataBaseService.getInstance();
         //Bankdrücken
-        db.insertTrainingsSession(1,1,15,3,new Integer[]{12,12,12},"Langsam",90);
-        db.insertTrainingsSession(1,2,15,3,new Integer[]{12,12,12},"Langsam",90);
-        db.insertTrainingsSession(1,3,15,3,new Integer[]{13,13,13},"Langsam",90);
-        db.insertTrainingsSession(1,4,15,3,new Integer[]{13,13,13},"Schnell",90);
-        db.insertTrainingsSession(1,5,15,3,new Integer[]{15,14,13},"Langsam",90);
-        db.insertTrainingsSession(1,6,15,4,new Integer[]{15,14,14,15},"Langsam",90);
+        db.insertTrainingsSession(1,1,3, new Integer[]{0,0,5}, new Integer[]{12,12,12},"Langsam",90);
+        db.insertTrainingsSession(1,2,3, new Integer[]{0,0,5}, new Integer[]{12,12,12},"Langsam",90);
+        db.insertTrainingsSession(1,3,3, new Integer[]{0,0,5}, new Integer[]{13,13,13},"Langsam",90);
+        db.insertTrainingsSession(1,4,3, new Integer[]{0,0,5}, new Integer[]{13,13,13},"Schnell",90);
+        db.insertTrainingsSession(1,5,3, new Integer[]{0,0,5}, new Integer[]{15,14,13},"Langsam",90);
+        db.insertTrainingsSession(1,6,4, new Integer[]{0,0,5,10}, new Integer[]{15,14,14,15},"Langsam",90);
         //Liegestütz
-        db.insertTrainingsSession(2,1,15,4,new Integer[]{20,25,25,20},"Langsam",90);
-        db.insertTrainingsSession(2,2,15,4,new Integer[]{22,30,30,22},"Langsam",90);
-        db.insertTrainingsSession(2,3,15,4,new Integer[]{20,30,30,35},"Langsam",90);
-        db.insertTrainingsSession(2,4,15,4,new Integer[]{30,30,30,30},"Schnell",90);
-        db.insertTrainingsSession(2,5,15,4,new Integer[]{35,35,35,35},"Langsam",90);
-        db.insertTrainingsSession(2,6,15,4,new Integer[]{35,40,40,35},"Schnell",90);
+        db.insertTrainingsSession(2,1,4, new Integer[]{0,0,5,10}, new Integer[]{20,25,25,20},"Langsam",90);
+        db.insertTrainingsSession(2,2,4, new Integer[]{0,0,5,10}, new Integer[]{22,30,30,22},"Langsam",90);
+        db.insertTrainingsSession(2,3,4, new Integer[]{0,0,5,10}, new Integer[]{20,30,30,35},"Langsam",90);
+        db.insertTrainingsSession(2,4,4, new Integer[]{0,0,5,10}, new Integer[]{30,30,30,30},"Schnell",90);
+        db.insertTrainingsSession(2,5,4, new Integer[]{0,0,5,10}, new Integer[]{35,35,35,35},"Langsam",90);
+        db.insertTrainingsSession(2,6,4, new Integer[]{0,0,5,10}, new Integer[]{35,40,40,35},"Schnell",90);
     }
 
     private void fillExerciseInstances() {
@@ -258,8 +267,8 @@ public class DataInit {
         LinkedList<String> toAdd2 = new LinkedList<>();
         toAdd2.add("Eng");
         DataBaseService db = DataBaseService.getInstance();
-        db.insertExerciseInstance(1, "A1", toAdd, 1);
-        db.insertExerciseInstance(2, "A2", toAdd2, 1);
+        db.insertExerciseInstance(1, "A1", 15, toAdd, 1);
+        db.insertExerciseInstance(2, "A2", 15, toAdd2, 1);
     }
 
     private void fillUserPlans() {

@@ -361,18 +361,18 @@ public class DataBaseService {
      *                            (number increases initial 1)
      * @return id od the just inserted template.
      */
-    public Integer insertPlanTemplate(String name, String trainingsFocus,
-                                      String author, Boolean oneShotPlan,
+    public Integer insertPlanTemplate(String name, String trainingsFocus, String targetGroup,
+                                      String author, Boolean oneShotPlan, Integer recomSessionsPerWeek,
                                       Integer numTrainSessions, Integer exercisesPerSession) {
         if (name == null || author == null || (oneShotPlan && numTrainSessions > 1)) {
             throw new IllegalArgumentException();
         } else {
-            Object[] insertValues = new Object[]{name, trainingsFocus, author, oneShotPlan,
+            Object[] insertValues = new Object[]{name, trainingsFocus, targetGroup, author, oneShotPlan, recomSessionsPerWeek,
                     numTrainSessions,
                     exercisesPerSession};
-            jdbcTemplate.update("insert into plan_templates(name,trainings_focus," +
-                    "author,one_shot_plan,num_train_sessions," +
-                    "exercises_per_session) values (?,?,?,?,?,?)", insertValues);
+            jdbcTemplate.update("insert into plan_templates(name,trainings_focus, target_group," +
+                    "author,one_shot_plan,recom_sessions_per_week,num_train_sessions," +
+                    "exercises_per_session) values (?,?,?,?,?,?,?,?)", insertValues);
             Integer id = jdbcTemplate.query("select currval" +
                             "(pg_get_serial_sequence('plan_templates','id'));",
                     (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
@@ -386,8 +386,8 @@ public class DataBaseService {
         @Override
         public TrainingsPlanTemplate mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new TrainingsPlanTemplate(rs.getInt("id"), rs.getString("name"),
-                    rs.getString("trainings_focus"), getUserByEmail(rs.getString("author")),
-                    rs.getBoolean("one_shot_plan"), rs.getInt("num_train_sessions"),
+                    rs.getString("trainings_focus"), rs.getString("target_group"), getUserByEmail(rs.getString("author")),
+                    rs.getBoolean("one_shot_plan"), rs.getInt("recom_sessions_per_week"), rs.getInt("num_train_sessions"),
                     rs.getInt("exercises_per_session"), null);
         }
 
@@ -405,8 +405,8 @@ public class DataBaseService {
                 new Integer[]{id},
                 (resultSet, i) -> new TrainingsPlanTemplate(id, resultSet.getString("name"),
                         resultSet.getString(
-                                "trainings_focus"), getUserByEmail(resultSet.getString("author")),
-                        resultSet.getBoolean("one_shot_plan"), resultSet.getInt(
+                                "trainings_focus"), resultSet.getString("target_group"), getUserByEmail(resultSet.getString("author")),
+                        resultSet.getBoolean("one_shot_plan"), resultSet.getInt("recom_sessions_per_week"), resultSet.getInt(
                         "num_train_sessions"),
                         resultSet.getInt("exercises_per_session"),
                         getExInstancesOfTemplate(id))));
@@ -556,13 +556,14 @@ public class DataBaseService {
      */
     public LinkedList<ExerciseInstance> getExInstancesOfTemplate(int idOfTemplate) {
         return new LinkedList<>(jdbcTemplate.query(
-                "SELECT ei.id, ei.is_exercise, ei.category, ex.name" +
+                "SELECT ei.id, ei.is_exercise, ei.category, ex.name, ei.repetition_maximum" +
                         " FROM exercise_instances ei, exercises ex " +
                         " WHERE ei.plan_template = ? " +
                         " AND ei.is_exercise = ex.id ",
                 new Integer[]{idOfTemplate},
                 (resultSet, i) -> new ExerciseInstance(idOfTemplate, resultSet.getInt(
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
+                        resultSet.getInt("repetition_maximum"),
                         getTagsOfExInstance(resultSet.getInt("id")),
                         getSessionsOfExerciseInstance(resultSet.getInt("id")),
                         resultSet.getString("name"))));
@@ -584,11 +585,11 @@ public class DataBaseService {
      * @param templateId id of the plan template which contains this exercise instance.
      * @return Id of the just inserted exercise instance.
      */
-    public Integer insertExerciseInstance(int isExerciseID, String category, LinkedList<String> tags,
+    public Integer insertExerciseInstance(int isExerciseID, String category, Integer repetitionMaximum, LinkedList<String> tags,
                                           int templateId) {
-        Object[] insertValues = new Object[]{isExerciseID, category, templateId};
-        jdbcTemplate.update("INSERT INTO exercise_instances(is_exercise, category, " +
-                        "plan_template) values (?,?,?)",
+        Object[] insertValues = new Object[]{isExerciseID, category, repetitionMaximum, templateId};
+        jdbcTemplate.update("INSERT INTO exercise_instances(is_exercise, category,repetition_maximum, " +
+                        "plan_template) values (?,?,?,?)",
                 insertValues);
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('exercise_instances','id'));",
@@ -635,13 +636,14 @@ public class DataBaseService {
      */
     public ExerciseInstance getExercisInstanceById(int id) {
         LinkedList<ExerciseInstance> toReturn =  new LinkedList<>(jdbcTemplate.query(
-                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name" +
+                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name, ei.repetition_maximum" +
                         " FROM exercise_instances ei, exercises ex " +
                         " WHERE ei.id = ? " +
                         " AND ei.is_exercise = ex.id ",
                 new Integer[]{id},
                 (resultSet, i) -> new ExerciseInstance(resultSet.getInt("plan_template"), resultSet.getInt(
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
+                        resultSet.getInt("repetition_maximum"),
                         getTagsOfExInstance(resultSet.getInt("id")),
                         getSessionsOfExerciseInstance(resultSet.getInt("id")),
                         resultSet.getString("name"))));
@@ -654,13 +656,14 @@ public class DataBaseService {
 
     public LinkedList<ExerciseInstance> getInstancesOfExercise(int idOfExercise) {
         return new LinkedList<>(jdbcTemplate.query(
-                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name" +
+                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name, ei.repetition_maximum" +
                         " FROM exercise_instances ei, exercises ex " +
                         " WHERE ei.is_exercise = ? " +
                         " AND ei.is_exercise = ex.id ",
                 new Integer[]{idOfExercise},
                 (resultSet, i) -> new ExerciseInstance(resultSet.getInt("plan_template"), resultSet.getInt(
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
+                        resultSet.getInt("repetition_maximum"),
                         getTagsOfExInstance(resultSet.getInt("id")),
                         getSessionsOfExerciseInstance(resultSet.getInt("id")),
                         resultSet.getString("name"))));
@@ -693,7 +696,6 @@ public class DataBaseService {
      *
      * @param exerciseInstanceID id of the exercise instance the session belongs to.
      * @param ordering indicates in which sequence the sessions have to be performed.
-     * @param repetitionMaximum used to determine the weights for each individual user.
      * @param sets number of the sets.
      * @param reps array with the size {@code sets} where the repetitions of the single sets are saved.
      * @param tempo tempo in which the exercise should be executed.
@@ -701,28 +703,35 @@ public class DataBaseService {
      * @return Id of the just inserted Trainings session.
      */
     public Integer insertTrainingsSession(int exerciseInstanceID, int ordering,
-                                          int repetitionMaximum, int sets, Integer[] reps,
+                                          int sets, Integer[] weightDiff, Integer[] reps,
                                           String tempo, Integer pauseInSec) {
         ArrayList<Object> insertValues = new ArrayList<>();
         insertValues.ensureCapacity(13);
         insertValues.add(exerciseInstanceID);
         insertValues.add(ordering);
-        insertValues.add(repetitionMaximum);
         insertValues.add(sets);
         insertValues.add(tempo);
         insertValues.add(pauseInSec);
+        if (weightDiff.length > 7) {
+            throw new IllegalArgumentException("to many sets!");
+        }
+        insertValues.addAll(Arrays.asList(weightDiff));
+        for (int i = insertValues.size(); i < 12; i++) {
+            insertValues.add(null);
+        }
         if (reps.length > 7) {
             throw new IllegalArgumentException("to many sets!");
         }
         insertValues.addAll(Arrays.asList(reps));
-        for (int i = insertValues.size(); i < 13; i++) {
+        for (int i = insertValues.size(); i < 19; i++) {
             insertValues.add(null);
         }
         jdbcTemplate.update(
-                "insert into trainings_sessions(exercise_instance, ordering, rep_maximum, " +
-                        "sets, tempo, pause, reps_set1, reps_set2, reps_set3, reps_set4,reps_set5," +
-                        " reps_set6, reps_set7) values " +
-                        "(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "insert into trainings_sessions(exercise_instance, ordering, sets, tempo, pause, weightdiff_set1," +
+                        " weightdiff_set2, weightdiff_set3, weightdiff_set4, weightdiff_set5, weightdiff_set6," +
+                        " weightdiff_set7, reps_set1, reps_set2, reps_set3, reps_set4," +
+                        " reps_set5, reps_set6, reps_set7) values " +
+                        "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 insertValues.toArray());
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('trainings_sessions','id'));",
@@ -742,13 +751,17 @@ public class DataBaseService {
                 "SELECT * FROM trainings_sessions WHERE exercise_instance = ?",
                 new Integer[]{idOfInstance},
                 (resultSet, i) -> {
+                    Integer[] weightDiff = new Integer[7];
+                    for (int j = 1; j < 8; j++) {
+                        weightDiff[j - 1] = resultSet.getInt(String.format("weightdiff_set%d", j));
+                    }
                     Integer[] reps = new Integer[7];
                     for (int j = 1; j < 8; j++) {
                         reps[j - 1] = resultSet.getInt(String.format("reps_set%d", j));
                     }
                     return new TrainingsSession(resultSet.getInt("id"), resultSet.getInt("ordering"),
                             resultSet.getInt("exercise_instance"),
-                            resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
+                            resultSet.getInt("sets"), weightDiff, reps,
                             resultSet.getString("tempo"), resultSet.getInt("pause"));
                 }));
     }
@@ -764,13 +777,17 @@ public class DataBaseService {
                 "SELECT * FROM trainings_sessions WHERE id = ?",
                 new Integer[]{id},
                 (resultSet, i) -> {
+                    Integer[] weightDiff = new Integer[7];
+                    for (int j = 1; j < 8; j++) {
+                        weightDiff[j - 1] = resultSet.getInt(String.format("weightdiff_set%d", j));
+                    }
                     Integer[] reps = new Integer[7];
                     for (int j = 1; j < 8; j++) {
                         reps[j - 1] = resultSet.getInt(String.format("reps_set%d", j));
                     }
                     return new TrainingsSession(id, resultSet.getInt("ordering"),
                             resultSet.getInt("exercise_instance"),
-                            resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
+                            resultSet.getInt("sets"), weightDiff, reps,
                             resultSet.getString("tempo"), resultSet.getInt("pause"));
                 }));
         if (toReturn.isEmpty()) {
