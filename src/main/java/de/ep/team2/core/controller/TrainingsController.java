@@ -4,6 +4,8 @@ import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.PlanService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -13,6 +15,8 @@ import java.util.LinkedList;
 @Controller
 @RequestMapping("/mods/")
 public class TrainingsController {
+
+    private static final Logger log = LoggerFactory.getLogger(TrainingsController.class);
 
     /**
      * Handles the adding of an exercise to a plan template or creating a new template with an
@@ -29,6 +33,7 @@ public class TrainingsController {
                                       RedirectAttributes redirectAttributes) {
         PlanService service = new PlanService();
         String checkArgs = checkIfArgsValid(dto);
+        log.info("Post Request.");
 
         if (checkArgs.equals("valid!")) {
             dto.nameToId();
