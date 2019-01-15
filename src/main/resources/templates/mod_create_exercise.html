@@ -37,17 +37,9 @@
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
 <div class="container">
-    <div class="jumbotron">
-        <div class="container-fluid">
-            <h2>Neue Trainingsübung erstellen</h2>
-            <br>
-            <p style="font-size: 12pt">Fülle das folgende Formular und speichere anschließend die eingegebenen
-                Daten um die neue Übung hinzuzufügen.</p>
-        </div>
-    </div>
     <form th:action="@{/exercises}" th:object="${exercise}" method="post" enctype="multipart/form-data">
         <div class="panel panel-default outerPanel">
-            <div class="panel-heading" style="padding-left: 30px; background-color: #fd8900; color: #ecf0f1"
+            <div class="panel-heading" style="padding-left: 30px"
                 id="newExercisePanel">
                 <h3>Neue Trainingsübung erstellen</h3>
                 <p style="font-size: 12pt">Fülle das folgende Formular und speichere anschließend die eingegebenen
