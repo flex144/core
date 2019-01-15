@@ -166,7 +166,7 @@
                     Übung bearbeiten
                 </div>
                 <div class="col-md-2">
-                    <button type="button" id="submitDelete" class="btn btn-danger btn-block">
+                    <button th:if="${createDto.id}" type="button" id="submitDelete" class="btn btn-danger btn-block">
                         <span class="glyphicon glyphicon-trash"></span>
                         Plan Löschen
                     </button>

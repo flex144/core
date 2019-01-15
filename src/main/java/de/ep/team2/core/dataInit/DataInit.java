@@ -1,7 +1,10 @@
 package de.ep.team2.core.dataInit;
 
+import de.ep.team2.core.dtos.ExerciseDto;
+import de.ep.team2.core.entities.UserPlan;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
+import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
@@ -33,6 +36,8 @@ public class DataInit {
         fillPlanTemplates();
         fillExerciseInstances();
         fillTrainingSessions();
+        fillUserPlans();
+        fillWeights();
     }
 
     private void initTables() {
@@ -114,6 +119,29 @@ public class DataInit {
                 "CHECK (sets <= 7)," +
                 "CHECK (ordering <= 15 AND ordering >= 1))");
         log.debug("Created table trainings_sessions");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS user_plans cascade ");
+        jdbcTemplate.execute("CREATE TABLE user_plans(" +
+                "id SERIAL NOT NULL PRIMARY KEY," +
+                "\"user\" varchar(255) NOT NULL REFERENCES users," +
+                "template integer NOT NULL REFERENCES plan_templates," +
+                "curSession integer NOT NULL," +
+                "maxSession integer NOT NULL)");
+        log.debug("Created table user_plans");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS weights cascade ");
+        jdbcTemplate.execute("CREATE TABLE weights(" +
+                "  id SERIAL NOT NULL PRIMARY KEY," +
+                "  idUserPlan integer not null references user_plans," +
+                "  idExerciseInstance integer not null references exercise_instances," +
+                "  sessionNum integer not null," +
+                "  weightRep1 integer," +
+                "  weightRep2 integer," +
+                "  weightRep3 integer," +
+                "  weightRep4 integer," +
+                "  weightRep5 integer," +
+                "  weightRep6 integer," +
+                "  weightRep7 integer," +
+                "  CHECK (sessionNum <= 15 AND sessionNum >= 1))");
+        log.debug("Created table weights");
     }
 
     private void initImages() {
@@ -232,5 +260,20 @@ public class DataInit {
         DataBaseService db = DataBaseService.getInstance();
         db.insertExerciseInstance(1, "A1", toAdd, 1);
         db.insertExerciseInstance(2, "A2", toAdd2, 1);
+    }
+
+    private void fillUserPlans() {
+        DataBaseService db = DataBaseService.getInstance();
+        db.insertUserPlan("timo@gmail.com", 1);
+        UserPlan test = db.getUserPlanById(1);
+    }
+
+    private void fillWeights() {
+        DataBaseService db = DataBaseService.getInstance();
+        PlanService service = new PlanService();
+        Integer[] toInsert = new Integer[] {50,50,50};
+        db.insertWeightsForUserPlan(1,1,1,toInsert);
+        Integer[] test = db.getWeightsForOneDay(1,1,1);
+        LinkedList<ExerciseDto> test2 = service.createTrainingsDay("timo@gmail.com");
     }
 }

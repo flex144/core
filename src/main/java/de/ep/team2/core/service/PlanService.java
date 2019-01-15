@@ -1,15 +1,17 @@
 package de.ep.team2.core.service;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
-import de.ep.team2.core.entities.ExerciseInstance;
-import de.ep.team2.core.entities.TrainingsPlanTemplate;
-import de.ep.team2.core.entities.TrainingsSession;
-import de.ep.team2.core.entities.User;
+import de.ep.team2.core.dtos.ExerciseDto;
+import de.ep.team2.core.entities.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.LinkedList;
 
 public class PlanService {
+
+    private static final Logger log = LoggerFactory.getLogger(PlanService.class);
 
     /**
      * Checks if the Template is already existing by looking at the id of the dto which is null when
@@ -141,5 +143,52 @@ public class PlanService {
             toReturn[i] = Integer.parseInt(splitted[i].trim());
         }
         return toReturn;
+    }
+
+    // TODO: 14.01.19 Linking fot the 2 events
+    public LinkedList<ExerciseDto> createTrainingsDay(String userMail) {
+        DataBaseService db = DataBaseService.getInstance();
+        UserPlan userPlan = db.getUserPlanByUserMail(userMail);
+        Integer currentSession = userPlan.getCurrentSession();
+        currentSession++; // rm when link to first train
+        if (currentSession == null || currentSession < 0) {
+            throw new IllegalArgumentException("Session number of User Plan corrupted");
+        } else if (currentSession >= userPlan.getMaxSession()) {
+            log.debug("User:" + userMail + ": Plan expired new Plan needed!");
+            throw new IllegalArgumentException("Plan expired new Plan needed!");
+        } else if (currentSession == 0) {
+            log.debug("User:" + userMail + ": Initial Training not completed!");
+            throw new IllegalArgumentException("Initial Training not completed!");
+        } else {
+            TrainingsPlanTemplate template = db.getPlanTemplateAndSessionsByID(userPlan.getIdOfTemplate());
+            LinkedList<ExerciseDto> toReturn = new LinkedList<>();
+            for (ExerciseInstance exInstance : template.getExerciseInstances()) {
+                TrainingsSession trainingsSession = getSessionByOrdering(currentSession, exInstance.getTrainingsSessions());
+                Exercise exercise = db.getExerciseById(exInstance.getIsExerciseID());
+                Integer[] weights = db.getWeightsForOneDay(userPlan.getId(),exInstance.getId(),currentSession);
+                ExerciseDto newDto = new ExerciseDto();
+                newDto.setExercise(exercise);
+                newDto.setCategory(exInstance.getCategory());
+                newDto.setSets(trainingsSession.getSets());
+                newDto.setTempo(trainingsSession.getTempo());
+                newDto.setPause(trainingsSession.getPauseInSec());
+                newDto.setReps(trainingsSession.getReps());
+                newDto.setWeights(weights);
+                newDto.setFirstTraining(false);
+                newDto.setWeightDone(null);
+                newDto.setRepMax(trainingsSession.getRepetitionMaximum());
+                toReturn.add(newDto);
+            }
+            return toReturn;
+        }
+    }
+
+    private TrainingsSession getSessionByOrdering(int ordering, LinkedList<TrainingsSession> sessions) {
+        for (TrainingsSession session : sessions) {
+            if (session.getOrdering() == ordering) {
+                return session;
+            }
+        }
+        throw new IllegalArgumentException("No Session with this ordering available!");
     }
 }
