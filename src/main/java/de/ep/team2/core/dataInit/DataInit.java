@@ -47,6 +47,13 @@ public class DataInit {
                 " role varchar(20) not null," +
                 " primary key(email))");
         log.debug("Created table users");
+
+        //Confirmation Token
+        jdbcTemplate.execute("DROP TABLE IF EXISTS confirmation_token CASCADE");
+        jdbcTemplate.execute("CREATE TABLE confirmation_token (" +
+                "id SERIAL NOT NULL PRIMARY KEY, token VARCHAR(36), " +
+                "userToConfirm VARCHAR(255) REFERENCES users, createdDate DATE)");
+
         // Exercises
         jdbcTemplate.execute("DROP TABLE IF EXISTS exercises CASCADE ");
         jdbcTemplate.execute("CREATE TABLE exercises(" +
@@ -125,11 +132,11 @@ public class DataInit {
             String destLieg = "src/main/resources/static/images/Liegestütz";
             Files.createDirectories(Paths.get(destBank));
             Files.createDirectories(Paths.get(destLieg));
-            Files.copy(Paths.get(sourceBank + "/3-Narrow-grip-bench-press_zpsysfv9zvj.png" ), Paths.get(destBank + "/3-Narrow-grip-bench-press_zpsysfv9zvj.png"));
-            Files.copy(Paths.get(sourceBank + "/Bankdruecken-Bench-Press.jpg" ), Paths.get(destBank + "/Bankdruecken-Bench-Press.jpg"));
-            Files.copy(Paths.get(sourceLieg + "/Liegestuetze-Startposition.jpg" ), Paths.get(destLieg + "/Liegestuetze-Startposition.jpg"));
-            Files.copy(Paths.get(sourceLieg + "/Liegestuetze-Muskelgruppen.jpg" ), Paths.get(destLieg + "/Liegestuetze-Muskelgruppen.jpg"));
-            Files.copy(Paths.get(sourceLieg + "/Liegestuetze-Endposition.jpg" ), Paths.get(destLieg + "/Liegestuetze-Endposition.jpg"));
+            Files.copy(Paths.get(sourceBank + "/3-Narrow-grip-bench-press_zpsysfv9zvj.png"), Paths.get(destBank + "/3-Narrow-grip-bench-press_zpsysfv9zvj.png"));
+            Files.copy(Paths.get(sourceBank + "/Bankdruecken-Bench-Press.jpg"), Paths.get(destBank + "/Bankdruecken-Bench-Press.jpg"));
+            Files.copy(Paths.get(sourceLieg + "/Liegestuetze-Startposition.jpg"), Paths.get(destLieg + "/Liegestuetze-Startposition.jpg"));
+            Files.copy(Paths.get(sourceLieg + "/Liegestuetze-Muskelgruppen.jpg"), Paths.get(destLieg + "/Liegestuetze-Muskelgruppen.jpg"));
+            Files.copy(Paths.get(sourceLieg + "/Liegestuetze-Endposition.jpg"), Paths.get(destLieg + "/Liegestuetze-Endposition.jpg"));
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
@@ -147,6 +154,7 @@ public class DataInit {
         initTestData.add(yannick);
         for (String[] o : initTestData) {
             DataBaseService.getInstance().insertUser(o[0], o[1], o[2], o[3]);
+            DataBaseService.getInstance().confirmUser(o[0]);
         }
         DataBaseService.getInstance().changeToMod(3);
 
@@ -182,7 +190,7 @@ public class DataInit {
                         "Hantelstange mit dem Daumen und den anderen Fingern " +
                         "vollständig zu umschließen ",
                 WeightType.FIXED_WEIGHT,
-                "https://www.youtube.com/embed/jYQtBKRs_D8", paths );
+                "https://www.youtube.com/embed/jYQtBKRs_D8", paths);
         List<String[]> paths2 = new LinkedList<>();
         paths2.add(new String[]{"/images/Liegestütz/Liegestuetze-Muskelgruppen.jpg", "muscle"});
         paths2.add(new String[]{"/images/Liegestütz/Liegestuetze-Startposition.jpg", "other"});
@@ -202,25 +210,25 @@ public class DataInit {
 
     private void fillPlanTemplates() {
         DataBaseService.getInstance().insertPlanTemplate("Test Plan", "muscle",
-                "felix@gmail.com",false,6,2);
+                "felix@gmail.com", false, 6, 2);
     }
 
     private void fillTrainingSessions() {
         DataBaseService db = DataBaseService.getInstance();
         //Bankdrücken
-        db.insertTrainingsSession(1,1,15,3,new Integer[]{12,12,12},"Langsam",90);
-        db.insertTrainingsSession(1,2,15,3,new Integer[]{12,12,12},"Langsam",90);
-        db.insertTrainingsSession(1,3,15,3,new Integer[]{13,13,13},"Langsam",90);
-        db.insertTrainingsSession(1,4,15,3,new Integer[]{13,13,13},"Schnell",90);
-        db.insertTrainingsSession(1,5,15,3,new Integer[]{15,14,13},"Langsam",90);
-        db.insertTrainingsSession(1,6,15,4,new Integer[]{15,14,14,15},"Langsam",90);
+        db.insertTrainingsSession(1, 1, 15, 3, new Integer[]{12, 12, 12}, "Langsam", 90);
+        db.insertTrainingsSession(1, 2, 15, 3, new Integer[]{12, 12, 12}, "Langsam", 90);
+        db.insertTrainingsSession(1, 3, 15, 3, new Integer[]{13, 13, 13}, "Langsam", 90);
+        db.insertTrainingsSession(1, 4, 15, 3, new Integer[]{13, 13, 13}, "Schnell", 90);
+        db.insertTrainingsSession(1, 5, 15, 3, new Integer[]{15, 14, 13}, "Langsam", 90);
+        db.insertTrainingsSession(1, 6, 15, 4, new Integer[]{15, 14, 14, 15}, "Langsam", 90);
         //Liegestütz
-        db.insertTrainingsSession(2,1,15,4,new Integer[]{20,25,25,20},"Langsam",90);
-        db.insertTrainingsSession(2,2,15,4,new Integer[]{22,30,30,22},"Langsam",90);
-        db.insertTrainingsSession(2,3,15,4,new Integer[]{20,30,30,35},"Langsam",90);
-        db.insertTrainingsSession(2,4,15,4,new Integer[]{30,30,30,30},"Schnell",90);
-        db.insertTrainingsSession(2,5,15,4,new Integer[]{35,35,35,35},"Langsam",90);
-        db.insertTrainingsSession(2,6,15,4,new Integer[]{35,40,40,35},"Schnell",90);
+        db.insertTrainingsSession(2, 1, 15, 4, new Integer[]{20, 25, 25, 20}, "Langsam", 90);
+        db.insertTrainingsSession(2, 2, 15, 4, new Integer[]{22, 30, 30, 22}, "Langsam", 90);
+        db.insertTrainingsSession(2, 3, 15, 4, new Integer[]{20, 30, 30, 35}, "Langsam", 90);
+        db.insertTrainingsSession(2, 4, 15, 4, new Integer[]{30, 30, 30, 30}, "Schnell", 90);
+        db.insertTrainingsSession(2, 5, 15, 4, new Integer[]{35, 35, 35, 35}, "Langsam", 90);
+        db.insertTrainingsSession(2, 6, 15, 4, new Integer[]{35, 40, 40, 35}, "Schnell", 90);
     }
 
     private void fillExerciseInstances() {

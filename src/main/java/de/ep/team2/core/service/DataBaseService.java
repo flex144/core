@@ -65,10 +65,10 @@ public class DataBaseService {
      */
     public User getUserById(Integer id) {
         LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT id, email, first_name, last_name, role FROM users WHERE id " +
+                "SELECT id, email, first_name, last_name, password, enabled, role FROM users WHERE id " +
                         "= ?",
                 new Integer[]{id},
-                new BeanPropertyRowMapper<>(User.class)
+                new UserRowMapper()
         ));
         if (toReturn.isEmpty()) {
             return null;
@@ -91,15 +91,28 @@ public class DataBaseService {
             return null;
         } else {
             LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                    "SELECT id, email, first_name, last_name, password, role FROM users WHERE " +
+                    "SELECT id, email, first_name, last_name, password, enabled, role FROM users WHERE " +
                             "email = ?",
                     new String[]{email.toLowerCase()},
-                    new BeanPropertyRowMapper<>(User.class)));
+                    new UserRowMapper()));
             if (toReturn.isEmpty()) {
                 return null;
             } else {
                 return toReturn.getFirst();
             }
+        }
+    }
+
+    class UserRowMapper implements RowMapper<User> {
+        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+            User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setEmail(rs.getString("email"));
+            user.setFirstName(rs.getString("first_name"));
+            user.setPassword(rs.getString("password"));
+            user.setEnabled(rs.getBoolean("enabled"));
+            user.setRole(rs.getString("role"));
+            return user;
         }
     }
 
@@ -123,7 +136,7 @@ public class DataBaseService {
      * @param password  Password, as Hash, of the User.
      */
     public Integer insertUser(String email, String firstName, String lastName, String password) {
-        Object[] toInsert = {email.toLowerCase(), firstName, lastName, password, true, "ROLE_USER"};
+        Object[] toInsert = {email.toLowerCase(), firstName, lastName, password, false, "ROLE_USER"};
         if (getUserByEmail(email) != null) {
             log.debug("Insert User failed! Email " + email + " already in the " +
                     "Database!");
@@ -185,6 +198,65 @@ public class DataBaseService {
             jdbcTemplate.update("UPDATE users SET role = 'ROLE_MOD' WHERE id = ?", id);
             log.debug("User '" + toChange.getEmail() + "' was " +
                         "upgraded to Mod by " + changerMail + "!");
+        }
+    }
+
+    /**
+     * Enables a user, so he can access the website.
+     *
+     * @param email Email of the user.
+     */
+    public void confirmUser(String email) {
+        User toChange = getUserByEmail(email);
+        if (toChange != null) {
+            jdbcTemplate.update("UPDATE users SET enabled = true WHERE email = ?", email);
+            log.debug("Email '" + email + "' is now verificated!");
+        }
+    }
+
+    /**
+     * Adds a new confirmation token to the database.
+     *
+     * @param confirmationToken Token to be safed.
+     */
+    public void createConfirmationToken(ConfirmationToken confirmationToken) {
+        Object[] token = {confirmationToken.getConfirmationToken(), confirmationToken.getUser(),
+                confirmationToken.getCreatedDate()};
+        jdbcTemplate.update("INSERT INTO confirmation_token(token, userToConfirm, createdDate) " +
+                "VALUES (?,?,?)", token);
+        Integer id = jdbcTemplate.query("select currval" +
+                        "(pg_get_serial_sequence('confirmation_token','id'));",
+                (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+        log.debug("Token for email '" + confirmationToken.getUser() + "' has been created" +
+                " with ID: '" + id + "' !");
+    }
+
+    /**
+     * Searches for a specific Confirmation Token.
+     *
+     * @param confirmationToken Key of the searched token.
+     * @return Searched confirmation token if it's found.
+     */
+    public ConfirmationToken findConfirmationToken(String confirmationToken) {
+        LinkedList<ConfirmationToken> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT id, token, usertoconfirm, createddate FROM confirmation_token WHERE token = ?",
+                new String[]{confirmationToken},
+                new TokenRowMapper()));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
+    }
+
+    class TokenRowMapper implements RowMapper<ConfirmationToken> {
+        public ConfirmationToken mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ConfirmationToken token = new ConfirmationToken();
+            token.setTokenId(rs.getInt("id"));
+            token.setConfirmationToken(rs.getString("token"));
+            token.setUser(rs.getString("usertoconfirm"));
+            token.setCreatedDate(rs.getDate("createddate"));
+            return token;
         }
     }
 
@@ -352,11 +424,11 @@ public class DataBaseService {
     /**
      * Inserts a new Trainings plan Template in teh Database with the provided values.
      *
-     * @param name unique name of the template.
-     * @param trainingsFocus focus of the trainingsplan.
-     * @param author email of the mod who created the template.
-     * @param oneShotPlan boolean if the plan has more than one trainings session.
-     * @param numTrainSessions duration of the plan in sessions.
+     * @param name                unique name of the template.
+     * @param trainingsFocus      focus of the trainingsplan.
+     * @param author              email of the mod who created the template.
+     * @param oneShotPlan         boolean if the plan has more than one trainings session.
+     * @param numTrainSessions    duration of the plan in sessions.
      * @param exercisesPerSession how many exercises have to be done in one session.
      *                            (number increases initial 1)
      * @return id od the just inserted template.
@@ -460,7 +532,7 @@ public class DataBaseService {
     /**
      * renames a template in the Database.
      *
-     * @param newName new name of the template.
+     * @param newName    new name of the template.
      * @param idToRename id of the template to be renamed.
      */
     public void renameTemplate(String newName, int idToRename) {
@@ -471,7 +543,7 @@ public class DataBaseService {
     /**
      * sets a new focus on a template in the database.
      *
-     * @param newFocus new focus of the template.
+     * @param newFocus   new focus of the template.
      * @param idToRename id of the template to be altered.
      */
     public void changeTrainingsFocus(String newFocus, int idToRename) {
@@ -579,9 +651,9 @@ public class DataBaseService {
      * Inserts a new Exercise instance in the database with the provided data.
      *
      * @param isExerciseID reference to the table exercises which Exercise this exercise instance is.
-     * @param category category of the exercise instance(tells in which order the exercises should be done)
-     * @param tags tags for the execution of the exercise.
-     * @param templateId id of the plan template which contains this exercise instance.
+     * @param category     category of the exercise instance(tells in which order the exercises should be done)
+     * @param tags         tags for the execution of the exercise.
+     * @param templateId   id of the plan template which contains this exercise instance.
      * @return Id of the just inserted exercise instance.
      */
     public Integer insertExerciseInstance(int isExerciseID, String category, LinkedList<String> tags,
@@ -603,7 +675,7 @@ public class DataBaseService {
         for (String tag : tags) {
             int idOfTag;
             if (presentTags.contains(tag)) {
-                 idOfTag = jdbcTemplate.query("SELECT id FROM execution_tags WHERE name = ?",
+                idOfTag = jdbcTemplate.query("SELECT id FROM execution_tags WHERE name = ?",
                         new String[]{tag}, (rs, i) -> rs.getInt("id")).get(0);
             } else {
                 jdbcTemplate.update("INSERT INTO execution_tags(name) values (?)",
@@ -634,7 +706,7 @@ public class DataBaseService {
      * @return exercise instance with children, null when nothing was found with this id.
      */
     public ExerciseInstance getExercisInstanceById(int id) {
-        LinkedList<ExerciseInstance> toReturn =  new LinkedList<>(jdbcTemplate.query(
+        LinkedList<ExerciseInstance> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name" +
                         " FROM exercise_instances ei, exercises ex " +
                         " WHERE ei.id = ? " +
@@ -692,12 +764,12 @@ public class DataBaseService {
      * Inserts a new Trainings session in the Database with the provided data.
      *
      * @param exerciseInstanceID id of the exercise instance the session belongs to.
-     * @param ordering indicates in which sequence the sessions have to be performed.
-     * @param repetitionMaximum used to determine the weights for each individual user.
-     * @param sets number of the sets.
-     * @param reps array with the size {@code sets} where the repetitions of the single sets are saved.
-     * @param tempo tempo in which the exercise should be executed.
-     * @param pauseInSec pause time between the sets in seconds.
+     * @param ordering           indicates in which sequence the sessions have to be performed.
+     * @param repetitionMaximum  used to determine the weights for each individual user.
+     * @param sets               number of the sets.
+     * @param reps               array with the size {@code sets} where the repetitions of the single sets are saved.
+     * @param tempo              tempo in which the exercise should be executed.
+     * @param pauseInSec         pause time between the sets in seconds.
      * @return Id of the just inserted Trainings session.
      */
     public Integer insertTrainingsSession(int exerciseInstanceID, int ordering,
@@ -794,7 +866,7 @@ public class DataBaseService {
             log.debug("Trainings-session with ID: '"
                     + id + "' deleted by " + deleter.getEmail() + "!");
         } else {
-            throw new  IllegalArgumentException("Trainingssession doesn't exist!");
+            throw new IllegalArgumentException("Trainingssession doesn't exist!");
         }
     }
 
