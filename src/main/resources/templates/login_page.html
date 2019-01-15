@@ -10,7 +10,54 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <div th:include="/fragments/navbar :: style_fragment"></div>
+    <style>
+        body {
+            height: 100%;
+            width: 100%;
+            background-image:  linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.35)),
+            url("/initFileBackup/Hintergründe/background_gym_5_greyscale.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .button {
+            background-color: #fd8900;
+            border-color: #c35a00;
+            color: white;
+            text-shadow: 0.5px 0.5px 0.5px #999999;
+            /*padding: 10px 20px;*/
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            /*margin: 4px 2px;*/
+            cursor: pointer;
+            border-radius: 12px;
+        }
+        .button:hover,
+        .button:focus,
+        .button:active {
+            color: white;
+            background-color: #ee6900;
+        }
+        .panel-login{
+            border-radius: 25px;
+            border: 2pt solid #414141;
+        }
+        .panel-login .panel-heading {
+            background-color: #fd8900;
+            color: #ecf0f1;
+            border-radius: 20px 20px 0px 0px;
+            border: 1pt solid #414141;
+            text-align: center;
+            text-shadow: 0.5px 0.5px 0.5px #999999;
+        }
+        .panel-login .panel-footer {
+            background-color: #eee;
+            border-radius: 0px 0px 20px 20px;
+            text-shadow: 0.1px 0.1px 0.1px #999999;
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid" id="panelContainer">
