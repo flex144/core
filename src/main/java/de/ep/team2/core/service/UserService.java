@@ -66,6 +66,10 @@ public class UserService {
 
     public List<User> getAllUsers() { return DataBaseService.getInstance().getAllUsers(); }
 
+    public User changeUserDetails (User user) {
+        return DataBaseService.getInstance().changeUserDetails(user);
+    }
+
     /**
      * This method creates a secure password hash, using the BCryptPasswordEncoder.
      * It is used to ensure a password isn't saved as plaintext in the database.

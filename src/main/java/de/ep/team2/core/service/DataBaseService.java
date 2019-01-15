@@ -188,6 +188,26 @@ public class DataBaseService {
         }
     }
 
+    public User changeUserDetails(User user) {
+        String email = user.getEmail();
+        User toChange = getUserByEmail(email);
+        if (toChange != null) {
+            if (user.getFirstName() != null) {
+                changeDetails("first_name", user.getFirstName(), email);
+            }
+            if (user.getLastName() != null) {
+                changeDetails("last_name", user.getLastName(), email);
+            }
+        }
+        return getUserByEmail(email);
+    }
+
+    private void changeDetails(String column, String value, String email) {
+        jdbcTemplate.update("UPDATE users SET "+column+" = ? WHERE email = ?", value, email);
+        log.debug("User '" + email + "' changed " + column + "!");
+
+    }
+
     // Exercise
 
     /**

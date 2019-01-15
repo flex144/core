@@ -48,7 +48,8 @@
 </div>
 
 <div class="container">
-    <div class="panel panel-default outerPanel">
+    <form th:action="@{/user/editprofile}" method="post" th:object="${editUser}">
+        <div class="panel panel-default outerPanel">
         <div class="panel-heading" id="editProfilePanel">
             <h3>Nutzerprofil bearbeiten</h3>
         </div>
@@ -61,7 +62,7 @@
                     <div class="col-container">
                         <div class="col">
                             <input class="form-control" id="currentEmail" type="email" name="currentEmail"
-                                   placeholder="Hier steht die aktuelle E-Mail Adresse">
+                                   placeholder="Hier steht die aktuelle E-Mail Adresse" th:value="${user.email}">
                         </div>
                         <div class="col">
                             <button class="btn btn-primary btn-block launch-modal">
@@ -87,23 +88,23 @@
                     <div class="col-container">
                         <div class="col">
                             <div class="panel panel-default">
-                                <div class="panel-heading" style="font-weight: bold">
+                                <div class="panel-heading" style="font-weight: bold" th:text="'Nachname: ' + ${user.getLastName()}">
                                     Nachname
                                 </div>
                                 <div class="panel-body">
                                     <input class="form-control" id="lastnameInput" type="text" name="lastnameInput"
-                                           placeholder="Hier steht der aktuelle Nachname">
+                                           placeholder="Hier steht der aktuelle Nachname" th:field="*{lastName}">
                                 </div>
                             </div>
                         </div>
                         <div class="col">
                             <div class="panel panel-default">
-                                <div class="panel-heading" style="font-weight: bold">
+                                <div class="panel-heading" style="font-weight: bold" th:text="'Vorname: ' + ${user.getFirstName()}">
                                     Vorname
                                 </div>
                                 <div class="panel-body">
                                     <input class="form-control" id="firstnameInput" type="text" name="firstnameInput"
-                                           placeholder="Hier steht der aktuelle Vorname">
+                                           placeholder="Hier steht der aktuelle Vorname" th:field="*{firstName}">
                                 </div>
                             </div>
                         </div>
@@ -115,7 +116,7 @@
                                     Geschlecht:
                                 </div>
                                 <div class="panel-body">
-                                    <select id="gender" class="form-control" required>
+                                    <select id="gender" class="form-control">
                                         <option selected disabled hidden>Aktuelles Geschlecht ausgewählt</option>
                                         <option>Männlich</option>
                                         <option>Weiblich</option>
@@ -187,6 +188,7 @@
             </div>
         </div>
     </div>
+    </form>
 </div>
 
 <!-- Modal to confirm leaving the current page without saving changes -->
