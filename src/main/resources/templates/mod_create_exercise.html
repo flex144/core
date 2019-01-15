@@ -120,15 +120,13 @@
                                 Erklärungsvideo: (Optional)
                             </div>
                             <div class="panel-body">
-                                <p style="font-size: 12px">Damit das Video korrekt angezeigt wird <br/>
-                                    muss der Einbettungslink zu einem Youtubevideo verwendet werden </p>
                                 <input  type="url" class="form-control" id="videoLink1"
                                         placeholder="Hier Link zu einem Erklärungsvideo einfügen..."
                                         th:field="*{videoLink}">
                             </div>
                             <div class="panel-footer text-muted" style="font-size: 10px">
-                                Maximale Uploadgröße pro Bildergruppe: 10 MB; <br/>
-                                Unterstützte Dateitypen: .jpg, .png;
+                                Damit das Video korrekt angezeigt wird <br/>
+                                muss der Einbettungslink zu einem Youtubevideo verwendet werden
                             </div>
                         </div>
                     </div>
@@ -144,6 +142,8 @@
                                         style="height: auto">
                             </div>
                             <div class="panel-footer text-muted" style="font-size: 10px">
+                                Maximale Uploadgröße pro Bildergruppe: 10 MB; <br/>
+                                Unterstützte Dateitypen: .jpg, .png; <br/>
                                 Um mehrere Bilder hochzuladen müssen Sie bei "Dateien auswählen", <br/>
                                 die gewünscheten Bilder markieren (Strg + Linksklick) und auf "öffnen" klicken. <br/>
                                 Laden sie keine Bilder mit gleichem Namen bei der gleichen Übung hoch.
@@ -159,6 +159,9 @@
                                 <input  type="file" name="otherImage" class="form-control" id="imageInput2" multiple
                                         style="height: auto">
                                 <output id="list"></output>
+                            </div>
+                            <div class="panel-footer text-muted" style="font-size: 10px">
+                                Es gelten die selben Beschränkungen wie für die Muskelgruppenbilder
                             </div>
                         </div>
                     </div>
