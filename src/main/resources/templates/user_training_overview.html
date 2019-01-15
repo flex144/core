@@ -14,6 +14,7 @@
         html, body {
             width: 100%;
             height: 100%;
+            font-size: calc(12px + 0.5vw);
         }
 
         .highlightedContainer {
@@ -30,6 +31,7 @@
             width: 100%;
             height: 100%;
             text-align: center;
+            margin: auto;
         }
 
         .containerColor{
@@ -40,8 +42,28 @@
         .tableCentered{
             height: 100%;
             width: 15%;
-            margin-top: 15px;
+            align-content: center;
+            text-align: center;
+            margin-top: auto;
+            font-size: calc(12px + 0.5vw);
         }
+
+        .responsive-width{
+            font-size: calc(7px + 2vw);
+        }
+
+        .responsive-margin{
+            margin-top: 2vh;
+        }
+
+        .button{
+            text-align: center;
+            display:table-cell;
+            vertical-align:middle;
+            margin: auto;
+            padding: auto;
+        }
+
     </style>
 </head>
 <body>
@@ -127,7 +149,7 @@
                             </div>
                         </div>
                         <button type="button" style="width: 20%"
-                                class="btn btn-secondary" onclick="enableSave()">
+                                class="btn btn-secondary responsive-width" onclick="enableSave()">
                             Ok
                         </button>
                     </div>
@@ -136,15 +158,15 @@
             <div class="modal-footer">
                 <div class="container">
                     <button type="button"
-                            class="btn btn-block btn-success" style="font-size: small" onclick="safeAlternativeExercise()" disabled id="button_saveExercise">
+                            class="btn btn-block btn-success responsive-width" style="font-size: small" onclick="safeAlternativeExercise()" disabled id="button_saveExercise">
                         Übung festlegen
                     </button>
                     <button type="button"
-                            class="btn btn-block btn-warning" data-toggle="button" aria-pressed="false" style="font-size: small" onclick="toggleExercise()">
+                            class="btn btn-block btn-warning responsive-width" data-toggle="button" aria-pressed="false" style="font-size: small" onclick="toggleExercise()">
                         Alternative
                     </button>
                     <button type="button"
-                            class="btn btn-block btn-danger" data-dismiss="modal" style="font-size: small" id="closeInfoModal">
+                            class="button btn btn-block btn-danger responsive-width" data-dismiss="modal" style="font-size: small" id="closeInfoModal">
                         Zurück
                     </button>
                 </div>
@@ -161,13 +183,13 @@
                 <div class="jumbotron" style="text-align: center;">
                     <h4>Es ist empfohlen dem Plan möglichst präzise zu folgen.</h4>
                     <h6>Nur durch richtige Ausführung der Übungen, mit guter Form und empfohlenen Anzahlen/Gewichten wird guter Vortschritt erreicht.</h6>
-                    <h6>Übungen in der selben Farbe sind in einem sogennanten 'Super Set'.</h6>
+                    <h6>Übungen mit dem selben Buchstaben sind in einem sogennanten 'Super Set'.</h6>
                     <h6>Übungen in einem Superset sollten abgeschlossen werden, bevor das nächste Superset begonnen wird.</h6>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button"
-                        class="btn btn-block btn-warning" data-dismiss="modal" id="leaveInfoModal">
+                        class="btn btn-block btn-warning responsive-width" data-dismiss="modal" id="leaveInfoModal">
                     Zurück
                 </button>
             </div>
@@ -184,15 +206,13 @@
                     <h4>Training wirklich abbrechen?</h4>
                 </div>
                 <button type="button"
-                        class="btn btn-block btn-secondary" data-dismiss="modal" id="buttonContinue">
-                    Fortsetzen
+                        class="btn btn-block btn-secondary responsive-width" data-dismiss="modal" id="buttonContinue">
+                    Training Fortsetzen
                 </button>
-                <div class="modal-footer">
-                    <a type="button"
-                            class="btn btn-block btn-danger" th:href="@{/user/home}">
-                        Training abbrechen
-                    </a>
-                </div>
+                <a type="button"
+                   class="button btn btn-block btn-danger responsive-width" th:href="@{/user/home}">
+                    Training abbrechen
+                </a>
             </div>
         </div>
     </div>
@@ -230,7 +250,7 @@
         <h3>Trainingsplan nr. </h3>
     </div>
     <div style="width: 10%;">
-        <div style="font-size: smaller; height: 20%">set:</div>
+        <div style=" height: 20%">set:</div>
         <div style="height: 80%">
             <h4><span id="currentOrder" ></span></h4>
         </div>
@@ -243,22 +263,20 @@
 
 
 <!---
-    TODO thymeleaf Each Container has to execute
-    "thymeleafColourCoding(orderValue, idValue)"
-    with orderValue being e.g. 'A1'
-    and idValue being the thymeleafID of this element
+    TODO thymeleaf Each Container has to be loaded with color
     TODO thymeleaf call clickedOnExercise() onClick
 --->
 <!--- Template for thymeleaf data to load into --->
 <div class="container" id="container_content" style="height: 70%;
         overflow-x: fragments; overflow-y: scroll; text-align: center;
         padding: 5px">
-    <div class="container" style="padding-bottom: 2px; height: 15%" id="exercise">
+    <div class="container" style="padding-bottom: 2px; height: 15%">
         <!---  th:each th:onclick="" th:id= --->
         <!--- TODO thymeleaf remove test class after it is implemented--->
-        <div class="containerColor fullsize farbTest1" >
+        <!--- TODO thymeleaf id -->
+        <div class="containerColor fullsize farbTest1 " id="exercise1">
             <table class="fullsize" id="table" >
-                <tr class="fullsize" style="display: flex" id="row">
+                <tr class="fullsize responsive-margin" style="display: flex" id="row">
                     <!--- TODO Session save Status --->
                     <td class="tableCentered" >
                             <label class="btn active">
@@ -269,7 +287,7 @@
                     <td class="tableCentered" id="column" onclick="clickedOnExercise()">
                         <!--- TODO thymeleaf remove test class after implementation--->
                         <!--- th:text th:id--->
-                        <h3 class="numbertest1" id="orderNumber">A1</h3>
+                        <h3 class="numbertest1" id="orderNumber1">A1</h3>
                     </td>
                     <td class="tableCentered" style="width: 50%;" onclick="clickedOnExercise()">
                         <!--- th:text--->
@@ -288,9 +306,9 @@
 
     <!--- To showacase colours, delet after funcitonality integrated--->
     <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize farbTest1" >
+        <div class="containerColor fullsize farbTest1" id="exercise2" >
             <table class="fullsize" >
-                <tr class="fullsize" style="display: flex">
+                <tr class="fullsize responsive-margin" style="display: flex">
                     <td class="tableCentered" >
                         <label class="btn active">
                             <input type="checkbox" name=""
@@ -298,7 +316,7 @@
                         </label>
                     </td>
                     <td class="tableCentered"onclick="loadExercise()">
-                        <h3 class="numbertest1">A2</h3>
+                        <h3 class="numbertest1" id="orderNumber2">A2</h3>
                     </td>
                     <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
                         <h3>Klimmboote</h3>
@@ -313,9 +331,9 @@
         </div>
     </div>
     <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize farbTest2" >
+        <div class="containerColor fullsize" id="exercise3">
             <table class="fullsize" >
-                <tr class="fullsize" style="display: flex">
+                <tr class="fullsize responsive-margin" style="display: flex">
                     <td class="tableCentered" >
                         <label class="btn active">
                             <input type="checkbox" name=""
@@ -323,7 +341,7 @@
                         </label>
                     </td>
                     <td class="tableCentered"onclick="loadExercise()">
-                        <h3 class="numbertest2">B1</h3>
+                        <h3 class="numbertest2" id="orderNumber3">B1</h3>
                     </td>
                     <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
                         <h3>Handstand</h3>
@@ -338,9 +356,9 @@
         </div>
     </div>
     <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize farbTest3" >
+        <div class="containerColor fullsize farbTest3" id="exercise4">
             <table class="fullsize" >
-                <tr class="fullsize" style="display: flex">
+                <tr class="fullsize responsive-margin" style="display: flex">
                     <td class="tableCentered" >
                         <label class="btn active">
                             <input type="checkbox" name=""
@@ -348,10 +366,35 @@
                         </label>
                     </td>
                     <td class="tableCentered"onclick="loadExercise()">
-                        <h3 class="numbertest3">C1</h3>
+                        <h3 class="numbertest3" id="orderNumber4">C1</h3>
                     </td>
                     <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
                         <h3>Tafel putzen</h3>
+                    </td>
+                    <td class="tableCentered" style="width: 20%">
+                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
+                            i
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="container" style="padding-bottom: 2px; height: 15%">
+        <div class="containerColor fullsize" id="exercise5" >
+            <table class="fullsize" >
+                <tr class="fullsize responsive-margin" style="display: flex">
+                    <td class="tableCentered" >
+                        <label class="btn active">
+                            <input type="checkbox" name=""
+                                   autocomplete="off" disabled style="transform: scale(2)">
+                        </label>
+                    </td>
+                    <td class="tableCentered"onclick="loadExercise()">
+                        <h3 class="numbertest1" id="orderNumber5">D1</h3>
+                    </td>
+                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
+                        <h3>Klimmautos</h3>
                     </td>
                     <td class="tableCentered" style="width: 20%">
                         <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
@@ -369,29 +412,29 @@
 <div class="highlightedContainer" id="container_timer" style="height: 20%;">
     <div class="container fullsize row">
         <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingBack">
-            <button type="button"
-                    class="btn btn-block btn-danger fullsize" id="backButton"
+            <a type="button"
+                    class="btn btn-block btn-danger fullsize responsive-width" id="backButton"
                     style="height: 100%; min-height: 50px" th:href="@{/user/home}">
                 Zurück
-            </button>
+            </a>
         </div>
         <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingStart">
             <button type="button"
-                    class="btn btn-block btn-success fullsize" id="startButton"
-                    style="height: 100%; min-height: 50px" onclick="startTraining()">
-                Training <br> starten
+                    class="btn btn-block btn-success fullsize responsive-width" id="startButton"
+                    style="height: 100%; min-height: 50px" onclick="startTraining()" >
+                Training starten
             </button>
         </div>
         <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingExit">
             <button type="button"
-                    class="btn btn-block btn-danger fullsize"
+                    class="btn btn-block btn-danger fullsize responsive-width"
                     style="height: 100%; min-height: 50px" data-toggle="modal" data-target="#exitModal" id="exitOverview">
-                Traing <br> abbrechen
+                Traing abbrechen
             </button>
         </div>
         <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingFinished">
             <button type="button"
-                    class="btn btn-block btn-success fullsize"
+                    class="btn btn-block btn-success fullsize responsive-width"
                     style="height: 100%; min-height: 50px" onclick="startTraining()" disabled>
                 Abschließen
             </button>
@@ -399,15 +442,14 @@
     </div>
 </div>
 
-
+<!--- load the next page --->
 <script>
     function loadExercise() {
         window.location = "exercise"
     }
 </script>
 
-
-<!--- Button functionality --->
+<!--- clicking on a row--->
 <script>
     function startTraining(){
         /*TODO maybe enable clicking on exercises*/
@@ -424,9 +466,7 @@
         var thisExerciseOrder = "orderNumber" + id;
         var clickedOrder = document.getElementById("orderNumber").innerHTML;
         localStorage.setItem("orderValue", currentOrder);
-        console.log(currentOrder);
         if ((currentOrder == clickedOrder) || currentOrder == ""){
-            console.log("after");
             window.location = "exercise"
             //updateCurrentOrder(id);
         } else{
@@ -449,25 +489,33 @@
 
 </script>
 
+<!--- Toggleable content --->
 <script>
-
     document.onLoad(initialLoad());
+
+    /*
+    * Hides toggleable content at page load
+    * */
     function initialLoad(){
         warningHidden = true;
         document.getElementById('toggledAlert').style.display = "none";
         document.getElementById('button_saveExercise').style.display = "none";
-        document.getElementById('exitButton').style.display = "none";
 
         var currentOrder = localStorage.getItem("orderValue")
-        console.log(currentOrder + "on_load");
         document.getElementById("currentOrder").innerHTML = currentOrder;
     }
 
 
+    /*
+    * Enables the save function in the module
+    * */
     function enableSave(){
         document.getElementById('button_saveExercise').disabled = false;
     }
 
+    /*
+    * Toggles which exercise the user has in their plan
+    * */
     function toggleExercise() {
         if (warningHidden){
             warningHidden = false;
@@ -481,52 +529,47 @@
         }
     }
 </script>
+
 <!--- Colouring every row --->
 <script>
-    var numberOfTotalSuperSets = 9;
+    var numberOfExercises = 10; /*TODO thymeleaf list.length*/
 
     document.onLoad(initializeData());
+
+    /*
+    * Colours all rows on page load
+    * */
     function initializeData() {
         document.getElementById('button_trainingExit').style.display = "none";
         document.getElementById('button_trainingFinished').style.display = "none";
-        for (var i = 0; i < numberOfTotalSuperSets; i++){
+        for (var i = 0; i < numberOfExercises; i++){
             colourCoding(i + 1);
         }
     }
 
-    /*Colours all Elements of the same class in the same Colours*/
-    function colourCoding(numberOfThisSuperSet){
-        var numbertest = "numbertest" + numberOfThisSuperSet;
-        var farbtest = "farbTest" + numberOfThisSuperSet;
-        var listOfThisOrder = document.getElementsByClassName(numbertest);
-        for (var i = 0; i < listOfThisOrder.length; i++) {
-            document.getElementsByClassName(farbtest)[i].style.background = rainbow(numberOfTotalSuperSets,numberOfThisSuperSet);
-        }
+    /*
+    * Decides which row to colour
+    * @arg {Integer} exerciseID - the id number of the exercise
+    * */
+    function colourCoding(exerciseID){
+        var exercise = "exercise" + exerciseID;
+        var currentID = "orderNumber" + exerciseID;
+        var currentOrder = document.getElementById(currentID).innerHTML;
+        document.getElementById(exercise).style.background = colorPick(currentOrder);
     }
 
-    /*Colours Elements using Data from thymeleaf*/
-    function thymeleafColourCoding(orderValue, idValue){
-        var colorDecider = orderValue.charCodeAt(0) - 64;
-        document.getElementById(idValue).style.background = rainbow(numberOfTotalSuperSets, colorDecider);
-    }
-
-    /*Chooses colours evenly distributed from a spectrum*/
-    function rainbow(numOfSteps, step) {
-        var r, g, b;
-        var h = step / numOfSteps;
-        var i = ~~(h * 6);
-        var f = h * 6 - i;
-        var q = 1 - f;
-        switch(i % 6){
-            case 0: r = 1; g = f; b = 0; break;
-            case 1: r = q; g = 1; b = 0; break;
-            case 2: r = 0; g = 1; b = f; break;
-            case 3: r = 0; g = q; b = 1; break;
-            case 4: r = f; g = 0; b = 1; break;
-            case 5: r = 1; g = 0; b = q; break;
+    /*
+    * Picks the color of the row depending on the order it is in
+    * @arg {String} orderNumber - the Value of the order variable of this exercise
+    * @returns - the hexadecimal color value that the row is going to be.
+    * */
+    function colorPick(orderNumber){
+        var colour = "#ffaa00";
+        var testingVariable = orderNumber.charCodeAt(0);
+        if (testingVariable %2 == 0) {
+            colour = "#aaff00";
         }
-        var c = "#" + ("00" + (~ ~(r * 255)).toString(16)).slice(-2) + ("00" + (~ ~(g * 255)).toString(16)).slice(-2) + ("00" + (~ ~(b * 255)).toString(16)).slice(-2);
-        return (c);
+        return colour;
     }
 
 </script>
