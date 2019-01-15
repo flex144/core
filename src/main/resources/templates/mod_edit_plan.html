@@ -9,50 +9,249 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
 
     <div th:include="/fragments/navbar :: navbar_style"></div>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .col-container {
+            display: table;
+            width: 100%;
+        }
+        .col {
+            display: table-cell;
+            padding: 5px;
+        }
+        .colGeneralInfo {
+            width: 50%;
+        }
+        #panelEditPlan {
+            padding-left: 20px;
+        }
+        @media only screen and (max-width: 600px) {
+            .col {
+                display: block;
+                width: 100%;
+            }
+            #panelEditPlan {
+                padding-left: 0px;
+            }
+        }
+        .panel .panel-heading {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
 <div class="container">
     <div class="panel panel-default outerPanel">
-        <div class="panel-heading" style="font-weight: bold">
-            Planvorlage bearbeiten
+        <div class="panel-heading" id="panelEditPlan">
+            <h3>Planvorlage bearbeiten</h3>
         </div>
         <div class="panel-body">
-            <div class="col-md-12">
-                <table class="table table-bordered table-condensed detail detailExerciseTable" border="1"
-                       width="100%">
-                    <thead>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
+            <div class="col-container">
+                <div class="col colGeneralInfo">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Planbezeichnung:
+                        </div>
+                        <div class="panel-body">
+                            <input  type="text" class="form-control" id="planName"
+                                    placeholder="Hier bisherigen Namen anzeigen">
+                        </div>
+                    </div>
+                </div>
+                <div class="col colGeneralInfo">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Trainingsfokus:
+                        </div>
+                        <div class="panel-body">
+                            <select id="focus" class="form-control" required>
+                                <option selected disabled hidden>Hier bisherigen Fokus anzeigen</option>
+                                <option>Muskelaufbau</option>
+                                <option>Ausdauer</option>
+                                <option>Schmerzreduktion</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <div class="col-container">
+                <div class="col colGeneralInfo">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Zielgruppe: (Erfahrungslevel)
+                        </div>
+                        <div class="panel-body">
+                            <select id="targetExperience" class="form-control" required>
+                                <option selected disabled hidden>Hier bisherige Erfahrung anzeigen</option>
+                                <option>Anfänger</option>
+                                <option>Fortgeschritten</option>
+                                <option>Profi</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col colGeneralInfo">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Trainingseinheiten pro Woche:
+                        </div>
+                        <div class="panel-body">
+                            <input  type="number" class="form-control" id="weeklyTEs"
+                                    placeholder="Hier bisherigen TEs pro Woche anzeigen">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="col-container">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="exerciseName">Übungsname:</label>
+                                <input type="text" class="form-control" id="exerciseName"
+                                        placeholder="Aktueller Übungsname">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="order">Ordnung:</label>
+                                <input type="text" class="form-control" id="order"
+                                       placeholder="Aktuelle Ordnung">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="rm">Repetition Maximum:</label>
+                                <input type="text" class="form-control" id="rm"
+                                       placeholder="Aktuelles Repetition Maximum">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <label for="tagBlockPlan">Ausführung(en):</label>
+                            <div id="tagBlockPlan">
+                                <input type="text" data-role="tagsinput"
+                                       value="" class="form-control tagsPlanInput" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <table class="table table-bordered table-condensed detail detailExerciseTable" border="1">
+                            <colgroup>
+                                <col width="5%">
+                                <col width="32.5%">
+                                <col width="32.5%">
+                                <col width="15%">
+                                <col width="15%">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>TE</th>
+                                    <th>Gewichtsänderungen</th>
+                                    <th>Wiederholungen</th>
+                                    <th>Tempo</th>
+                                    <th>Pause</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <input type="text" class="form-control" disabled placeholder="TE">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" placeholder="Gewichtsänderung">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" placeholder="Wiederholungen">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" placeholder="Tempo">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" placeholder="Pause">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            Ab hier dann für jede Übung in dem Plan ein neues Panel wie das darüber
         </div>
         <div class="panel-footer">
             <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
-                    <button type="button" class="btn btn-danger btn-block"
-                            id="deleteCurrentExercise" data-dismiss="modal">
+                <div class="col-md-6">
+                    <a type="button" class="button btn btn-block" data-toggle="modal"
+                       data-target="#modal_confirm_exit">
                         <span class="glyphicon glyphicon-remove"></span>
                         Abbrechen
-                    </button>
+                    </a>
                 </div>
-                <div class="col-md-5">
-                    <button type="button" class="btn btn-success btn-block">
-                        <span class="glyphicon glyphicon-floppy-save"></span>
+                <div class="col-md-6">
+                    <button class="button btn btn-block" type="submit">
+                        <span class="glyphicon glyphicon-floppy-saved"></span>
                         Änderungen übernehmen
                     </button>
                 </div>
-                <div class="col-md-1"></div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal to confirm leaving the current page without saving changes -->
+<div class="modal fade" id="modal_confirm_exit">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- body (form) -->
+            <div class="modal-body">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h4>Abbruch bestätigen</h4>
+                    </div>
+                    <div class="panel-body">
+                        <br>
+                        <p style="font-size: 16px">
+                            Wollen sie wirklich abbrechen?
+                        </p>
+                        <p class="text-warning" style="font-size: 12px">
+                            Alle vorgenommenen Änderungen werden verworfen!
+                        </p>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-5">
+                                <a type="button" class="btn btn-warning btn-block"><!--th:href="Link to user page"-->
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                    Änderungen verwerfen
+                                </a>
+                            </div>
+                            <div class="col-md-5">
+                                <button type="button" class="btn btn-default btn-block" data-dismiss="modal">
+                                    Weiter Bearbeiten
+                                </button>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>
 
 </body>
 </html>
