@@ -6,15 +6,18 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Your personalized training page</title>
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
     <style>
 
         html, body {
             width: 100%;
             height: 100%;
-            font-size: calc(12px + 0.5vw);
+            font-size: calc(12px+ 0.2vw);
         }
 
         .highlightedContainer {
@@ -25,6 +28,14 @@
             text-align: center;
             width: 100%;
             height: 100%;
+        }
+
+        .tableCentered{
+            text-align: center;
+            align-items: center;
+            display: table-cell;
+            vertical-align: middle;
+            margin-top: 1.4vh;
         }
 
         .fullsize{
@@ -39,21 +50,8 @@
             border: solid 2px #2E2E2E;
         }
 
-        .tableCentered{
-            height: 100%;
-            width: 15%;
-            align-content: center;
-            text-align: center;
-            margin-top: auto;
-            font-size: calc(12px + 0.5vw);
-        }
-
         .responsive-width{
-            font-size: calc(7px + 2vw);
-        }
-
-        .responsive-margin{
-            margin-top: 2vh;
+            font-size: calc(12px);
         }
 
         .button{
@@ -68,13 +66,14 @@
 </head>
 <body>
 
-<!--- Exercise Hint Modal --->
+
+<!-- Modal for exercise details -->
 <div id="exerciseModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="container">
-                    <div class="jumbotron">
+                    <div class="jumbotron col-md-5">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 Name:
@@ -132,15 +131,15 @@
                     </div>
                 </div>
             </div>
-            <div class="container" id="toggledAlert" >
-                <div class="container">
+            <div class="container col-md-12" id="toggledAlert" >
+                <div class="container col-md-12">
                     <h5 style="color: red; text-align: center; background: #e3f2fd; border: 1px solid black;">
                         Es ist nicht empfohlen die alternativen Übungen zu wählen.
                         Wenn die Entscheidung aus gesundheitlichen Gründen folgt,
                         so kontaktieren sie einen Trainer.
                     </h5>
                     <div class="row">
-                        <div class="container" style="width: 80%">
+                        <div class="container col-md-9">
                             <div class="form-group">
                                 <select id="weightType" class="form-control">
                                     <option>Diese Übung</option>
@@ -148,25 +147,25 @@
                                 </select>
                             </div>
                         </div>
-                        <button type="button" style="width: 20%"
-                                class="btn btn-secondary responsive-width" onclick="enableSave()">
-                            Ok
+                        <button type="button" class="col-md-3"
+                                class="btn btn-secondary" onclick="enableSave()">
+                            Verstanden
                         </button>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <div class="container">
+            <div class="modal-footer " >
+                <div class="container col-md-12">
                     <button type="button"
-                            class="btn btn-block btn-success responsive-width" style="font-size: small" onclick="safeAlternativeExercise()" disabled id="button_saveExercise">
+                            class="btn btn-block btn-success" style="font-size: small" onclick="safeAlternativeExercise()" disabled id="button_saveExercise">
                         Übung festlegen
                     </button>
                     <button type="button"
-                            class="btn btn-block btn-warning responsive-width" data-toggle="button" aria-pressed="false" style="font-size: small" onclick="toggleExercise()">
+                            class="btn btn-block btn-warning" data-toggle="button" aria-pressed="false" style="font-size: small" onclick="toggleExercise()">
                         Alternative
                     </button>
                     <button type="button"
-                            class="button btn btn-block btn-danger responsive-width" data-dismiss="modal" style="font-size: small" id="closeInfoModal">
+                            class="btn btn-block btn-danger" data-dismiss="modal" style="font-size: small" id="closeInfoModal">
                         Zurück
                     </button>
                 </div>
@@ -241,206 +240,234 @@
     </div>
 </div>
 
-<!--- Page Header --->
-<!--- TODO Thymeleaf load #TE --->
-<div class="highlightedContainer" id="container_header"
-     style="height: 10%;">
-    <div style="width: 70%;">
-        <!---th:text=--->
-        <h3>Trainingsplan nr. </h3>
+
+
+<!--- the Page --->
+<div style="width: 100%; height: 95%;">
+    <!--- buffers the main part of the page to the middle-->
+    <div class="col-md-4 visible-md visible-lg">
     </div>
-    <div style="width: 10%;">
-        <div style=" height: 20%">set:</div>
-        <div style="height: 80%">
-            <h4><span id="currentOrder" ></span></h4>
+    <!--- Container with the content of the page--->
+    <div class="col-md-4" style="height: 100%;">
+        <div class="visible-md visible-lg">
         </div>
-    </div>
-    <div style="width: 5%"></div>
-    <button data-toggle="modal" data-target="#infoModal" class="btn btn-info" id="openInfoModal">
-        i
-    </button>
-</div>
-
-
-<!---
+        <div class="container fullsize">
+            <div class="panel panel-login panel-default fullsize">
+                <div class="panel-heading" style="font-size: 160%; height: 10%;">
+                    <div class="col-xs-6">
+                        <!---th:text=--->
+                        Trainingsplan <br> nr. #
+                    </div>
+                    <div class="col-xs-4">
+                        <div>set: #</div>
+                        <div>
+                            <h4><span id="currentOrder" ></span></h4>
+                        </div>
+                    </div>
+                    <button data-toggle="modal" data-target="#infoModal" class="btn btn-info" id="openInfoModal">
+                        i
+                    </button>
+                </div>
+                <div class="panel-body" style=" height: 80%;">
+                    <!---
     TODO thymeleaf Each Container has to be loaded with color
     TODO thymeleaf call clickedOnExercise() onClick
 --->
-<!--- Template for thymeleaf data to load into --->
-<div class="container" id="container_content" style="height: 70%;
+                    <!--- Template for thymeleaf data to load into --->
+                    <div class="container" id="container_content" style="height: 70%;
         overflow-x: fragments; overflow-y: scroll; text-align: center;
         padding: 5px">
-    <div class="container" style="padding-bottom: 2px; height: 15%">
-        <!---  th:each th:onclick="" th:id= --->
-        <!--- TODO thymeleaf remove test class after it is implemented--->
-        <!--- TODO thymeleaf id -->
-        <div class="containerColor fullsize farbTest1 " id="exercise1">
-            <table class="fullsize" id="table" >
-                <tr class="fullsize responsive-margin" style="display: flex" id="row">
-                    <!--- TODO Session save Status --->
-                    <td class="tableCentered" >
-                            <label class="btn active">
-                                <input type="checkbox" name="" id=""
-                                       autocomplete="off" disabled style="transform: scale(2)">
-                            </label>
-                    </td>
-                    <td class="tableCentered" id="column" onclick="clickedOnExercise()">
-                        <!--- TODO thymeleaf remove test class after implementation--->
-                        <!--- th:text th:id--->
-                        <h3 class="numbertest1" id="orderNumber1">A1</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 50%;" onclick="clickedOnExercise()">
-                        <!--- th:text--->
-                        <h3>Klimmzüge</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 20%">
-                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
-                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info" id="infoButton">
-                            i
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
+                        <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;">
+                            <!---  th:each th:onclick="" th:id= --->
+                            <!--- TODO thymeleaf id -->
+                            <div class="containerColor col-md-4" id="exercise1">
+                                <div class="row">
+                                    <!--- TODO Session save Status --->
+                                    <div class=" col-xs-1 tableCentered" >
+                                        <label class="btn active ">
+                                            <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
+                                        </label>
+                                    </div>
+                                    <div class="tableCentered col-xs-2" onclick="clickedOnExercise()">
+                                        <!--- TODO thymeleaf remove test class after implementation--->
+                                        <!--- th:text th:id--->
+                                        <h3 class="numbertest1 tableCentered" id="orderNumber1">A1</h3>
+                                    </div>
+                                    <div class="tableCentered col-xs-6" onclick="clickedOnExercise()">
+                                        <!--- th:text--->
+                                        <h3 class="tableCentered">Klimmzüge</h3>
+                                    </div>
+                                    <div class=" col-xs-2">
+                                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
+                                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
+                                            i
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-    <!--- To showacase colours, delet after funcitonality integrated--->
-    <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize farbTest1" id="exercise2" >
-            <table class="fullsize" >
-                <tr class="fullsize responsive-margin" style="display: flex">
-                    <td class="tableCentered" >
-                        <label class="btn active">
-                            <input type="checkbox" name=""
-                                   autocomplete="off" disabled style="transform: scale(2)">
-                        </label>
-                    </td>
-                    <td class="tableCentered"onclick="loadExercise()">
-                        <h3 class="numbertest1" id="orderNumber2">A2</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
-                        <h3>Klimmboote</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 20%">
-                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
-                            i
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize" id="exercise3">
-            <table class="fullsize" >
-                <tr class="fullsize responsive-margin" style="display: flex">
-                    <td class="tableCentered" >
-                        <label class="btn active">
-                            <input type="checkbox" name=""
-                                   autocomplete="off" disabled style="transform: scale(2)">
-                        </label>
-                    </td>
-                    <td class="tableCentered"onclick="loadExercise()">
-                        <h3 class="numbertest2" id="orderNumber3">B1</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
-                        <h3>Handstand</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 20%">
-                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
-                            i
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize farbTest3" id="exercise4">
-            <table class="fullsize" >
-                <tr class="fullsize responsive-margin" style="display: flex">
-                    <td class="tableCentered" >
-                        <label class="btn active">
-                            <input type="checkbox" name=""
-                                   autocomplete="off" disabled style="transform: scale(2)">
-                        </label>
-                    </td>
-                    <td class="tableCentered"onclick="loadExercise()">
-                        <h3 class="numbertest3" id="orderNumber4">C1</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
-                        <h3>Tafel putzen</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 20%">
-                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
-                            i
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize" id="exercise5" >
-            <table class="fullsize" >
-                <tr class="fullsize responsive-margin" style="display: flex">
-                    <td class="tableCentered" >
-                        <label class="btn active">
-                            <input type="checkbox" name=""
-                                   autocomplete="off" disabled style="transform: scale(2)">
-                        </label>
-                    </td>
-                    <td class="tableCentered"onclick="loadExercise()">
-                        <h3 class="numbertest1" id="orderNumber5">D1</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
-                        <h3>Klimmautos</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 20%">
-                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
-                            i
-                        </button>
-                    </td>
-                </tr>
-            </table>
+                        <!--- To showacase colours, delet after funcitonality integrated--->
+                        <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;">
+                            <!---  th:each th:onclick="" th:id= --->
+                            <!--- TODO thymeleaf id -->
+                            <div class="containerColor col-md-4" id="exercise2">
+                                <div class="row">
+                                    <!--- TODO Session save Status --->
+                                    <div class=" col-xs-1 tableCentered" >
+                                        <label class="btn active ">
+                                            <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
+                                        </label>
+                                    </div>
+                                    <div class="tableCentered col-xs-2" onclick="clickedOnExercise()">
+                                        <!--- TODO thymeleaf remove test class after implementation--->
+                                        <!--- th:text th:id--->
+                                        <h3 class="numbertest1 tableCentered" id="orderNumber2">A2</h3>
+                                    </div>
+                                    <div class="tableCentered col-xs-6" onclick="clickedOnExercise()">
+                                        <!--- th:text--->
+                                        <h3 class="tableCentered">Klimmzüge</h3>
+                                    </div>
+                                    <div class=" col-xs-2">
+                                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
+                                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
+                                            i
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;">
+                            <!---  th:each th:onclick="" th:id= --->
+                            <!--- TODO thymeleaf id -->
+                            <div class="containerColor col-md-4" id="exercise3">
+                                <div class="row">
+                                    <!--- TODO Session save Status --->
+                                    <div class=" col-xs-1 tableCentered" >
+                                        <label class="btn active ">
+                                            <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
+                                        </label>
+                                    </div>
+                                    <div class="tableCentered col-xs-2" onclick="clickedOnExercise()">
+                                        <!--- TODO thymeleaf remove test class after implementation--->
+                                        <!--- th:text th:id--->
+                                        <h3 class="numbertest1 tableCentered" id="orderNumber3">B1</h3>
+                                    </div>
+                                    <div class="tableCentered col-xs-6" onclick="clickedOnExercise()">
+                                        <!--- th:text--->
+                                        <h3 class="tableCentered">Klimmzüge</h3>
+                                    </div>
+                                    <div class=" col-xs-2">
+                                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
+                                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
+                                            i
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;">
+                            <!---  th:each th:onclick="" th:id= --->
+                            <!--- TODO thymeleaf id -->
+                            <div class="containerColor col-md-4" id="exercise4">
+                                <div class="row">
+                                    <!--- TODO Session save Status --->
+                                    <div class=" col-xs-1 tableCentered" >
+                                        <label class="btn active ">
+                                            <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
+                                        </label>
+                                    </div>
+                                    <div class="tableCentered col-xs-2" onclick="clickedOnExercise()">
+                                        <!--- TODO thymeleaf remove test class after implementation--->
+                                        <!--- th:text th:id--->
+                                        <h3 class="numbertest1 tableCentered" id="orderNumber4">C1</h3>
+                                    </div>
+                                    <div class="tableCentered col-xs-6" onclick="clickedOnExercise()">
+                                        <!--- th:text--->
+                                        <h3 class="tableCentered">Klimmzüge</h3>
+                                    </div>
+                                    <div class=" col-xs-2">
+                                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
+                                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
+                                            i
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;">
+                            <!---  th:each th:onclick="" th:id= --->
+                            <!--- TODO thymeleaf id -->
+                            <div class="containerColor col-md-4" id="exercise5">
+                                <div class="row">
+                                    <!--- TODO Session save Status --->
+                                    <div class=" col-xs-1 tableCentered" >
+                                        <label class="btn active ">
+                                            <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
+                                        </label>
+                                    </div>
+                                    <div class="tableCentered col-xs-2" onclick="clickedOnExercise()">
+                                        <!--- TODO thymeleaf remove test class after implementation--->
+                                        <!--- th:text th:id--->
+                                        <h3 class="numbertest1 tableCentered" id="orderNumber5">D1</h3>
+                                    </div>
+                                    <div class="tableCentered col-xs-6" onclick="clickedOnExercise()">
+                                        <!--- th:text--->
+                                        <h3 class="tableCentered">Klimmzüge</h3>
+                                    </div>
+                                    <div class=" col-xs-2">
+                                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
+                                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
+                                            i
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" style="text-align: center;  height: 10%;">
+
+                    <!--- Buttons to leave/star the exercise --->
+                        <div id="container_timer" class="container fullsize row">
+                            <div class="col-xs-4 col-xs-offset-1" id="button_trainingBack">
+                                <a type="button"
+                                   class="btn btn-block btn-danger fullsize responsive-width" id="backButton"
+                                   style="height: 100%; min-height: 50px" th:href="@{/user/home}">
+                                    Zurück
+                                </a>
+                            </div>
+                            <div class="col-xs-4 col-xs-offset-1" id="button_trainingStart">
+                                <button type="button"
+                                        class="btn btn-block btn-success fullsize responsive-width" id="startButton"
+                                        style="height: 100%; min-height: 50px" onclick="startTraining()" >
+                                    Training <br>  starten
+                                </button>
+                            </div>
+                            <div class="col-xs-4 col-xs-offset-1" id="button_trainingExit">
+                                <button type="button"
+                                        class="btn btn-block btn-danger fullsize responsive-width"
+                                        style="height: 100%; min-height: 50px" data-toggle="modal" data-target="#exitModal" id="exitOverview">
+                                    Traing <br> abbrechen
+                                </button>
+                            </div>
+                            <div class="col-xs-4 col-xs-offset-1" id="button_trainingFinished">
+                                <button type="button"
+                                        class="btn btn-block btn-success fullsize responsive-width"
+                                        style="height: 100%; min-height: 50px" onclick="startTraining()" disabled>
+                                    Abschließen
+                                </button>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 
-    <!--- Buttons to leave/star the exercise --->
-<div class="highlightedContainer" id="container_timer" style="height: 20%;">
-    <div class="container fullsize row">
-        <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingBack">
-            <a type="button"
-                    class="btn btn-block btn-danger fullsize responsive-width" id="backButton"
-                    style="height: 100%; min-height: 50px" th:href="@{/user/home}">
-                Zurück
-            </a>
-        </div>
-        <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingStart">
-            <button type="button"
-                    class="btn btn-block btn-success fullsize responsive-width" id="startButton"
-                    style="height: 100%; min-height: 50px" onclick="startTraining()" >
-                Training starten
-            </button>
-        </div>
-        <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingExit">
-            <button type="button"
-                    class="btn btn-block btn-danger fullsize responsive-width"
-                    style="height: 100%; min-height: 50px" data-toggle="modal" data-target="#exitModal" id="exitOverview">
-                Traing abbrechen
-            </button>
-        </div>
-        <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingFinished">
-            <button type="button"
-                    class="btn btn-block btn-success fullsize responsive-width"
-                    style="height: 100%; min-height: 50px" onclick="startTraining()" disabled>
-                Abschließen
-            </button>
-        </div>
-    </div>
-</div>
+
 
 <!--- load the next page --->
 <script>
