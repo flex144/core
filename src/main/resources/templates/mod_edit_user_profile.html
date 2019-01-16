@@ -48,12 +48,36 @@
 </div>
 
 <div class="container">
-    <form th:action="@{/user/editprofile}" method="post" th:object="${editUser}">
+    <form th:action="@{/user/editprofile}" method="post" th:object="${user}">
         <div class="panel panel-default outerPanel">
         <div class="panel-heading" id="editProfilePanel">
             <h3>Nutzerprofil bearbeiten</h3>
         </div>
         <div class="panel-body">
+            <div class="panel panel-default" th:if="${infoMessage}">
+                <div class="panel-heading" style="font-weight: bold; background-color: #e1e1e1">
+                    Info
+                </div>
+                <div class="panel-body">
+                    <div class="col-container">
+                        <div class="col">
+                            <h4 th:text="${infoMessage}" style="color:cornflowerblue"></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default" th:if="${errorMessage}">
+                <div class="panel-heading" style="font-weight: bold; background-color: #e1e1e1">
+                    Info
+                </div>
+                <div class="panel-body">
+                    <div class="col-container">
+                        <div class="col">
+                            <h4 th:text="${errorMessage}" style="color:darkred"></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="panel panel-default">
                 <div class="panel-heading" style="font-weight: bold; background-color: #e1e1e1">
                     Accountdaten
@@ -65,14 +89,14 @@
                                    placeholder="Hier steht die aktuelle E-Mail Adresse" th:value="${user.email}">
                         </div>
                         <div class="col">
-                            <button class="btn btn-primary btn-block launch-modal">
+                            <button class="btn btn-primary btn-block launch-modal" type="button">
                                 <span class="glyphicon glyphicon-lock"></span>
                                 E-Mail Adresse ändern
                             </button>
                         </div>
                         <div class="col">
                             <button class="btn btn-primary btn-block" data-toggle="modal"
-                               data-target="#modal_change_password">
+                               data-target="#modal_change_password" type="button">
                                 <span class="glyphicon glyphicon-lock"></span>
                                 Passwort ändern
                             </button>
@@ -80,7 +104,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default">
+            <div class="panel panel-default"  id="general">
                 <div class="panel-heading" style="font-weight: bold; background-color: #e1e1e1">
                     Allgemeine Daten
                 </div>
@@ -88,7 +112,7 @@
                     <div class="col-container">
                         <div class="col">
                             <div class="panel panel-default">
-                                <div class="panel-heading" style="font-weight: bold" th:text="'Nachname: ' + ${user.getLastName()}">
+                                <div class="panel-heading" style="font-weight: bold" >
                                     Nachname
                                 </div>
                                 <div class="panel-body">
@@ -99,7 +123,7 @@
                         </div>
                         <div class="col">
                             <div class="panel panel-default">
-                                <div class="panel-heading" style="font-weight: bold" th:text="'Vorname: ' + ${user.getFirstName()}">
+                                <div class="panel-heading" style="font-weight: bold">
                                     Vorname
                                 </div>
                                 <div class="panel-body">
@@ -242,33 +266,35 @@
                     <div class="panel-heading">
                         <h4>Passwort ändern</h4>
                     </div>
-                    <div class="panel-body">
-                        <p style="font-size: 16px">
-                            Geben sie zuerst das alte Passwort ein, dann wählen sie ein neues und bestätigen dieses.
-                        </p>
-                        <br>
-                        <input type="password"  placeholder="Altes Passwort eingeben" class="form-control"
-                               id="oldPassword">
-                        <input type="password"  placeholder="Neues Passwort eingeben" class="form-control"
-                               id="newPassword">
-                        <input type="password"  placeholder="Neues Passwort bestätigen" class="form-control"
-                               id="confirmNewPassword">
-                        <br>
-                        <div class="row">
-                            <div class="col-md-1"></div>
-                            <div class="col-md-5">
-                                <a type="button" class="btn btn-primary btn-block"><!--th:href="Link to user page"-->
-                                    Änderungen übernehmen
-                                </a>
+                    <form th:action="@{/user/editprofilepassword}" method="post" th:object="${dto}">
+                       <div class="panel-body">
+                            <p style="font-size: 16px">
+                                Geben sie zuerst das alte Passwort ein, dann wählen sie ein neues und bestätigen dieses.
+                            </p>
+                            <br>
+                            <input type="password"  placeholder="Altes Passwort eingeben" class="form-control"
+                                   id="oldPassword" th:field="*{password}" required>
+                            <input type="password"  placeholder="Neues Passwort eingeben" class="form-control"
+                                   id="newPassword" th:field="*{confirmPassword}" required>
+                            <input type="password"  placeholder="Neues Passwort bestätigen" class="form-control"
+                                   id="confirmNewPassword" required>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-5">
+                                    <button type="submit" class="btn btn-primary btn-block"><!--th:href="Link to user page"-->
+                                        Änderungen übernehmen
+                                    </button>
+                                </div>
+                                <div class="col-md-5">
+                                    <button type="button" class="btn btn-default btn-block" data-dismiss="modal">
+                                        Abbrechen
+                                    </button>
+                                </div>
+                                <div class="col-md-1"></div>
                             </div>
-                            <div class="col-md-5">
-                                <button type="button" class="btn btn-default btn-block" data-dismiss="modal">
-                                    Abbrechen
-                                </button>
-                            </div>
-                            <div class="col-md-1"></div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -344,7 +370,23 @@
                 backdrop: 'static'
             });
         });
+
     });
+
+    var password = document.getElementById("newPassword")
+    var confirm_password = document.getElementById("confirmNewPassword");
+
+    function validatePassword(){
+        if(password.value != confirm_password.value) {
+            confirm_password.setCustomValidity("Passwords Don't Match");
+        } else {
+            confirm_password.setCustomValidity('');
+        }
+    }
+
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
+
 </script>
 
 </body>

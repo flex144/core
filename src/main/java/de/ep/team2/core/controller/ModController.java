@@ -103,11 +103,4 @@ public class ModController {
         model.addAttribute("users", userService.getAllUsers());
         return "mod_user_search";
     }
-
-
-    /* Tempoary Mapping for new page */
-    @GetMapping(value = {"/editprofile"})
-    public String getEditProfile() {
-        return "mod_edit_user_profile";
-    }
 }

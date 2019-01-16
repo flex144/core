@@ -198,6 +198,9 @@ public class DataBaseService {
             if (user.getLastName() != null) {
                 changeDetails("last_name", user.getLastName(), email);
             }
+            if (user.getPassword() != null) {
+                changeDetails("password", user.getPassword(), email);
+            }
         }
         return getUserByEmail(email);
     }
