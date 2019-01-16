@@ -105,7 +105,7 @@
                 </div>
                 <div class="col">
                     <a type="button" class="btn btn-block btn-danger" data-toggle="modal"
-                       data-target="#confirm_delete">
+                       data-target="#confirm_delete" id="deleteButton">
                         <span class="glyphicon glyphicon-remove"></span>
                         Mein Profil löschen
                     </a>
@@ -125,11 +125,11 @@
                     </tr>
                     <tr>
                         <th>First name</th>
-                        <td><p th:text="${user.firstName}" style="font-size: 12pt"/></td>
+                        <td><p th:text="${user.firstName}" style="font-size: 12pt" id="firstName"/></td>
                     </tr>
                     <tr>
                         <th>Last name</th>
-                        <td><p th:text="${user.lastName}" style="font-size: 12pt"/></td>
+                        <td><p th:text="${user.lastName}" style="font-size: 12pt" id="lastName"/></td>
                     </tr>
                     <tr>
                         <th>Rolle</th>

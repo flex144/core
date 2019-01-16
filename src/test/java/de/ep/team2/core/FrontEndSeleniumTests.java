@@ -61,13 +61,23 @@ public class FrontEndSeleniumTests {
     }
 
     /**
+     * In this method, the geckodrivers path needs to be edited to one's own path.
+     *
+     * @return New webdriver
+     */
+    private WebDriver sysProperties() {
+        //Needs to be changed to own path!
+        //System.setProperty("webdriver.gecko.driver", "/Users/flex/Downloads/geckodriver");
+        WebDriver driver = new FirefoxDriver();
+        return driver;
+    }
+
+    /**
      * Tests if a normal user can gain access to his own profile and profiles from other users.
      */
     @Test
     public void secureProfileTest() {
-        //Needs to be changed to own path!
-        //System.setProperty("webdriver.gecko.driver", "/Users/flex/Downloads/geckodriver");
-        WebDriver driver = new FirefoxDriver();
+        WebDriver driver = sysProperties();
 
         // Login at website as user
         loginAsUser(driver);
@@ -92,9 +102,7 @@ public class FrontEndSeleniumTests {
      */
     @Test
     public void modProfileAccessTest() {
-        //Needs to be changed to own path!
-        //System.setProperty("webdriver.gecko.driver", "/Users/flex/Downloads/geckodriver");
-        WebDriver driver = new FirefoxDriver();
+        WebDriver driver = sysProperties();
 
         // Login at website as moderator
         loginAsModerator(driver);
@@ -121,11 +129,7 @@ public class FrontEndSeleniumTests {
      */
     @Test
     public void modCreatePlanTest() {
-        //Needs to be changed to own path!
-        //System.setProperty("webdriver.gecko.driver", "/Users/flex/Downloads/geckodriver");
-
-        // Create new istance of Firefox driver
-        WebDriver driver = new FirefoxDriver();
+        WebDriver driver = sysProperties();
 
         // Set the wait time of the driver in case of timeouts to 1 second
         driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
@@ -276,9 +280,7 @@ public class FrontEndSeleniumTests {
      */
     @Test
     public void checkDeletionSuccess() {
-        //Needs to be changed to own path!
-        System.setProperty("webdriver.gecko.driver", "/Users/flex/Downloads/geckodriver");
-        WebDriver driver = new FirefoxDriver();
+        WebDriver driver = sysProperties();
         loginAsUser(driver);
 
         //locate delete button and delete own profile
@@ -318,6 +320,77 @@ public class FrontEndSeleniumTests {
                 .sendKeys("password");
         driver.findElement(By.id("register")).click();
         loginAsUser(driver);
+
+        driver.quit();
+
+    }
+
+    @Test
+    public void editUserData() {
+        WebDriver driver = sysProperties();
+        loginAsUser(driver);
+
+        //check if data from user gets loaded correctly in input fields
+        driver.navigate().to("http://localhost:8080/user/editprofile");
+        String value = driver.findElement(By.id("lastnameInput")).getAttribute("value");
+        assertTrue(value.equals("Reißig"));
+        value = driver.findElement(By.id("firstnameInput")).getAttribute("value");
+        assertTrue(value.equals("Alexander"));
+
+        //check if data gets updated correctly
+        driver.findElement(By.id("lastnameInput")).clear();
+        driver.findElement(By.id("lastnameInput")).sendKeys("Schwarz");
+        driver.findElement(By.id("firstnameInput")).clear();
+        driver.findElement(By.id("firstnameInput")).sendKeys("Benedikt");
+        driver.findElement(By.id("generalSubmit")).click();
+        value = driver.getCurrentUrl();
+        assertEquals(driver.getCurrentUrl(), "http://localhost:8080/users/2");
+        value = driver.findElement(By.id("lastName")).getText();
+        assertEquals(value, "Schwarz");
+        value = driver.findElement(By.id("firstName")).getText();
+        assertEquals(value, "Benedikt");
+
+        //check if password gets updated correctly
+        driver.navigate().to("http://localhost:8080/user/editprofile");
+        driver.findElement(By.id("changePassword")).click();
+        waitDuration(200);
+        driver.findElement(By.id("oldPassword")).sendKeys("123");
+        driver.findElement(By.id("newPassword")).sendKeys("1234");
+        driver.findElement(By.id("confirmNewPassword")).sendKeys("1234");
+        driver.findElement(By.id("passwordSubmit")).click();
+        assertTrue(driver.getPageSource().contains("Altes Passwort ist falsch!"));
+
+        driver.findElement(By.id("changePassword")).click();
+        waitDuration(200);
+        driver.findElement(By.id("oldPassword")).sendKeys("password");
+        driver.findElement(By.id("newPassword")).sendKeys("1234");
+        driver.findElement(By.id("confirmNewPassword")).sendKeys("1234");
+        driver.findElement(By.id("passwordSubmit")).click();
+        assertTrue(driver.getPageSource().contains("Passwort wurde aktualisiert!"));
+
+        driver.navigate().to("http://localhost:8080/");
+        driver.findElement(By.id("email")).sendKeys("alex@gmail.com");
+        driver.findElement(By.id("password")).sendKeys("password");
+        driver.findElement(By.cssSelector("input.btn")).click();
+        assertEquals(driver.getCurrentUrl(), "http://localhost:8080/login?error");
+        driver.findElement(By.id("email")).sendKeys("alex@gmail.com");
+        driver.findElement(By.id("password")).sendKeys("1234");
+        driver.findElement(By.cssSelector("input.btn")).click();
+        assertEquals(driver.getCurrentUrl(), "http://localhost:8080/user/home");
+
+        //reset data
+        driver.navigate().to("http://localhost:8080/user/editprofile");
+        driver.findElement(By.id("changePassword")).click();
+        waitDuration(200);
+        driver.findElement(By.id("oldPassword")).sendKeys("1234");
+        driver.findElement(By.id("newPassword")).sendKeys("password");
+        driver.findElement(By.id("confirmNewPassword")).sendKeys("password");
+        driver.findElement(By.id("passwordSubmit")).click();
+        driver.findElement(By.id("lastnameInput")).clear();
+        driver.findElement(By.id("lastnameInput")).sendKeys("Reißig");
+        driver.findElement(By.id("firstnameInput")).clear();
+        driver.findElement(By.id("firstnameInput")).sendKeys("Alexander");
+        driver.findElement(By.id("generalSubmit")).click();
 
         driver.quit();
 
