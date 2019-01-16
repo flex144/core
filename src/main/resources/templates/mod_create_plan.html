@@ -1146,20 +1146,26 @@
      */
     function checkboxChanged() {
         if($('#singleDayCheck').prop('checked')) {
+            // Get the previous amount of TE´s
+            var prevTEs = parseInt(document.getElementById("inputUnit").value);
             // Store the previous amount of TE´s in a hidden input field
-            $('#prevUnitAmount').val(document.getElementById("inputUnit").value);
+            $('#prevUnitAmount').val(prevTEs);
             // Set TE amount to 1
             $('#inputUnit').val(1);
             // Update the input fields according to the new TE amount
-            updateTeInputs();
+            for (var i = 0; i < (prevTEs-1); i++) {
+                decreaseTeInputs();
+            }
             // Disable the TE-buttons
             $('#btnDecrementTEs').prop('disabled', true);
             $('#btnIncrementTEs').prop('disabled', true);
         } else {
+            // Get the previous amount of TE´s
+            var prevTEs = parseInt(document.getElementById("prevUnitAmount").value);
             // Set TE amount to the previous value before setting it to 1
-            $('#inputUnit').val(document.getElementById("prevUnitAmount").value);
+            $('#inputUnit').val(prevTEs);
             // Update the input fields according to the new TE amount
-            updateTeInputs();
+            addMultipleTeInputs(prevTEs);
             // Enable the TE-buttons
             $('#btnDecrementTEs').prop('disabled', false);
             $('#btnIncrementTEs').prop('disabled', false);
@@ -1185,8 +1191,8 @@
         // Get the amount of TE´s
         var number = document.getElementById("inputUnit").value;
 
-        // loop to add example input fields to the TE/Repeats/Tempo/Pause columns in the exercise form
-        for (var i=0;i<number;i++){
+        // loop to add input fields to the TE/Weights/Repeats/Tempo/Pause columns in the exercise form
+        for (var i = 0; i < number; i++){
             // create unique id´s
             var counterTEId = "counter" + i;
             var weightsInputId = "weightsInput" + i;
@@ -1235,7 +1241,7 @@
         // Get amount of TE´s
         var currentTE = document.getElementById("inputUnit").value;
         // Get the next ID in the order for the new input fields
-        var nextID = parseInt(currentTE) + 1;
+        var nextID = parseInt(currentTE) - 1;
 
         // Add an additional input fields to the TE/Weights/Repeats/Tempo/Pause columns in the exercise form
         var counterTEId = "counter" + nextID;
@@ -1255,6 +1261,34 @@
             '<li>' + '<input id="' + tempoInputId + '" name="tempo" type="text" class="form-control">' + '</li>');
         $('#pauseInputs').append(
             '<li>' + '<input id="' + pauseInputId + '" name="pause" type="text" class="form-control">' + '</li>');
+    }
+
+    /**
+     * Creates multiple additional sets of input fields in the exercise after the checkbox for a single
+     * day plan has been unchecked
+     */
+    function addMultipleTeInputs(amountTEs) {
+        // loop to add the input fields to the TE/Weights/Repeats/Tempo/Pause columns in the exercise form
+        for (var i = 1; i < amountTEs; i++){
+            // create unique id´s
+            var counterTEId = "counter" + i;
+            var weightsInputId = "weightsInput" + i;
+            var repsInputId = "repsInput" + i;
+            var tempoInputId = "tempoInput" + i;
+            var pauseInputId = "pauseInput" + i;
+
+            // Add the input fields to the lists
+            $('#counterTE').append(
+                '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+            $('#weightsInputs').append(
+                '<li>' + '<input id="'+weightsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
+            $('#repsInputs').append(
+                '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
+            $('#tempoInputs').append(
+                '<li>' + '<input id="' + tempoInputId + '" name="tempo" type="text" class="form-control">' + '</li>');
+            $('#pauseInputs').append(
+                '<li>' + '<input id="' + pauseInputId + '" name="pause" type="text" class="form-control">' + '</li>');
+        }
     }
 
     /**
