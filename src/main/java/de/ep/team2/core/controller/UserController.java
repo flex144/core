@@ -40,6 +40,7 @@ public class UserController {
                 model.addAttribute("dayDto", dayDto);
                 return "init_train";
             } else {
+                model.addAttribute("dayDto", dayDto);
                 return "user_training_overview";
             }
         } else { // Training already started
@@ -87,14 +88,31 @@ public class UserController {
 
     @RequestMapping("/plan/exercise/{index}")
     public String openExercise(@PathVariable Integer index, Model model) {
-        ExerciseDto exerciseDto = dayDto.getExercises().get(index); // todo method to search fo them
-        model.addAttribute("exerciseDto", exerciseDto);
-        return "user_in_exercise";
+        if (dayDto.getExercises() == null) {
+            model.addAttribute("error","No active plan visit plan overview first!");
+            return "error";
+        } else if (dayDto.isInitialTraining()) {
+            model.addAttribute("error","Initial Training wasn't completed yet");
+            return "error";
+        } else {
+            ExerciseDto exerciseDto = dayDto.getExercises().get(index);
+            model.addAttribute("exerciseDto", exerciseDto);
+            return "user_in_exercise";
+        }
     }
 
     @RequestMapping("/plan/init/exercise/{index}")
     public String openInitExercise(@PathVariable Integer index, Model model) {
-        ExerciseDto exerciseDto = dayDto.getExercises().get(index); // todo method to search fo them
-        model.addAttribute("exerciseDto", exerciseDto);
-        return "init_exercise";}
+        if (dayDto.getExercises() == null) {
+            model.addAttribute("error", "No active plan visit plan overview first!");
+            return "error";
+        } else if (!dayDto.isInitialTraining()) {
+            model.addAttribute("error", "Initial Training already completed");
+            return "error";
+        } else {
+            ExerciseDto exerciseDto = dayDto.getExercises().get(index);
+            model.addAttribute("exerciseDto", exerciseDto);
+            return "init_exercise";
+        }
+    }
 }

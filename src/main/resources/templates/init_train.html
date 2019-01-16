@@ -11,7 +11,7 @@
            <tbody>
         <tr>
             <th>Ordnung</th>
-            <td><p th:text="${exerciseInst.category}" th:id="${exerciseInst.indexInList}"></p></td>
+            <td><p th:text="${exerciseInst.category}"></p></td>
         </tr>
         <tr>
             <th>Name</th>
@@ -26,6 +26,7 @@
             <td th:each="rep : ${exerciseInst.reps}"><p th:text="${rep}"></p></td>
         </tr>
         </tbody>
+           <a th:href="@{'/user/plan/init/exercise/'+ ${exerciseInst.indexInList}}">zur Übung</a>
        </div>
     </table>
     </div>
