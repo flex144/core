@@ -2,6 +2,7 @@ package de.ep.team2.core.service;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.dtos.ExerciseDto;
+import de.ep.team2.core.dtos.TrainingsDayDto;
 import de.ep.team2.core.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -174,46 +175,77 @@ public class PlanService {
                 toReturn[i] = Integer.parseInt(splitted[i].trim());
             }
             return toReturn;
-            // TODO: 15.01.19 check one value for all and check if same as sets in new method
         }
     }
 
     // TODO: 14.01.19 Linking fot the 2 events
-    public LinkedList<ExerciseDto> createTrainingsDay(String userMail) {
+    public TrainingsDayDto fillTrainingsDayDto(String userMail, TrainingsDayDto trainingsDayDto) {
         DataBaseService db = DataBaseService.getInstance();
         UserPlan userPlan = db.getUserPlanByUserMail(userMail);
+        if (userPlan == null) {
+            db.insertUserPlan(userMail, 1); // todo only workaround for test
+            userPlan = db.getUserPlanByUserMail(userMail);
+        }
         Integer currentSession = userPlan.getCurrentSession();
-        currentSession++; // rm when link to first train
         if (currentSession == null || currentSession < 0) {
             throw new IllegalArgumentException("Session number of User Plan corrupted");
         } else if (currentSession >= userPlan.getMaxSession()) {
             log.debug("User:" + userMail + ": Plan expired new Plan needed!");
             throw new IllegalArgumentException("Plan expired new Plan needed!");
-        } else if (currentSession == 0) {
-            log.debug("User:" + userMail + ": Initial Training not completed!");
-            throw new IllegalArgumentException("Initial Training not completed!");
         } else {
             TrainingsPlanTemplate template = db.getPlanTemplateAndSessionsByID(userPlan.getIdOfTemplate());
-            LinkedList<ExerciseDto> toReturn = new LinkedList<>();
+            LinkedList<ExerciseDto> exerciseDtos = new LinkedList<>();
             for (ExerciseInstance exInstance : template.getExerciseInstances()) {
-                TrainingsSession trainingsSession = getSessionByOrdering(currentSession, exInstance.getTrainingsSessions());
-                Exercise exercise = db.getExerciseById(exInstance.getIsExerciseID());
-                Integer[] weights = db.getWeightsForOneDay(userPlan.getId(),exInstance.getId(),currentSession);
                 ExerciseDto newDto = new ExerciseDto();
+                TrainingsSession trainingsSession;
+                if (!userPlan.isInitialTrainingDone() && currentSession == 0) {
+                    newDto.setWeights(null);
+                    newDto.setFirstTraining(true);
+                    newDto.setWeightDone(0);
+                    trainingsSession = getSessionByOrdering(1, exInstance.getTrainingsSessions()); // in initial Workout take values from first Trainings session
+                } else {
+                    trainingsSession = getSessionByOrdering(currentSession, exInstance.getTrainingsSessions());
+                    newDto.setWeights(calcWeights(db.getWeightForUserPlanExercise(userPlan.getId(), exInstance.getId()), trainingsSession.getSets(), trainingsSession.getWeightDiff()));
+                    newDto.setFirstTraining(false);
+                }
+                Exercise exercise = db.getExerciseById(exInstance.getIsExerciseID());
+                newDto.setIdUserPlan(userPlan.getId());
+                newDto.setIdExerciseInstance(exInstance.getId());
                 newDto.setExercise(exercise);
                 newDto.setCategory(exInstance.getCategory());
                 newDto.setSets(trainingsSession.getSets());
                 newDto.setTempo(trainingsSession.getTempo());
                 newDto.setPause(trainingsSession.getPauseInSec());
                 newDto.setReps(trainingsSession.getReps());
-                newDto.setWeights(weights);
-                newDto.setFirstTraining(false);
-                newDto.setWeightDone(null);
                 newDto.setRepMax(exInstance.getRepetitionMaximum());
-                toReturn.add(newDto);
+                exerciseDtos.add(newDto);
             }
-            return toReturn;
+            trainingsDayDto.setExercises(exerciseDtos);
+            trainingsDayDto.setInitialTraining(!userPlan.isInitialTrainingDone());
+            return trainingsDayDto;
         }
+    }
+
+    public void setUserPlanInitialTrainDone(int userPlanId) {
+        DataBaseService.getInstance().setInitialTrainDone(userPlanId);
+    }
+
+    public void setWeightsOfExercise(ExerciseDto exerciseDto) {
+        if (!exerciseDto.getFirstTraining()) {
+            throw new IllegalArgumentException("Initial Training already completed!");
+        } else if (exerciseDto.getDone()){
+            DataBaseService.getInstance().insertWeightsForUserPlan(exerciseDto.getIdUserPlan(),
+                    exerciseDto.getIdExerciseInstance(), exerciseDto.getWeightDone());
+        }
+    }
+
+    private Integer[] calcWeights(Integer weight, int setsNum, Integer[] weightDiff) {
+        Integer[] weights = new Integer[setsNum];
+        Arrays.fill(weights, weight);
+        for (int i = 0; i < weights.length; i++) {
+            weights[i] = (int) Math.round(weights[i] * (1.0 + (weightDiff[i] / 100.0)));
+        }
+        return weights;
     }
 
     private TrainingsSession getSessionByOrdering(int ordering, LinkedList<TrainingsSession> sessions) {
@@ -223,5 +255,18 @@ public class PlanService {
             }
         }
         throw new IllegalArgumentException("No Session with this ordering available!");
+    }
+
+    public Boolean checkIfDone(TrainingsDayDto dayDto) {
+        boolean isDone = true;
+        for (ExerciseDto exDto : dayDto.getExercises()) {
+            if (!exDto.getDone()) {
+                isDone = false;
+            }
+        }
+        if (isDone) {
+            DataBaseService.getInstance().increaseCurSession(dayDto.getExercises().getFirst().getIdUserPlan());
+        }
+        return isDone;
     }
 }

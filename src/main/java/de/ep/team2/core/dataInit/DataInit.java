@@ -1,6 +1,6 @@
 package de.ep.team2.core.dataInit;
 
-import de.ep.team2.core.dtos.ExerciseDto;
+import de.ep.team2.core.dtos.TrainingsDayDto;
 import de.ep.team2.core.entities.UserPlan;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
@@ -134,22 +134,15 @@ public class DataInit {
                 "\"user\" varchar(255) NOT NULL REFERENCES users," +
                 "template integer NOT NULL REFERENCES plan_templates," +
                 "curSession integer NOT NULL," +
-                "maxSession integer NOT NULL)");
+                "maxSession integer NOT NULL," +
+                "initial_training_done boolean NOT NULL)");
         log.debug("Created table user_plans");
         jdbcTemplate.execute("DROP TABLE IF EXISTS weights cascade ");
         jdbcTemplate.execute("CREATE TABLE weights(" +
                 "  id SERIAL NOT NULL PRIMARY KEY," +
                 "  idUserPlan integer not null references user_plans," +
                 "  idExerciseInstance integer not null references exercise_instances," +
-                "  sessionNum integer not null," +
-                "  weightRep1 integer," +
-                "  weightRep2 integer," +
-                "  weightRep3 integer," +
-                "  weightRep4 integer," +
-                "  weightRep5 integer," +
-                "  weightRep6 integer," +
-                "  weightRep7 integer," +
-                "  CHECK (sessionNum <= 15 AND sessionNum >= 1))");
+                "  weight integer not null)");
         log.debug("Created table weights");
     }
 
@@ -280,9 +273,9 @@ public class DataInit {
     private void fillWeights() {
         DataBaseService db = DataBaseService.getInstance();
         PlanService service = new PlanService();
-        Integer[] toInsert = new Integer[] {50,50,50};
-        db.insertWeightsForUserPlan(1,1,1,toInsert);
-        Integer[] test = db.getWeightsForOneDay(1,1,1);
-        LinkedList<ExerciseDto> test2 = service.createTrainingsDay("timo@gmail.com");
+        db.insertWeightsForUserPlan(1,1,50);
+        db.insertWeightsForUserPlan(1,2,100);
+        Integer test = db.getWeightForUserPlanExercise(1,1);
+        TrainingsDayDto test2 = service.fillTrainingsDayDto("timo@gmail.com", new TrainingsDayDto());
     }
 }

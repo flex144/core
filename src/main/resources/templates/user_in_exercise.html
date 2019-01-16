@@ -255,6 +255,11 @@
 <!--- Details to the current exercise--->
 <div class="orangeContainer" id="container_planExerciseData"
      style="height: 40%;">
+    <form th:action="@{/user/plan/done}" method="post">
+        <input title="done" type="checkbox" name="doneFlag">
+        <input type="" th:value="${exerciseDto.getIndexInList()}" name="indexInList">
+        <input title="send" type="submit">
+    </form>
     <table id="exerciseDetails" class="table-striped table-bordered">
         <tr>
             <td>Gewicht</td>
