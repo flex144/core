@@ -86,7 +86,7 @@
                                 Name:
                             </div>
                             <div class="panel-body">
-                                <p></p>
+                                <p th:text="${exerciseDto.getExercise().getName()}"></p>
                             </div>
                         </div>
                         <div>
@@ -95,42 +95,43 @@
                                     Beschreibung:
                                 </div>
                                 <div class="panel-body">
-                                    <p ></p>
+                                    <p th:text="${exerciseDto.getExercise().getDescription()}"></p>
                                 </div>
                             </div>
-                            <div class="panel panel-default" >
+                            <div class="panel panel-default" th:if="${!exerciseDto.getExercise().getVideoLink().equals('')}">
                                 <div class="panel-heading">
                                     Beispielvideo:
                                 </div>
                                 <div class="panel-body">
                                     <div class="embed-responsive embed-responsive-16by9">
-                                        <iframe  width="560" height="315"
+                                        <iframe th:if="${!exerciseDto.getExercise().getVideoLink().equals('')}" width="560" height="315"
+                                                th:src="${exerciseDto.getExercise().getVideoLink()}"
                                                 frameborder="0" allowfullscreen></iframe>
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel panel-default">
+                            <div class="panel panel-default" th:if="${!exerciseDto.getExercise().getMuscleImgPaths().isEmpty()}">
                                 <div class="panel-heading">
-                                    <p>
+                                    <p th:if="${!exerciseDto.getExercise().getMuscleImgPaths().isEmpty()}">
                                         Muskelgruppen Bilder:</p>
                                 </div>
                                 <div class="panel-body">
 
-                                    <div
+                                    <div th:each="path : ${exerciseDto.getExercise().getMuscleImgPaths()}"
                                          class="image">
-                                        <img/>
+                                        <img th:src="@{${path}}"/>
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel panel-default" >
+                            <div class="panel panel-default" th:if="${!exerciseDto.getExercise().getOtherImgPaths().isEmpty()}">
                                 <div class="panel-heading">
-                                    <p>Andere
+                                    <p th:if="${!exerciseDto.getExercise().getOtherImgPaths().isEmpty()}">Andere
                                         Bilder:</p>
                                 </div>
                                 <div class="panel-body">
-                                    <div
+                                    <div th:each="path : ${exerciseDto.getExercise().getOtherImgPaths()}"
                                          class="image">
-                                        <img/>
+                                        <img th:src="@{${path}}"/>
                                     </div>
                                 </div>
                             </div>
@@ -179,6 +180,10 @@
             </div>
         </div>
     </div>
+</div>
+
+<div name="Hidden elements Container" id="hiddenElements">
+    <p id="setNumber" th:text="${exerciseDto.getSets()}"></p>
 </div>
 
 <!-- Modal Preventing user from accidentally leaving the page-->
@@ -245,7 +250,7 @@
             <div class="panel panel-login panel-default fullsize">
                 <div class="panel-heading" style="font-size: 180%; height: 10%;">
                     <!--- th:data--->
-                    Klimmzüge
+                    <p th:text="${exerciseDto.getExercise().getName()}"></p>
                     <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info" id="infoButton">
                         i
                     </button>
@@ -254,10 +259,9 @@
                     <!--- Description to current exercise --->
                     <div class="greyContainer" id="container_planInstructions"
                          style="height: 10%;">
-                        <div  id="container_planDetails" style="
-            overflow-y: scroll; overflow-x: fragments;">
-                            Massive anmerkungen zum text obwohl hier wahrscheinlich nie mehr als
-                            ein zwei wörter stehen wird
+                        <div  id="container_planDetails" style=" overflow-x: scroll; height: 100%;">
+                            <!-- th:text="${exerciseDto.getExercise().getDescription()}" -->
+                           <p th:text="${exerciseDto.getExercise().getId()}"></p>
                         </div>
                     </div>
 
@@ -265,23 +269,28 @@
                     <div class="orangeContainer" id="container_planExerciseData"
                          style="height: 40%;">
                         <table id="exerciseDetails" class="table-striped table-bordered">
+                            <form th:action="@{/user/plan/done}" method="post">
+                            <input title="done" type="checkbox" name="doneFlag" hidden checked>
+                            <input type="" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
+                            <input title="send" type="submit">
+                        </form>
                             <tr>
                                 <td>Gewicht</td>
-                                <td>Eigen</td>
+                                <td th:text="${exerciseDto.getWeights()}"></td>
                             </tr>
                             <tr>
                                 <td>Tempo</td>
-                                <td>Langsam</td>
+                                <td th:text="${exerciseDto.getTempo()}"></td>
                             </tr>
                             <tr>
                                 <td>Pause</td>
                                 <td>
-                                    <span id="pauseTime" ></span></td>
+                                    <span id="pauseTime" th:value="${exerciseDto.getPause()}"></span></td>
                             </tr>
                             <tr>
                                 <td>Sätze</td>
                                 <td>
-                                    <span class="value"></span>
+                                    <span class="value" th:value="${exerciseDto.getSets()}"></span>
                                 </td>
                             </tr>
                             <tr>
@@ -474,7 +483,7 @@
     var timerBox = document.getElementById("container_timerBox");
     var evaluationBox = document.getElementById("container_evaluationBox");
     var currentCounter = 0;
-    var setCounter = 4;
+    var setCounter = document.getElementById("setNumber").innerHTML;
     var labelValue = currentCounter + "/" + setCounter;
     var pauseTimeValue = 90;
     var buttonTitle = "Starten";
@@ -486,6 +495,7 @@
      * */
     document.onLoad(initializeReps());
     function initializeReps() {
+        document.getElementById('hiddenElements').style.display = "none";
         document.getElementById('repInput').value = currentReps;
         document.querySelector('.doneReps').innerHTML = totalReps;
         evaluationBox.style.display = "none";
