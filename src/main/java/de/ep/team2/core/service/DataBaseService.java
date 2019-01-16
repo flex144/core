@@ -109,6 +109,7 @@ public class DataBaseService {
             user.setId(rs.getInt("id"));
             user.setEmail(rs.getString("email"));
             user.setFirstName(rs.getString("first_name"));
+            user.setLastName(rs.getString("last_name"));
             user.setPassword(rs.getString("password"));
             user.setEnabled(rs.getBoolean("enabled"));
             user.setRole(rs.getString("role"));
