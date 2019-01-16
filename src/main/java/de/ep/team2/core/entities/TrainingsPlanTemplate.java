@@ -89,7 +89,32 @@ public class TrainingsPlanTemplate {
         return exerciseInstances;
     }
 
-    public void setTrainingsSessions(LinkedList<ExerciseInstance> trainingsSessions) {
+    public void setExerciseInstances(LinkedList<ExerciseInstance> exerciseInstances) {
         this.exerciseInstances = exerciseInstances;
+    }
+
+    /**
+    public void addExerciseInstance (ExerciseInstance exerciseInstance) {
+        this.exerciseInstances.add(exerciseInstance);
+    }
+     */
+
+    public static void main(String[] args) {
+        Integer[] reps = {1, 2, 3};
+        LinkedList<String> llst= new LinkedList<String>();
+        llst.add("1");
+        llst.add("2");
+        LinkedList<TrainingsSession> ll = new LinkedList<TrainingsSession>();
+        TrainingsSession ts1 = new TrainingsSession(1, 2,3,4,5,reps,"asd",1);
+        TrainingsSession ts2 = new TrainingsSession(2, 2,3,4,5,reps,"asd",1);
+        ll.add(ts1);
+        ll.add(ts2);
+        ExerciseInstance ei1 = new ExerciseInstance(1,2,3,"asd", llst, ll, "asd");
+        LinkedList<ExerciseInstance> llei= new LinkedList<ExerciseInstance>();
+        llei.add(ei1);
+        TrainingsPlanTemplate tpt = new TrainingsPlanTemplate();
+        tpt.setExerciseInstances(llei);
+
+        System.out.println(tpt.exerciseInstances.getFirst().getTrainingsSessions().getFirst().getId());
     }
 }

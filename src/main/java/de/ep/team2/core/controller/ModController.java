@@ -2,12 +2,14 @@ package de.ep.team2.core.controller;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.Exercise;
+import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -102,6 +104,30 @@ public class ModController {
         UserService userService = new UserService();
         model.addAttribute("users", userService.getAllUsers());
         return "mod_user_search";
+    }
+
+    @RequestMapping(value="/editplan", method = RequestMethod.GET)
+    public String getEditPlan(Model model) {
+        if (model.containsAttribute("tpt")) {
+            return "mod_edit_plan";
+        } else {
+            model.addAttribute("tpt", new TrainingsPlanTemplate());
+            return "mod_edit_plan";
+        }
+    }
+
+    @RequestMapping(value="/editplan", method = RequestMethod.PUT)
+    public String postEditPlan(@ModelAttribute("tpt") TrainingsPlanTemplate tpt, Model model) {
+
+        return "";
+    }
+
+    @RequestMapping(value="/editplan/{id}", method = RequestMethod.GET)
+    public String editPlan(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        PlanService service = new PlanService();
+        TrainingsPlanTemplate tpt = service.getPlanTemplateAndSessionsByID(id);
+        redirectAttributes.addFlashAttribute("tpt", tpt);
+        return "redirect:/mods/editplan";
     }
 
 }
