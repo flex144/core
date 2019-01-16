@@ -232,6 +232,31 @@
 </div>
 
 
+<div th:each="exerciseInst : ${dayDto.exercises}">
+    <table class="table table-striped table-bordered">
+        <div th:if="${!exerciseInst.done}">
+            <tbody>
+            <tr>
+                <th>Ordnung</th>
+                <td><p th:text="${exerciseInst.category}"></p></td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td><p th:text="${exerciseInst.exercise.name}"></p></td>
+            </tr>
+            <tr>
+                <th>sets</th>
+                <td><p th:text="${exerciseInst.sets}"></p></td>
+            </tr>
+            <tr>
+                <th>reps</th>
+                <td th:each="rep : ${exerciseInst.reps}"><p th:text="${rep}"></p></td>
+            </tr>
+            </tbody>
+            <a th:href="@{'/user/plan/exercise/'+ ${exerciseInst.indexInList}}">zur Übung</a>
+        </div>
+    </table>
+</div>
 
 <!--- the Page --->
 <div style="width: 100%; height: 95%;">

@@ -4,6 +4,9 @@ import de.ep.team2.core.entities.Exercise;
 
 public class ExerciseDto {
 
+    private Integer indexInList = null;
+    private int idUserPlan;
+    private int idExerciseInstance;
     private Exercise exercise;
     private String category;
     private int sets;
@@ -11,14 +14,22 @@ public class ExerciseDto {
     private int pause;
     private Integer[] reps;
     private Integer[] weights;
+    private boolean done;
 
-    private Boolean isFirstTraining;
-    private Integer[] weightDone;
+    private boolean isFirstTraining;
+    private Integer weightDone;
     private int repMax;
 
-    public ExerciseDto(Exercise exercise, String category, int sets, String tempo, int pause,
-                       Integer[] reps, Integer[] weights, Boolean isFirstTraining, Integer[] weightDone,
-                       int repMax) {
+    // Not handled yet
+
+    private Integer[] repsDone; // reps he actually did
+    private Integer exhaustion; // rating the exercise
+
+
+    public ExerciseDto(int idUserPlan, int idExerciseInstance, Exercise exercise, String category, int sets, String tempo, int pause,
+                       Integer[] reps, Integer[] weights, Boolean isFirstTraining, int repMax) {
+        this.idUserPlan = idUserPlan;
+        this.idExerciseInstance = idExerciseInstance;
         this.exercise = exercise;
         this.category = category;
         this.sets = sets;
@@ -27,11 +38,27 @@ public class ExerciseDto {
         this.reps = reps;
         this.weights = weights;
         this.isFirstTraining = isFirstTraining;
-        this.weightDone = weightDone;
         this.repMax = repMax;
+        this.done = false;
     }
 
     public ExerciseDto() {
+    }
+
+    public int getIdUserPlan() {
+        return idUserPlan;
+    }
+
+    public void setIdUserPlan(int idUserPlan) {
+        this.idUserPlan = idUserPlan;
+    }
+
+    public int getIdExerciseInstance() {
+        return idExerciseInstance;
+    }
+
+    public void setIdExerciseInstance(int idExerciseInstance) {
+        this.idExerciseInstance = idExerciseInstance;
     }
 
     public Exercise getExercise() {
@@ -90,7 +117,15 @@ public class ExerciseDto {
         this.weights = weights;
     }
 
-    public Boolean getFirstTraining() {
+    public boolean getDone() {
+        return done;
+    }
+
+    public void setDone(Boolean done) {
+        this.done = done;
+    }
+
+    public boolean getFirstTraining() {
         return isFirstTraining;
     }
 
@@ -98,11 +133,11 @@ public class ExerciseDto {
         isFirstTraining = firstTraining;
     }
 
-    public Integer[] getWeightDone() {
+    public Integer getWeightDone() {
         return weightDone;
     }
 
-    public void setWeightDone(Integer[] weightDone) {
+    public void setWeightDone(Integer weightDone) {
         this.weightDone = weightDone;
     }
 
@@ -112,5 +147,29 @@ public class ExerciseDto {
 
     public void setRepMax(int repMax) {
         this.repMax = repMax;
+    }
+
+    public Integer[] getRepsDone() {
+        return repsDone;
+    }
+
+    public void setRepsDone(Integer[] repsDone) {
+        this.repsDone = repsDone;
+    }
+
+    public Integer getExhaustion() {
+        return exhaustion;
+    }
+
+    public void setExhaustion(Integer exhaustion) {
+        this.exhaustion = exhaustion;
+    }
+
+    public Integer getIndexInList() {
+        return indexInList;
+    }
+
+    public void setIndexInList(Integer indexInList) {
+        this.indexInList = indexInList;
     }
 }

@@ -750,20 +750,32 @@ public class DataBaseService {
         return new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM trainings_sessions WHERE exercise_instance = ?",
                 new Integer[]{idOfInstance},
-                (resultSet, i) -> {
-                    Integer[] weightDiff = new Integer[7];
-                    for (int j = 1; j < 8; j++) {
-                        weightDiff[j - 1] = resultSet.getInt(String.format("weightdiff_set%d", j));
-                    }
-                    Integer[] reps = new Integer[7];
-                    for (int j = 1; j < 8; j++) {
-                        reps[j - 1] = resultSet.getInt(String.format("reps_set%d", j));
-                    }
-                    return new TrainingsSession(resultSet.getInt("id"), resultSet.getInt("ordering"),
-                            resultSet.getInt("exercise_instance"),
-                            resultSet.getInt("sets"), weightDiff, reps,
-                            resultSet.getString("tempo"), resultSet.getInt("pause"));
-                }));
+                new TrainingsSessionMapper()));
+    }
+
+    class TrainingsSessionMapper implements RowMapper<TrainingsSession> {
+        @Override
+        public TrainingsSession mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ArrayList<Integer> weightDiff = new ArrayList<>();
+            for (int j = 1; j < 8; j++) {
+                Integer toAdd = rs.getObject(String.format("weightdiff_set%d", j), Integer.class);
+                if (toAdd != null) {
+                    weightDiff.add(toAdd);
+                }
+            }
+            ArrayList<Integer> reps = new ArrayList<>();
+            for (int j = 1; j < 8; j++) {
+                Integer toAdd = rs.getObject(String.format("reps_set%d", j), Integer.class);
+                if (toAdd != null) {
+                    reps.add(toAdd);
+                }
+            }
+            return new TrainingsSession(rs.getInt("id"), rs.getInt("ordering"),
+                    rs.getInt("exercise_instance"),
+                    rs.getInt("sets"), weightDiff.toArray(new Integer[0]),
+                    reps.toArray(new Integer[0]),
+                    rs.getString("tempo"), rs.getInt("pause"));
+        }
     }
 
     /**
@@ -776,20 +788,7 @@ public class DataBaseService {
         LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM trainings_sessions WHERE id = ?",
                 new Integer[]{id},
-                (resultSet, i) -> {
-                    Integer[] weightDiff = new Integer[7];
-                    for (int j = 1; j < 8; j++) {
-                        weightDiff[j - 1] = resultSet.getInt(String.format("weightdiff_set%d", j));
-                    }
-                    Integer[] reps = new Integer[7];
-                    for (int j = 1; j < 8; j++) {
-                        reps[j - 1] = resultSet.getInt(String.format("reps_set%d", j));
-                    }
-                    return new TrainingsSession(id, resultSet.getInt("ordering"),
-                            resultSet.getInt("exercise_instance"),
-                            resultSet.getInt("sets"), weightDiff, reps,
-                            resultSet.getString("tempo"), resultSet.getInt("pause"));
-                }));
+                new TrainingsSessionMapper()));
         if (toReturn.isEmpty()) {
             return null;
         } else {
@@ -820,7 +819,7 @@ public class DataBaseService {
     public Integer insertUserPlan(String userMail, int templateId) {
         TrainingsPlanTemplate template = getOnlyPlanTemplateById(templateId);
         Object[] insertValues = new Object[]{userMail, templateId, template.getNumTrainSessions()};
-        jdbcTemplate.update("insert into user_plans(\"user\",template,cursession,maxsession) values (?,?,0,?)"
+        jdbcTemplate.update("insert into user_plans(\"user\",template,cursession,maxsession,initial_training_done) values (?,?,0,?,false)"
         , insertValues );
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('user_plans','id'));",
@@ -829,12 +828,19 @@ public class DataBaseService {
         return id;
     }
 
+    class UserPlanMapper implements RowMapper<UserPlan> {
+        @Override
+        public UserPlan mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new UserPlan(rs.getInt("id"), rs.getString("user"), rs.getInt("template"),
+                    rs.getInt("cursession"), rs.getInt("maxsession"), rs.getBoolean("initial_training_done"));
+        }
+    }
+
     public UserPlan getUserPlanById(int idUserPlan) {
         LinkedList<UserPlan> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM user_plans WHERE id = ?",
                 new Integer[]{idUserPlan},
-                (rs, i) -> new UserPlan(rs.getInt("id"), rs.getString("user"), rs.getInt("template")
-                        , rs.getInt("cursession"), rs.getInt("maxsession"))));
+                new UserPlanMapper()));
         if (toReturn.isEmpty()) {
             return null;
         } else {
@@ -846,8 +852,7 @@ public class DataBaseService {
         LinkedList<UserPlan> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM user_plans WHERE \"user\" = ?",
                 new String[]{userMail},
-                (rs, i) -> new UserPlan(rs.getInt("id"), rs.getString("user"), rs.getInt("template")
-                        , rs.getInt("cursession"), rs.getInt("maxsession"))));
+                new UserPlanMapper()));
         if (toReturn.isEmpty()) {
             return null;
         } else {
@@ -855,43 +860,55 @@ public class DataBaseService {
         }
     }
 
+    public Integer increaseCurSession(int userPlanID) {
+        UserPlan userPlan = getUserPlanById(userPlanID);
+        if (userPlan.getCurrentSession() == userPlan.getMaxSession()) {
+            log.debug("Max Sessions of Plan for User " + userPlan.getUserMail() + " reached! deleting Plan!");
+            deleteUserPlanAndWeightsById(userPlanID);
+            return -1;
+        } else {
+            Object[] values = new Object[]{userPlan.getCurrentSession() + 1, userPlanID};
+            jdbcTemplate.update("update user_plans set cursession = ? where id = ?", values);
+        }
+        return userPlan.getCurrentSession() + 1;
+    }
+
+    public void setInitialTrainDone(int userPlanId) {
+        Object[] values = new Object[]{userPlanId};
+        jdbcTemplate.update("update user_plans set initial_training_done = true where id = ?", values);
+    }
+
+    private void deleteUserPlanAndWeightsById(int userPlanID) {
+        UserPlan toDelete = getUserPlanById(userPlanID);
+        jdbcTemplate.update("DELETE FROM weights WHERE iduserplan = ?",
+                    (Object[]) new Integer[]{userPlanID});
+        jdbcTemplate.update("DELETE FROM user_plans where id = ?", (Object[]) new Integer[]{userPlanID});
+        log.debug("User plan of " + toDelete.getUserMail() + "with id " + userPlanID + " deleted!");
+    }
+
     // weights
 
-    public Integer insertWeightsForUserPlan(int idUserPlan, int idOfInstance, int sessionNum, Integer[] weights) {
-        ArrayList<Object> insertValues = new ArrayList<>();
-        insertValues.add(idUserPlan);
-        insertValues.add(idOfInstance);
-        insertValues.add(sessionNum);
-        if (weights.length > 7) {
-            throw new IllegalArgumentException("to many sets!");
-        }
-        insertValues.addAll(Arrays.asList(weights));
-        for (int i = insertValues.size(); i < 10; i++) {
-            insertValues.add(null);
-        }
-        jdbcTemplate.update("insert into weights(iduserplan, idexerciseinstance, sessionnum," +
-                        " weightrep1, weightrep2, weightrep3, weightrep4, weightrep5, weightrep6," +
-                        " weightrep7) values (?,?,?,?,?,?,?,?,?,?)"
-                , insertValues.toArray());
+    public Integer insertWeightsForUserPlan(int idUserPlan, int idOfInstance, Integer weight) {
+        jdbcTemplate.update("insert into weights(iduserplan, idexerciseinstance, weight) values (?,?,?)"
+                , new Object[]{idUserPlan, idOfInstance, weight});
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('weights','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
         log.debug("Weights for User Plan with ID '" + idUserPlan + "', for exercise Instance with ID '" +
-                idOfInstance + "' at Session '" + sessionNum + "' created with Id '" + id + "'!");
+                idOfInstance + "' created with Id '" + id + "'!");
         return id;
     }
 
-    public Integer[] getWeightsForOneDay(int idUserPlan, int idOfInstance, int sessionNum) {
-        LinkedList<Integer[]> result = new LinkedList<>(jdbcTemplate.query(
-                "SELECT * FROM weights WHERE iduserplan = ? AND idexerciseinstance = ? AND sessionnum = ?",
-                new Integer[]{idUserPlan, idOfInstance, sessionNum},
-                (rs, i) -> new Integer[]{rs.getInt("weightrep1"),rs.getInt("weightrep2"),
-                        rs.getInt("weightrep3"),rs.getInt("weightrep4"),rs.getInt("weightrep5"),
-                        rs.getInt("weightrep6"),rs.getInt("weightrep7"),}));
+    public Integer getWeightForUserPlanExercise(int idUserPlan, int idOfInstance) {
+        LinkedList<Integer> result = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM weights WHERE iduserplan = ? AND idexerciseinstance = ?",
+                new Integer[]{idUserPlan, idOfInstance},
+                (rs, i) -> rs.getInt("weight")));
         if (result.isEmpty()) {
             return null;
         } else {
             return result.getFirst();
         }
     }
+
 }
