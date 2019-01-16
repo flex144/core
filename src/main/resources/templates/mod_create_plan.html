@@ -175,7 +175,7 @@
                             <option th:value="null" selected disabled hidden>Wähle eine Option aus...</option>
                             <option th:value="muscle">Muskelaufbau</option>
                             <option th:value="stamina">Ausdauer</option>
-                            <option th:value="pain">Schmerzreduktion</option>
+                            <option th:value="pain">Gewichtsreduktion</option>
                         </select>
                     </div>
                 </div>
@@ -215,15 +215,15 @@
                         <div class="input-group">
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default" id="btnDecrementTEs"
-                                        onclick="decrementTEs(); updateTeInputs()" style="border-radius: 0px">
+                                        onclick="decrementTEs(); decreaseTeInputs()" style="border-radius: 0px">
                                     <span class="glyphicon glyphicon-minus"></span>
                                 </button>
                             </div>
-                            <input type="text" name="trainingUnits" class="form-control" id="inputUnit"
+                            <input type="text" name="trainingUnits" class="form-control" id="inputUnit" value="6"
                                    th:field="*{sessionNums}" readonly>
                             <div class="input-group-btn">
-                                <button type="button" class="btn btn-default pull-left" id="btnIncrementTEs"
-                                        onclick="incrementTEs(); updateTeInputs()">
+                                <button type="button" class="btn btn-default" id="btnIncrementTEs"
+                                        onclick="incrementTEs(); increaseTeInputs()">
                                     <span class="glyphicon glyphicon-plus"></span>
                                 </button>
                             </div>
@@ -313,14 +313,14 @@
                     <div class="col col-exercise">
                         <div class="input-group">
                             <span class="input-group-addon">Ordnung:</span>
-                            <input  type="text" class="form-control" id="orderInput"
+                            <input  type="text" class="form-control" id="inputOrder"
                                     placeholder="Hier Ordnung eingeben.." th:field="*{category}">
                         </div>
                     </div>
                     <div class="col col-exercise">
                         <div class="input-group">
                             <span class="input-group-addon">RM:</span>
-                            <input  type="text" class="form-control" id="rmInput"
+                            <input  type="text" class="form-control" id="inputRM"
                                     placeholder="Hier repetition Maximum eingeben..">
                         </div>
                     </div>
@@ -952,7 +952,7 @@
             });
         });
         // Execute function updateTeInputs when document is loaded
-        updateTeInputs();
+        createTeInputs();
         // Hide the empty display block for the exercise execution tags
         document.getElementById("tagBlock").style.display = "none";
         document.getElementById("submitDelete").onclick = function() {
@@ -1153,16 +1153,16 @@
             // Update the input fields according to the new TE amount
             updateTeInputs();
             // Disable the TE-buttons
-            $('#btnDecrement').prop('disabled', true);
-            $('#btnIncrement').prop('disabled', true);
+            $('#btnDecrementTEs').prop('disabled', true);
+            $('#btnIncrementTEs').prop('disabled', true);
         } else {
             // Set TE amount to the previous value before setting it to 1
             $('#inputUnit').val(document.getElementById("prevUnitAmount").value);
             // Update the input fields according to the new TE amount
             updateTeInputs();
             // Enable the TE-buttons
-            $('#btnDecrement').prop('disabled', false);
-            $('#btnIncrement').prop('disabled', false);
+            $('#btnDecrementTEs').prop('disabled', false);
+            $('#btnIncrementTEs').prop('disabled', false);
         }
     }
 
@@ -1178,37 +1178,18 @@
     }
 
     /**
-     * Deletes current input fields in the exercise form and creates new fields according to
-     * the amount of entered TE´s
+     * Creates new fields when loading the page for table inputs to customize an exercise
+     * according to the amount of preloaded TE´s
      */
-    function updateTeInputs() {
+    function createTeInputs() {
         // Get the amount of TE´s
         var number = document.getElementById("inputUnit").value;
-
-        // Get data lists and store them in variables for further manipulation
-        var te = document.getElementById("counterTE");
-        var reps = document.getElementById("repsInputs");
-        var tempos = document.getElementById("tempoInputs");
-        var pauses = document.getElementById("pauseInputs");
-
-        // loops to reset the list with input fields in the exercise form
-        while (te.hasChildNodes()) {
-            te.removeChild(te.lastChild);
-        }
-        while (reps.hasChildNodes()) {
-            reps.removeChild(reps.lastChild);
-        }
-        while (tempos.hasChildNodes()) {
-            tempos.removeChild(tempos.lastChild);
-        }
-        while (pauses.hasChildNodes()) {
-            pauses.removeChild(pauses.lastChild);
-        }
 
         // loop to add example input fields to the TE/Repeats/Tempo/Pause columns in the exercise form
         for (var i=0;i<number;i++){
             // create unique id´s
             var counterTEId = "counter" + i;
+            var weightsInputId = "weightsInput" + i;
             var repsInputId = "repsInput" + i;
             var tempoInputId = "tempoInput" + i;
             var pauseInputId = "pauseInput" + i;
@@ -1216,6 +1197,8 @@
             // Add the input fields to the lists
             $('#counterTE').append(
                 '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+            $('#weightsInputs').append(
+                '<li>' + '<input id="'+weightsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
             $('#repsInputs').append(
                 '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
             $('#tempoInputs').append(
@@ -1223,6 +1206,55 @@
             $('#pauseInputs').append(
                 '<li>' + '<input id="' + pauseInputId + '" name="pause" type="text" class="form-control">' + '</li>');
         }
+    }
+
+    /**
+     * Deletes the last input fields in the exercise after the amount of TE´s have been decreased
+     */
+    function decreaseTeInputs() {
+        // Get data lists and store them in variables for further manipulation
+        var te = document.getElementById("counterTE");
+        var weights = document.getElementById("weightsInputs");
+        var reps = document.getElementById("repsInputs");
+        var tempos = document.getElementById("tempoInputs");
+        var pauses = document.getElementById("pauseInputs");
+
+        // Remove the last input fields in the exercise form
+        te.removeChild(te.lastChild);
+        weights.removeChild(weights.lastChild);
+        reps.removeChild(reps.lastChild);
+        tempos.removeChild(tempos.lastChild);
+        pauses.removeChild(pauses.lastChild);
+    }
+
+    /**
+     * Creates an additional set of input fields in the exercise after the amount of
+     * TE´s have been increased
+     */
+    function increaseTeInputs() {
+        // Get amount of TE´s
+        var currentTE = document.getElementById("inputUnit").value;
+        // Get the next ID in the order for the new input fields
+        var nextID = parseInt(currentTE) + 1;
+
+        // Add an additional input fields to the TE/Weights/Repeats/Tempo/Pause columns in the exercise form
+        var counterTEId = "counter" + nextID;
+        var weightsInputId = "weightsInput" + nextID;
+        var repsInputId = "repsInput" + nextID;
+        var tempoInputId = "tempoInput" + nextID;
+        var pauseInputId = "pauseInput" + nextID;
+
+        // Add the input fields to the lists
+        $('#counterTE').append(
+            '<li>' + '<input id="'+counterTEId+'" disabled value="'+currentTE+'" class="form-control">' + '</li>');
+        $('#weightsInputs').append(
+            '<li>' + '<input id="'+weightsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
+        $('#repsInputs').append(
+            '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
+        $('#tempoInputs').append(
+            '<li>' + '<input id="' + tempoInputId + '" name="tempo" type="text" class="form-control">' + '</li>');
+        $('#pauseInputs').append(
+            '<li>' + '<input id="' + pauseInputId + '" name="pause" type="text" class="form-control">' + '</li>');
     }
 
     /**
@@ -1256,15 +1288,18 @@
         // Get amount of TE´s
         var number = document.getElementById("inputUnit").value;
         // Empty the content of the input fields
-        $('#inputOrder').val('');
         $('#inputExercise').val('');
-        $('#inputDescription').val('');
+        $('#inputOrder').val('');
+        $('#inputRM').val('');
+        $('#inputExecution').val('');
 
         // Loop to empty the dynamically created input fields
         for (var i=0;i<number;i++){
+            var currentWeightsInput = "#weightsInput" + i;
             var currentRepsInput = "#repsInput" + i;
             var currentTempoInput = "#tempoInput" + i;
             var currentPauseInput = "#pauseInput" + i;
+            $(currentWeightsInput).val('');
             $(currentRepsInput).val('');
             $(currentTempoInput).val('');
             $(currentPauseInput).val('');
