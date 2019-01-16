@@ -31,5 +31,11 @@ public class UserController {
     }
 
     @RequestMapping("/plan/exercise")
-    public String openExercise() {return "user_in_exercise";}
+    public String openExercise() { return "user_in_exercise"; }
+
+    @RequestMapping("/plan/first_exercise")
+    public String openFirstExercise() { return "user_first_training_of_plan"; }
+
+    @RequestMapping("/plan/finished")
+    public String planFinished() { return "user_training_finished";}
 }
