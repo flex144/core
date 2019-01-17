@@ -103,5 +103,4 @@ public class ModController {
         model.addAttribute("users", userService.getAllUsers());
         return "mod_user_search";
     }
-
 }
