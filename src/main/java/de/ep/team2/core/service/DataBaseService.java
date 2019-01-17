@@ -65,10 +65,10 @@ public class DataBaseService {
      */
     public User getUserById(Integer id) {
         LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT id, email, first_name, last_name, role FROM users WHERE id " +
+                "SELECT id, email, first_name, last_name, password, enabled, role FROM users WHERE id " +
                         "= ?",
                 new Integer[]{id},
-                new BeanPropertyRowMapper<>(User.class)
+                new UserRowMapper()
         ));
         if (toReturn.isEmpty()) {
             return null;
@@ -91,15 +91,29 @@ public class DataBaseService {
             return null;
         } else {
             LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                    "SELECT id, email, first_name, last_name, password, role FROM users WHERE " +
+                    "SELECT id, email, first_name, last_name, password, enabled, role FROM users WHERE " +
                             "email = ?",
                     new String[]{email.toLowerCase()},
-                    new BeanPropertyRowMapper<>(User.class)));
+                    new UserRowMapper()));
             if (toReturn.isEmpty()) {
                 return null;
             } else {
                 return toReturn.getFirst();
             }
+        }
+    }
+
+    class UserRowMapper implements RowMapper<User> {
+        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+            User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setEmail(rs.getString("email"));
+            user.setFirstName(rs.getString("first_name"));
+            user.setLastName(rs.getString("last_name"));
+            user.setPassword(rs.getString("password"));
+            user.setEnabled(rs.getBoolean("enabled"));
+            user.setRole(rs.getString("role"));
+            return user;
         }
     }
 
@@ -123,7 +137,7 @@ public class DataBaseService {
      * @param password  Password, as Hash, of the User.
      */
     public Integer insertUser(String email, String firstName, String lastName, String password) {
-        Object[] toInsert = {email.toLowerCase(), firstName, lastName, password, true, "ROLE_USER"};
+        Object[] toInsert = {email.toLowerCase(), firstName, lastName, password, false, "ROLE_USER"};
         if (getUserByEmail(email) != null) {
             log.debug("Insert User failed! Email " + email + " already in the " +
                     "Database!");
@@ -186,6 +200,88 @@ public class DataBaseService {
             log.debug("User '" + toChange.getEmail() + "' was " +
                         "upgraded to Mod by " + changerMail + "!");
         }
+    }
+
+    /**
+     * Enables a user, so he can access the website.
+     *
+     * @param email Email of the user.
+     */
+    public void confirmUser(String email) {
+        User toChange = getUserByEmail(email);
+        if (toChange != null) {
+            jdbcTemplate.update("UPDATE users SET enabled = true WHERE email = ?", email);
+            log.debug("Email '" + email + "' is now verificated!");
+        }
+    }
+
+    /**
+     * Adds a new confirmation token to the database.
+     *
+     * @param confirmationToken Token to be safed.
+     */
+    public void createConfirmationToken(ConfirmationToken confirmationToken) {
+        Object[] token = {confirmationToken.getConfirmationToken(), confirmationToken.getUser(),
+                confirmationToken.getCreatedDate()};
+        jdbcTemplate.update("INSERT INTO confirmation_token(token, userToConfirm, createdDate) " +
+                "VALUES (?,?,?)", token);
+        Integer id = jdbcTemplate.query("select currval" +
+                        "(pg_get_serial_sequence('confirmation_token','id'));",
+                (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+        log.debug("Token for email '" + confirmationToken.getUser() + "' has been created" +
+                " with ID: '" + id + "' !");
+    }
+
+    /**
+     * Searches for a specific Confirmation Token.
+     *
+     * @param confirmationToken Key of the searched token.
+     * @return Searched confirmation token if it's found.
+     */
+    public ConfirmationToken findConfirmationToken(String confirmationToken) {
+        LinkedList<ConfirmationToken> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT id, token, usertoconfirm, createddate FROM confirmation_token WHERE token = ?",
+                new String[]{confirmationToken},
+                new TokenRowMapper()));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
+    }
+
+    class TokenRowMapper implements RowMapper<ConfirmationToken> {
+        public ConfirmationToken mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ConfirmationToken token = new ConfirmationToken();
+            token.setTokenId(rs.getInt("id"));
+            token.setConfirmationToken(rs.getString("token"));
+            token.setUser(rs.getString("usertoconfirm"));
+            token.setCreatedDate(rs.getDate("createddate"));
+            return token;
+        }
+    }
+
+    public User changeUserDetails(User user) {
+        String email = user.getEmail();
+        User toChange = getUserByEmail(email);
+        if (toChange != null) {
+            if (user.getFirstName() != null) {
+                changeDetails("first_name", user.getFirstName(), email);
+            }
+            if (user.getLastName() != null) {
+                changeDetails("last_name", user.getLastName(), email);
+            }
+            if (user.getPassword() != null) {
+                changeDetails("password", user.getPassword(), email);
+            }
+        }
+        return getUserByEmail(email);
+    }
+
+    private void changeDetails(String column, String value, String email) {
+        jdbcTemplate.update("UPDATE users SET "+column+" = ? WHERE email = ?", value, email);
+        log.debug("User '" + email + "' changed " + column + "!");
+
     }
 
     // Exercise
@@ -352,11 +448,11 @@ public class DataBaseService {
     /**
      * Inserts a new Trainings plan Template in teh Database with the provided values.
      *
-     * @param name unique name of the template.
-     * @param trainingsFocus focus of the trainingsplan.
-     * @param author email of the mod who created the template.
-     * @param oneShotPlan boolean if the plan has more than one trainings session.
-     * @param numTrainSessions duration of the plan in sessions.
+     * @param name                unique name of the template.
+     * @param trainingsFocus      focus of the trainingsplan.
+     * @param author              email of the mod who created the template.
+     * @param oneShotPlan         boolean if the plan has more than one trainings session.
+     * @param numTrainSessions    duration of the plan in sessions.
      * @param exercisesPerSession how many exercises have to be done in one session.
      *                            (number increases initial 1)
      * @return id od the just inserted template.

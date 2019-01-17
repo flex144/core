@@ -12,11 +12,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
 
-    <div th:include="/fragments/navbar :: navbar_style"></div>
+    <div th:include="/fragments/navbar :: style_fragment"></div>
 
     <style>
-        #inputUnit:disabled {
+        #inputUnitsPerWeek,
+        #inputUnit {
+            width: 40px;
+            text-align: center;
+            font-weight: bold;
             background-color: white;
+        }
+        #inputFieldCheckbox {
+            width: 42px;
+            padding: 0px;
+            text-align: center;
+        }
+        #singleDayCheck {
+            margin-top: 7px;
         }
         ul {
             list-style-type: none;
@@ -31,20 +43,21 @@
         }
         .accordion {
             background-color: #e1e1e1;
-            border-radius: 20px;
+            border-radius: 10px;
+            border: none;
             color: #444;
             cursor: pointer;
             padding: 18px;
             width: 100%;
-            border: none;
             text-align: left;
             outline: none;
             font-size: 15px;
+            font-weight: bold;
             transition: 0.4s;
         }
         .active {
             background-color: #ccc;
-            border-radius: 20px 20px 0px 0px;
+            border-radius: 4px 4px 0px 0px;
         }
 
         .accordion:hover {
@@ -66,10 +79,51 @@
         .accordionPanel {
             padding: 0 18px;
             background-color: white;
-            border-radius: 0px 0px 20px 20px;
+            border-radius: 0px 0px 4px 4px;
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.2s ease-out;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        .col-container {
+            display: table;
+            width: 100%;
+        }
+        .col {
+            display: table-cell;
+            padding: 5px;
+        }
+        .col-general {
+            width: 50%;
+        }
+        .col-exercise {
+            width: 28%;
+        }
+        .col-button {
+            width: 16%;
+        }
+        .col-execution {
+            width: 42%;
+        }
+        @media only screen and (max-width: 600px) {
+            .col {
+                display: block;
+                width: 100%;
+            }
+         }
+        .input-group .input-group-addon {
+            font-weight: bold;
+        }
+        .input-group-general .input-group-addon {
+            background-color: #e1e1e1;
+        }
+        .panel .panel-heading {
+            font-weight: bold;
+        }
+        thead {
+            background-color: #EEEEEE;
         }
     </style>
 </head>
@@ -83,14 +137,29 @@
         <div class="jumbotron">
             <h2>Erstelle eine neue Trainingsplanvorlage</h2>
             <br>
-            <button class="accordion">Anleitung</button>
+            <button class="accordion" type="button">Anleitung</button>
             <div class="accordionPanel">
                 <br>
-                <p style="font-size: 12pt">Gib zuerst die allgemeinen Daten zu deinem Plan an, die Bezeichnung, den Planfokus und die Anzahl
-                    der Trainingseinheiten</p>
+                <p style="font-size: 12pt">Gib zuerst die allgemeinen Daten zu deinem Plan an: die Bezeichnung, den Planfokus,
+                    die Zielgruppe, die Anzahl der Trainingseinheiten und die Anzahl der Trainingstage pro Woche.</p>
+                <p style="font-size: 12pt">Zusätzlich kannst du angeben, ob der Plan ein Eintagesplan werden soll. Hier wird
+                    die Anzahl der Trainingseinheiten auf 1 gesetzt.</p>
                 <p style="font-size: 12pt">Um Übungen zu deinem Plan hinzuzufügen, fülle das Formular <mark>"Übung bearbeiten"</mark> aus
                     und klicke auf den Button <mark>"Übung hinzufügen"</mark>. Falls du eine noch nicht vorhandene Übung in deinem Plan verwenden willst,
                     drücke den Button <mark>"Neue Übungsart"</mark> um direkt eine Neue zu erstellen.</p>
+                <p style="font-size: 12pt">
+                    Um eine Gewichtsänderung für Sätze anzugeben, gibst du "+" / "-" der prozentualen Änderung des Repetition Maximum
+                    in das Feld <mark>"Gewichtsänderungen"</mark> neben den entsprechenden Wiederholungen ein; es wird kein
+                    "%"-Zeichen benötigt. Lässt du das Feld leer, werden keine Änderungen vorgenommen. <br>
+                    Wenn du für mehrere Sätze eine unterschiedliche Gewichtsänderung eingeben möchtest, gib die Änderungen
+                    mit <mark>"/"</mark> getrennt voneinandern ein. Hier muss die Anzahl der Änderungen
+                    mit der Anzahl der Sätze übereinstimmen.
+                </p>
+                <p class="text-muted" style="font-size: 12pt">
+                    (Beispiel: Gewichtsänderung: <mark>"+10"</mark> => Bei allen Sätzen steigert sich das Gewicht um 10 %. <br>
+                    Gewichtsänderung: <mark>"+10/+10/+20"</mark> => Bei den ersten beiden Sätzen steigert sich das Gewicht um 10%,
+                    beim dritten um 20%.)
+                </p>
                 <p style="font-size: 12pt">
                     Um die Sätze und die Wiederholungen für eine Übung anzugeben, gib die Wiederholungen mit <mark>"/"</mark>
                     getrennt voneinander an und die Anzahl der Sätze für diese Übung wird daraus automatisch berechnet.<br>
@@ -99,201 +168,282 @@
                     (Beispiel: Wiederholungen: <mark>12/12/13/15</mark> => <mark>4</mark> Sätze)
                 </p>
                 <p style="font-size: 12pt">Wenn du am Ende mit deinem Plan zufrieden bist,
-                    speichere diesen mit einem Klick auf den Button <mark>"Plan speichern"</mark>.</p>
+                    kannst du dir einzelne Übungen in der Detail-Ansicht, und den ganzen Plan unter
+                    <mark>"Planvorschau"</mark> nochmals ansehen. Speichere deinen Plan mit einem Klick auf den Button
+                    <mark>"Plan speichern"</mark>.</p>
             </div>
             &ensp;
             <br>
-        <!-- Input fields for general data of the plan -->
-        <div class="row">
-            <p th:if="${errorMsg}" th:text="${errorMsg}" style="color: red"></p>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="planName">Planbezeichnung:</label>
-                    <input  type="text" class="form-control" id="planName"
-                            placeholder="Hier Bezeichnung eingeben..." th:field="*{planName}">
-                </div>
+            <!-- Input fields for general data of the plan -->
+            <div class="row">
+                <p th:if="${errorMsg}" th:text="${errorMsg}" style="color: red"></p>
             </div>
-            <div class="col-md-4">
-                <div class="form-group-inline">
-                    <label for="focus">Trainingsfokus:</label>
-                    <select id="focus" class="form-control" required th:field="*{trainingsFocus}">
-                        <option th:value="null" selected disabled hidden>Wähle eine Option aus...</option>
-                        <option th:value="muscle">Muskelaufbau</option>
-                        <option th:value="stamina">Ausdauer</option>
-                        <option th:value="pain">Schmerzreduktion</option>
-                    </select>
+            <div class="col-container">
+                <div class="col col-general">
+                    <div class="input-group input-group-general">
+                        <span class="input-group-addon">Planbezeichnung:</span>
+                        <input  type="text" class="form-control" id="planName"
+                                placeholder="Hier Bezeichnung eingeben..." th:field="*{planName}">
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label for="inputUnit">Trainingseinheiten: </label>
-                    <button type="button" class="btn decrement-button" id="btnDecrement"
-                            onclick="decrement(); updateTeInputs()">
-                        <span class="glyphicon glyphicon-minus"></span>
-                    </button>
-                    <input type="text" name="trainingUnits" id="inputUnit" th:field="*{sessionNums}"
-                           style="width: 30px; border: 3px solid darkgray; text-align: center;
-                           font-weight: bold" readonly>
-                    <button type="button" class="btn increment-button" id="btnIncrement"
-                            onclick="increment(); updateTeInputs()">
-                        <span class="glyphicon glyphicon-plus"></span>
-                    </button>
-                    <input th:field="*{id}" style="width: 30px; border: 3px solid darkgray; text-align: center;
-                           font-weight: bold" hidden>
-                </div>
-                <br>
-                <div class="form-group">
-                    <div class="form-check">
-                        <label class="form-check-label" for="singleDayCheck">
-                            Eintagesplan:</label>
-                        <input type="checkbox" class="form-check-input" id="singleDayCheck"
-                               onchange="checkboxChanged()" style="margin-left: 20px" th:field="*{oneShot}">
-                        <input type="text" id="prevUnitAmount" value="3" hidden disabled>
+                <div class="col col-general">
+                    <div class="input-group input-group-general">
+                        <span class="input-group-addon">Trainingsfokus:</span>
+                        <select id="focus" class="form-control" required th:field="*{trainingsFocus}">
+                            <option th:value="null" selected disabled hidden>Wähle eine Option aus...</option>
+                            <option th:value="muscle">Muskelaufbau</option>
+                            <option th:value="stamina">Ausdauer</option>
+                            <option th:value="pain">Gewichtsreduktion</option>
+                        </select>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- panel with form to customize an exercise, add it to the plan and create a new exercise -->
-    <div class="panel panel-default">
-        <!-- Panel header with title and buttons to add or create exercises and to reset the form -->
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-md-6" style="margin-top: 6px">
-                    Übung bearbeiten
+            <br>
+            <div class="col-container">
+                <div class="col col-general">
+                    <div class="input-group input-group-general">
+                        <span class="input-group-addon">Zielgruppe:</span>
+                        <select id="targetGroup" class="form-control" required>
+                            <option selected disabled hidden>Wähle eine Gruppe aus...</option>
+                            <option>Anfänger</option>
+                            <option>Fortgeschritten</option>
+                            <option>Profi</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <button th:if="${createDto.id}" type="button" id="submitDelete" class="btn btn-danger btn-block">
-                        <span class="glyphicon glyphicon-trash"></span>
-                        Plan Löschen
-                    </button>
+                <div class="col col-general">
+                    <div class="input-group input-group-general">
+                        <span class="input-group-addon">Eintagesplan:</span>
+                        <!-- replace padding & padding left with padding: auto for other screens than alex´ laptop -->
+                        <a class="form-control" type="input" id="inputFieldCheckbox">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" onchange="checkboxChanged()"
+                                       id="singleDayCheck" th:field="*{oneShot}">
+                            </div>
+                        </a>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary btn-block" id="buttonAddExercise">
-                        <span class="glyphicon glyphicon-plus-sign"></span>
-                        Übung hinzufügen
-                    </button>
-                </div>
-                <div class="col-md-2">
-                    <button type="button" id="buttonResetModal" data-toggle="modal" data-target="#modalConfirmResetForm"
-                            class="btn btn-warning btn-block">
-                        <span class="glyphicon glyphicon-trash"></span>
-                         Formular leeren
-                    </button>
-                </div>
-                <!--
-                <div class="col-md-2">
-
-                </div>-->
             </div>
+            <br>
+            <div class="col-container">
+                <div class="col col-general">
+                    <div class="input-group input-group-general">
+                        <span class="input-group-addon" style="width: auto">Trainingseinheiten:</span>
+                        <div class="input-group">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default" id="btnDecrementTEs"
+                                        onclick="decrementTEs(); decreaseTeInputs()" style="border-radius: 0px">
+                                    <span class="glyphicon glyphicon-minus"></span>
+                                </button>
+                            </div>
+                            <input type="text" name="trainingUnits" class="form-control" id="inputUnit"
+                                   th:field="*{sessionNums}" readonly>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default" id="btnIncrementTEs"
+                                        onclick="incrementTEs(); increaseTeInputs()">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col col-general">
+                    <div class="input-group input-group-general">
+                        <span class="input-group-addon" style="width: auto">Trainingstage pro Woche:</span>
+                        <div class="input-group">
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default" id="btnDecrementWeeklyTes"
+                                        onclick="decrementWeeklyTEs()" style="border-radius: 0px">
+                                    <span class="glyphicon glyphicon-minus"></span>
+                                </button>
+                            </div>
+                            <input type="text" name="trainingUnitsPerWeek" class="form-control" id="inputUnitsPerWeek"
+                                   value="2" align="center" readonly>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-default" id="btnIncrementWeeklyTes"
+                                        onclick="incrementWeeklyTEs()" style="border-radius: 0px 4px 4px 0px">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input th:field="*{id}" hidden>
+            <input type="text" id="prevUnitAmount" value="3" hidden disabled>
         </div>
-        <!-- panel with form to customize and add an exercise to the plan -->
-        <div class="panel-body">
-            <div class="col-md-12">
-                <!-- table for input forms to customize an exercise -->
-                <table class="table table-bordered table-condensed" border="1" width="100%">
-                    <colgroup>
-                        <col width="5%">
-                        <col width="15%">
-                        <col width="30%">
-                        <col width="5%">
-                        <col width="25%">
-                        <col width="5%">
-                        <col width="5%">
-                    </colgroup>
-                    <thead>
+
+        <!-- panel with form to customize an exercise, add it to the plan and create a new exercise -->
+        <div class="panel panel-default outerPanel">
+            <!-- Panel header with title and buttons to add or create exercises and to reset the form -->
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-md-8" style="margin-top: 6px">
+                        Übung bearbeiten
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" id="submitDelete" class="btn btn-danger btn-block">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            Plan Löschen
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" id="buttonResetModal" data-toggle="modal" data-target="#modalConfirmResetForm"
+                                class="btn btn-warning btn-block">
+                            <span class="glyphicon glyphicon-trash"></span>
+                             Formular leeren
+                        </button>
+                    </div>
+                    <!--
+                    <div class="col-md-2">
+
+                    </div>-->
+                </div>
+            </div>
+            <!-- panel with form to customize and add an exercise to the plan -->
+            <div class="panel-body">
+                <div class="col-container">
+                    <div class="col col-button">
+                        <button type="button" data-toggle="modal" id="buttonCreateExercise"
+                                class="btn btn-success btn-block launch-modal">
+                            <span class="glyphicon glyphicon-plus-sign"></span>
+                            Neue Übungsart
+                        </button>
+                    </div>
+                    <div class="col col-exercise">
+                        <div class="input-group">
+                            <span class="input-group-addon">Übung:</span>
+                            <input id="inputExercise" type="text" class="form-control"
+                                   list="storedExercises" placeholder="Übung auswählen.."
+                                   name="exerciseName" required th:field="*{exerciseName}">
+                            <datalist id="storedExercises">
+                                <option th:each="exercise : ${allExercises}" th:value="${exercise.getName()}" th:text="${exercise.name}"/>
+                            </datalist>
+                            </input>
+                        </div>
+                    </div>
+                    <div class="col col-exercise">
+                        <div class="input-group">
+                            <span class="input-group-addon">Ordnung:</span>
+                            <input  type="text" class="form-control" id="inputOrder"
+                                    placeholder="Hier Ordnung eingeben.." th:field="*{category}">
+                        </div>
+                    </div>
+                    <div class="col col-exercise">
+                        <div class="input-group">
+                            <span class="input-group-addon">RM:</span>
+                            <input  type="text" class="form-control" id="inputRM"
+                                    placeholder="Hier repetition Maximum eingeben..">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-container">
+                    <div class="col col-button">
+                        <button type="button" data-toggle="modal" id="buttonNewExecution"
+                                class="btn btn-success btn-block"
+                                data-target="#modalExecutionForm">
+                            <span class="glyphicon glyphicon-plus-sign"></span>
+                            Neue Ausführung
+                        </button>
+                    </div>
+                    <div class="col col-execution">
+                        <div class="input-group">
+                            <span class="input-group-addon">Ausführung(en):</span>
+                            <input id="inputExecution" type="text" name="executions"
+                                   class="form-control" list="storedExecutions" onchange="addTag()">
+                            <div class="input-group-btn">
+                                <button class="btn btn-success" id="buttonAddExecution"
+                                        onclick="addTag()" style="border-radius: 0px 4px 4px 0px" type="button">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                    Add
+                                </button>
+                            </div>
+                            <datalist id="storedExecutions">
+                                <option th:each="tag : ${allTags}" th:value="${tag}"/>
+                            </datalist>
+                            </input>
+                        </div>
+                    </div>
+                    <div class="col col-execution">
+                        <div id="tagBlock">
+                            <div class="input-group">
+                                <span class="input-group-addon">Hinzugefügte Ausführungen:</span>
+                                <a class="form-control" type="input" style="height: auto; padding: 0px"
+                                    placeholder=" ">
+                                    <input type="text" data-role="tagsinput" id="tags" value="" name="tags"
+                                           class="form-control tagsPlanInput">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="col-md-12">
+                    <!-- table for input forms to customize an exercise -->
+                    <table class="table table-bordered table-condensed" border="1" width="100%">
+                        <colgroup>
+                            <col width="5%">
+                            <col width="32.5%">
+                            <col width="32.5%">
+                            <col width="15%">
+                            <col width="15%">
+                        </colgroup>
+                        <thead>
                         <tr>
-                            <th>Ordnung</th>
-                            <th>Übung</th>
-                            <th>Ausführung</th>
                             <th>TE</th>
+                            <th>Gewichtsänderungen</th>
                             <th>Wiederholungen</th>
                             <th>Tempo</th>
                             <th>Pause</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input id="inputOrder" type="text" class="form-control" th:field="*{category}"/>
-                            </td>
-                            <td>
-                                <input id="inputExercise" type="text" class="form-control"
-                                       list="storedExercises"
-                                       name="exerciseName" required th:field="*{exerciseName}">
-                                    <datalist id="storedExercises">
-                                        <option th:each="exercise : ${allExercises}" th:value="${exercise.getName()}" th:text="${exercise.name}"/>
-                                    </datalist>
-                                </input>
-                                <br>
-                                <button type="button" data-toggle="modal" id="buttonCreateExercise"
-                                        class="btn btn-success btn-md launch-modal">
-                                    <span class="glyphicon glyphicon-plus-sign"></span>
-                                    Neue Übungsart
-                                </button>
-                            </td>
-                            <td>
-                                <div class="input-group">
-                                    <input id="inputExecution" type="text" name="executions"
-                                           class="form-control" list="storedExecutions" onchange="addTag()">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-success" id="buttonAddExecution"
-                                                onclick="addTag()">
-                                            <span class="glyphicon glyphicon-plus"></span>
-                                            Add
-                                        </button>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="form-group">
+                                        <ul id="counterTE" class="list-group"></ul>
                                     </div>
-                                </div>
-                                <datalist id="storedExecutions">
-                                    <option th:each="tag : ${allTags}" th:value="${tag}"/>
-                                </datalist>
-                                </input>
-                                <br>
-                                <button type="button" data-toggle="modal" id="buttonNewExecution"
-                                        class="btn btn-success btn-md"
-                                        data-target="#modalExecutionForm">
-                                    <span class="glyphicon glyphicon-plus-sign"></span>
-                                    Neue Ausführung
-                                </button>
-                                <div id="tagBlock">
-                                    <br>
-                                    <h5 id="tagHeader">Hinzugefügte Ausführungen:</h5>
-                                    <input type="text" data-role="tagsinput" id="tags" value=""
-                                           class="form-control tagsPlanInput" name="tags">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <ul id="counterTE" class="list-group"></ul>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <ul id="repsInputs" class="list-group"></ul>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <ul id="tempoInputs" class="list-group"></ul>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-group">
-                                    <ul id="pauseInputs" class="list-group" ></ul> <!-- todo only numeric input -->
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <ul id="weightsInputs" class="list-group"></ul>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <ul id="repsInputs" class="list-group"></ul>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <ul id="tempoInputs" class="list-group"></ul>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <ul id="pauseInputs" class="list-group" ></ul> <!-- todo only numeric input -->
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-md-9"></div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-success btn-block" id="buttonAddExercise">
+                            <span class="glyphicon glyphicon-plus"></span>
+                            Übung zum Plan hinzufügen
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
         <!-- panel with overview of final plan and button to save the plan -->
-        <div class="panel panel-success">
+        <div class="panel panel-success outerPanel">
             <div class="panel-heading">
                 Aktueller Trainingsplan
             </div>
@@ -341,6 +491,8 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div class="panel-footer">
                 <!-- Buttons for preview of the plan and to save it -->
                 <div class="row">
                     <div class="col-md-8"></div>
@@ -823,7 +975,7 @@
             });
         });
         // Execute function updateTeInputs when document is loaded
-        updateTeInputs();
+        createTeInputs();
         // Hide the empty display block for the exercise execution tags
         document.getElementById("tagBlock").style.display = "none";
         document.getElementById("submitDelete").onclick = function() {
@@ -1017,23 +1169,35 @@
      */
     function checkboxChanged() {
         if($('#singleDayCheck').prop('checked')) {
+            // Get the previous amount of TE´s
+            var prevTEs = parseInt(document.getElementById("inputUnit").value);
             // Store the previous amount of TE´s in a hidden input field
-            $('#prevUnitAmount').val(document.getElementById("inputUnit").value);
+            $('#prevUnitAmount').val(prevTEs);
             // Set TE amount to 1
             $('#inputUnit').val(1);
             // Update the input fields according to the new TE amount
-            updateTeInputs();
+            for (var i = 0; i < (prevTEs-1); i++) {
+                decreaseTeInputs();
+            }
             // Disable the TE-buttons
-            $('#btnDecrement').prop('disabled', true);
-            $('#btnIncrement').prop('disabled', true);
+            $('#btnDecrementTEs').prop('disabled', true);
+            $('#btnIncrementTEs').prop('disabled', true);
+            // Disable the TE per Week buttons
+            $('#btnDecrementWeeklyTes').prop('disabled', true);
+            $('#btnIncrementWeeklyTes').prop('disabled', true);
         } else {
+            // Get the previous amount of TE´s
+            var prevTEs = parseInt(document.getElementById("prevUnitAmount").value);
             // Set TE amount to the previous value before setting it to 1
-            $('#inputUnit').val(document.getElementById("prevUnitAmount").value);
+            $('#inputUnit').val(prevTEs);
             // Update the input fields according to the new TE amount
-            updateTeInputs();
+            addMultipleTeInputs(prevTEs);
             // Enable the TE-buttons
-            $('#btnDecrement').prop('disabled', false);
-            $('#btnIncrement').prop('disabled', false);
+            $('#btnDecrementTEs').prop('disabled', false);
+            $('#btnIncrementTEs').prop('disabled', false);
+            // Enable the TE per Week buttons
+            $('#btnDecrementWeeklyTes').prop('disabled', false);
+            $('#btnIncrementWeeklyTes').prop('disabled', false);
         }
     }
 
@@ -1049,37 +1213,18 @@
     }
 
     /**
-     * Deletes current input fields in the exercise form and creates new fields according to
-     * the amount of entered TE´s
+     * Creates new fields when loading the page for table inputs to customize an exercise
+     * according to the amount of preloaded TE´s
      */
-    function updateTeInputs() {
+    function createTeInputs() {
         // Get the amount of TE´s
         var number = document.getElementById("inputUnit").value;
 
-        // Get data lists and store them in variables for further manipulation
-        var te = document.getElementById("counterTE");
-        var reps = document.getElementById("repsInputs");
-        var tempos = document.getElementById("tempoInputs");
-        var pauses = document.getElementById("pauseInputs");
-
-        // loops to reset the list with input fields in the exercise form
-        while (te.hasChildNodes()) {
-            te.removeChild(te.lastChild);
-        }
-        while (reps.hasChildNodes()) {
-            reps.removeChild(reps.lastChild);
-        }
-        while (tempos.hasChildNodes()) {
-            tempos.removeChild(tempos.lastChild);
-        }
-        while (pauses.hasChildNodes()) {
-            pauses.removeChild(pauses.lastChild);
-        }
-
-        // loop to add example input fields to the TE/Repeats/Tempo/Pause columns in the exercise form
-        for (var i=0;i<number;i++){
+        // loop to add input fields to the TE/Weights/Repeats/Tempo/Pause columns in the exercise form
+        for (var i = 0; i < number; i++){
             // create unique id´s
             var counterTEId = "counter" + i;
+            var weightsInputId = "weightsInput" + i;
             var repsInputId = "repsInput" + i;
             var tempoInputId = "tempoInput" + i;
             var pauseInputId = "pauseInput" + i;
@@ -1087,6 +1232,85 @@
             // Add the input fields to the lists
             $('#counterTE').append(
                 '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+            $('#weightsInputs').append(
+                '<li>' + '<input id="'+weightsInputId+'" type="text" class="form-control">' + '</li>');
+            $('#repsInputs').append(
+                '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
+            $('#tempoInputs').append(
+                '<li>' + '<input id="' + tempoInputId + '" name="tempo" type="text" class="form-control">' + '</li>');
+            $('#pauseInputs').append(
+                '<li>' + '<input id="' + pauseInputId + '" name="pause" type="text" class="form-control">' + '</li>');
+        }
+    }
+
+    /**
+     * Deletes the last input fields in the exercise after the amount of TE´s have been decreased
+     */
+    function decreaseTeInputs() {
+        // Get data lists and store them in variables for further manipulation
+        var te = document.getElementById("counterTE");
+        var weights = document.getElementById("weightsInputs");
+        var reps = document.getElementById("repsInputs");
+        var tempos = document.getElementById("tempoInputs");
+        var pauses = document.getElementById("pauseInputs");
+
+        // Remove the last input fields in the exercise form
+        te.removeChild(te.lastChild);
+        weights.removeChild(weights.lastChild);
+        reps.removeChild(reps.lastChild);
+        tempos.removeChild(tempos.lastChild);
+        pauses.removeChild(pauses.lastChild);
+    }
+
+    /**
+     * Creates an additional set of input fields in the exercise after the amount of
+     * TE´s have been increased
+     */
+    function increaseTeInputs() {
+        // Get amount of TE´s
+        var currentTE = document.getElementById("inputUnit").value;
+        // Get the next ID in the order for the new input fields
+        var nextID = parseInt(currentTE) - 1;
+
+        // Add an additional input fields to the TE/Weights/Repeats/Tempo/Pause columns in the exercise form
+        var counterTEId = "counter" + nextID;
+        var weightsInputId = "weightsInput" + nextID;
+        var repsInputId = "repsInput" + nextID;
+        var tempoInputId = "tempoInput" + nextID;
+        var pauseInputId = "pauseInput" + nextID;
+
+        // Add the input fields to the lists
+        $('#counterTE').append(
+            '<li>' + '<input id="'+counterTEId+'" disabled value="'+currentTE+'" class="form-control">' + '</li>');
+        $('#weightsInputs').append(
+            '<li>' + '<input id="'+weightsInputId+'" type="text" class="form-control">' + '</li>');
+        $('#repsInputs').append(
+            '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
+        $('#tempoInputs').append(
+            '<li>' + '<input id="' + tempoInputId + '" name="tempo" type="text" class="form-control">' + '</li>');
+        $('#pauseInputs').append(
+            '<li>' + '<input id="' + pauseInputId + '" name="pause" type="text" class="form-control">' + '</li>');
+    }
+
+    /**
+     * Creates multiple additional sets of input fields in the exercise after the checkbox for a single
+     * day plan has been unchecked
+     */
+    function addMultipleTeInputs(amountTEs) {
+        // loop to add the input fields to the TE/Weights/Repeats/Tempo/Pause columns in the exercise form
+        for (var i = 1; i < amountTEs; i++){
+            // create unique id´s
+            var counterTEId = "counter" + i;
+            var weightsInputId = "weightsInput" + i;
+            var repsInputId = "repsInput" + i;
+            var tempoInputId = "tempoInput" + i;
+            var pauseInputId = "pauseInput" + i;
+
+            // Add the input fields to the lists
+            $('#counterTE').append(
+                '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+            $('#weightsInputs').append(
+                '<li>' + '<input id="'+weightsInputId+'" type="text" class="form-control">' + '</li>');
             $('#repsInputs').append(
                 '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
             $('#tempoInputs').append(
@@ -1127,15 +1351,18 @@
         // Get amount of TE´s
         var number = document.getElementById("inputUnit").value;
         // Empty the content of the input fields
-        $('#inputOrder').val('');
         $('#inputExercise').val('');
-        $('#inputDescription').val('');
+        $('#inputOrder').val('');
+        $('#inputRM').val('');
+        $('#inputExecution').val('');
 
         // Loop to empty the dynamically created input fields
         for (var i=0;i<number;i++){
+            var currentWeightsInput = "#weightsInput" + i;
             var currentRepsInput = "#repsInput" + i;
             var currentTempoInput = "#tempoInput" + i;
             var currentPauseInput = "#pauseInput" + i;
+            $(currentWeightsInput).val('');
             $(currentRepsInput).val('');
             $(currentTempoInput).val('');
             $(currentPauseInput).val('');
@@ -1148,7 +1375,7 @@
     /**
      * Function to increase the TE-counter and alert if TE climbs over 15
      */
-    function increment() {
+    function incrementTEs() {
         // Get the current amount of TE´s
         var oldValue = document.getElementById("inputUnit").value;
         // Test if the top limit is reached
@@ -1167,7 +1394,7 @@
     /**
      * Function to decrease the TE-counter and alert if TE falls under 3
      */
-    function decrement() {
+    function decrementTEs() {
         // Get the current amount of TE´s
         var oldValue = document.getElementById("inputUnit").value;
         // Test if the bottom limit is reached
@@ -1186,6 +1413,44 @@
         }
         // Write new TE amount in the input field
         document.getElementById("inputUnit").value = newValue;
+    }
+
+    /**
+     * Function to increase the amount of TEs per week and alert if amount climbs over 7
+     */
+    function incrementWeeklyTEs() {
+        // Get the current amount of TE´s
+        var oldValue = document.getElementById("inputUnitsPerWeek").value;
+        // Test if the top limit is reached
+        if (oldValue < 7) {
+            // Increase the value by 1
+            var newValue = parseFloat(oldValue) + 1;
+        } else {
+            // Alert to inform the user that the top limit is reached
+            alert("Ein Trainingsplan kann nicht mehr Trainigseinheiten pro Woche haben als die Woche Tage hat");
+            var newValue = 7;
+        }
+        // Write new TE amount in the input field
+        document.getElementById("inputUnitsPerWeek").value = newValue;
+    }
+
+    /**
+     * Function to decrease the amount of TEs per week and alert if amount decreases below 1
+     */
+    function decrementWeeklyTEs() {
+        // Get the current amount of TE´s
+        var oldValue = document.getElementById("inputUnitsPerWeek").value;
+        // Test if the bottom limit is reached
+        if (oldValue > 1) {
+            // Decrease the value by 1
+            var newValue = parseFloat(oldValue) - 1;
+        } else {
+            // Alert to inform the user that the bottom limit is reached
+            alert("Ein Trainingsplan ist nicht regelmäßig, wenn er weniger als eine Trainingseinheit pro Woche vorsieht");
+            var newValue = 1;
+        }
+        // Write new TE amount in the input field
+        document.getElementById("inputUnitsPerWeek").value = newValue;
     }
 
     /**

@@ -8,14 +8,36 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <div th:fragment="navbar_style">
+    <div th:fragment="style_fragment">
         <style>
+            .glyphicon {
+                margin-left: 5px;
+            }
+            body {
+                height: 100%;
+                width: 100%;
+                background-image:  linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.35)),
+                url("/initFileBackup/Hintergründe/background_gym_5_greyscale.jpg");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
+            .jumbotron {
+                border: 1pt solid #414141;
+            }
+            .outerPanel{
+                border: 0.5pt solid #414141;
+            }
+            .glyphicon {
+                margin-right: 5px;
+            }
             /* navbar */
             .navbar-default {
                 font-size: 16px;
                 font-weight: bold;
                 background-color: #fd8900; /* General background color */
-                border-color: #c35a00; /* General border color */
+                border: 1.5pt solid #414141; /* Border color and size */
             }
             /* Title */
             .navbar-default .navbar-brand {
@@ -83,6 +105,7 @@
                 color: #ecf0f1;
                 background-color: #c35a00;
                 border-color: #8c2d00;
+                margin-left: 10px;
             }
             .btn.navbar-btn:hover,
             .btn.navbar-btn:focus,
@@ -90,6 +113,73 @@
                 color: #ecf0f1;
                 background-color: #8c2d00;
                 border-color: #8c2d00;
+            }
+            .button {
+                background-color: #fd8900;
+                border-color: #c35a00;
+                color: white;
+                text-shadow: 0.5px 0.5px 0.5px #999999;
+                /*padding: 10px 20px;*/
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                /*margin: 4px 2px;*/
+                cursor: pointer;
+                border-radius: 12px;
+            }
+            .button:hover,
+            .button:focus,
+            .button:active {
+                color: white;
+                background-color: #ee6900;
+            }
+            .panel-login{
+                border-radius: 25px;
+                border: 2pt solid #414141;
+            }
+            .panel-login .panel-heading {
+                background-color: #fd8900;
+                color: #ecf0f1;
+                border-radius: 20px 20px 0px 0px;
+                border: 1pt solid #414141;
+                text-align: center;
+                text-shadow: 0.5px 0.5px 0.5px #999999;
+            }
+            .panel-login .panel-footer {
+                background-color: #eee;
+                border-radius: 0px 0px 20px 20px;
+                text-shadow: 0.1px 0.1px 0.1px #999999;
+            }
+            .overlayContainer {
+                position: relative;
+            }
+            .overlay {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 100%;
+                width: 100%;
+                opacity: 0;
+                border-radius: 50%;
+                transition: .5s ease;
+                background-color: #FD8900;
+            }
+            .overlayContainer:hover .overlay {
+                opacity: 0.7;
+            }
+            .text {
+                color: white;
+                font-size: 20px;
+                font-weight: bold;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                -webkit-transform: translate(-50%, -50%);
+                -ms-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
+                text-align: center;
             }
         </style>
     </div>

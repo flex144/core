@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Planvorlage bearbeiten</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <div th:include="/fragments/navbar :: navbar_style"></div>
+</head>
+<body>
+<div th:replace="/fragments/navbar :: navbar_mod"></div>
+
+<div class="container">
+    <div class="panel panel-default outerPanel">
+        <div class="panel-heading" style="font-weight: bold">
+            Planvorlage bearbeiten
+        </div>
+        <div class="panel-body">
+            <div class="col-md-12">
+                <table class="table table-bordered table-condensed detail detailExerciseTable" border="1"
+                       width="100%">
+                    <colgroup>
+                        <col width="5%">
+                        <col width="15%">
+                        <col width="30%">
+                        <col width="7%">
+                        <col width="23%">
+                        <col width="5%">
+                        <col width="5%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>Ordnung</th>
+                        <th>Übung</th>
+                        <th>Ausführung</th>
+                        <th>TE</th>
+                        <th>Sätze - Wiederholungen</th>
+                        <th>Tempo</th>
+                        <th>Pause</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
+                    <button type="button" class="btn btn-danger btn-block"
+                            id="deleteCurrentExercise" data-dismiss="modal">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        Abbrechen
+                    </button>
+                </div>
+                <div class="col-md-5">
+                    <button type="button" class="btn btn-success btn-block">
+                        <span class="glyphicon glyphicon-floppy-save"></span>
+                        Änderungen übernehmen
+                    </button>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
