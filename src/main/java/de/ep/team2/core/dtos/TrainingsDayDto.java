@@ -11,11 +11,18 @@ public class TrainingsDayDto {
 
     private LinkedList<ExerciseDto> exercises;
     private Boolean initialTraining;
+    private String currentCategory;
+    private Integer currentSession;
 
     public LinkedList<ExerciseDto> getExercises() {
         return exercises;
     }
 
+    /**
+     * Adds the exerciseDTO List to the DayDTO and calls a method on each exerciseDTO to save its
+     * position in the List there.
+     * @param exercises List of Exercises to add.
+     */
     public void setExercises(LinkedList<ExerciseDto> exercises) {
         this.exercises = exercises;
         for (int i = 0; i < exercises.size(); i++) {
@@ -23,6 +30,12 @@ public class TrainingsDayDto {
         }
     }
 
+    /**
+     * Changes the Exercise Dto in the list on the specific position to the new one.
+     *
+     * @param newDto DTO to replace the old one with.
+     * @param pos position of the old dto in the list starting at 0.
+     */
     public void changeExercise(ExerciseDto newDto, int pos) {
         if (exercises != null && pos <= exercises.size()) {
             exercises.set(pos, newDto);
@@ -39,8 +52,29 @@ public class TrainingsDayDto {
         this.initialTraining = initialTraining;
     }
 
+    public String getCurrentCategory() {
+        return currentCategory;
+    }
+
+    public void setCurrentCategory(String currentCategory) {
+        this.currentCategory = currentCategory;
+    }
+
+    public Integer getCurrentSession() {
+        return currentSession;
+    }
+
+    public void setCurrentSession(Integer currentSession) {
+        this.currentSession = currentSession;
+    }
+
+    /**
+     * resets the DTO without having to invalidate the session.
+     */
     public void clear() {
         this.exercises = null;
         this.initialTraining = null;
+        this.currentCategory = null;
+        this.currentSession = null;
     }
 }

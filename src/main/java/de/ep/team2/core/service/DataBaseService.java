@@ -862,15 +862,16 @@ public class DataBaseService {
 
     public Integer increaseCurSession(int userPlanID) {
         UserPlan userPlan = getUserPlanById(userPlanID);
-        if (userPlan.getCurrentSession() == userPlan.getMaxSession()) {
+        userPlan.setCurrentSession(userPlan.getCurrentSession() + 1);
+        if (userPlan.getCurrentSession() > userPlan.getMaxSession()) {
             log.debug("Max Sessions of Plan for User " + userPlan.getUserMail() + " reached! deleting Plan!");
             deleteUserPlanAndWeightsById(userPlanID);
             return -1;
         } else {
-            Object[] values = new Object[]{userPlan.getCurrentSession() + 1, userPlanID};
+            Object[] values = new Object[]{userPlan.getCurrentSession(), userPlanID};
             jdbcTemplate.update("update user_plans set cursession = ? where id = ?", values);
         }
-        return userPlan.getCurrentSession() + 1;
+        return userPlan.getCurrentSession();
     }
 
     public void setInitialTrainDone(int userPlanId) {
@@ -888,15 +889,14 @@ public class DataBaseService {
 
     // weights
 
-    public Integer insertWeightsForUserPlan(int idUserPlan, int idOfInstance, Integer weight) {
+    public void insertWeightsForUserPlan(int idUserPlan, int idOfInstance, Integer weight) {
         jdbcTemplate.update("insert into weights(iduserplan, idexerciseinstance, weight) values (?,?,?)"
-                , new Object[]{idUserPlan, idOfInstance, weight});
+                , idUserPlan, idOfInstance, weight);
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('weights','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
         log.debug("Weights for User Plan with ID '" + idUserPlan + "', for exercise Instance with ID '" +
                 idOfInstance + "' created with Id '" + id + "'!");
-        return id;
     }
 
     public Integer getWeightForUserPlanExercise(int idUserPlan, int idOfInstance) {

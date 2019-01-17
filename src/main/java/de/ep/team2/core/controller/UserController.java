@@ -11,8 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-
 @Controller
 @RequestMapping("/user")
 @Scope("request")
@@ -32,19 +30,15 @@ public class UserController {
     @RequestMapping("/plan")
     public String handleUserTrainingStart(Model model) {
         PlanService planService = new PlanService();
+
         // start Training
         if (dayDto.getExercises() == null) {
             User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             dayDto = planService.fillTrainingsDayDto(principal.getEmail(), dayDto);
-            if (dayDto.isInitialTraining()) {
-                model.addAttribute("dayDto", dayDto);
-                return "init_train";
-            } else {
-                model.addAttribute("dayDto", dayDto);
-                return "user_training_overview";
-            }
+            model.addAttribute("dayDto", dayDto);
+            return "user_training_overview";
         } else { // Training already started
-            Boolean isDone = planService.checkIfDone(dayDto);
+            boolean isDone = planService.checkIfDayDone(dayDto);
             if (isDone) {
                 if (dayDto.isInitialTraining()) {
                     planService.setUserPlanInitialTrainDone(dayDto.getExercises().getFirst().getIdUserPlan());
@@ -53,9 +47,6 @@ public class UserController {
                 return "redirect:/user/home"; // maybe info page that training is over
             } else {
                 model.addAttribute("dayDto", dayDto);
-                if (dayDto.isInitialTraining()) {
-                    return "init_train";
-                }
                 return "user_training_overview";
             }
         }
@@ -65,11 +56,12 @@ public class UserController {
     public String exerciseCompleted(@RequestParam("doneFlag") boolean doneFlag, @RequestParam("indexInList") Integer indexInList) {
         ExerciseDto exerciseDto = dayDto.getExercises().get(indexInList);
         exerciseDto.setDone(doneFlag);
+        dayDto.setCurrentCategory(exerciseDto.getCategory());
         dayDto.changeExercise(exerciseDto, indexInList);
         return "redirect:/user/plan";
     }
 
-    @PostMapping("/plan/init/done")
+    @PostMapping("/plan/done/init")
     public String exerciseInitCompleted(@RequestParam("doneFlag") boolean doneFlag, @RequestParam("indexInList") Integer indexInList,
     @RequestParam Integer weightDone) {
         PlanService service = new PlanService();
@@ -77,42 +69,25 @@ public class UserController {
         exerciseDto.setDone(doneFlag);
         exerciseDto.setWeightDone(weightDone);
         service.setWeightsOfExercise(exerciseDto);
+        dayDto.setCurrentCategory(exerciseDto.getCategory());
         dayDto.changeExercise(exerciseDto, indexInList);
         return "redirect:/user/plan";
-    }
-
-    @RequestMapping("/plan/overview")
-    public String openTraining() {
-        return "user_training_overview";
     }
 
     @RequestMapping("/plan/exercise/{index}")
     public String openExercise(@PathVariable Integer index, Model model) {
         if (dayDto.getExercises() == null) {
-            model.addAttribute("error","No active plan visit plan overview first!");
-            return "error";
-        } else if (dayDto.isInitialTraining()) {
-            model.addAttribute("error","Initial Training wasn't completed yet");
+            model.addAttribute("error", "No active plan visit plan overview first!");
             return "error";
         } else {
             ExerciseDto exerciseDto = dayDto.getExercises().get(index);
             model.addAttribute("exerciseDto", exerciseDto);
-            return "user_in_exercise";
+            if (dayDto.isInitialTraining()) {
+                return "user_first_training_of_plan";
+            } else {
+                return "user_in_exercise";
+            }
         }
     }
 
-    @RequestMapping("/plan/init/exercise/{index}")
-    public String openInitExercise(@PathVariable Integer index, Model model) {
-        if (dayDto.getExercises() == null) {
-            model.addAttribute("error", "No active plan visit plan overview first!");
-            return "error";
-        } else if (!dayDto.isInitialTraining()) {
-            model.addAttribute("error", "Initial Training already completed");
-            return "error";
-        } else {
-            ExerciseDto exerciseDto = dayDto.getExercises().get(index);
-            model.addAttribute("exerciseDto", exerciseDto);
-            return "init_exercise";
-        }
-    }
 }

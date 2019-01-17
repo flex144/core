@@ -178,24 +178,32 @@ public class PlanService {
         }
     }
 
-    // TODO: 14.01.19 Linking fot the 2 events
+    /**
+     * todo
+     *
+     * @param userMail
+     * @param trainingsDayDto
+     * @return
+     */
     public TrainingsDayDto fillTrainingsDayDto(String userMail, TrainingsDayDto trainingsDayDto) {
         DataBaseService db = DataBaseService.getInstance();
         UserPlan userPlan = db.getUserPlanByUserMail(userMail);
-        if (userPlan == null) {
-            db.insertUserPlan(userMail, 1); // todo only workaround for test
+        if (userPlan == null) {     // if the user has no plan assign one to him
+            db.insertUserPlan(userMail, 1); // atm the user just gets the initial plan
             userPlan = db.getUserPlanByUserMail(userMail);
         }
-        Integer currentSession = userPlan.getCurrentSession();
-        if (currentSession == null || currentSession < 0) {
+        int currentSession = userPlan.getCurrentSession();
+        if (currentSession < 0) {
             throw new IllegalArgumentException("Session number of User Plan corrupted");
-        } else if (currentSession >= userPlan.getMaxSession()) {
+        } else if (currentSession > userPlan.getMaxSession()) {
             log.debug("User:" + userMail + ": Plan expired new Plan needed!");
             throw new IllegalArgumentException("Plan expired new Plan needed!");
         } else {
+            // get the Trainings plan Template the User plan is based on
             TrainingsPlanTemplate template = db.getPlanTemplateAndSessionsByID(userPlan.getIdOfTemplate());
             LinkedList<ExerciseDto> exerciseDtos = new LinkedList<>();
             for (ExerciseInstance exInstance : template.getExerciseInstances()) {
+                // create the ExerciseDto based on each ExerciseInstance and the current TrainingsSession
                 ExerciseDto newDto = new ExerciseDto();
                 TrainingsSession trainingsSession;
                 if (!userPlan.isInitialTrainingDone() && currentSession == 0) {
@@ -204,13 +212,15 @@ public class PlanService {
                     newDto.setWeightDone(0);
                     trainingsSession = getSessionByOrdering(1, exInstance.getTrainingsSessions()); // in initial Workout take values from first Trainings session
                 } else {
+                    // when the initial Training was already completed calculate the values for the current Session
                     trainingsSession = getSessionByOrdering(currentSession, exInstance.getTrainingsSessions());
                     newDto.setWeights(calcWeights(db.getWeightForUserPlanExercise(userPlan.getId(), exInstance.getId()), trainingsSession.getSets(), trainingsSession.getWeightDiff()));
                     newDto.setFirstTraining(false);
                 }
-                Exercise exercise = db.getExerciseById(exInstance.getIsExerciseID());
+                // add all Data to the ExerciseDto
                 newDto.setIdUserPlan(userPlan.getId());
                 newDto.setIdExerciseInstance(exInstance.getId());
+                Exercise exercise = db.getExerciseById(exInstance.getIsExerciseID());
                 newDto.setExercise(exercise);
                 newDto.setCategory(exInstance.getCategory());
                 newDto.setSets(trainingsSession.getSets());
@@ -222,6 +232,7 @@ public class PlanService {
             }
             trainingsDayDto.setExercises(exerciseDtos);
             trainingsDayDto.setInitialTraining(!userPlan.isInitialTrainingDone());
+            trainingsDayDto.setCurrentSession(currentSession);
             return trainingsDayDto;
         }
     }
@@ -257,7 +268,7 @@ public class PlanService {
         throw new IllegalArgumentException("No Session with this ordering available!");
     }
 
-    public Boolean checkIfDone(TrainingsDayDto dayDto) {
+    public boolean checkIfDayDone(TrainingsDayDto dayDto) {
         boolean isDone = true;
         for (ExerciseDto exDto : dayDto.getExercises()) {
             if (!exDto.getDone()) {
@@ -268,5 +279,11 @@ public class PlanService {
             DataBaseService.getInstance().increaseCurSession(dayDto.getExercises().getFirst().getIdUserPlan());
         }
         return isDone;
+    }
+
+    public boolean checkIfPlanDone(TrainingsDayDto dayDto) {
+        DataBaseService db = DataBaseService.getInstance();
+        UserPlan userPlan = db.getUserPlanById(dayDto.getExercises().getFirst().getIdUserPlan());
+        return userPlan.getCurrentSession() == userPlan.getMaxSession();
     }
 }
