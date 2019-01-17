@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -9,6 +9,8 @@
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
           integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+    <div th:include="/fragments/navbar :: style_fragment"></div>
     <style>
         html, body{
             height: 100%;
@@ -17,8 +19,6 @@
             text-align: center;
             margin: auto;
             font-size: calc(12px + 1.4vw);
-            background-image:  linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.35)),
-            url("/initFileBackup/Hintergründe/background_gym_5_greyscale.jpg");
         }
     </style>
 </head>
