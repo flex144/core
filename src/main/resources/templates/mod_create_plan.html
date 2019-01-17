@@ -1160,6 +1160,9 @@
             // Disable the TE-buttons
             $('#btnDecrementTEs').prop('disabled', true);
             $('#btnIncrementTEs').prop('disabled', true);
+            // Disable the TE per Week buttons
+            $('#btnDecrementWeeklyTes').prop('disabled', true);
+            $('#btnIncrementWeeklyTes').prop('disabled', true);
         } else {
             // Get the previous amount of TE´s
             var prevTEs = parseInt(document.getElementById("prevUnitAmount").value);
@@ -1170,6 +1173,9 @@
             // Enable the TE-buttons
             $('#btnDecrementTEs').prop('disabled', false);
             $('#btnIncrementTEs').prop('disabled', false);
+            // Enable the TE per Week buttons
+            $('#btnDecrementWeeklyTes').prop('disabled', false);
+            $('#btnIncrementWeeklyTes').prop('disabled', false);
         }
     }
 
