@@ -7,20 +7,24 @@ public class TrainingsPlanTemplate {
     private int id;
     private String name;
     private String trainingsFocus;
+    private String targetGroup;
     private User author;
     private boolean oneShotPlan;
+    private int recomSessionsPerWeek;
     private int numTrainSessions;
     private int exercisesPerSession;
     private LinkedList<ExerciseInstance> exerciseInstances;
 
-    public TrainingsPlanTemplate(int id, String name, String trainingsFocus, User author, boolean oneShotPlan,
-                                 int numTrainSessions, int exercisesPerSession,
+    public TrainingsPlanTemplate(int id, String name, String trainingsFocus, String targetGroup, User author, boolean oneShotPlan,
+                                 int recomSessionsPerWeek, int numTrainSessions, int exercisesPerSession,
                                  LinkedList<ExerciseInstance> exerciseInstances) {
         this.id = id;
         this.name = name;
         this.trainingsFocus = trainingsFocus;
+        this.targetGroup = targetGroup;
         this.author = author;
         this.oneShotPlan = oneShotPlan;
+        this.recomSessionsPerWeek = recomSessionsPerWeek;
         this.numTrainSessions = numTrainSessions;
         this.exercisesPerSession = exercisesPerSession;
         this.exerciseInstances = exerciseInstances;
@@ -53,6 +57,14 @@ public class TrainingsPlanTemplate {
         this.trainingsFocus = trainingsFocus;
     }
 
+    public String getTargetGroup() {
+        return targetGroup;
+    }
+
+    public void setTargetGroup(String targetGroup) {
+        this.targetGroup = targetGroup;
+    }
+
     public User getAuthor() {
         return author;
     }
@@ -67,6 +79,14 @@ public class TrainingsPlanTemplate {
 
     public void setOneShotPlan(boolean oneShotPlan) {
         this.oneShotPlan = oneShotPlan;
+    }
+
+    public int getRecomSessionsPerWeek() {
+        return recomSessionsPerWeek;
+    }
+
+    public void setRecomSessionsPerWeek(int recomSessionsPerWeek) {
+        this.recomSessionsPerWeek = recomSessionsPerWeek;
     }
 
     public int getNumTrainSessions() {

@@ -1,7 +1,13 @@
 package de.ep.team2.core.dataInit;
 
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.Gender;
+import de.ep.team2.core.enums.TrainingsFocus;
+import de.ep.team2.core.dtos.TrainingsDayDto;
+import de.ep.team2.core.entities.UserPlan;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
+import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
@@ -11,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,6 +41,8 @@ public class DataInit {
         fillPlanTemplates();
         fillExerciseInstances();
         fillTrainingSessions();
+        fillUserPlans();
+        fillWeights();
     }
 
     private void initTables() {
@@ -41,7 +51,14 @@ public class DataInit {
         jdbcTemplate.execute("DROP TABLE IF EXISTS users CASCADE ");
         jdbcTemplate.execute("CREATE TABLE users(" +
                 "id SERIAL, email VARCHAR(255) NOT NULL ," +
-                " first_name VARCHAR(255), last_name VARCHAR(255) ," +
+                "first_name VARCHAR(255), last_name VARCHAR(255) ," +
+                "height_in_cm INTEGER," +
+                "weight_in_kg INTEGER," +
+                "gender varchar(20)," +
+                "trainings_focus varchar(20)," +
+                "experience varchar(20)," +
+                "birth_date date," +
+                "trainings_frequency INTEGER," +
                 " password varchar(60) not null, " +
                 " enabled boolean not null default false, " +
                 " role varchar(20) not null," +
@@ -77,8 +94,10 @@ public class DataInit {
                 "id SERIAL NOT NULL PRIMARY KEY," +
                 "name varchar(255) NOT NULL UNIQUE," +
                 "trainings_focus varchar(255)," +
+                "target_group varchar(255)," +
                 "author varchar(255) references users ," +
                 "one_shot_plan boolean," +
+                "recom_sessions_per_week integer," +
                 "num_train_sessions integer NOT NULL," +
                 "exercises_per_session integer NOT NULL)");
         log.debug("Created table plan_templates");
@@ -88,6 +107,7 @@ public class DataInit {
                 "id SERIAL NOT NULL PRIMARY KEY," +
                 "is_exercise integer references exercises not null," +
                 "category varchar(50)," +
+                "repetition_maximum integer," +
                 "plan_template integer not null references plan_templates)");
         log.debug("Created table exercise_instances");
         // Execution Tags for Instance
@@ -107,8 +127,14 @@ public class DataInit {
                 "id SERIAL NOT NULL PRIMARY KEY," +
                 "exercise_instance integer references exercise_instances not null," +
                 "ordering integer not null," +
-                "rep_maximum integer not null," +
                 "sets integer not null," +
+                "weightdiff_set1 integer," +
+                "weightdiff_set2 integer," +
+                "weightdiff_set3 integer," +
+                "weightdiff_set4 integer," +
+                "weightdiff_set5 integer," +
+                "weightdiff_set6 integer," +
+                "weightdiff_set7 integer," +
                 "tempo varchar(50)," +
                 "pause integer," +
                 "reps_set1 integer," +
@@ -121,6 +147,22 @@ public class DataInit {
                 "CHECK (sets <= 7)," +
                 "CHECK (ordering <= 15 AND ordering >= 1))");
         log.debug("Created table trainings_sessions");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS user_plans cascade ");
+        jdbcTemplate.execute("CREATE TABLE user_plans(" +
+                "id SERIAL NOT NULL PRIMARY KEY," +
+                "\"user\" varchar(255) NOT NULL REFERENCES users," +
+                "template integer NOT NULL REFERENCES plan_templates," +
+                "curSession integer NOT NULL," +
+                "maxSession integer NOT NULL," +
+                "initial_training_done boolean NOT NULL)");
+        log.debug("Created table user_plans");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS weights cascade ");
+        jdbcTemplate.execute("CREATE TABLE weights(" +
+                "  id SERIAL NOT NULL PRIMARY KEY," +
+                "  idUserPlan integer not null references user_plans," +
+                "  idExerciseInstance integer not null references exercise_instances," +
+                "  weight integer not null)");
+        log.debug("Created table weights");
     }
 
     private void initImages() {
@@ -157,7 +199,6 @@ public class DataInit {
             DataBaseService.getInstance().confirmUser(o[0]);
         }
         DataBaseService.getInstance().changeToMod(3);
-
     }
 
     private void fillExercises() {
@@ -209,26 +250,26 @@ public class DataInit {
     }
 
     private void fillPlanTemplates() {
-        DataBaseService.getInstance().insertPlanTemplate("Test Plan", "muscle",
-                "felix@gmail.com", false, 6, 2);
+        DataBaseService.getInstance().insertPlanTemplate("Test Plan", "muscle","beginner",
+                "felix@gmail.com",false,1,6,2);
     }
 
     private void fillTrainingSessions() {
         DataBaseService db = DataBaseService.getInstance();
         //Bankdrücken
-        db.insertTrainingsSession(1, 1, 15, 3, new Integer[]{12, 12, 12}, "Langsam", 90);
-        db.insertTrainingsSession(1, 2, 15, 3, new Integer[]{12, 12, 12}, "Langsam", 90);
-        db.insertTrainingsSession(1, 3, 15, 3, new Integer[]{13, 13, 13}, "Langsam", 90);
-        db.insertTrainingsSession(1, 4, 15, 3, new Integer[]{13, 13, 13}, "Schnell", 90);
-        db.insertTrainingsSession(1, 5, 15, 3, new Integer[]{15, 14, 13}, "Langsam", 90);
-        db.insertTrainingsSession(1, 6, 15, 4, new Integer[]{15, 14, 14, 15}, "Langsam", 90);
+        db.insertTrainingsSession(1,1,3, new Integer[]{0,0,5}, new Integer[]{12,12,12},"Langsam",90);
+        db.insertTrainingsSession(1,2,3, new Integer[]{0,0,5}, new Integer[]{12,12,12},"Langsam",90);
+        db.insertTrainingsSession(1,3,3, new Integer[]{0,0,5}, new Integer[]{13,13,13},"Langsam",90);
+        db.insertTrainingsSession(1,4,3, new Integer[]{0,0,5}, new Integer[]{13,13,13},"Schnell",90);
+        db.insertTrainingsSession(1,5,3, new Integer[]{0,0,5}, new Integer[]{15,14,13},"Langsam",90);
+        db.insertTrainingsSession(1,6,4, new Integer[]{0,0,5,10}, new Integer[]{15,14,14,15},"Langsam",90);
         //Liegestütz
-        db.insertTrainingsSession(2, 1, 15, 4, new Integer[]{20, 25, 25, 20}, "Langsam", 90);
-        db.insertTrainingsSession(2, 2, 15, 4, new Integer[]{22, 30, 30, 22}, "Langsam", 90);
-        db.insertTrainingsSession(2, 3, 15, 4, new Integer[]{20, 30, 30, 35}, "Langsam", 90);
-        db.insertTrainingsSession(2, 4, 15, 4, new Integer[]{30, 30, 30, 30}, "Schnell", 90);
-        db.insertTrainingsSession(2, 5, 15, 4, new Integer[]{35, 35, 35, 35}, "Langsam", 90);
-        db.insertTrainingsSession(2, 6, 15, 4, new Integer[]{35, 40, 40, 35}, "Schnell", 90);
+        db.insertTrainingsSession(2,1,4, new Integer[]{0,0,5,10}, new Integer[]{20,25,25,20},"Langsam",90);
+        db.insertTrainingsSession(2,2,4, new Integer[]{0,0,5,10}, new Integer[]{22,30,30,22},"Langsam",90);
+        db.insertTrainingsSession(2,3,4, new Integer[]{0,0,5,10}, new Integer[]{20,30,30,35},"Langsam",90);
+        db.insertTrainingsSession(2,4,4, new Integer[]{0,0,5,10}, new Integer[]{30,30,30,30},"Schnell",90);
+        db.insertTrainingsSession(2,5,4, new Integer[]{0,0,5,10}, new Integer[]{35,35,35,35},"Langsam",90);
+        db.insertTrainingsSession(2,6,4, new Integer[]{0,0,5,10}, new Integer[]{35,40,40,35},"Schnell",90);
     }
 
     private void fillExerciseInstances() {
@@ -238,7 +279,22 @@ public class DataInit {
         LinkedList<String> toAdd2 = new LinkedList<>();
         toAdd2.add("Eng");
         DataBaseService db = DataBaseService.getInstance();
-        db.insertExerciseInstance(1, "A1", toAdd, 1);
-        db.insertExerciseInstance(2, "A2", toAdd2, 1);
+        db.insertExerciseInstance(1, "A1", 15, toAdd, 1);
+        db.insertExerciseInstance(2, "A2", 15, toAdd2, 1);
+    }
+
+    private void fillUserPlans() {
+        DataBaseService db = DataBaseService.getInstance();
+        db.insertUserPlan("timo@gmail.com", 1);
+        UserPlan test = db.getUserPlanById(1);
+    }
+
+    private void fillWeights() {
+        DataBaseService db = DataBaseService.getInstance();
+        PlanService service = new PlanService();
+        db.insertWeightsForUserPlan(1,1,50);
+        db.insertWeightsForUserPlan(1,2,100);
+        Integer test = db.getWeightForUserPlanExercise(1,1);
+        TrainingsDayDto test2 = service.fillTrainingsDayDto("timo@gmail.com", new TrainingsDayDto());
     }
 }

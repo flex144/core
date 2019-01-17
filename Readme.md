@@ -30,4 +30,12 @@ To enable uploading of images and load them without restarting the server, start
 When the server was started this way, in order to start the server again with the IDE (or run tests), run compile in Maven Projects. 
 (You can also enable to always compile before building the Project. That solves the Issue.
 [Maven Projects -> rightclick on compile -> Execute Before Build])
+
+**5. Run Selenium Frontend Tests**
+
+In order to run the selenium tests, you first need to download the webdriver (for Mozilla Firefox) geckodriver (https://github.com/mozilla/geckodriver/releases/tag/v0.23.0).
+Then, open `src/test/java/de/ep/team2/core/FrontEndSeleniumTests.java` and navigate to the method `sysProperties()` and change the path in `System.setProperty()` to the path
+of your geckodriver.
+Do the same in `src/test/java/de/ep/team2/core/SeleniumTestTrainingOverview.java` in the method `login()`. 
+Now you must run the app, and then you can run the Selenium tests. 
                

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Bitte gib deine Daten ein!</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
+
+    <div th:include="/fragments/navbar :: style_fragment"></div>
+</head>
+<body>
+
+<form th:action="@{/user/plan/done/init}" method="post">
+<div class="container" id="panelContainer">
+    <div class="visible-md visible-lg">
+        <br><br>
+        <br><br>
+    </div>
+    <div class="col-md-4">
+        <div class="container">
+            <div class="panel panel-login panel-default">
+                <input title="done" type="checkbox" name="doneFlag" hidden checked>
+                <input type="text" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
+                <!--- Short description --->
+                <div class="panel-heading" >
+                    <h3>Bitte trage ein mit wie viel Gewicht (in kg) du die Übung 'X' mal wiederholen kannst</h3>
+                </div>
+                <!--- form for user to write into --->
+                <div class="panel-body">
+                    <div class="col-xs-12" style="text-align: center;">
+                        <form>
+                            <input type="number" name="weightDone" style="text-align: center" id="userMaxWeight" oninput="updateWeight()">
+                        </form>
+                    </div>
+                </div>
+                <!--- Buttons for exit and continuing --->
+                <div class="panel-footer" style="text-align: center;">
+                    <div class="row">
+                        <a type="button"
+                           class="btn btn-danger col-xs-3 col-xs-offset-1" th:href="@{/user/plan}">
+                            Zurück
+                        </a>
+                        <div class="col-xs-4"></div>
+                        <button type="submit"
+                                class="btn btn-success col-xs-3" id="startButton" style="font-size: small" disabled>
+                            Bestätigen
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+<!--- Checks if value given by user is acceptable --->
+<script>
+    function updateWeight() {
+        valueCheck = Math.ceil(document.getElementById('userMaxWeight').value);
+        if(valueCheck < 300 && valueCheck> 0){
+            document.getElementById('startButton').disabled = false;
+        } else if(valueCheck == ""){
+        }else{
+            document.getElementById('startButton').disabled = true;
+        }
+
+    }
+</script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+</body>
+</html>

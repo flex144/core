@@ -1,15 +1,19 @@
 package de.ep.team2.core.service;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
-import de.ep.team2.core.entities.ExerciseInstance;
-import de.ep.team2.core.entities.TrainingsPlanTemplate;
-import de.ep.team2.core.entities.TrainingsSession;
-import de.ep.team2.core.entities.User;
+import de.ep.team2.core.dtos.ExerciseDto;
+import de.ep.team2.core.dtos.TrainingsDayDto;
+import de.ep.team2.core.entities.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class PlanService {
+
+    private static final Logger log = LoggerFactory.getLogger(PlanService.class);
 
     /**
      * Checks if the Template is already existing by looking at the id of the dto which is null when
@@ -71,7 +75,7 @@ public class PlanService {
     public TrainingsPlanTemplate getPlanTemplateAndSessionsByID(Integer id) {
         TrainingsPlanTemplate toReturn =  DataBaseService.getInstance().getPlanTemplateAndSessionsByID(id);
         if (toReturn == null) {
-            throw new IllegalArgumentException("Plan with Id " + id + "not found!");
+            throw new IllegalArgumentException("Plan with Id " + id + " not found!");
         } else {
             return toReturn;
         }
@@ -102,28 +106,46 @@ public class PlanService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         String mail = user.getEmail();
-        idTemplate = db.insertPlanTemplate(dto.getPlanName(), dto.getTrainingsFocus(), mail,
-                dto.isOneShot(), dto.getSessionNums(), 1);
+        idTemplate = db.insertPlanTemplate(dto.getPlanName(), dto.getTrainingsFocus(), dto.getTargetGroup(), mail,
+                dto.isOneShot(), dto.getRecomSessionsPerWeek(), dto.getSessionNums(), 1);
         Integer exInstanceId = db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(),
-                dto.getTags(), idTemplate);
+                dto.getRepetitionMaximum(), dto.getTags(), idTemplate);
+        createTrainingsSessions(dto, exInstanceId);
+        return idTemplate;
+    }
+
+    private void createTrainingsSessions(CreatePlanDto dto, int exInstanceId) {
+        DataBaseService db = DataBaseService.getInstance();
         for (int i = 0; i < dto.getSessionNums(); i++) {
-            Integer[] reps = parseSets(dto.getSets().get(i));
-            db.insertTrainingsSession(exInstanceId, i + 1, 15, reps.length, reps,
+            Integer[] reps = parseReps(dto.getSets().get(i));
+            Integer[] weightDiff = parseWeightDiff(dto.getWeightDiff().get(i));
+            if (!validateWeightWithReps(reps, weightDiff)) {
+                throw new IllegalArgumentException("reps and weights do not match!");
+            }
+            db.insertTrainingsSession(exInstanceId, i + 1, reps.length, weightDiff, reps,
                     dto.getTempo().get(i), dto.getPause().get(i));
         }
-        return idTemplate;
     }
 
     private void addInstanceAndSessionToExistingPlan(CreatePlanDto dto, Integer idOfTemplate) {
         DataBaseService db = DataBaseService.getInstance();
         Integer exInstanceId = db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(),
-                dto.getTags(), dto.getId());
-        for (int i = 0; i < dto.getSessionNums(); i++) {
-            Integer[] reps = parseSets(dto.getSets().get(i));
-            db.insertTrainingsSession(exInstanceId, i + 1, 15, reps.length, reps,
-                    dto.getTempo().get(i), dto.getPause().get(i));
-        }
+                dto.getRepetitionMaximum(), dto.getTags(), dto.getId());
+        createTrainingsSessions(dto, exInstanceId);
         db.increaseNumOfExercises(idOfTemplate);
+    }
+
+    private boolean validateWeightWithReps(Integer[] reps, Integer[] weightDiff) {
+        if (weightDiff.length == reps.length) {
+            return true;
+        } else if (weightDiff.length == 1 && reps.length > 1) {
+            Integer value = weightDiff[0];
+            weightDiff = new Integer[reps.length];
+            Arrays.fill(weightDiff, value);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -131,15 +153,159 @@ public class PlanService {
      * integers.
      * NumberFormatException not catched.
      *
-     * @param sets String to parse to integers.
+     * @param reps String to parse to integers.
      * @return Array representing the String.
      */
-    private Integer[] parseSets(String sets) {
-        String[] splitted = sets.trim().replaceAll("\\s+", "").split("/");
+    private Integer[] parseReps(String reps) {
+        String[] splitted = reps.trim().replaceAll("\\s+", "").split("/");
         Integer[] toReturn = new Integer[splitted.length];
         for (int i = 0; i < splitted.length; i++) {
             toReturn[i] = Integer.parseInt(splitted[i].trim());
         }
         return toReturn;
+    }
+
+    private Integer[] parseWeightDiff(String weightDiff) {
+        if (weightDiff == null || weightDiff.trim().replaceAll("\\s+","").equals("")) {
+            return new Integer[]{0};
+        } else {
+            String[] splitted = weightDiff.trim().replaceAll("\\s+", "").split("/");
+            Integer[] toReturn = new Integer[splitted.length];
+            for (int i = 0; i < splitted.length; i++) {
+                toReturn[i] = Integer.parseInt(splitted[i].trim());
+            }
+            return toReturn;
+        }
+    }
+
+    /**
+     * Huge method , has to be refactored!
+     *
+     * Checks if the user with the Mail userMail has a plan and if he hasn't assigns the initial one to him.
+     * Then checks if the CurrentSession the plan is in is valid and throws an RunTimeException if not.
+     * Searches for the Plan Template the UserPlan is based on.
+     * Fills the TrainingsDayDto with the necessary Data.
+     * If this isn't the initial training of the plan (currentSession == 0), where the weights are assigned from the user,
+     * calculates based on the template, the currentSession and the Weights the user provided the Weights which have
+     * to be used on each exercise on each set.
+     * Fills the Data for each Exercise in a ExerciseDto and adds it to the List in the TrainingsDayDto.
+     *
+     * todo Handle 'Eigengewicht Übungen'
+     *
+     * @param userMail identifies the user.
+     * @param trainingsDayDto dto to be filled with Data provided by the Controller.
+     * @return the Dto with Data necessary for Training.
+     */
+    public TrainingsDayDto fillTrainingsDayDto(String userMail, TrainingsDayDto trainingsDayDto) {
+        DataBaseService db = DataBaseService.getInstance();
+        UserPlan userPlan = db.getUserPlanByUserMail(userMail);
+        if (userPlan == null) {     // if the user has no plan assign one to him
+            db.insertUserPlan(userMail, 1); // atm the user just gets the initial plan
+            userPlan = db.getUserPlanByUserMail(userMail);
+        }
+        int currentSession = userPlan.getCurrentSession();
+        if (currentSession < 0) {
+            throw new IllegalArgumentException("Session number of User Plan corrupted");
+        } else if (currentSession > userPlan.getMaxSession()) {
+            log.debug("User:" + userMail + ": Plan expired new Plan needed!");
+            throw new IllegalArgumentException("Plan expired new Plan needed!");
+        } else {
+            // get the Trainings plan Template the User plan is based on
+            TrainingsPlanTemplate template = db.getPlanTemplateAndSessionsByID(userPlan.getIdOfTemplate());
+            LinkedList<ExerciseDto> exerciseDtos = new LinkedList<>();
+            for (ExerciseInstance exInstance : template.getExerciseInstances()) {
+                // create the ExerciseDto based on each ExerciseInstance and the current TrainingsSession
+                ExerciseDto newDto = new ExerciseDto();
+                TrainingsSession trainingsSession;
+                if (!userPlan.isInitialTrainingDone() && currentSession == 0) {
+                    newDto.setWeights(null);
+                    newDto.setFirstTraining(true);
+                    newDto.setWeightDone(0);
+                    trainingsSession = getSessionByOrdering(1, exInstance.getTrainingsSessions()); // in initial Workout take values from first Trainings session
+                } else {
+                    // when the initial Training was already completed calculate the values for the current Session
+                    trainingsSession = getSessionByOrdering(currentSession, exInstance.getTrainingsSessions());
+                    newDto.setWeights(calcWeights(db.getWeightForUserPlanExercise(userPlan.getId(), exInstance.getId()), trainingsSession.getSets(), trainingsSession.getWeightDiff()));
+                    newDto.setFirstTraining(false);
+                }
+                // add all Data to the ExerciseDto
+                newDto.setIdUserPlan(userPlan.getId());
+                newDto.setIdExerciseInstance(exInstance.getId());
+                Exercise exercise = db.getExerciseById(exInstance.getIsExerciseID());
+                newDto.setExercise(exercise);
+                newDto.setCategory(exInstance.getCategory());
+                newDto.setTags(exInstance.getTags());
+                newDto.setSets(trainingsSession.getSets());
+                newDto.setTempo(trainingsSession.getTempo());
+                newDto.setPause(trainingsSession.getPauseInSec());
+                newDto.setReps(trainingsSession.getReps());
+                newDto.setRepMax(exInstance.getRepetitionMaximum());
+                exerciseDtos.add(newDto);
+            }
+            trainingsDayDto.setExercises(exerciseDtos);
+            trainingsDayDto.setInitialTraining(!userPlan.isInitialTrainingDone());
+            trainingsDayDto.setCurrentSession(currentSession);
+            return trainingsDayDto;
+        }
+    }
+
+    public void setUserPlanInitialTrainDone(int userPlanId) {
+        DataBaseService.getInstance().setInitialTrainDone(userPlanId);
+    }
+
+    /**
+     * Used for the initial exercise when the User provides his Repetition Maximum for each Exercise.
+     * Saves the Weight in the Database.
+     *
+     * @param exerciseDto Holds the data. Used are idUserPlan, idExerciseInstance and weightDone.
+     */
+    public void setWeightsOfExercise(ExerciseDto exerciseDto) {
+        if (!exerciseDto.getFirstTraining()) {
+            throw new IllegalArgumentException("Initial Training already completed!");
+        } else if (exerciseDto.getDone()){
+            DataBaseService.getInstance().insertWeightsForUserPlan(exerciseDto.getIdUserPlan(),
+                    exerciseDto.getIdExerciseInstance(), exerciseDto.getWeightDone());
+        }
+    }
+
+    private Integer[] calcWeights(Integer weight, int setsNum, Integer[] weightDiff) {
+        Integer[] weights = new Integer[setsNum];
+        Arrays.fill(weights, weight);
+        for (int i = 0; i < weights.length; i++) {
+            weights[i] = (int) Math.round(weights[i] * (1.0 + (weightDiff[i] / 100.0)));
+        }
+        return weights;
+    }
+
+    private TrainingsSession getSessionByOrdering(int ordering, LinkedList<TrainingsSession> sessions) {
+        for (TrainingsSession session : sessions) {
+            if (session.getOrdering() == ordering) {
+                return session;
+            }
+        }
+        throw new IllegalArgumentException("No Session with this ordering available!");
+    }
+
+    //
+
+    /**
+     * Checks all exercises of a TrainingsDayDto are completed. When they are increments the currentSession
+     * stat of the UserPlan in the database. When a Plan expires (reaches its MaxSessions)
+     * the plan will be deleted from the db and the user.
+     *
+     * @param dayDto Dto representing the current Training Day
+     * @return true if all exercises are done false if not.
+     */
+    public boolean checkIfDayDone(TrainingsDayDto dayDto) {
+        boolean isDone = true;
+        for (ExerciseDto exDto : dayDto.getExercises()) {
+            if (!exDto.getDone()) {
+                isDone = false;
+            }
+        }
+        if (isDone) {
+            DataBaseService.getInstance().increaseCurSession(dayDto.getExercises().getFirst().getIdUserPlan());
+        }
+        return isDone;
     }
 }
