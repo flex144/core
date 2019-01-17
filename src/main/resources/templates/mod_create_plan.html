@@ -137,7 +137,7 @@
         <div class="jumbotron">
             <h2>Erstelle eine neue Trainingsplanvorlage</h2>
             <br>
-            <button class="accordion">Anleitung</button>
+            <button class="accordion" type="button">Anleitung</button>
             <div class="accordionPanel">
                 <br>
                 <p style="font-size: 12pt">Gib zuerst die allgemeinen Daten zu deinem Plan an, die Bezeichnung, den Planfokus und die Anzahl
@@ -336,7 +336,7 @@
                                    class="form-control" list="storedExecutions" onchange="addTag()">
                             <div class="input-group-btn">
                                 <button class="btn btn-success" id="buttonAddExecution"
-                                        onclick="addTag()" style="border-radius: 0px 4px 4px 0px">
+                                        onclick="addTag()" style="border-radius: 0px 4px 4px 0px" type="button">
                                     <span class="glyphicon glyphicon-plus"></span>
                                     Add
                                 </button>
@@ -1216,7 +1216,7 @@
             $('#counterTE').append(
                 '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
             $('#weightsInputs').append(
-                '<li>' + '<input id="'+weightsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+weightsInputId+'" type="text" class="form-control">' + '</li>');
             $('#repsInputs').append(
                 '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
             $('#tempoInputs').append(
@@ -1266,7 +1266,7 @@
         $('#counterTE').append(
             '<li>' + '<input id="'+counterTEId+'" disabled value="'+currentTE+'" class="form-control">' + '</li>');
         $('#weightsInputs').append(
-            '<li>' + '<input id="'+weightsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
+            '<li>' + '<input id="'+weightsInputId+'" type="text" class="form-control">' + '</li>');
         $('#repsInputs').append(
             '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
         $('#tempoInputs').append(
@@ -1293,7 +1293,7 @@
             $('#counterTE').append(
                 '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
             $('#weightsInputs').append(
-                '<li>' + '<input id="'+weightsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+weightsInputId+'" type="text" class="form-control">' + '</li>');
             $('#repsInputs').append(
                 '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
             $('#tempoInputs').append(
