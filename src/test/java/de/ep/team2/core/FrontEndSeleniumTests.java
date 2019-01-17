@@ -125,6 +125,107 @@ public class FrontEndSeleniumTests {
     }
 
     /**
+     * Test for all functionalities on the page user_data
+     */
+    @Test
+    public void userEnterDataTest() {
+        WebDriver driver = sysProperties();
+
+        // Set the wait time of the driver in case of timeouts to 1 second
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+
+        // Login at the website as user
+        loginAsUser(driver);
+
+        // Go to page user_data
+        driver.navigate().to("http://localhost:8080/user/new");
+
+        // Get the title of the current website
+        String currentTitle = driver.getTitle();
+
+        // Check if the correct site loaded by comparing the website title
+        assertEquals(currentTitle, "Nutzerdaten eingeben");
+
+        // Enter personal data
+        driver.findElement(By.id("firstname")).sendKeys("Benedikt");
+        driver.findElement(By.id("lastname")).sendKeys("Schwarz");
+        driver.findElement(By.id("gender")).sendKeys("männlich");
+        driver.findElement(By.id("age")).sendKeys("12021992");
+        driver.findElement(By.id("height")).sendKeys("183");
+        driver.findElement(By.id("weight")).sendKeys("80");
+
+        // Continue to the next page
+        driver.findElement(By.className("btn-success")).click();
+        waitDuration(500);
+
+        // Return to the previous page
+        driver.findElement(By.id("btnReturnPage1")).click();
+        waitDuration(500);
+
+        // Continue to the next page
+        driver.findElement(By.className("btn-success")).click();
+        waitDuration(500);
+
+        // Choose single-day-plan
+        driver.findElement(By.id("btnSingleDayPlan")).click();
+        waitDuration(500);
+
+        // Return to the choice of plan type
+        driver.findElement(By.id("btnReturnPage12")).click();
+        waitDuration(500);
+
+        // Choose an individual plan
+        driver.findElement(By.id("btnIndividualPlan")).click();
+        waitDuration(500);
+
+        // Enter that you haven´t trained on a regular basis before
+        driver.findElement(By.id("btn1stQuestionNo")).click();
+        waitDuration(500);
+
+        // Return to the page to enter your previous experience
+        driver.findElement(By.id("btnReturnPage6")).click();
+        waitDuration(500);
+
+        // Enter that you have trained on a regular basis before
+        driver.findElement(By.id("btn1stQuestionYes")).click();
+        waitDuration(500);
+
+        // Enter that you have trained less than 4 months ago
+        driver.findElement(By.id("btnPage3Option1")).click();
+        waitDuration(500);
+
+        // Enter that you have trained longer than 5 month without a break
+        driver.findElement(By.id("btnPage4Option2")).click();
+        waitDuration(500);
+
+        // Enter that you have trained two times per week during that time
+        driver.findElement(By.id("btnPage5Option2")).click();
+        waitDuration(500);
+
+        // Choose endurance focus
+        driver.findElement(By.id("btnPage6Option2")).click();
+        waitDuration(500);
+
+        // Return to the page to change the chosen focus
+        driver.findElement(By.id("btnReturnPage8")).click();
+        waitDuration(500);
+
+        // Choose endurance focus
+        driver.findElement(By.id("btnPage6Option1")).click();
+        waitDuration(500);
+
+        // Continue after reading the description
+        driver.findElement(By.id("btnContinuePage7")).click();
+        waitDuration(500);
+
+        // Enter that you want to train two times per week
+        driver.findElement(By.id("btnPage10Option2")).click();
+        waitDuration(500);
+
+        driver.close();
+    }
+
+    /**
      * Tests for all functionalities and modals on the page mod_create_plan
      */
     @Test

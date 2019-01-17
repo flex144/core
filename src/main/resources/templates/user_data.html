@@ -23,7 +23,8 @@
             display: table-cell;
             padding: 5px;
         }
-        .col-no-yes {
+        .col-no-yes,
+        .col-plan {
             width: 50%;
         }
         .col-frequency {
@@ -158,7 +159,8 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" data-slide="prev">
+                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage1"
+                                           data-slide="prev">
                                             <span class="glyphicon glyphicon-chevron-left"></span>
                                             Zurück
                                         </a>
@@ -171,7 +173,7 @@
                             </div>
                             <div class="panel-body">
                                 <div class="col-container">
-                                    <div class="col">
+                                    <div class="col col-plan">
                                         <br>
                                         <div class="panel panel-default panel-plan-art">
                                             <div class="panel-heading" align="center">
@@ -188,14 +190,14 @@
                                                 </div>
                                             </div>
                                             <div class="panel-footer">
-                                                <a class="btn button btn-block" href="#myCarousel"
+                                                <a class="btn button btn-block" id="btnSingleDayPlan"
                                                    onclick="jumpToBulletEnd()">
                                                     Auswählen
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col col-plan">
                                         <br>
                                         <div class="panel panel-default panel-plan-art">
                                             <div class="panel-heading" align="center">
@@ -212,8 +214,8 @@
                                                 </p>
                                             </div>
                                             <div class="panel-footer">
-                                                <a class="btn button btn-block" href="#myCarousel"
-                                                   data-slide="next">
+                                                <a class="btn button btn-block" id="btnIndividualPlan"
+                                                   href="#myCarousel" data-slide="next" type="button">
                                                     Auswählen
                                                 </a>
                                             </div>
@@ -229,7 +231,8 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" data-slide="prev">
+                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage2"
+                                           data-slide="prev">
                                             <span class="glyphicon glyphicon-chevron-left"></span>
                                             Zurück
                                         </a>
@@ -251,13 +254,14 @@
                                     <div class="panel-footer">
                                         <div class="col-container">
                                             <div class="col col-no-yes">
-                                                <a class="button btn btn-block" href="#myCarousel"
+                                                <a class="button btn btn-block" id="btn1stQuestionNo"
                                                    onclick="jumpToChooseFocus()">
                                                     Nein
                                                 </a>
                                             </div>
                                             <div class="col col-no-yes">
-                                                <a class="button btn btn-block" href="#myCarousel" data-slide="next">
+                                                <a class="button btn btn-block" id="btn1stQuestionYes"
+                                                   href="#myCarousel" data-slide="next">
                                                     Ja
                                                 </a>
                                             </div>
@@ -273,7 +277,8 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" data-slide="prev">
+                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage3"
+                                           data-slide="prev">
                                             <span class="glyphicon glyphicon-chevron-left"></span>
                                             Zurück
                                         </a>
@@ -294,17 +299,19 @@
                                     <div class="panel-footer">
                                         <div class="col-container">
                                             <div class="col">
-                                                <a class="button btn btn-block" href="#myCarousel" data-slide="next">
+                                                <a class="button btn btn-block" id="btnPage3Option1" href="#myCarousel"
+                                                   data-slide="next">
                                                     Wenige Monate (1-4)
                                                 </a>
                                             </div>
                                             <div class="col">
-                                                <a class="button btn btn-block" href="#myCarousel" data-slide="next">
+                                                <a class="button btn btn-block" id="btnPage3Option2" href="#myCarousel"
+                                                   data-slide="next">
                                                     Mehrere Monate (5-11)
                                                 </a>
                                             </div>
                                             <div class="col">
-                                                <a class="button btn btn-block" href="#myCarousel"
+                                                <a class="button btn btn-block" id="btnPage3Option3" href="#myCarousel"
                                                    onclick="jumpToChooseFocus()">
                                                     Ein Jahr oder länger
                                                 </a>
@@ -321,7 +328,8 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" data-slide="prev">
+                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage4"
+                                           data-slide="prev">
                                             <span class="glyphicon glyphicon-chevron-left"></span>
                                             Zurück
                                         </a>
@@ -342,18 +350,20 @@
                                     <div class="panel-footer">
                                         <div class="col-container">
                                             <div class="col">
-                                                <a class="button btn btn-block" href="#myCarousel"
+                                                <a class="button btn btn-block" id="btnPage4Option1" href="#myCarousel"
                                                    onclick="jumpToChooseFocus()">
                                                     Wenige Monate (1-4)
                                                 </a>
                                             </div>
                                             <div class="col">
-                                                <a class="button btn btn-block" href="#myCarousel" data-slide="next">
+                                                <a class="button btn btn-block" id="btnPage4Option2" href="#myCarousel"
+                                                   data-slide="next">
                                                     Mehrere Monate (5-11)
                                                 </a>
                                             </div>
                                             <div class="col">
-                                                <a class="button btn btn-block" href="#myCarousel" data-slide="next">
+                                                <a class="button btn btn-block" id="btnPage4Option3" href="#myCarousel"
+                                                   data-slide="next">
                                                     Ein Jahr oder länger
                                                 </a>
                                             </div>
@@ -369,7 +379,8 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" data-slide="prev">
+                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage5"
+                                           data-slide="prev">
                                             <span class="glyphicon glyphicon-chevron-left"></span>
                                             Zurück
                                         </a>
@@ -394,17 +405,20 @@
                                     <div class="panel-footer">
                                         <div class="col-container">
                                             <div class="col">
-                                                <a class="button btn btn-block" href="#myCarousel" data-slide="next">
+                                                <a class="button btn btn-block" id="btnPage5Option1" href="#myCarousel"
+                                                   data-slide="next">
                                                     Einmal pro Woche
                                                 </a>
                                             </div>
                                             <div class="col">
-                                                <a class="button btn btn-block" href="#myCarousel" data-slide="next">
+                                                <a class="button btn btn-block" id="btnPage5Option2" href="#myCarousel"
+                                                   data-slide="next">
                                                     Zweimal pro Woche
                                                 </a>
                                             </div>
                                             <div class="col">
-                                                <a class="button btn btn-block" href="#myCarousel" data-slide="next">
+                                                <a class="button btn btn-block" id="btnPage5Option3" href="#myCarousel"
+                                                   data-slide="next">
                                                     Dreimal oder häufiger
                                                 </a>
                                             </div>
@@ -420,7 +434,8 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <a class="btn btn-danger btn-block" onclick="jumpToExperience()">
+                                        <a class="btn btn-danger btn-block" id="btnReturnPage6"
+                                           onclick="jumpToExperience()">
                                             <span class="glyphicon glyphicon-chevron-left"></span>
                                             Zurück
                                         </a>
@@ -449,7 +464,8 @@
                                                 </div>
                                             </div>
                                             <div class="panel-footer">
-                                                <a class="btn button btn-block" onclick="jumpToFocus1()">
+                                                <a class="btn button btn-block" id="btnPage6Option1"
+                                                   onclick="jumpToFocus1()">
                                                     Muskelfokus
                                                 </a>
                                             </div>
@@ -470,7 +486,8 @@
                                                 </div>
                                             </div>
                                             <div class="panel-footer">
-                                                <a class="btn button btn-block" onclick="jumpToFocus2()">
+                                                <a class="btn button btn-block" id="btnPage6Option2"
+                                                   onclick="jumpToFocus2()">
                                                     Ausdauerfokus
                                                 </a>
                                             </div>
@@ -491,7 +508,8 @@
                                                 </div>
                                             </div>
                                             <div class="panel-footer">
-                                                <a class="btn button btn-block" onclick="jumpToFocus3()">
+                                                <a class="btn button btn-block" id="btnPage6Option3"
+                                                   onclick="jumpToFocus3()">
                                                     Gewichtsreduktion
                                                 </a>
                                             </div>
@@ -507,7 +525,8 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <a class="btn btn-danger btn-block" onclick="jumpToChooseFocus()">
+                                        <a class="btn btn-danger btn-block" id="btnReturnPage7"
+                                           onclick="jumpToChooseFocus()">
                                             <span class="glyphicon glyphicon-chevron-left"></span>
                                             Zurück
                                         </a>
@@ -516,7 +535,8 @@
                                         <h5><b>Informationen zum gewählten Muskelfokus</b></h5>
                                     </div>
                                     <div class="col-md-2">
-                                        <a class="btn btn-success btn-block" onclick="jumpToFrequency()">
+                                        <a class="btn btn-success btn-block" id="btnContinuePage7"
+                                           onclick="jumpToFrequency()">
                                             Weiter
                                             <span class="glyphicon glyphicon-chevron-right"></span>
                                         </a>
@@ -535,7 +555,8 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <a class="btn btn-danger btn-block" onclick="jumpToChooseFocus()">
+                                        <a class="btn btn-danger btn-block" id="btnReturnPage8"
+                                           onclick="jumpToChooseFocus()">
                                             <span class="glyphicon glyphicon-chevron-left"></span>
                                             Zurück
                                         </a>
@@ -544,7 +565,8 @@
                                         <h5><b>Informationen zum gewählten Ausdauerfokus</b></h5>
                                     </div>
                                     <div class="col-md-2">
-                                        <a class="btn btn-success btn-block" onclick="jumpToFrequency()">
+                                        <a class="btn btn-success btn-block" id="btnContinuePage8"
+                                           onclick="jumpToFrequency()">
                                             Weiter
                                             <span class="glyphicon glyphicon-chevron-right"></span>
                                         </a>
@@ -557,13 +579,14 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Carousel page with information about the pain-reduction -->
+                    <!-- Carousel page with information about the weight-reduction -->
                     <div class="item">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <a class="btn btn-danger btn-block" onclick="jumpToChooseFocus()">
+                                        <a class="btn btn-danger btn-block" id="btnReturnPage9"
+                                           onclick="jumpToChooseFocus()">
                                             <span class="glyphicon glyphicon-chevron-left"></span>
                                             Zurück
                                         </a>
@@ -572,7 +595,8 @@
                                         <h5><b>Informationen zur gewählten Gewichtsreduktion</b></h5>
                                     </div>
                                     <div class="col-md-2">
-                                        <a class="btn btn-success btn-block" onclick="jumpToFrequency()">
+                                        <a class="btn btn-success btn-block" id="btnContinuePage9"
+                                           onclick="jumpToFrequency()">
                                             Weiter
                                             <span class="glyphicon glyphicon-chevron-right"></span>
                                         </a>
@@ -591,7 +615,8 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <a class="btn btn-danger btn-block" onclick="jumpToChooseFocus()">
+                                        <a class="btn btn-danger btn-block" id="btnReturnPage10"
+                                           onclick="jumpToChooseFocus()">
                                             <span class="glyphicon glyphicon-chevron-left"></span>
                                             Zurück
                                         </a>
@@ -611,17 +636,20 @@
                                     <div class="panel-footer">
                                         <div class="col-container">
                                             <div class="col col-frequency">
-                                                <a class="button btn btn-block" href="#myCarousel" data-slide="next">
+                                                <a class="button btn btn-block" id="btnPage10Option1" href="#myCarousel"
+                                                   data-slide="next">
                                                     Einmal
                                                 </a>
                                             </div>
                                             <div class="col col-frequency">
-                                                <a class="button btn btn-block" href="#myCarousel" data-slide="next">
+                                                <a class="button btn btn-block" id="btnPage10Option2" href="#myCarousel"
+                                                   data-slide="next">
                                                     Zweimal
                                                 </a>
                                             </div>
                                             <div class="col col-frequency">
-                                                <a class="button btn btn-block" href="#myCarousel" data-slide="next">
+                                                <a class="button btn btn-block" id="btnPage10Option3" href="#myCarousel"
+                                                   data-slide="next">
                                                     Dreimal oder häufiger
                                                 </a>
                                             </div>
@@ -637,7 +665,8 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" data-slide="prev">
+                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage11"
+                                           data-slide="prev">
                                             <span class="glyphicon glyphicon-chevron-left"></span>
                                             Zurück
                                         </a>
@@ -666,7 +695,8 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <a class="btn btn-danger btn-block" onclick="jumpToChoosePlan()">
+                                        <a class="btn btn-danger btn-block" id="btnReturnPage12"
+                                           onclick="jumpToChoosePlan()">
                                             <span class="glyphicon glyphicon-chevron-left"></span>
                                             Zurück
                                         </a>
