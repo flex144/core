@@ -24,10 +24,11 @@
         }
         #inputFieldCheckbox {
             width: 42px;
-            /* Instead of the following padding for screens other than a laptop
-            text-align: center;*/
-            padding: 4px;
-            padding-left: 10px;
+            padding: 0px;
+            text-align: center;
+        }
+        #singleDayCheck {
+            margin-top: 7px;
         }
         ul {
             list-style-type: none;
@@ -201,7 +202,6 @@
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" onchange="checkboxChanged()"
                                        id="singleDayCheck" th:field="*{oneShot}">
-                                <input type="text" id="prevUnitAmount" value="3" hidden disabled>
                             </div>
                         </a>
                     </div>
@@ -219,7 +219,7 @@
                                     <span class="glyphicon glyphicon-minus"></span>
                                 </button>
                             </div>
-                            <input type="text" name="trainingUnits" class="form-control" id="inputUnit" value="6"
+                            <input type="text" name="trainingUnits" class="form-control" id="inputUnit"
                                    th:field="*{sessionNums}" readonly>
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default" id="btnIncrementTEs"
@@ -253,6 +253,7 @@
                 </div>
             </div>
             <input th:field="*{id}" hidden>
+            <input type="text" id="prevUnitAmount" value="3" hidden disabled>
         </div>
 
         <!-- panel with form to customize an exercise, add it to the plan and create a new exercise -->
