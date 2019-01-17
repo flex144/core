@@ -9,16 +9,18 @@ public class ExerciseInstance {
     private int id;
     private String name;
     private String category;
+    private int repetitionMaximum;
     private LinkedList<String> tags;
     private LinkedList<TrainingsSession> trainingsSessions;
 
-    public ExerciseInstance(int planTemplateID, int isExerciseID, int id, String category,
+    public ExerciseInstance(int planTemplateID, int isExerciseID, int id, String category, int repetitionMaximum,
                             LinkedList<String> tags, LinkedList<TrainingsSession> trainingsSessions,
                             String name) {
         this.planTemplateID = planTemplateID;
         this.isExerciseID = isExerciseID;
         this.id = id;
         this.category = category;
+        this.repetitionMaximum = repetitionMaximum;
         this.tags = tags;
         this.trainingsSessions = trainingsSessions;
         this.name = name;
@@ -62,6 +64,14 @@ public class ExerciseInstance {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public int getRepetitionMaximum() {
+        return repetitionMaximum;
+    }
+
+    public void setRepetitionMaximum(int repetitionMaximum) {
+        this.repetitionMaximum = repetitionMaximum;
     }
 
     public LinkedList<String> getTags() {

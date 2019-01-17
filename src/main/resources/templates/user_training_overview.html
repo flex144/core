@@ -6,30 +6,37 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Your personalized training page</title>
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
+
+
+    <div th:include="/fragments/navbar :: style_fragment"></div>
     <style>
 
         html, body {
             width: 100%;
             height: 100%;
+            font-size: calc(12px+ 0.2vw);
         }
 
-        .highlightedContainer {
-            background: #fd8900; /*light orange*/
-            border: 2px solid #2E2E2E;
-            display: flex;
-            align-items: center;
+
+        .tableCentered{
             text-align: center;
-            width: 100%;
-            height: 100%;
+            align-items: center;
+            display: table-cell;
+            vertical-align: middle;
+            margin-top: 1.4vh;
         }
 
         .fullsize{
             width: 100%;
             height: 100%;
             text-align: center;
+            margin: auto;
         }
 
         .containerColor{
@@ -37,22 +44,30 @@
             border: solid 2px #2E2E2E;
         }
 
-        .tableCentered{
-            height: 100%;
-            width: 15%;
-            margin-top: 15px;
+        .responsive-width{
+            font-size: calc(12px);
         }
+
+        .button{
+            text-align: center;
+            display:table-cell;
+            vertical-align:middle;
+            margin: auto;
+            padding: auto;
+        }
+
     </style>
 </head>
 <body>
 
-<!--- Exercise Hint Modal --->
+
+<!-- Modal for exercise details -->
 <div id="exerciseModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="container">
-                    <div class="jumbotron">
+                    <div class="jumbotron col-md-5">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 Name:
@@ -110,15 +125,15 @@
                     </div>
                 </div>
             </div>
-            <div class="container" id="toggledAlert" >
-                <div class="container">
+            <div class="container col-md-12" id="toggledAlert" >
+                <div class="container col-md-12">
                     <h5 style="color: red; text-align: center; background: #e3f2fd; border: 1px solid black;">
                         Es ist nicht empfohlen die alternativen Übungen zu wählen.
                         Wenn die Entscheidung aus gesundheitlichen Gründen folgt,
                         so kontaktieren sie einen Trainer.
                     </h5>
                     <div class="row">
-                        <div class="container" style="width: 80%">
+                        <div class="container col-md-9">
                             <div class="form-group">
                                 <select id="weightType" class="form-control">
                                     <option>Diese Übung</option>
@@ -126,15 +141,15 @@
                                 </select>
                             </div>
                         </div>
-                        <button type="button" style="width: 20%"
-                                class="btn btn-secondary" onclick="enableSave()">
-                            Ok
+                        <button type="button"
+                                class="btn btn-secondary col-md-3" onclick="enableSave()">
+                            Verstanden
                         </button>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <div class="container">
+            <div class="modal-footer " >
+                <div class="container col-md-12">
                     <button type="button"
                             class="btn btn-block btn-success" style="font-size: small" onclick="safeAlternativeExercise()" disabled id="button_saveExercise">
                         Übung festlegen
@@ -161,13 +176,13 @@
                 <div class="jumbotron" style="text-align: center;">
                     <h4>Es ist empfohlen dem Plan möglichst präzise zu folgen.</h4>
                     <h6>Nur durch richtige Ausführung der Übungen, mit guter Form und empfohlenen Anzahlen/Gewichten wird guter Vortschritt erreicht.</h6>
-                    <h6>Übungen in der selben Farbe sind in einem sogennanten 'Super Set'.</h6>
+                    <h6>Übungen mit dem selben Buchstaben sind in einem sogennanten 'Super Set'.</h6>
                     <h6>Übungen in einem Superset sollten abgeschlossen werden, bevor das nächste Superset begonnen wird.</h6>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button"
-                        class="btn btn-block btn-warning" data-dismiss="modal" id="leaveInfoModal">
+                        class="btn btn-block btn-warning responsive-width" data-dismiss="modal" id="leaveInfoModal">
                     Zurück
                 </button>
             </div>
@@ -183,15 +198,17 @@
                 <div class="jumbotron" style="text-align: center;">
                     <h4>Training wirklich abbrechen?</h4>
                 </div>
-                <button type="button"
-                        class="btn btn-block btn-secondary" data-dismiss="modal" id="buttonContinue">
-                    Fortsetzen
-                </button>
-                <div class="modal-footer">
+                <div class="col-xs-4">
                     <a type="button"
-                            class="btn btn-block btn-danger" th:href="@{/user/home}">
+                       class="button btn btn-block btn-danger responsive-width" th:href="@{/user/home}">
                         Training abbrechen
                     </a>
+                </div>
+                <div class="col-xs-4 col-xs-offset-4">
+                    <button type="button"
+                            class="btn btn-block btn-secondary responsive-width" data-dismiss="modal" id="buttonContinue">
+                        Training Fortsetzen
+                    </button>
                 </div>
             </div>
         </div>
@@ -221,193 +238,149 @@
     </div>
 </div>
 
-<!--- Page Header --->
-<!--- TODO Thymeleaf load #TE --->
-<div class="highlightedContainer" id="container_header"
-     style="height: 10%;">
-    <div style="width: 70%;">
-        <!---th:text=--->
-        <h3>Trainingsplan nr. </h3>
+<!--- the Page --->
+<div style="width: 100%; height: 95%;">
+    <!--- buffers the main part of the page to the middle-->
+    <div class="col-md-4 visible-md visible-lg">
     </div>
-    <div style="width: 10%;">
-        <div style="font-size: smaller; height: 20%">set:</div>
-        <div style="height: 80%">
-            <h4><span id="currentOrder" ></span></h4>
+    <!--- Container with the content of the page--->
+    <div class="col-md-4" style="height: 100%;">
+        <div class="visible-md visible-lg">
         </div>
-    </div>
-    <div style="width: 5%"></div>
-    <button data-toggle="modal" data-target="#infoModal" class="btn btn-info" id="openInfoModal">
-        i
-    </button>
-</div>
-
-
-<!---
-    TODO thymeleaf Each Container has to execute
-    "thymeleafColourCoding(orderValue, idValue)"
-    with orderValue being e.g. 'A1'
-    and idValue being the thymeleafID of this element
-    TODO thymeleaf call clickedOnExercise() onClick
---->
-<!--- Template for thymeleaf data to load into --->
-<div class="container" id="container_content" style="height: 70%;
+        <div class="container fullsize">
+            <div class="panel panel-login panel-default fullsize">
+                <div class="panel-heading" style="font-size: 140%; height: 10%;">
+                    <div class="col-xs-5">
+                            Trainings-<br> einheit nr.
+                    </div>
+                    <div class="col-xs-1" th:text="${dayDto.currentSession}"></div>
+                    <div class="col-xs-3">
+                        <div>set: </div>
+                        <div  th:text="${dayDto.currentCategory}">#
+                        </div>
+                    </div>
+                    <div class="col-xs-1" th:text="${dayDto.currentCategory}"></div>
+                    <button data-toggle="modal" data-target="#infoModal" class="btn btn-info" id="openInfoModal">
+                        i
+                    </button>
+                </div>
+                <div class="panel-body" style=" height: 80%;">
+                    <!--- Template for thymeleaf data to load into --->
+                    <div class="container" id="container_content" style="height: 70%;
         overflow-x: fragments; overflow-y: scroll; text-align: center;
-        padding: 5px">
-    <div class="container" style="padding-bottom: 2px; height: 15%" id="exercise">
-        <!---  th:each th:onclick="" th:id= --->
-        <!--- TODO thymeleaf remove test class after it is implemented--->
-        <div class="containerColor fullsize farbTest1" >
-            <table class="fullsize" id="table" >
-                <tr class="fullsize" style="display: flex" id="row">
-                    <!--- TODO Session save Status --->
-                    <td class="tableCentered" >
-                            <label class="btn active">
-                                <input type="checkbox" name="" id=""
-                                       autocomplete="off" disabled style="transform: scale(2)">
-                            </label>
-                    </td>
-                    <td class="tableCentered" id="column" onclick="clickedOnExercise()">
-                        <!--- TODO thymeleaf remove test class after implementation--->
-                        <!--- th:text th:id--->
-                        <h3 class="numbertest1" id="orderNumber">A1</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 50%;" onclick="clickedOnExercise()">
-                        <!--- th:text--->
-                        <h3>Klimmzüge</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 20%">
-                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
-                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info" id="infoButton">
-                            i
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
+        padding: 5px" >
+                        <div th:each="exerciseInst, stat : ${dayDto.exercises}"  >
+                            <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;"  >
+                                <div th:hidden="${exerciseInst.done}">
+                                    <div class="containerColor col-md-4" th:id="exercise + ${stat.count}">
+                                        <div class="row">
+                                            <div class=" col-xs-1 tableCentered" >
+                                                <label class="btn active ">
+                                                    <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
+                                                </label>
+                                            </div>
+                                            <a class="col-xs-8" th:href="@{'/user/plan/exercise/'+ ${exerciseInst.indexInList}}" disabled>
+                                                <div class="tableCentered col-xs-3" >
+                                                    <h3 class="numbertest1 tableCentered" th:id="orderNumber + ${stat.count}" th:text="${exerciseInst.category}"></h3>
+                                                </div>
+                                                <div class="tableCentered col-xs-9">
+                                                    <h3 class="tableCentered" th:text="${exerciseInst.exercise.name}"></h3>
+                                                </div>
+                                            </a>
+                                            <div class=" col-xs-2">
+                                                <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
+                                                    i
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-    <!--- To showacase colours, delet after funcitonality integrated--->
-    <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize farbTest1" >
-            <table class="fullsize" >
-                <tr class="fullsize" style="display: flex">
-                    <td class="tableCentered" >
-                        <label class="btn active">
-                            <input type="checkbox" name=""
-                                   autocomplete="off" disabled style="transform: scale(2)">
-                        </label>
-                    </td>
-                    <td class="tableCentered"onclick="loadExercise()">
-                        <h3 class="numbertest1">A2</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
-                        <h3>Klimmboote</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 20%">
-                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
-                            i
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize farbTest2" >
-            <table class="fullsize" >
-                <tr class="fullsize" style="display: flex">
-                    <td class="tableCentered" >
-                        <label class="btn active">
-                            <input type="checkbox" name=""
-                                   autocomplete="off" disabled style="transform: scale(2)">
-                        </label>
-                    </td>
-                    <td class="tableCentered"onclick="loadExercise()">
-                        <h3 class="numbertest2">B1</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
-                        <h3>Handstand</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 20%">
-                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
-                            i
-                        </button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <div class="container" style="padding-bottom: 2px; height: 15%">
-        <div class="containerColor fullsize farbTest3" >
-            <table class="fullsize" >
-                <tr class="fullsize" style="display: flex">
-                    <td class="tableCentered" >
-                        <label class="btn active">
-                            <input type="checkbox" name=""
-                                   autocomplete="off" disabled style="transform: scale(2)">
-                        </label>
-                    </td>
-                    <td class="tableCentered"onclick="loadExercise()">
-                        <h3 class="numbertest3">C1</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 50%;" onclick="loadExercise()">
-                        <h3>Tafel putzen</h3>
-                    </td>
-                    <td class="tableCentered" style="width: 20%">
-                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info">
-                            i
-                        </button>
-                    </td>
-                </tr>
-            </table>
+
+                        <!--- Container solely for presentation purposes, as no plan has 2 Orders yet--->
+                        <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;">
+                            <div>
+                                <div class="containerColor col-md-4" id="exercise3">
+                                    <div class="row">
+                                        <div class=" col-xs-1 tableCentered" >
+                                            <label class="btn active ">
+                                                <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
+                                            </label>
+                                        </div>
+                                        <a class="col-xs-8">
+                                            <div class="tableCentered col-xs-3" >
+                                                <h3 class="numbertest1 tableCentered" id="orderNumber3">B1</h3>
+                                            </div>
+                                            <div class="tableCentered col-xs-9">
+                                                <h3 class="tableCentered" >asdfasd</h3>
+                                            </div>
+                                        </a>
+                                        <div class=" col-xs-2">
+                                            <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infotrkButton">
+                                                i
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="panel-footer" style="text-align: center;  height: 10%;">
+
+                    <!--- Buttons to leave/star the exercise --->
+                        <div id="container_timer" class="container fullsize row">
+                            <div class="col-xs-4 col-xs-offset-1" id="button_trainingBack">
+                                <a type="button"
+                                   class="btn btn-block btn-danger fullsize responsive-width" id="backButton"
+                                   style="height: 100%; min-height: 50px" th:href="@{/user/home}">
+                                    Zurück
+                                </a>
+                            </div>
+                            <div class="col-xs-4 col-xs-offset-1" id="button_trainingStart">
+                                <button type="button"
+                                        class="btn btn-block btn-success fullsize responsive-width" id="startButton"
+                                        style="height: 100%; min-height: 50px" onclick="startTraining()" >
+                                    Training <br>  starten
+                                </button>
+                            </div>
+                            <div class="col-xs-4 col-xs-offset-1" id="button_trainingExit">
+                                <button type="button"
+                                        class="btn btn-block btn-danger fullsize responsive-width"
+                                        style="height: 100%; min-height: 50px" data-toggle="modal" data-target="#exitModal" id="exitOverview">
+                                    Traing <br> abbrechen
+                                </button>
+                            </div>
+                            <div class="col-xs-4 col-xs-offset-1" id="button_trainingFinished">
+                                <button type="button"
+                                        class="btn btn-block btn-success fullsize responsive-width"
+                                        style="height: 100%; min-height: 50px" onclick="startTraining()" disabled>
+                                    Abschließen
+                                </button>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 
-    <!--- Buttons to leave/star the exercise --->
-<div class="highlightedContainer" id="container_timer" style="height: 20%;">
-    <div class="container fullsize row">
-        <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingBack">
-            <button type="button"
-                    class="btn btn-block btn-danger fullsize" id="backButton"
-                    style="height: 100%; min-height: 50px" th:href="@{/user/home}">
-                Zurück
-            </button>
-        </div>
-        <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingStart">
-            <button type="button"
-                    class="btn btn-block btn-success fullsize" id="startButton"
-                    style="height: 100%; min-height: 50px" onclick="startTraining()">
-                Training <br> starten
-            </button>
-        </div>
-        <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingExit">
-            <button type="button"
-                    class="btn btn-block btn-danger fullsize"
-                    style="height: 100%; min-height: 50px" data-toggle="modal" data-target="#exitModal" id="exitOverview">
-                Traing <br> abbrechen
-            </button>
-        </div>
-        <div style="width: 50%; height: 100%; padding: 5%;" id="button_trainingFinished">
-            <button type="button"
-                    class="btn btn-block btn-success fullsize"
-                    style="height: 100%; min-height: 50px" onclick="startTraining()" disabled>
-                Abschließen
-            </button>
-        </div>
-    </div>
-</div>
 
 
+<!--- load the next page --->
 <script>
     function loadExercise() {
         window.location = "exercise"
     }
 </script>
 
-
-<!--- Button functionality --->
+<!--- clicking on a row--->
 <script>
     function startTraining(){
         /*TODO maybe enable clicking on exercises*/
@@ -415,20 +388,24 @@
         document.getElementById('button_trainingBack').style.display = "none";
         document.getElementById('button_trainingExit').style.display = "inherit";
         document.getElementById('button_trainingFinished').style.display = "inherit";
+        if (document.getElementById('currentOrder').innerHTML == ""){
+            window.location.href="/user/plan/exercise/0";
+        }
     }
 
     /*Sets the order and loads next page*/
     function clickedOnExercise(){
         var currentOrder = document.getElementById("currentOrder").innerHTML;
         var id = this.id;
-        var thisExerciseOrder = "orderNumber" + id;
-        var clickedOrder = document.getElementById("orderNumber").innerHTML;
+        console.log(id);
+        var exerciseNumber = id.slice(-1);
+        var orderNumber = "orderNumber"+ exerciseNumber;
+        console.log(exerciseNumber);
+        var clickedOrder = document.getElementById(orderNumber).innerHTML;
         localStorage.setItem("orderValue", currentOrder);
-        console.log(currentOrder);
-        if ((currentOrder == clickedOrder) || currentOrder == ""){
-            console.log("after");
-            window.location = "exercise"
-            //updateCurrentOrder(id);
+        if (!((currentOrder == clickedOrder) || (currentOrder == ""))){
+            var buttonId = "button"+exerciseNumber;
+            document.getElementById(buttonId).click();
         } else{
             $('#noValidInputModule').modal('show');
         }
@@ -449,25 +426,33 @@
 
 </script>
 
+<!--- Toggleable content --->
 <script>
-
     document.onLoad(initialLoad());
+
+    /*
+    * Hides toggleable content at page load
+    * */
     function initialLoad(){
         warningHidden = true;
         document.getElementById('toggledAlert').style.display = "none";
         document.getElementById('button_saveExercise').style.display = "none";
-        document.getElementById('exitButton').style.display = "none";
 
         var currentOrder = localStorage.getItem("orderValue")
-        console.log(currentOrder + "on_load");
         document.getElementById("currentOrder").innerHTML = currentOrder;
     }
 
 
+    /*
+    * Enables the save function in the module
+    * */
     function enableSave(){
         document.getElementById('button_saveExercise').disabled = false;
     }
 
+    /*
+    * Toggles which exercise the user has in their plan
+    * */
     function toggleExercise() {
         if (warningHidden){
             warningHidden = false;
@@ -481,52 +466,52 @@
         }
     }
 </script>
+
 <!--- Colouring every row --->
 <script>
-    var numberOfTotalSuperSets = 9;
+    var numberOfExercises = 30;
 
     document.onLoad(initializeData());
+
+    /*
+    * Colours all rows on page load
+    * */
     function initializeData() {
         document.getElementById('button_trainingExit').style.display = "none";
         document.getElementById('button_trainingFinished').style.display = "none";
-        for (var i = 0; i < numberOfTotalSuperSets; i++){
-            colourCoding(i + 1);
+        for (var i = 0; i < numberOfExercises; i++){
+            colourCoding(i+1);
         }
     }
 
-    /*Colours all Elements of the same class in the same Colours*/
-    function colourCoding(numberOfThisSuperSet){
-        var numbertest = "numbertest" + numberOfThisSuperSet;
-        var farbtest = "farbTest" + numberOfThisSuperSet;
-        var listOfThisOrder = document.getElementsByClassName(numbertest);
-        for (var i = 0; i < listOfThisOrder.length; i++) {
-            document.getElementsByClassName(farbtest)[i].style.background = rainbow(numberOfTotalSuperSets,numberOfThisSuperSet);
-        }
+    /*
+    * Decides which row to colour
+    * @arg {Integer} exerciseID - the id number of the exercise
+    * */
+    function colourCoding(exerciseID){
+        var exercise = "exercise" + exerciseID;
+        var currentID = "orderNumber" + exerciseID;
+        console.log("CurrentID:" + currentID);
+        console.log("Exercise:" + exercise);
+        var currentOrder = document.getElementById(currentID).innerHTML;
+        console.log("currentOrder:" + currentOrder);
+        document.getElementById(exercise).style.background = colorPick(currentOrder);
     }
 
-    /*Colours Elements using Data from thymeleaf*/
-    function thymeleafColourCoding(orderValue, idValue){
-        var colorDecider = orderValue.charCodeAt(0) - 64;
-        document.getElementById(idValue).style.background = rainbow(numberOfTotalSuperSets, colorDecider);
-    }
-
-    /*Chooses colours evenly distributed from a spectrum*/
-    function rainbow(numOfSteps, step) {
-        var r, g, b;
-        var h = step / numOfSteps;
-        var i = ~~(h * 6);
-        var f = h * 6 - i;
-        var q = 1 - f;
-        switch(i % 6){
-            case 0: r = 1; g = f; b = 0; break;
-            case 1: r = q; g = 1; b = 0; break;
-            case 2: r = 0; g = 1; b = f; break;
-            case 3: r = 0; g = q; b = 1; break;
-            case 4: r = f; g = 0; b = 1; break;
-            case 5: r = 1; g = 0; b = q; break;
+    /*
+    * Picks the color of the row depending on the order it is in
+    * @arg {String} orderNumber - the Value of the order variable of this exercise
+    * @returns - the hexadecimal color value that the row is going to be.
+    * */
+    function colorPick(orderNumber){
+        var colour = "#ffaa00";
+        var testingVariable = orderNumber.charCodeAt(0);
+        console.log("Ordnung:" + testingVariable);
+        if (testingVariable %2 == 0) {
+            colour = "#aaff00";
         }
-        var c = "#" + ("00" + (~ ~(r * 255)).toString(16)).slice(-2) + ("00" + (~ ~(g * 255)).toString(16)).slice(-2) + ("00" + (~ ~(b * 255)).toString(16)).slice(-2);
-        return (c);
+        console.log(colour);
+        return colour;
     }
 
 </script>

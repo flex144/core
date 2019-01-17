@@ -130,6 +130,13 @@ public class ExerciseService {
         return DataBaseService.getInstance().getAllExercises();
     }
 
+    /**
+     * Returns a List of exercise where the name is part of the name.
+     * If name left empty returns all exercises.
+     *
+     * @param name Name to search for; if left blank returns all exercises.
+     * @return List of matching exercises; null if nothing was found.
+     */
     public List<Exercise> getExerciseListByName(String name) {
         if (name == null || name.equals("")) {
             return getAllExercises();
@@ -138,6 +145,12 @@ public class ExerciseService {
         }
     }
 
+    /**
+     * Returns one exercise with the exact name.
+     *
+     * @param name exact name you are looking for.
+     * @return matching exercise or null if nothing was found.
+     */
     public Exercise getExerciseByName(String name) {
         return DataBaseService.getInstance().getExerciseByName(name);
     }

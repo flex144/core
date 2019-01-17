@@ -6,23 +6,22 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>In exercise</title>
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
-          crossorigin="anonymous">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
+
+
+    <div th:include="/fragments/navbar :: style_fragment"></div>
 
     <style>
         /********************container Styles**********************/
         html, body {
             width: 100%;
             height: 100%;
-        }
-
-        .greyContainer {
-            width: 100%;
-            height: 100%;
-            text-align: center;
+            font-size: calc(12px+ 0.2vw);
         }
 
         .highlightedContainer {
@@ -54,8 +53,8 @@
             text-align: center;
         }
 
-        .btn-secondary{
-            font-size: smaller;
+        .responsive-width{
+            font-size: calc(12px);
         }
 
         /******************** Table Styles **********************/
@@ -74,20 +73,19 @@
 <body>
 
 
-
-<!-- Modal -->
-<div id="exerciseModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+<!-- Modal for exercise details -->
+<div id="exerciseModal" class="modal fade" role="dialog" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="container">
-                    <div class="jumbotron">
+                    <div class="jumbotron col-md-5">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 Name:
                             </div>
                             <div class="panel-body">
-                                <p></p>
+                                <p th:text="${exerciseDto.getExercise().getName()}"></p>
                             </div>
                         </div>
                         <div>
@@ -96,42 +94,43 @@
                                     Beschreibung:
                                 </div>
                                 <div class="panel-body">
-                                    <p ></p>
+                                    <p th:text="${exerciseDto.getExercise().getDescription()}"></p>
                                 </div>
                             </div>
-                            <div class="panel panel-default" >
+                            <div class="panel panel-default" th:if="${!exerciseDto.getExercise().getVideoLink().equals('')}">
                                 <div class="panel-heading">
                                     Beispielvideo:
                                 </div>
                                 <div class="panel-body">
                                     <div class="embed-responsive embed-responsive-16by9">
-                                        <iframe  width="560" height="315"
+                                        <iframe th:if="${!exerciseDto.getExercise().getVideoLink().equals('')}" width="560" height="315"
+                                                th:src="${exerciseDto.getExercise().getVideoLink()}"
                                                 frameborder="0" allowfullscreen></iframe>
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel panel-default">
+                            <div class="panel panel-default" th:if="${!exerciseDto.getExercise().getMuscleImgPaths().isEmpty()}">
                                 <div class="panel-heading">
-                                    <p>
+                                    <p th:if="${!exerciseDto.getExercise().getMuscleImgPaths().isEmpty()}">
                                         Muskelgruppen Bilder:</p>
                                 </div>
                                 <div class="panel-body">
 
-                                    <div
+                                    <div th:each="path : ${exerciseDto.getExercise().getMuscleImgPaths()}"
                                          class="image">
-                                        <img/>
+                                        <img th:src="@{${path}}"/>
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel panel-default" >
+                            <div class="panel panel-default" th:if="${!exerciseDto.getExercise().getOtherImgPaths().isEmpty()}">
                                 <div class="panel-heading">
-                                    <p>Andere
+                                    <p th:if="${!exerciseDto.getExercise().getOtherImgPaths().isEmpty()}">Andere
                                         Bilder:</p>
                                 </div>
                                 <div class="panel-body">
-                                    <div
+                                    <div th:each="path : ${exerciseDto.getExercise().getOtherImgPaths()}"
                                          class="image">
-                                        <img/>
+                                        <img th:src="@{${path}}"/>
                                     </div>
                                 </div>
                             </div>
@@ -139,15 +138,15 @@
                     </div>
                 </div>
             </div>
-            <div class="container" id="toggledAlert" >
-                <div class="container">
+            <div class="container col-md-12" id="toggledAlert" >
+                <div class="container col-md-12">
                     <h5 style="color: red; text-align: center; background: #e3f2fd; border: 1px solid black;">
                         Es ist nicht empfohlen die alternativen Übungen zu wählen.
                         Wenn die Entscheidung aus gesundheitlichen Gründen folgt,
                         so kontaktieren sie einen Trainer.
                     </h5>
                     <div class="row">
-                        <div class="container" style="width: 80%">
+                        <div class="container col-md-9">
                             <div class="form-group">
                                 <select id="weightType" class="form-control">
                                     <option>Diese Übung</option>
@@ -155,15 +154,15 @@
                                 </select>
                             </div>
                         </div>
-                        <button type="button" style="width: 20%"
-                                class="btn btn-secondary" onclick="enableSave()">
-                            Ok
+                        <button type="button"
+                                class="btn btn-secondary col-md-3" onclick="enableSave()">
+                            Verstanden
                         </button>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <div class="container">
+            <div class="modal-footer " >
+                <div class="container col-md-12">
                     <button type="button"
                             class="btn btn-block btn-success" style="font-size: small" onclick="safeAlternativeExercise()" disabled id="button_saveExercise">
                         Übung festlegen
@@ -182,6 +181,7 @@
     </div>
 </div>
 
+<!-- Modal Preventing user from accidentally leaving the page-->
 <div id="leavePageModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -190,27 +190,28 @@
                     <h4>Willst du die Übung abbrechen und zur Trainingsplanseite Zurückkehren?</h4>
                 </div>
             </div>
-            <div class="modal-footer">
-                <div class="container" style="width: 45%;">
+            <div class="row">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-4">
                     <a type="button"
-                            class="btn btn-block btn-danger" th:href="@{/user/plan/overview}">
+                       class="btn btn-block btn-danger" th:href="@{/user/plan}">
                         Zum Plan
-                        <!--- TODO controller link back to plan, no changes made to current session-->
                     </a>
                 </div>
-                <div class="container" style="width: 45%;">
+                <div class="col-xs-4 col-xs-offset-2">
                     <button type="button"
                             class="btn btn-block btn-success" data-dismiss="modal" id="continueButton">
                         Weitermachen
                     </button>
                 </div>
+                <div class="col-xs-1"></div>
             </div>
         </div>
     </div>
 </div>
 
 <!--- Module that opens if you try to continue to the next set with an invalid repition number --->
-<div id="noValidInputModule" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+<div id="noValidInputModule" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
@@ -219,9 +220,9 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <div class="container" >
+                <div class="container col-xs-6 col-xs-offset-3" >
                     <button type="button"
-                            class="btn btn-secondary" data-dismiss="modal" id="button_noValidInputModule">
+                            class="btn btn-secondary btn-block" data-dismiss="modal" id="button_noValidInputModule">
                         Ok
                     </button>
                 </div>
@@ -230,168 +231,206 @@
     </div>
 </div>
 
-<!--- Titlebar of the exercise --->
-<div class="highlightedContainer" id="container_planExerciseName"
-     style="height: 10%;">
-    <div style="width: 80%;">
-        <h2>Klimmzüge</h2>
+<!--- Hidden Elements that Thymeleaf delivers but are not supposed to be seen --->
+<div name="Hidden elements Container" id="hiddenElements" hidden>
+    <p id="setNumber" th:text="${exerciseDto.getSets()}"></p>
+    <p id="setPause"  th:text="${exerciseDto.getPause()}"></p>
+    <div th:each="weight, stat : ${exerciseDto.getWeights()}">
+        <p th:id="weight + ${stat.count}" th:text="${weight}"></p>
     </div>
-    <div style="width: 5%"></div>
-    <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info" id="infoButton">
-        i
-    </button>
-</div>
-
-<!--- Description to current exercise --->
-<div class="greyContainer" id="container_planInstructions"
-     style="height: 10%;">
-    <div  id="container_planDetails" style="
-            overflow-y: scroll; overflow-x: fragments;">
-        Massive anmerkungen zum text obwohl hier wahrscheinlich nie mehr als
-        ein zwei wörter stehen wird
+    <div th:each="reps, stats : ${exerciseDto.getReps()}">
+        <p th:id="reps + ${stats.count}" th:text="${reps}"></p>
     </div>
 </div>
 
-<!--- Details to the current exercise--->
-<div class="orangeContainer" id="container_planExerciseData"
-     style="height: 40%;">
-    <table id="exerciseDetails" class="table-striped table-bordered">
-        <tr>
-            <td>Gewicht</td>
-            <td>Eigen</td>
-        </tr>
-        <tr>
-            <td>Tempo</td>
-            <td>Langsam</td>
-        </tr>
-        <tr>
-            <td>Pause</td>
-            <td>
-                <span id="pauseTime" ></span></td>
-        </tr>
-        <tr>
-            <td>Sätze</td>
-            <td>
-                <span class="value"></span>
-            </td>
-        </tr>
-        <tr>
-            <td>Wiederholungen</td>
-            <td>
-                <span class="doneReps" id="neededReps"></span>
-            </td>
-        </tr>
-    </table>
-</div>
+<!--- submit Thymeleaf request --->
+<form th:action="@{/user/plan/done}" method="post" hidden>
+    <input title="done" type="checkbox" name="doneFlag" hidden checked>
+    <input type="" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
+    <input title="send" id="submitButton" type="submit" hidden>
+</form>
 
-<!--- Adjustable repition counter for the current set --->
-<div style="height: 10%;">
-    <div class="row" style="height: 60%; width: 100%;">
-        <div style="width: 30%; height: 100%">
-            <button type="button"
-                    class="btn btn-secondary fullsize" onclick="decreaseReps()" id="buttonDecrease" disabled>
-                -
-            </button>
-        </div>
-        <div style="width: 40%; height: 100%">
-            <form class="fullsize">
-                <input class="fullsize" type="number" oninput="updateReps()" id="repInput" value="999" style="text-align: center" disabled>
-            </form>
-        </div>
-        <div style="width: 30%; height: 100%">
-            <button type="button"
-                    class="btn btn-secondary fullsize" onclick="increaseReps()" id="buttonIncrease" disabled>
-                +
-            </button>
-        </div>
+<!--- Page Content --->
+<div style="width: 100%; height: 95%;">
+    <!--- buffers the main part of the page to the middle-->
+    <div class="col-md-4 visible-md visible-lg">
     </div>
-    <div style="height: 40%">
-        <p style="text-align: center">Geschaffte Wiederholungen in diesem Satz</p>
-    </div>
-</div>
-
-<!--- Highlighted box with Timer and Evaluation --->
-<div class="highlightedContainer" id="container_timerAndEvaluation"
-     style="height: 20%;">
-    <!--- Timer --->
-    <div class="colourlessContainer" id="container_timerBox">
-        <div style="width: 30%;  height: 100%; padding: 1%">
-            <button type="button" style="width: 100%; height: 45%"
-                    class="btn-block btn-secondary" id="buttonRecommended"
-                    onclick="recommendedTime()" disabled>
-                Empfohlene Zeit
-            </button>
-            <button type="button" style="width: 100%; height: 45%"
-                    class="btn-block btn-secondary" id="buttonStop"
-                    onclick="stopTimer()" disabled>
-                Zurücksetzen
-            </button>
+    <!--- Container with the mainpart of the page--->
+    <div class="col-md-4" style="height: 100%;">
+        <div class="visible-md visible-lg">
         </div>
-        <div class="container" style="width: 40%;">
-            <h1><span id="time">00:00</span></h1>
-        </div>
-        <div style="width: 30%;  height: 100%; padding: 1%">
-            <button type="button" style="width: 100%; height: 45%"
-                    class="btn-block btn-secondary" id="button60s"
-                    onclick="parseTime(60)" disabled>
-                60s
-            </button>
-            <button type="button" style="width: 100%; height: 45%"
-                    class="btn-block btn-secondary" id="button30s"
-                    onclick="parseTime(30)" disabled>
-                30s
-            </button>
-        </div>
-    </div>
-
-    <!--- Evaluation --->
-    <div id="container_evaluationBox" class="fullsize">
         <div class="container fullsize">
-            <div class="btn-group btn-group-toggle fullsize" data-toggle="buttons" id="radioButtonGroup">
-                <button class="btn btn-secondary fullsize" name="radioButton">
-                    <input type="radio" id="difficulty1"> sehr <br> ein <br>fach
-                </button>
-                <button class="btn btn-secondary fullsize" name="radioButton">
-                    <input type="radio" id="difficulty2"> zu <br> ein <br>fach
-                </button>
-                <button class="btn btn-secondary fullsize active" name="radioButton">
-                    <input type="radio" id="difficulty3"> passt
-                </button>
-                <button class="btn btn-secondary fullsize" name="radioButton">
-                    <input type="radio" id="difficulty4"> zu <br> hart
-                </button>
-                <button class="btn btn-secondary fullsize" name="radioButton">
-                    <input type="radio" id="difficulty5"> Viel <br> zu <br> hart
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+            <div class="panel panel-login panel-default fullsize">
+                <div class="panel-heading" style="font-size: 140%; height: 10%;">
+                    <div class="col-xs-9">
+                        <p th:text="${exerciseDto.getExercise().getName()}"></p>
+                    </div>
+                    <div class="col-xs-3">
+                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info" id="infoButton">
+                            i
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-body" style=" height: 80%;">
+                    <!--- Description/Tags of the current exercise --->
+                    <div class="greyContainer" id="container_planInstructions"
+                         style="height: 10%;">
+                        <div  class="row" id="container_planDetails" style=" overflow-x: scroll;">
+                            <div class="col-xs-4" th:each="tag : ${exerciseDto.getTags()}">
+                                <div  th:text="${tag}"></div>
+                            </div>
+                        </div>
+                    </div>
 
-<!--- Back/Cancel and Completion/Start buttons--->
-<div class="orangeContainer" style="height: 10%;">
-    <div style="height: 20%">
-    </div>
-    <div class="row" style="width: 100%; height: 80%;">
-        <div style="width: 10%;"></div>
-        <div style="width: 30%;" id="backButton">
-            <a type="button"
-                    class="btn btn-block btn-danger fullsize"  onclick="leavePage()">
-                Zurück
-            </a>
-        </div>
-        <div style="width: 30%;" id="exitButton">
-            <button type="button"
-                    class="btn btn-block btn-danger fullsize"  data-toggle="modal" data-target="#leavePageModal" id="exitExerciseButton">
-                Abbrechen
-            </button>
-        </div>
-        <div style="width: 30%;"></div>
-        <div style="width: 30%;">
-            <button type="button"
-                    class="btn btn-block btn-success fullsize" id="startButton" onclick="exerciseFunction()" style="font-size: small">
-                <span class="buttonName"></span>
-            </button>
+                    <!--- Details to the current exercise--->
+                    <div class="orangeContainer" id="container_planExerciseData"
+                         style="height: 40%;">
+                        <table id="exerciseDetails" class="table-striped table-bordered">
+                            <tr>
+                                <td>Gewicht</td>
+                                <td id="weightLabel"></td>
+                            </tr>
+                            <tr>
+                                <td>Tempo</td>
+                                <td th:text="${exerciseDto.getTempo()}"></td>
+                            </tr>
+                            <tr>
+                                <td>Pause</td>
+                                <td>
+                                    <span id="pauseTime"></span></td>
+                            </tr>
+                            <tr>
+                                <td>Sätze</td>
+                                <td>
+                                    <span class="value" th:value="${exerciseDto.getSets()}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Wiederholungen</td>
+                                <td>
+                                    <span class="doneReps" id="neededReps"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!--- Adjustable repition counter for the current set --->
+                    <div style="height: 15%;">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <button type="button"
+                                        class="btn btn-secondary fullsize" onclick="decreaseReps()" id="buttonDecrease" disabled>
+                                    -
+                                </button>
+                            </div>
+                            <div class="col-xs-4">
+                                <form>
+                                    <input class="fullsize" type="number" oninput="updateReps()" id="repInput" value="999" style="text-align: center" disabled>
+                                </form>
+                            </div>
+                            <div class="col-xs-4">
+                                <button type="button"
+                                        class="btn btn-secondary fullsize" onclick="increaseReps()" id="buttonIncrease" disabled>
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                        <div style="height: 30%;">
+                            <p style="text-align: center">Geschaffte Wiederholungen in diesem Satz</p>
+                        </div>
+                        <div style="height: 20%;">
+                            <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0"
+                                 aria-valuemin="0" aria-valuemax="100" style="width:1%" id="progressBar">Fortschritt
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--- Highlighted box with Timer and Evaluation --->
+                    <div class="highlightedContainer fullsize" id="container_timerAndEvaluation"
+                         style="height: 35%;">
+                        <!--- Timer --->
+                        <div class="colourlessContainer" id="container_timerBox">
+                            <div class="container" style="width: 30%;  height: 100%; padding: 1%">
+                                <button type="button" style="width: 100%; height: 45%"
+                                        class="btn-block responsive-width" id="buttonRecommended"
+                                        onclick="recommendedTime()" disabled>
+                                    Empfohlene Zeit
+                                </button>
+                                <button type="button" style="width: 100%; height: 45%"
+                                        class="btn-block responsive-width" id="buttonStop"
+                                        onclick="stopTimer()" disabled>
+                                    Zurück- <br> setzen
+                                </button>
+                            </div>
+                            <div class="container" style="width: 40%;">
+                                <h1><span id="time">00:00</span></h1>
+                            </div>
+                            <div style="width: 30%;  height: 100%; padding: 1%">
+                                <button type="button" style="width: 100%; height: 45%"
+                                        class="btn-block responsive-width" id="button60s"
+                                        onclick="parseTime(60)" disabled>
+                                    60s
+                                </button>
+                                <button type="button" style="width: 100%; height: 45%"
+                                        class="btn-block responsive-width" id="button30s"
+                                        onclick="parseTime(30)" disabled>
+                                    30s
+                                </button>
+                            </div>
+                        </div>
+
+                        <!--- Evaluation --->
+                        <div id="container_evaluationBox" class="fullsize">
+                            <div class="container fullsize">
+                                <div class="btn-group btn-group-toggle fullsize" data-toggle="buttons" id="radioButtonGroup">
+                                    <button class="btn btn-secondary fullsize responsive-width" name="radioButton" style="width: 20%;">
+                                        <input type="radio" id="difficulty1"> sehr <br> ein <br>fach
+                                    </button>
+                                    <button class="btn btn-secondary fullsize responsive-width" name="radioButton" style="width: 20%;">
+                                        <input type="radio" id="difficulty2"> zu <br> ein <br>fach
+                                    </button>
+                                    <button class="btn btn-secondary fullsize responsive-width active" name="radioButton" style="width: 20%;">
+                                        <input type="radio" id="difficulty3"> passt
+                                    </button>
+                                    <button class="btn btn-secondary fullsize responsive-width" name="radioButton" style="width: 20%;">
+                                        <input type="radio" id="difficulty4"> zu <br> hart
+                                    </button>
+                                    <button class="btn btn-secondary fullsize responsive-width" name="radioButton"  style="width: 20%;">
+                                        <input type="radio" id="difficulty5"> Viel <br> zu <br> hart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer" style="text-align: center;  height: 10%;">
+                    <!--- Back/Cancel and Completion/Start buttons--->
+                    <div class="orangeContainer fullsize">
+                        <div style="height: 20%" name="buffer">
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-4" id="backButton">
+                                <a type="button"
+                                        class="btn btn-block btn-danger fullsize responsive-width"  th:href="@{/user/plan}">
+                                    Zurück
+                                </a>
+                            </div>
+                            <div class="col-xs-4" id="exitButton">
+                                <button type="button"
+                                        class=" btn btn-block btn-danger fullsize responsive-width" data-toggle="modal" data-target="#leavePageModal" id="exitExerciseButton">
+                                    Abbrechen
+                                </button>
+                            </div>
+                            <div class="col-xs-4 col-xs-offset-4" >
+                                <button type="button"
+                                        class=" btn btn-block btn-success fullsize responsive-width" id="startButton" onclick="exerciseFunction()" style="font-size: small">
+                                    <span class="buttonName responsive-width"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -405,20 +444,13 @@
         warningHidden = true;
         document.getElementById('toggledAlert').style.display = "none";
         document.getElementById('button_saveExercise').style.display = "none";
-        document.getElementById('exitButton').style.display = "none";
+        document.getElementById('exitExerciseButton').style.display = "none";
     }
 
     function enableSave(){
         document.getElementById('button_saveExercise').disabled = false;
     }
 
-    function leavePage(){
-        window.location = "overview";
-    }
-
-    function safeAlternativeExercise() {
-        /*TODO write data to DB */
-    }
 
     function toggleExercise() {
         if (warningHidden){
@@ -437,6 +469,26 @@
 
 <!--- Toggle Evaluation/Timer and Rep Counter --->
 <script>
+    /**
+     * Needed parameters for repition/weight label changing
+     * */
+    var getweight;
+    var getReps;
+
+    /***
+     * Updates the value of the repition and weight labels
+     * */
+    function updateValues(){
+        getweight = "weight" + currentCounter;
+        getReps = "reps" + currentCounter;
+        var newWeightCounter = document.getElementById(getweight).innerHTML + "kg";
+        var newRepCounter = document.getElementById(getReps).innerHTML;
+        document.getElementById('weightLabel').innerHTML = newWeightCounter;
+        totalReps = newRepCounter;
+        document.getElementById('neededReps').innerHTML = newRepCounter;
+        document.getElementById('repInput').value = totalReps;
+    }
+
     /***
      * Needed parameters for Stopwatch functionality
      * */
@@ -445,9 +497,11 @@
     /***
      * Needed parameters for Rep counter
      * */
-    var totalReps = 12;
+    var totalReps = document.getElementById('reps1').innerHTML;
     var currentReps = totalReps;
     var valueCheck = totalReps;
+    var newRepCount;
+    var newWeightCount;
 
     /***
      * Needed parameters for Container Switch
@@ -455,31 +509,43 @@
     var timerBox = document.getElementById("container_timerBox");
     var evaluationBox = document.getElementById("container_evaluationBox");
     var currentCounter = 0;
-    var setCounter = 4;
+    var setCounter = document.getElementById("setNumber").innerHTML;
     var labelValue = currentCounter + "/" + setCounter;
-    var pauseTimeValue = 90;
+    var pauseTimeValue = document.getElementById('setPause').innerHTML;
     var buttonTitle = "Starten";
-    var buttonBackTitle = "Zurück";
     var done = false;
+
 
 
     /***
      * Instancing first values for both scripts
      * */
     document.onLoad(initializeReps());
-    function initializeReps() {
+    function initializeReps(){
+        console.log("1");
+        document.getElementById('hiddenElements').style.display = "none";
+        console.log("2");
         document.getElementById('repInput').value = currentReps;
+        console.log("3");
         document.querySelector('.doneReps').innerHTML = totalReps;
+        console.log("4");
         evaluationBox.style.display = "none";
+        console.log("5");
         document.querySelector('.value').innerHTML = labelValue;
+        console.log("6");
         document.getElementById('pauseTime').innerHTML = pauseTimeValue + " " +"s";
+        console.log("7");
         document.querySelector('.buttonName').innerHTML = buttonTitle;
-        document.querySelector('.buttonBack').innerHTML = buttonBackTitle;
+        console.log("8");
+        document.getElementById('neededReps').innerHTML = document.getElementById('reps1').innerHTML;
+        console.log("9");
+        document.getElementById('weightLabel').innerHTML = document.getElementById('weight1').innerHTML +"kg";
+        console.log("10");
     }
 
     /***
      * Stopwatch functions
-     * JS needed for the stopwatch to work
+     * @arg {Integer} duration - the seconds that the clock starts at
      ***/
     function startTimer(duration, display) {
         var timer = duration, minutes, seconds;
@@ -566,13 +632,13 @@
      *Change Values on each click
      * ***/
     function exerciseFunction(){
-        /***Can't send empty/illegal inputs***/
+        //Can't send empty/illegal inputs
         if( !( valueCheck <= 2* totalReps && valueCheck> 0) ){
             $('#noValidInputModule').modal('show');
             valueCheck = currentReps;
         }
         else if (done){
-            window.location ="overview";
+            document.getElementById('submitButton').click();
         }else if (currentCounter == setCounter){
             timerBox.style.display = "none";
             evaluationBox.style.display = "inherit";
@@ -581,12 +647,14 @@
             document.getElementById('buttonDecrease').disabled = true;
             document.getElementById('buttonIncrease').disabled = true;
             document.getElementById('repInput').disabled = true;
+            document.getElementById('progressBar').style.width = "100%";
         } else if(currentCounter == setCounter -1) {
             buttonTitle = "Evaluation";
             currentCounter++;
+            progressBar();
         }else{
             currentCounter++;
-            buttonTitle = "Satz " + currentCounter + " beenden";
+            buttonTitle = "Satz " + currentCounter + "<br>"+ " beenden";
             document.getElementById('buttonDecrease').disabled = false;
             document.getElementById('buttonIncrease').disabled = false;
             document.getElementById('repInput').disabled = false;
@@ -594,16 +662,28 @@
             document.getElementById('button30s').disabled = false;
             document.getElementById('button60s').disabled = false;
             document.getElementById('buttonStop').disabled = false;
+            progressBar();
         }
-        currentReps = totalReps;
+        newRepCount = "reps" + setCounter;
+        newWeightCount = "weight" + setCounter;
         labelValue = currentCounter + "/" + setCounter;
-        document.getElementById('repInput').value = currentReps;
+
         document.getElementById('backButton').style.display = "none";
-        document.getElementById('exitButton').style.display = "inherit";
+        document.getElementById('exitExerciseButton').style.display = "inherit";
         document.querySelector('.value').innerHTML = labelValue;
         document.querySelector('.buttonName').innerHTML = buttonTitle;
+        updateValues();
         stopTimer();
     }
+
+    /***
+     * calculates and updates progressbar-element
+     */
+    function progressBar(){
+        var  value = parseInt(setCounter) + 1;
+        document.getElementById('progressBar').style.width =  (currentCounter/value) *100 + "%";
+    }
+
 </script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>

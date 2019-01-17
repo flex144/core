@@ -5,19 +5,19 @@ public class TrainingsSession {
     private int id;
     private int ordering;
     private int exerciseInstanceId;
-    private int repetitionMaximum;
     private int sets;
+    private Integer[] weightDiff;
     private Integer[] reps;
     private String tempo;
     private int pauseInSec;
 
-    public TrainingsSession(int id, int ordering, int exerciseInstanceId, int repetitionMaximum,
-                            int sets, Integer[] reps, String tempo, int pauseInSec) {
+    public TrainingsSession(int id, int ordering, int exerciseInstanceId, int sets,
+                            Integer[] weightDiff, Integer[] reps, String tempo, int pauseInSec) {
         this.id = id;
         this.ordering = ordering;
         this.exerciseInstanceId = exerciseInstanceId;
-        this.repetitionMaximum = repetitionMaximum;
         this.sets = sets;
+        this.weightDiff = weightDiff;
         this.reps = reps;
         this.tempo = tempo;
         this.pauseInSec = pauseInSec;
@@ -47,20 +47,20 @@ public class TrainingsSession {
         this.exerciseInstanceId = exerciseInstanceId;
     }
 
-    public int getRepetitionMaximum() {
-        return repetitionMaximum;
-    }
-
-    public void setRepetitionMaximum(int repetitionMaximum) {
-        this.repetitionMaximum = repetitionMaximum;
-    }
-
     public int getSets() {
         return sets;
     }
 
     public void setSets(int sets) {
         this.sets = sets;
+    }
+
+    public Integer[] getWeightDiff() {
+        return weightDiff;
+    }
+
+    public void setWeightDiff(Integer[] weightDiff) {
+        this.weightDiff = weightDiff;
     }
 
     public Integer[] getReps() {
