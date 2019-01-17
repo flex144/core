@@ -503,18 +503,18 @@ public class DataBaseService {
      *                            (number increases initial 1)
      * @return id od the just inserted template.
      */
-    public Integer insertPlanTemplate(String name, String trainingsFocus,
-                                      String author, Boolean oneShotPlan,
+    public Integer insertPlanTemplate(String name, String trainingsFocus, String targetGroup,
+                                      String author, Boolean oneShotPlan, Integer recomSessionsPerWeek,
                                       Integer numTrainSessions, Integer exercisesPerSession) {
         if (name == null || author == null || (oneShotPlan && numTrainSessions > 1)) {
             throw new IllegalArgumentException();
         } else {
-            Object[] insertValues = new Object[]{name, trainingsFocus, author, oneShotPlan,
+            Object[] insertValues = new Object[]{name, trainingsFocus, targetGroup, author, oneShotPlan, recomSessionsPerWeek,
                     numTrainSessions,
                     exercisesPerSession};
-            jdbcTemplate.update("insert into plan_templates(name,trainings_focus," +
-                    "author,one_shot_plan,num_train_sessions," +
-                    "exercises_per_session) values (?,?,?,?,?,?)", insertValues);
+            jdbcTemplate.update("insert into plan_templates(name,trainings_focus, target_group," +
+                    "author,one_shot_plan,recom_sessions_per_week,num_train_sessions," +
+                    "exercises_per_session) values (?,?,?,?,?,?,?,?)", insertValues);
             Integer id = jdbcTemplate.query("select currval" +
                             "(pg_get_serial_sequence('plan_templates','id'));",
                     (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
@@ -528,8 +528,8 @@ public class DataBaseService {
         @Override
         public TrainingsPlanTemplate mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new TrainingsPlanTemplate(rs.getInt("id"), rs.getString("name"),
-                    rs.getString("trainings_focus"), getUserByEmail(rs.getString("author")),
-                    rs.getBoolean("one_shot_plan"), rs.getInt("num_train_sessions"),
+                    rs.getString("trainings_focus"), rs.getString("target_group"), getUserByEmail(rs.getString("author")),
+                    rs.getBoolean("one_shot_plan"), rs.getInt("recom_sessions_per_week"), rs.getInt("num_train_sessions"),
                     rs.getInt("exercises_per_session"), null);
         }
 
@@ -547,8 +547,8 @@ public class DataBaseService {
                 new Integer[]{id},
                 (resultSet, i) -> new TrainingsPlanTemplate(id, resultSet.getString("name"),
                         resultSet.getString(
-                                "trainings_focus"), getUserByEmail(resultSet.getString("author")),
-                        resultSet.getBoolean("one_shot_plan"), resultSet.getInt(
+                                "trainings_focus"), resultSet.getString("target_group"), getUserByEmail(resultSet.getString("author")),
+                        resultSet.getBoolean("one_shot_plan"), resultSet.getInt("recom_sessions_per_week"), resultSet.getInt(
                         "num_train_sessions"),
                         resultSet.getInt("exercises_per_session"),
                         getExInstancesOfTemplate(id))));
@@ -602,7 +602,7 @@ public class DataBaseService {
     /**
      * renames a template in the Database.
      *
-     * @param newName    new name of the template.
+     * @param newName new name of the template.
      * @param idToRename id of the template to be renamed.
      */
     public void renameTemplate(String newName, int idToRename) {
@@ -613,7 +613,7 @@ public class DataBaseService {
     /**
      * sets a new focus on a template in the database.
      *
-     * @param newFocus   new focus of the template.
+     * @param newFocus new focus of the template.
      * @param idToRename id of the template to be altered.
      */
     public void changeTrainingsFocus(String newFocus, int idToRename) {
@@ -698,13 +698,14 @@ public class DataBaseService {
      */
     public LinkedList<ExerciseInstance> getExInstancesOfTemplate(int idOfTemplate) {
         return new LinkedList<>(jdbcTemplate.query(
-                "SELECT ei.id, ei.is_exercise, ei.category, ex.name" +
+                "SELECT ei.id, ei.is_exercise, ei.category, ex.name, ei.repetition_maximum" +
                         " FROM exercise_instances ei, exercises ex " +
                         " WHERE ei.plan_template = ? " +
                         " AND ei.is_exercise = ex.id ",
                 new Integer[]{idOfTemplate},
                 (resultSet, i) -> new ExerciseInstance(idOfTemplate, resultSet.getInt(
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
+                        resultSet.getInt("repetition_maximum"),
                         getTagsOfExInstance(resultSet.getInt("id")),
                         getSessionsOfExerciseInstance(resultSet.getInt("id")),
                         resultSet.getString("name"))));
@@ -721,22 +722,22 @@ public class DataBaseService {
      * Inserts a new Exercise instance in the database with the provided data.
      *
      * @param isExerciseID reference to the table exercises which Exercise this exercise instance is.
-     * @param category     category of the exercise instance(tells in which order the exercises should be done)
-     * @param tags         tags for the execution of the exercise.
-     * @param templateId   id of the plan template which contains this exercise instance.
+     * @param category category of the exercise instance(tells in which order the exercises should be done)
+     * @param tags tags for the execution of the exercise.
+     * @param templateId id of the plan template which contains this exercise instance.
      * @return Id of the just inserted exercise instance.
      */
-    public Integer insertExerciseInstance(int isExerciseID, String category, LinkedList<String> tags,
+    public Integer insertExerciseInstance(int isExerciseID, String category, Integer repetitionMaximum, LinkedList<String> tags,
                                           int templateId) {
-        Object[] insertValues = new Object[]{isExerciseID, category, templateId};
-        jdbcTemplate.update("INSERT INTO exercise_instances(is_exercise, category, " +
-                        "plan_template) values (?,?,?)",
+        Object[] insertValues = new Object[]{isExerciseID, category, repetitionMaximum, templateId};
+        jdbcTemplate.update("INSERT INTO exercise_instances(is_exercise, category,repetition_maximum, " +
+                        "plan_template) values (?,?,?,?)",
                 insertValues);
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('exercise_instances','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
         addTagsToExercise(tags, id);
-        log.debug("Exercise Instance created with Id: " + id + " !");
+        log.debug("Exercise Instance for Plan Template with ID '" + templateId + "' created with Id: " + id + " !");
         return id;
     }
 
@@ -745,7 +746,7 @@ public class DataBaseService {
         for (String tag : tags) {
             int idOfTag;
             if (presentTags.contains(tag)) {
-                idOfTag = jdbcTemplate.query("SELECT id FROM execution_tags WHERE name = ?",
+                 idOfTag = jdbcTemplate.query("SELECT id FROM execution_tags WHERE name = ?",
                         new String[]{tag}, (rs, i) -> rs.getInt("id")).get(0);
             } else {
                 jdbcTemplate.update("INSERT INTO execution_tags(name) values (?)",
@@ -776,14 +777,15 @@ public class DataBaseService {
      * @return exercise instance with children, null when nothing was found with this id.
      */
     public ExerciseInstance getExercisInstanceById(int id) {
-        LinkedList<ExerciseInstance> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name" +
+        LinkedList<ExerciseInstance> toReturn =  new LinkedList<>(jdbcTemplate.query(
+                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name, ei.repetition_maximum" +
                         " FROM exercise_instances ei, exercises ex " +
                         " WHERE ei.id = ? " +
                         " AND ei.is_exercise = ex.id ",
                 new Integer[]{id},
                 (resultSet, i) -> new ExerciseInstance(resultSet.getInt("plan_template"), resultSet.getInt(
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
+                        resultSet.getInt("repetition_maximum"),
                         getTagsOfExInstance(resultSet.getInt("id")),
                         getSessionsOfExerciseInstance(resultSet.getInt("id")),
                         resultSet.getString("name"))));
@@ -796,13 +798,14 @@ public class DataBaseService {
 
     public LinkedList<ExerciseInstance> getInstancesOfExercise(int idOfExercise) {
         return new LinkedList<>(jdbcTemplate.query(
-                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name" +
+                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name, ei.repetition_maximum" +
                         " FROM exercise_instances ei, exercises ex " +
                         " WHERE ei.is_exercise = ? " +
                         " AND ei.is_exercise = ex.id ",
                 new Integer[]{idOfExercise},
                 (resultSet, i) -> new ExerciseInstance(resultSet.getInt("plan_template"), resultSet.getInt(
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
+                        resultSet.getInt("repetition_maximum"),
                         getTagsOfExInstance(resultSet.getInt("id")),
                         getSessionsOfExerciseInstance(resultSet.getInt("id")),
                         resultSet.getString("name"))));
@@ -834,42 +837,48 @@ public class DataBaseService {
      * Inserts a new Trainings session in the Database with the provided data.
      *
      * @param exerciseInstanceID id of the exercise instance the session belongs to.
-     * @param ordering           indicates in which sequence the sessions have to be performed.
-     * @param repetitionMaximum  used to determine the weights for each individual user.
-     * @param sets               number of the sets.
-     * @param reps               array with the size {@code sets} where the repetitions of the single sets are saved.
-     * @param tempo              tempo in which the exercise should be executed.
-     * @param pauseInSec         pause time between the sets in seconds.
+     * @param ordering indicates in which sequence the sessions have to be performed.
+     * @param sets number of the sets.
+     * @param reps array with the size {@code sets} where the repetitions of the single sets are saved.
+     * @param tempo tempo in which the exercise should be executed.
+     * @param pauseInSec pause time between the sets in seconds.
      * @return Id of the just inserted Trainings session.
      */
     public Integer insertTrainingsSession(int exerciseInstanceID, int ordering,
-                                          int repetitionMaximum, int sets, Integer[] reps,
+                                          int sets, Integer[] weightDiff, Integer[] reps,
                                           String tempo, Integer pauseInSec) {
         ArrayList<Object> insertValues = new ArrayList<>();
         insertValues.ensureCapacity(13);
         insertValues.add(exerciseInstanceID);
         insertValues.add(ordering);
-        insertValues.add(repetitionMaximum);
         insertValues.add(sets);
         insertValues.add(tempo);
         insertValues.add(pauseInSec);
+        if (weightDiff.length > 7) {
+            throw new IllegalArgumentException("to many sets!");
+        }
+        insertValues.addAll(Arrays.asList(weightDiff));
+        for (int i = insertValues.size(); i < 12; i++) {
+            insertValues.add(null);
+        }
         if (reps.length > 7) {
             throw new IllegalArgumentException("to many sets!");
         }
         insertValues.addAll(Arrays.asList(reps));
-        for (int i = insertValues.size(); i < 13; i++) {
+        for (int i = insertValues.size(); i < 19; i++) {
             insertValues.add(null);
         }
         jdbcTemplate.update(
-                "insert into trainings_sessions(exercise_instance, ordering, rep_maximum, " +
-                        "sets, tempo, pause, reps_set1, reps_set2, reps_set3, reps_set4,reps_set5," +
-                        " reps_set6, reps_set7) values " +
-                        "(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "insert into trainings_sessions(exercise_instance, ordering, sets, tempo, pause, weightdiff_set1," +
+                        " weightdiff_set2, weightdiff_set3, weightdiff_set4, weightdiff_set5, weightdiff_set6," +
+                        " weightdiff_set7, reps_set1, reps_set2, reps_set3, reps_set4," +
+                        " reps_set5, reps_set6, reps_set7) values " +
+                        "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 insertValues.toArray());
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('trainings_sessions','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
-        log.debug("Trainings Session created with Id: " + id + " !");
+        log.debug("Trainings Session for Exercise Instance with ID '" + exerciseInstanceID + "' created with Id: " + id + " !");
         return id;
     }
 
@@ -883,16 +892,32 @@ public class DataBaseService {
         return new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM trainings_sessions WHERE exercise_instance = ?",
                 new Integer[]{idOfInstance},
-                (resultSet, i) -> {
-                    Integer[] reps = new Integer[7];
-                    for (int j = 1; j < 8; j++) {
-                        reps[j - 1] = resultSet.getInt(String.format("reps_set%d", j));
-                    }
-                    return new TrainingsSession(resultSet.getInt("id"), resultSet.getInt("ordering"),
-                            resultSet.getInt("exercise_instance"),
-                            resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
-                            resultSet.getString("tempo"), resultSet.getInt("pause"));
-                }));
+                new TrainingsSessionMapper()));
+    }
+
+    class TrainingsSessionMapper implements RowMapper<TrainingsSession> {
+        @Override
+        public TrainingsSession mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ArrayList<Integer> weightDiff = new ArrayList<>();
+            for (int j = 1; j < 8; j++) {
+                Integer toAdd = rs.getObject(String.format("weightdiff_set%d", j), Integer.class);
+                if (toAdd != null) {
+                    weightDiff.add(toAdd);
+                }
+            }
+            ArrayList<Integer> reps = new ArrayList<>();
+            for (int j = 1; j < 8; j++) {
+                Integer toAdd = rs.getObject(String.format("reps_set%d", j), Integer.class);
+                if (toAdd != null) {
+                    reps.add(toAdd);
+                }
+            }
+            return new TrainingsSession(rs.getInt("id"), rs.getInt("ordering"),
+                    rs.getInt("exercise_instance"),
+                    rs.getInt("sets"), weightDiff.toArray(new Integer[0]),
+                    reps.toArray(new Integer[0]),
+                    rs.getString("tempo"), rs.getInt("pause"));
+        }
     }
 
     /**
@@ -905,16 +930,7 @@ public class DataBaseService {
         LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM trainings_sessions WHERE id = ?",
                 new Integer[]{id},
-                (resultSet, i) -> {
-                    Integer[] reps = new Integer[7];
-                    for (int j = 1; j < 8; j++) {
-                        reps[j - 1] = resultSet.getInt(String.format("reps_set%d", j));
-                    }
-                    return new TrainingsSession(id, resultSet.getInt("ordering"),
-                            resultSet.getInt("exercise_instance"),
-                            resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
-                            resultSet.getString("tempo"), resultSet.getInt("pause"));
-                }));
+                new TrainingsSessionMapper()));
         if (toReturn.isEmpty()) {
             return null;
         } else {
@@ -936,9 +952,144 @@ public class DataBaseService {
             log.debug("Trainings-session with ID: '"
                     + id + "' deleted by " + deleter.getEmail() + "!");
         } else {
-            throw new IllegalArgumentException("Trainingssession doesn't exist!");
+            throw new  IllegalArgumentException("Trainingssession doesn't exist!");
         }
     }
 
+    // User Plan
+
+    /**
+     * Creates a new User plan for the User with mail userMail based on template wit templateId.
+     * Sets CurrentSession 0 and MaxSession based on template.
+     *
+     * Throws exception when either template or User are missing.
+     *
+     * @param userMail identify user the Plan is for.
+     * @param templateId identify template the plan is based on.
+     * @return Id of new created plan.
+     */
+    public Integer insertUserPlan(String userMail, int templateId) {
+        TrainingsPlanTemplate template = getOnlyPlanTemplateById(templateId);
+        User user = getUserByEmail(userMail);
+        if (user == null) {
+            log.debug("Can't create User Plan because User doesn't exist. User mail: " + userMail);
+            throw new IllegalArgumentException("Can't create User Plan because User doesn't exist. User mail: " + userMail);
+        } else if (template == null) {
+            log.debug("Can't create User Plan because Template doesn't exist. Template ID: " + templateId);
+            throw new IllegalArgumentException("Can't create User Plan because Template doesn't exist. Template ID: " + templateId);
+        }
+        Object[] insertValues = new Object[]{userMail, templateId, template.getNumTrainSessions()};
+        jdbcTemplate.update("insert into user_plans(\"user\",template,cursession,maxsession,initial_training_done) values (?,?,0,?,false)"
+        , insertValues );
+        Integer id = jdbcTemplate.query("select currval" +
+                        "(pg_get_serial_sequence('user_plans','id'));",
+                (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+        log.debug("User Plan based on template '" + template.getName() + "' created with Id " + id + " for user " + userMail + " !");
+        return id;
+    }
+
+    class UserPlanMapper implements RowMapper<UserPlan> {
+        @Override
+        public UserPlan mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new UserPlan(rs.getInt("id"), rs.getString("user"), rs.getInt("template"),
+                    rs.getInt("cursession"), rs.getInt("maxsession"), rs.getBoolean("initial_training_done"));
+        }
+    }
+
+    public UserPlan getUserPlanById(int idUserPlan) {
+        LinkedList<UserPlan> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM user_plans WHERE id = ?",
+                new Integer[]{idUserPlan},
+                new UserPlanMapper()));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
+    }
+
+    public UserPlan getUserPlanByUserMail(String userMail) {
+        LinkedList<UserPlan> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM user_plans WHERE \"user\" = ?",
+                new String[]{userMail},
+                new UserPlanMapper()));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
+    }
+
+    /**
+     * Increases the CurrentSession of a userPlan by one when the maxSession
+     * is reached userplan is deleted.
+     *
+     * @param userPlanID plan to increase session.
+     * @return current session after increase.
+     */
+    public Integer increaseCurSession(int userPlanID) {
+        UserPlan userPlan = getUserPlanById(userPlanID);
+        userPlan.setCurrentSession(userPlan.getCurrentSession() + 1);
+        if (userPlan.getCurrentSession() > userPlan.getMaxSession()) {
+            log.debug("Max Sessions of Plan for User " + userPlan.getUserMail() + " reached! deleting Plan!");
+            deleteUserPlanAndWeightsById(userPlanID);
+            return -1;
+        } else {
+            Object[] values = new Object[]{userPlan.getCurrentSession(), userPlanID};
+            jdbcTemplate.update("update user_plans set cursession = ? where id = ?", values);
+        }
+        return userPlan.getCurrentSession();
+    }
+
+    public void setInitialTrainDone(int userPlanId) {
+        Object[] values = new Object[]{userPlanId};
+        jdbcTemplate.update("update user_plans set initial_training_done = true where id = ?", values);
+    }
+
+    private void deleteUserPlanAndWeightsById(int userPlanID) {
+        UserPlan toDelete = getUserPlanById(userPlanID);
+        jdbcTemplate.update("DELETE FROM weights WHERE iduserplan = ?",
+                    (Object[]) new Integer[]{userPlanID});
+        jdbcTemplate.update("DELETE FROM user_plans where id = ?", (Object[]) new Integer[]{userPlanID});
+        log.debug("User plan of " + toDelete.getUserMail() + "with id " + userPlanID + " deleted!");
+    }
+
+    // weights
+
+    /**
+     * creates a weight instance in its table for a specific exercise instance in a plan.
+     *
+     * @param idUserPlan plan weight belongs to.
+     * @param idOfInstance exercise instance weight belongs to.
+     * @param weight value of the weight.
+     */
+    public void insertWeightsForUserPlan(int idUserPlan, int idOfInstance, Integer weight) {
+        jdbcTemplate.update("insert into weights(iduserplan, idexerciseinstance, weight) values (?,?,?)"
+                , idUserPlan, idOfInstance, weight);
+        Integer id = jdbcTemplate.query("select currval" +
+                        "(pg_get_serial_sequence('weights','id'));",
+                (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+        log.debug("Weights for User Plan with ID '" + idUserPlan + "', for exercise Instance with ID '" +
+                idOfInstance + "' created with Id '" + id + "'!");
+    }
+
+    /**
+     * get the weight assigned to a specific exercise instance for a specific plan.
+     *
+     * @param idUserPlan id of the plan.
+     * @param idOfInstance id of the exercise instance.
+     * @return value of the weight.
+     */
+    public Integer getWeightForUserPlanExercise(int idUserPlan, int idOfInstance) {
+        LinkedList<Integer> result = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM weights WHERE iduserplan = ? AND idexerciseinstance = ?",
+                new Integer[]{idUserPlan, idOfInstance},
+                (rs, i) -> rs.getInt("weight")));
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.getFirst();
+        }
+    }
 
 }

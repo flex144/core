@@ -8,13 +8,13 @@ import de.ep.team2.core.enums.Gender;
 import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
-import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Calendar;
@@ -22,8 +22,6 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -49,6 +47,7 @@ public class DataBaseServiceUnitTests {
     }
 
     @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void addUser() {
         DataBaseService db = DataBaseService.getInstance();
         assertNull(db.getUserByEmail("Hallo@test.com"));
@@ -58,6 +57,7 @@ public class DataBaseServiceUnitTests {
     }
 
     @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void deleteUserById() {
         UserService userService = new UserService();
         DataBaseService db = DataBaseService.getInstance();
@@ -98,6 +98,7 @@ public class DataBaseServiceUnitTests {
     }
 
     @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void addExercise() {
         DataBaseService db = DataBaseService.getInstance();
         assertTrue(db.getExerciseListByName("HalloTest1234567").isEmpty());
@@ -122,6 +123,7 @@ public class DataBaseServiceUnitTests {
     }
 
     @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void deleteExercise() {
         DataBaseService db = DataBaseService.getInstance();
         Integer id = db.insertExercise("test","test",WeightType.FIXED_WEIGHT,null,null);
@@ -153,23 +155,25 @@ public class DataBaseServiceUnitTests {
     @Test
     public void insertTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        Integer id = db.insertPlanTemplate("Hallo2","muscle","felix@gmail.com",false,5,5);
+        Integer id = db.insertPlanTemplate("Hallo2","muscle","beginner","felix@gmail.com",false,1,5,5);
         assertEquals("Hallo2", db.getOnlyPlanTemplateById(id).getName());
     }
 
     @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void deleteTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        Integer id = db.insertPlanTemplate("Hallo3","stamina","felix@gmail.com",false,5,5);
+        Integer id = db.insertPlanTemplate("Hallo3","stamina","beginner","felix@gmail.com",false,1,5,5);
         assertEquals("Hallo3", db.getOnlyPlanTemplateById(id).getName());
         db.deletePlanTemplateByID(id);
         assertNull(db.getOnlyPlanTemplateById(id));
     }
 
     @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void renameTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        Integer id = db.insertPlanTemplate("Hallo3","stamina","felix@gmail.com",false,5,5);
+        Integer id = db.insertPlanTemplate("Hallo3","stamina","beginner","felix@gmail.com",false,1,5,5);
         assertEquals("Hallo3", db.getOnlyPlanTemplateById(id).getName());
         db.renameTemplate("TestTest3",id);
         assertEquals("TestTest3", db.getOnlyPlanTemplateById(id).getName());
@@ -177,9 +181,10 @@ public class DataBaseServiceUnitTests {
     }
 
     @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void changeTrainingsFocusTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        Integer id = db.insertPlanTemplate("Hallo4","stamina","felix@gmail.com",false,5,5);
+        Integer id = db.insertPlanTemplate("Hallo4","stamina","beginner","felix@gmail.com",false,1,5,5);
         assertEquals("stamina", db.getOnlyPlanTemplateById(id).getTrainingsFocus());
         db.changeTrainingsFocus("muscle",id);
         assertEquals("muscle", db.getOnlyPlanTemplateById(id).getTrainingsFocus());
@@ -190,21 +195,23 @@ public class DataBaseServiceUnitTests {
 
 
     @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void createAndDeleteInstance() {
         DataBaseService db = DataBaseService.getInstance();
         LinkedList<String> tags = new LinkedList<>();
         tags.add("TestTag1");
         tags.add("TestTag2");
-        Integer id = db.insertExerciseInstance(1, "A1", tags, 1);
+        Integer id = db.insertExerciseInstance(1, "A1", 15, tags, 1);
         assertEquals("TestTag1", db.getExercisInstanceById(id).getTags().getFirst());
         db.deleteExerciseInstanceByID(id);
         assertNull(db.getExercisInstanceById(id));
     }
 
     @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void createAndDeleteSession() {
         DataBaseService db = DataBaseService.getInstance();
-        Integer id = db.insertTrainingsSession(1,1,15,3,new Integer[]{15,15,15},"schnell",69);
+        Integer id = db.insertTrainingsSession(1,1,3, new Integer[]{0,0,5}, new Integer[]{15,15,15},"schnell",69);
         assertEquals(69, db.getTrainingsSessionById(id).getPauseInSec());
         db.deleteTrainingsSessionById(id);
         assertNull(db.getTrainingsSessionById(id));
