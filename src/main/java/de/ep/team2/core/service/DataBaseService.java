@@ -975,9 +975,11 @@ public class DataBaseService {
     }
 
     /**
+     * Increases the CurrentSession of a userPlan by one when the maxSession
+     * is reached userplan is deleted.
      *
-     * @param userPlanID
-     * @return
+     * @param userPlanID plan to increase session.
+     * @return current session after increase.
      */
     public Integer increaseCurSession(int userPlanID) {
         UserPlan userPlan = getUserPlanById(userPlanID);
@@ -1008,6 +1010,13 @@ public class DataBaseService {
 
     // weights
 
+    /**
+     * creates a weight instance in its table for a specific exercise instance in a plan.
+     *
+     * @param idUserPlan plan weight belongs to.
+     * @param idOfInstance exercise instance weight belongs to.
+     * @param weight value of the weight.
+     */
     public void insertWeightsForUserPlan(int idUserPlan, int idOfInstance, Integer weight) {
         jdbcTemplate.update("insert into weights(iduserplan, idexerciseinstance, weight) values (?,?,?)"
                 , idUserPlan, idOfInstance, weight);
@@ -1018,6 +1027,13 @@ public class DataBaseService {
                 idOfInstance + "' created with Id '" + id + "'!");
     }
 
+    /**
+     * get the weight assigned to a specific exercise instance for a specific plan.
+     *
+     * @param idUserPlan id of the plan.
+     * @param idOfInstance id of the exercise instance.
+     * @return value of the weight.
+     */
     public Integer getWeightForUserPlanExercise(int idUserPlan, int idOfInstance) {
         LinkedList<Integer> result = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM weights WHERE iduserplan = ? AND idexerciseinstance = ?",
