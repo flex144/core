@@ -60,19 +60,22 @@
 <div class="container">
     <div class="panel panel-default outerPanel">
         <div class="panel-body">
-            <h2>Relevante Informationen für deinen individuellen Trainingsplan angeben</h2>
-            <br>
-            <p style="font-size: 16px">
-                Fülle jeweils das aktuelle Formular oder triff deine Wahl und bestätige deine Angaben mit
-                einem Klick auf den Button <mark>"Weiter"</mark>. Nachdem du alle notwendigen Informationen
-                angegeben hast, werden dir deine Angaben noch einmal angezeigt und du kannst diese endgültig
-                absenden.
-            </p>
-            <br>
             <div id="myCarousel" class="carousel slide" data-interval="false">
                 <div class="carousel-inner">
                     <!-- Carousel page for personal data input -->
                     <div class="item active">
+                        <div class="jumbotron">
+                            <div class="container-fluid">
+                                <h2>Relevante Informationen für deinen Trainingsplan angeben</h2>
+                                <br>
+                                <p style="font-size: 14px">
+                                    Fülle jeweils das aktuelle Formular oder triff deine Wahl und bestätige deine Angaben mit
+                                    einem Klick auf den Button <mark>"Weiter"</mark>. Nachdem du alle notwendigen Informationen
+                                    angegeben hast, werden dir deine Angaben noch einmal angezeigt und du kannst diese endgültig
+                                    absenden.
+                                </p>
+                            </div>
+                        </div>
                         <div class="panel panel-default">
                             <div class="panel-heading" align="center">
                                 <h5><b>Persönliche Daten eingeben (Optional?)</b></h5>
@@ -253,7 +256,7 @@
                                                     Nein
                                                 </a>
                                             </div>
-                                            <div class="col col-no-yes" style="width: 50%">
+                                            <div class="col col-no-yes">
                                                 <a class="button btn btn-block" href="#myCarousel" data-slide="next">
                                                     Ja
                                                 </a>
@@ -333,7 +336,7 @@
                                 <br>
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
-                                        <h4>Wie lange hast du in dem besagten Zeitraum ohne Pause regelmäßig
+                                        <h4>Wie lange hast du in dem besagten Zeitraum durchgängig regelmäßig
                                             trainiert?</h4>
                                     </div>
                                     <div class="panel-footer">
@@ -429,77 +432,69 @@
                                 </div>
                             </div>
                             <div class="panel-body">
+                                <h4 align="center">Wähle einen Trainingsfokus aus um fortzufahren</h4>
                                 <div class="col-container">
                                     <div class="col">
-                                        <div class="panel-heading">
-                                            <div class="overlayContainer">
-                                                <a onclick="jumpToFocus1()">
-                                                    <img src="/initFileBackup/Icons/icon_dumbbells.png">
-                                                    <div class="overlay">
-                                                        <div class="text">
-                                                            Muskelfokus
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <div class="overlayContainer">
+                                                    <a onclick="jumpToFocus1()">
+                                                        <img src="/initFileBackup/Icons/icon_dumbbells.png">
+                                                        <div class="overlay">
+                                                            <div class="text">
+                                                                Muskelfokus
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="panel-footer">
+                                                <a class="btn button btn-block" onclick="jumpToFocus1()">
+                                                    Muskelfokus
                                                 </a>
                                             </div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <p>
-                                                Kurzbeschreibung
-                                            </p>
-                                        </div>
-                                        <div class="panel-footer">
-                                            <a class="btn btn-primary btn-block" onclick="jumpToFocus1()">
-                                                Muskelfokus
-                                            </a>
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <div class="panel-heading">
-                                            <div class="overlayContainer">
-                                                <a onclick="jumpToFocus1()">
-                                                    <img src="/initFileBackup/Icons/icon_shoe.png">
-                                                    <div class="overlay">
-                                                        <div class="text">
-                                                            Muskelfokus
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <div class="overlayContainer">
+                                                    <a onclick="jumpToFocus2()">
+                                                        <img src="/initFileBackup/Icons/icon_shoe.png">
+                                                        <div class="overlay">
+                                                            <div class="text">
+                                                                Ausdauerfokus
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="panel-footer">
+                                                <a class="btn button btn-block" onclick="jumpToFocus2()">
+                                                    Ausdauerfokus
                                                 </a>
                                             </div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <p>
-                                                Kurzbeschreibung
-                                            </p>
-                                        </div>
-                                        <div class="panel-footer">
-                                            <a class="btn btn-primary btn-block" onclick="jumpToFocus2()">
-                                                Ausdauerfokus
-                                            </a>
                                         </div>
                                     </div>
                                     <div class="col">
-                                        <div class="panel-heading">
-                                            <div class="overlayContainer">
-                                                <a onclick="jumpToFocus1()">
-                                                    <img src="/initFileBackup/Icons/icon_scale.png">
-                                                    <div class="overlay">
-                                                        <div class="text">
-                                                            Muskelfokus
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">
+                                                <div class="overlayContainer">
+                                                    <a onclick="jumpToFocus3()">
+                                                        <img src="/initFileBackup/Icons/icon_scale.png">
+                                                        <div class="overlay">
+                                                            <div class="text">
+                                                                Gewichtsreduktion
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="panel-footer">
+                                                <a class="btn button btn-block" onclick="jumpToFocus3()">
+                                                    Gewichtsreduktion
                                                 </a>
                                             </div>
-                                        </div>
-                                        <div class="panel-body">
-                                            <p>
-                                                Kurzbeschreibung
-                                            </p>
-                                        </div>
-                                        <div class="panel-footer">
-                                            <a class="btn btn-primary btn-block" onclick="jumpToFocus3()">
-                                                Gewichtsreduktion
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -585,7 +580,7 @@
                                 </div>
                             </div>
                             <div class="panel-body">
-                                <h2>Informationen zur Schmerzreduktion</h2>
+                                <h2>Informationen zur Gewichtsreduktion</h2>
                                 <p style="font-size: 14px">Beispielinhalt Beispielinhalt Beispielinhalt Beispielinhalt </p>
                             </div>
                         </div>
