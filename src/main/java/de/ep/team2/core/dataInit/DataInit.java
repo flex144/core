@@ -1,5 +1,8 @@
 package de.ep.team2.core.dataInit;
 
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.Gender;
+import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.UserService;
@@ -11,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,7 +46,14 @@ public class DataInit {
         jdbcTemplate.execute("DROP TABLE IF EXISTS users CASCADE ");
         jdbcTemplate.execute("CREATE TABLE users(" +
                 "id SERIAL, email VARCHAR(255) NOT NULL ," +
-                " first_name VARCHAR(255), last_name VARCHAR(255) ," +
+                "first_name VARCHAR(255), last_name VARCHAR(255) ," +
+                "height_in_cm INTEGER," +
+                "weight_in_kg INTEGER," +
+                "gender varchar(20)," +
+                "trainings_focus varchar(20)," +
+                "experience varchar(20)," +
+                "birth_date date," +
+                "trainings_frequency INTEGER," +
                 " password varchar(60) not null, " +
                 " enabled boolean not null default false, " +
                 " role varchar(20) not null," +
@@ -157,7 +169,6 @@ public class DataInit {
             DataBaseService.getInstance().confirmUser(o[0]);
         }
         DataBaseService.getInstance().changeToMod(3);
-
     }
 
     private void fillExercises() {
