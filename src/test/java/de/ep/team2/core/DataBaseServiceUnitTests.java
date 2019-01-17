@@ -3,6 +3,9 @@ package de.ep.team2.core;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.Gender;
+import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.PlanService;
@@ -14,6 +17,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 
 import static org.junit.Assert.*;
@@ -65,6 +70,23 @@ public class DataBaseServiceUnitTests {
     @Test
     public void getAllUsers() {
         assertEquals(4, DataBaseService.getInstance().getAllUsers().size());
+    }
+
+    @Test
+    public void testAlterAdvancedData() {
+        DataBaseService db = DataBaseService.getInstance();
+        Calendar cal = Calendar.getInstance();
+        cal.set(1998,Calendar.AUGUST,22);
+        Date date = cal.getTime();
+        Integer id = db.insertUser("test@user.de", "test", "user", "password");
+        db.setAdvancedUserData(77,180, TrainingsFocus.STAMINA,2, Gender.MALE, ExperienceLevel.BEGINNER,date,id);
+        assertEquals(ExperienceLevel.BEGINNER, db.getUserById(id).getExperience());
+        assertEquals(Gender.MALE, db.getUserById(id).getGender());
+        db.setAdvancedUserData(null,null,null,null,Gender.FEMALE,null,null,id);
+        assertNull(db.getUserById(id).getExperience());
+        assertEquals(Gender.FEMALE, db.getUserById(id).getGender());
+        db.setAdvancedUserData(null,null,null,null,Gender.FEMALE,null,null,3);
+        assertEquals(Gender.FEMALE, db.getUserById(3).getGender());
     }
 
     // Exercise

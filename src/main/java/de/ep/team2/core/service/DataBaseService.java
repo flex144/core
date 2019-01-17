@@ -1,6 +1,9 @@
 package de.ep.team2.core.service;
 
 import de.ep.team2.core.entities.*;
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.Gender;
+import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Singleton Data Access Object which handles all SQL queries with the Database.
@@ -65,7 +65,7 @@ public class DataBaseService {
      */
     public User getUserById(Integer id) {
         LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT id, email, first_name, last_name, password, enabled, role FROM users WHERE id " +
+                "SELECT * FROM users WHERE id " +
                         "= ?",
                 new Integer[]{id},
                 new UserRowMapper()
@@ -91,7 +91,7 @@ public class DataBaseService {
             return null;
         } else {
             LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                    "SELECT id, email, first_name, last_name, password, enabled, role FROM users WHERE " +
+                    "SELECT * FROM users WHERE " +
                             "email = ?",
                     new String[]{email.toLowerCase()},
                     new UserRowMapper()));
@@ -113,6 +113,22 @@ public class DataBaseService {
             user.setPassword(rs.getString("password"));
             user.setEnabled(rs.getBoolean("enabled"));
             user.setRole(rs.getString("role"));
+            user.setHeightInCm(rs.getInt("height_in_cm"));
+            user.setWeightInKg(rs.getInt("weight_in_kg"));
+            String genderString = rs.getString("gender");
+            if (genderString != null) {
+                user.setGender(Gender.getValueByName(genderString));
+            }
+            String focusString = rs.getString("trainings_focus");
+            if (focusString != null) {
+                user.setTrainingsFocus(TrainingsFocus.getValueByName(focusString));
+            }
+            String experienceString = rs.getString("experience");
+            if (experienceString != null) {
+                user.setExperience(ExperienceLevel.getValueByName(experienceString));
+            }
+            user.setBirthDate(rs.getDate("birth_date"));
+            user.setTrainingsFrequency(rs.getInt("trainings_frequency"));
             return user;
         }
     }
@@ -123,8 +139,8 @@ public class DataBaseService {
      * @return Returns a List of Users.
      */
     public List<User> getAllUsers() {
-        String sql = "SELECT id, email, first_name, last_name, role FROM users";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
+        String sql = "SELECT * FROM users";
+        return jdbcTemplate.query(sql, new UserRowMapper());
     }
 
     /**
@@ -153,6 +169,36 @@ public class DataBaseService {
                 + email + "' inserted in Table 'users' with Id "
                 + id + " !");
         return id;
+    }
+
+    /**
+     * Updates all provided data in the db to the user. Null values are saved to db too.
+     *
+     * @param weightInKg weight.
+     * @param heightInCm height.
+     * @param trainingsFocus Enum TrainingsFocus.
+     * @param trainingsFrequency frequency of training.
+     * @param gender Enum Gender
+     * @param experience Enum Experience
+     * @param birthDate Date birthday
+     * @param userId id to identify user.
+     */
+    public void setAdvancedUserData(Integer weightInKg, Integer heightInCm,
+                                    TrainingsFocus trainingsFocus, Integer trainingsFrequency,
+                                    Gender gender, ExperienceLevel experience, Date birthDate, int userId) {
+        Object[] values = new Object[8];
+        Arrays.fill(values,null);
+        values[0] = weightInKg;
+        values[1] = heightInCm;
+        values[2] = trainingsFocus == null ? "" : trainingsFocus.toString();
+        values[3] = trainingsFrequency;
+        values[4] = gender == null ? "" : gender.toString();
+        values[5] = experience == null ? "" : experience.toString();
+        values[6] = birthDate;
+        values[7] = userId;
+        jdbcTemplate.update("update users set weight_in_kg = ?, height_in_cm = ?, trainings_focus" +
+                " = ?, trainings_frequency = ?, gender = ?, experience = ?, birth_date = ? where id = ?",
+                values);
     }
 
     /**

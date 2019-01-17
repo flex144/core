@@ -1,9 +1,13 @@
 package de.ep.team2.core.entities;
 
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.Gender;
+import de.ep.team2.core.enums.TrainingsFocus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,16 +19,32 @@ public class User implements UserDetails {
     private String email, firstName, lastName, password;
     private String role;
     private boolean enabled;
+    private Integer heightInCm;
+    private Integer weightInKg;
+    private Gender gender;
+    private TrainingsFocus trainingsFocus;
+    private ExperienceLevel experience;
+    private Date birthDate;
+    private Integer trainingsFrequency;
 
     public User(int id, String email, String firstName, String lastName, String password,
-                boolean enabled, String role) {
+                String role, boolean enabled, Integer heightInCm, Integer weightInKg,
+                Gender gender, TrainingsFocus trainingsFocus, ExperienceLevel experience,
+                Date birthDate, Integer trainingsFrequency) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
-        this.enabled = enabled;
         this.role = role;
+        this.enabled = enabled;
+        this.heightInCm = heightInCm;
+        this.weightInKg = weightInKg;
+        this.gender = gender;
+        this.trainingsFocus = trainingsFocus;
+        this.experience = experience;
+        this.birthDate = birthDate;
+        this.trainingsFrequency = trainingsFrequency;
     }
 
     public User() {
@@ -87,6 +107,62 @@ public class User implements UserDetails {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Integer getHeightInCm() {
+        return heightInCm;
+    }
+
+    public void setHeightInCm(Integer heightInCm) {
+        this.heightInCm = heightInCm;
+    }
+
+    public Integer getWeightInKg() {
+        return weightInKg;
+    }
+
+    public void setWeightInKg(Integer weightInKg) {
+        this.weightInKg = weightInKg;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public TrainingsFocus getTrainingsFocus() {
+        return trainingsFocus;
+    }
+
+    public void setTrainingsFocus(TrainingsFocus trainingsFocus) {
+        this.trainingsFocus = trainingsFocus;
+    }
+
+    public ExperienceLevel getExperience() {
+        return experience;
+    }
+
+    public void setExperience(ExperienceLevel experience) {
+        this.experience = experience;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public Integer getTrainingsFrequency() {
+        return trainingsFrequency;
+    }
+
+    public void setTrainingsFrequency(Integer trainingsFrequency) {
+        this.trainingsFrequency = trainingsFrequency;
     }
 
     @Override
