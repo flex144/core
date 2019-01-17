@@ -13,6 +13,7 @@
 
     <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
 
+
     <style>
         /********************container Styles**********************/
         html, body {
@@ -228,8 +229,8 @@
     </div>
 </div>
 
-<!--- Elements that Thymeleaf delivers but are not supposed to be seen --->
-<div name="Hidden elements Container" id="hiddenElements">
+<!--- Hidden Elements that Thymeleaf delivers but are not supposed to be seen --->
+<div name="Hidden elements Container" id="hiddenElements" hidden>
     <p id="setNumber" th:text="${exerciseDto.getSets()}"></p>
     <p id="setPause"  th:text="${exerciseDto.getPause()}"></p>
     <div th:each="weight, stat : ${exerciseDto.getWeights()}">
@@ -266,13 +267,13 @@
                     </button>
                 </div>
                 <div class="panel-body" style=" height: 80%;">
-
-                    <!--- Description to current exercise --->
+                    <!--- Description/Tags of the current exercise --->
                     <div class="greyContainer" id="container_planInstructions"
                          style="height: 10%;">
-                        <div  id="container_planDetails" style=" overflow-x: scroll; height: 100%;">
-                            <!-- th:text="${exerciseDto.getExercise().getDescription()}" -->
-                            <p th:text="${exerciseDto.getExercise().getId()}"></p>
+                        <div  class="row" id="container_planDetails" style=" overflow-x: scroll;">
+                            <div class="col-xs-4" th:each="tag : ${exerciseDto.getTags()}">
+                                <div  th:text="${tag}"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -515,16 +516,26 @@
      * Instancing first values for both scripts
      * */
     document.onLoad(initializeReps());
-    function initializeReps() {
+    function initializeReps(){
+        console.log("1");
         document.getElementById('hiddenElements').style.display = "none";
+        console.log("2");
         document.getElementById('repInput').value = currentReps;
+        console.log("3");
         document.querySelector('.doneReps').innerHTML = totalReps;
+        console.log("4");
         evaluationBox.style.display = "none";
+        console.log("5");
         document.querySelector('.value').innerHTML = labelValue;
+        console.log("6");
         document.getElementById('pauseTime').innerHTML = pauseTimeValue + " " +"s";
+        console.log("7");
         document.querySelector('.buttonName').innerHTML = buttonTitle;
+        console.log("8");
         document.getElementById('neededReps').innerHTML = document.getElementById('reps1').innerHTML;
+        console.log("9");
         document.getElementById('weightLabel').innerHTML = document.getElementById('weight1').innerHTML +"kg";
+        console.log("10");
     }
 
     /***

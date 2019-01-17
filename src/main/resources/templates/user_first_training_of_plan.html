@@ -12,6 +12,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
+
 </head>
 <body>
 
@@ -26,16 +27,19 @@
             <div class="panel panel-login panel-default">
                 <input title="done" type="checkbox" name="doneFlag" hidden checked>
                 <input type="text" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
+                <!--- Short description --->
                 <div class="panel-heading" >
                     <h3>Bitte trage ein mit wie viel Gewicht (in kg) du die Übung 'X' mal wiederholen kannst</h3>
                 </div>
+                <!--- form for user to write into --->
                 <div class="panel-body">
                     <div class="col-xs-12" style="text-align: center;">
                         <form>
-                            <input type="number" name="weightDone" style="text-align: center">
+                            <input type="number" name="weightDone" style="text-align: center" id="userMaxWeight" oninput="updateWeight()">
                         </form>
                     </div>
                 </div>
+                <!--- Buttons for exit and continuing --->
                 <div class="panel-footer" style="text-align: center;">
                     <div class="row">
                         <a type="button"
@@ -44,7 +48,7 @@
                         </a>
                         <div class="col-xs-4"></div>
                         <button type="submit"
-                                class="btn btn-success col-xs-3" id="startButton" style="font-size: small">
+                                class="btn btn-success col-xs-3" id="startButton" style="font-size: small" disabled>
                             Bestätigen
                         </button>
                     </div>
@@ -55,6 +59,19 @@
 </div>
 </form>
 
+<!--- Checks if value given by user is acceptable --->
+<script>
+    function updateWeight() {
+        valueCheck = Math.ceil(document.getElementById('userMaxWeight').value);
+        if(valueCheck < 300 && valueCheck> 0){
+            document.getElementById('startButton').disabled = false;
+        } else if(valueCheck == ""){
+        }else{
+            document.getElementById('startButton').disabled = true;
+        }
+
+    }
+</script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>

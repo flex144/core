@@ -12,6 +12,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
+
+
     <style>
 
         html, body {
@@ -195,14 +197,18 @@
                 <div class="jumbotron" style="text-align: center;">
                     <h4>Training wirklich abbrechen?</h4>
                 </div>
-                <button type="button"
-                        class="btn btn-block btn-secondary responsive-width" data-dismiss="modal" id="buttonContinue">
-                    Training Fortsetzen
-                </button>
-                <a type="button"
-                   class="button btn btn-block btn-danger responsive-width" th:href="@{/user/home}">
-                    Training abbrechen
-                </a>
+                <div class="col-xs-4">
+                    <a type="button"
+                       class="button btn btn-block btn-danger responsive-width" th:href="@{/user/home}">
+                        Training abbrechen
+                    </a>
+                </div>
+                <div class="col-xs-4 col-xs-offset-4">
+                    <button type="button"
+                            class="btn btn-block btn-secondary responsive-width" data-dismiss="modal" id="buttonContinue">
+                        Training Fortsetzen
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -231,34 +237,6 @@
     </div>
 </div>
 
-<p th:text="${dayDto.currentCategory}"></p>
-<p th:text="${dayDto.currentSession}"></p>
-<div th:each="exerciseInst : ${dayDto.exercises}">
-    <table class="table table-striped table-bordered">
-        <div th:if="${!exerciseInst.done}">
-            <tbody>
-            <tr>
-                <th>Ordnung</th>
-                <td><p th:text="${exerciseInst.category}"></p></td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td><p th:text="${exerciseInst.exercise.name}"></p></td>
-            </tr>
-            <tr>
-                <th>sets</th>
-                <td><p th:text="${exerciseInst.sets}"></p></td>
-            </tr>
-            <tr>
-                <th>reps</th>
-                <td th:each="rep : ${exerciseInst.reps}"><p th:text="${rep}"></p></td>
-            </tr>
-            </tbody>
-            <a th:href="@{'/user/plan/exercise/'+ ${exerciseInst.indexInList}}">zur Übung</a>
-        </div>
-    </table>
-</div>
-
 <!--- the Page --->
 <div style="width: 100%; height: 95%;">
     <!--- buffers the main part of the page to the middle-->
@@ -270,179 +248,87 @@
         </div>
         <div class="container fullsize">
             <div class="panel panel-login panel-default fullsize">
-                <div class="panel-heading" style="font-size: 160%; height: 10%;">
-                    <div class="col-xs-6">
-                        <!---th:text=--->
-                        Trainingsplan <br> nr. #
+                <div class="panel-heading" style="font-size: 140%; height: 10%;">
+                    <div class="col-xs-5">
+                            Trainings-<br> einheit nr.
                     </div>
-                    <div class="col-xs-4">
-                        <div>set: #</div>
-                        <div>
-                            <h4><span id="currentOrder" ></span></h4>
+                    <div class="col-xs-1" th:text="${dayDto.currentSession}"></div>
+                    <div class="col-xs-3">
+                        <div>set: </div>
+                        <div id="currentOrder" th:text="${dayDto.currentCategory}">#
                         </div>
                     </div>
+                    <div class="col-xs-1" th:text="${dayDto.currentCategory}"></div>
                     <button data-toggle="modal" data-target="#infoModal" class="btn btn-info" id="openInfoModal">
                         i
                     </button>
                 </div>
                 <div class="panel-body" style=" height: 80%;">
-                    <!---
-    TODO thymeleaf Each Container has to be loaded with color
-    TODO thymeleaf call clickedOnExercise() onClick
---->
                     <!--- Template for thymeleaf data to load into --->
                     <div class="container" id="container_content" style="height: 70%;
         overflow-x: fragments; overflow-y: scroll; text-align: center;
-        padding: 5px">
-                        <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;">
-                            <!---  th:each th:onclick="" th:id= --->
-                            <!--- TODO thymeleaf id -->
-                            <div class="containerColor col-md-4" id="exercise1">
-                                <div class="row">
-                                    <!--- TODO Session save Status --->
-                                    <div class=" col-xs-1 tableCentered" >
-                                        <label class="btn active ">
-                                            <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
-                                        </label>
-                                    </div>
-                                    <div class="tableCentered col-xs-2" onclick="clickedOnExercise()">
-                                        <!--- TODO thymeleaf remove test class after implementation--->
-                                        <!--- th:text th:id--->
-                                        <h3 class="numbertest1 tableCentered" id="orderNumber1">A1</h3>
-                                    </div>
-                                    <div class="tableCentered col-xs-6" onclick="clickedOnExercise()">
-                                        <!--- th:text--->
-                                        <h3 class="tableCentered">Klimmzüge</h3>
-                                    </div>
-                                    <div class=" col-xs-2">
-                                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
-                                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
-                                            i
-                                        </button>
+        padding: 5px" >
+                        <div th:each="exerciseInst, stat : ${dayDto.exercises}"  >
+                            <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;"  >
+                                <div th:hidden="${exerciseInst.done}">
+                                    <div class="containerColor col-md-4" th:id="exercise + ${stat.count}">
+                                        <div class="row">
+                                            <div class=" col-xs-1 tableCentered" >
+                                                <label class="btn active ">
+                                                    <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
+                                                </label>
+                                            </div>
+                                            <a class="col-xs-8" th:href="@{'/user/plan/exercise/'+ ${exerciseInst.indexInList}}" disabled>
+                                                <div class="tableCentered col-xs-3" >
+                                                    <h3 class="numbertest1 tableCentered" th:id="orderNumber + ${stat.count}" th:text="${exerciseInst.category}"></h3>
+                                                </div>
+                                                <div class="tableCentered col-xs-9">
+                                                    <h3 class="tableCentered" th:text="${exerciseInst.exercise.name}"></h3>
+                                                </div>
+                                            </a>
+                                            <div class=" col-xs-2">
+                                                <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
+                                                    i
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!--- To showacase colours, delet after funcitonality integrated--->
+
+                        <!--- Container solely for presentation purposes, as no plan has 2 Orders yet--->
                         <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;">
-                            <!---  th:each th:onclick="" th:id= --->
-                            <!--- TODO thymeleaf id -->
-                            <div class="containerColor col-md-4" id="exercise2">
-                                <div class="row">
-                                    <!--- TODO Session save Status --->
-                                    <div class=" col-xs-1 tableCentered" >
-                                        <label class="btn active ">
-                                            <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
-                                        </label>
-                                    </div>
-                                    <div class="tableCentered col-xs-2" onclick="clickedOnExercise()">
-                                        <!--- TODO thymeleaf remove test class after implementation--->
-                                        <!--- th:text th:id--->
-                                        <h3 class="numbertest1 tableCentered" id="orderNumber2">A2</h3>
-                                    </div>
-                                    <div class="tableCentered col-xs-6" onclick="clickedOnExercise()">
-                                        <!--- th:text--->
-                                        <h3 class="tableCentered">Klimmzüge</h3>
-                                    </div>
-                                    <div class=" col-xs-2">
-                                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
-                                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
-                                            i
-                                        </button>
+                            <div>
+                                <div class="containerColor col-md-4" id="exercise3">
+                                    <div class="row">
+                                        <div class=" col-xs-1 tableCentered" >
+                                            <label class="btn active ">
+                                                <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
+                                            </label>
+                                        </div>
+                                        <a class="col-xs-8">
+                                            <div class="tableCentered col-xs-3" >
+                                                <h3 class="numbertest1 tableCentered" id="orderNumber3">B1</h3>
+                                            </div>
+                                            <div class="tableCentered col-xs-9">
+                                                <h3 class="tableCentered" >asdfasd</h3>
+                                            </div>
+                                        </a>
+                                        <div class=" col-xs-2">
+                                            <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infotrkButton">
+                                                i
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;">
-                            <!---  th:each th:onclick="" th:id= --->
-                            <!--- TODO thymeleaf id -->
-                            <div class="containerColor col-md-4" id="exercise3">
-                                <div class="row">
-                                    <!--- TODO Session save Status --->
-                                    <div class=" col-xs-1 tableCentered" >
-                                        <label class="btn active ">
-                                            <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
-                                        </label>
-                                    </div>
-                                    <div class="tableCentered col-xs-2" onclick="clickedOnExercise()">
-                                        <!--- TODO thymeleaf remove test class after implementation--->
-                                        <!--- th:text th:id--->
-                                        <h3 class="numbertest1 tableCentered" id="orderNumber3">B1</h3>
-                                    </div>
-                                    <div class="tableCentered col-xs-6" onclick="clickedOnExercise()">
-                                        <!--- th:text--->
-                                        <h3 class="tableCentered">Klimmzüge</h3>
-                                    </div>
-                                    <div class=" col-xs-2">
-                                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
-                                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
-                                            i
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;">
-                            <!---  th:each th:onclick="" th:id= --->
-                            <!--- TODO thymeleaf id -->
-                            <div class="containerColor col-md-4" id="exercise4">
-                                <div class="row">
-                                    <!--- TODO Session save Status --->
-                                    <div class=" col-xs-1 tableCentered" >
-                                        <label class="btn active ">
-                                            <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
-                                        </label>
-                                    </div>
-                                    <div class="tableCentered col-xs-2" onclick="clickedOnExercise()">
-                                        <!--- TODO thymeleaf remove test class after implementation--->
-                                        <!--- th:text th:id--->
-                                        <h3 class="numbertest1 tableCentered" id="orderNumber4">C1</h3>
-                                    </div>
-                                    <div class="tableCentered col-xs-6" onclick="clickedOnExercise()">
-                                        <!--- th:text--->
-                                        <h3 class="tableCentered">Klimmzüge</h3>
-                                    </div>
-                                    <div class=" col-xs-2">
-                                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
-                                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
-                                            i
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;">
-                            <!---  th:each th:onclick="" th:id= --->
-                            <!--- TODO thymeleaf id -->
-                            <div class="containerColor col-md-4" id="exercise5">
-                                <div class="row">
-                                    <!--- TODO Session save Status --->
-                                    <div class=" col-xs-1 tableCentered" >
-                                        <label class="btn active ">
-                                            <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
-                                        </label>
-                                    </div>
-                                    <div class="tableCentered col-xs-2" onclick="clickedOnExercise()">
-                                        <!--- TODO thymeleaf remove test class after implementation--->
-                                        <!--- th:text th:id--->
-                                        <h3 class="numbertest1 tableCentered" id="orderNumber5">D1</h3>
-                                    </div>
-                                    <div class="tableCentered col-xs-6" onclick="clickedOnExercise()">
-                                        <!--- th:text--->
-                                        <h3 class="tableCentered">Klimmzüge</h3>
-                                    </div>
-                                    <div class=" col-xs-2">
-                                        <!--- TODO Thymeleafe: Button links to exercise description / OR remove --->
-                                        <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
-                                            i
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
+
                 <div class="panel-footer" style="text-align: center;  height: 10%;">
 
                     <!--- Buttons to leave/star the exercise --->
@@ -501,18 +387,24 @@
         document.getElementById('button_trainingBack').style.display = "none";
         document.getElementById('button_trainingExit').style.display = "inherit";
         document.getElementById('button_trainingFinished').style.display = "inherit";
+        if (document.getElementById('currentOrder').innerHTML == ""){
+            window.location.href="/user/plan/exercise/0";
+        }
     }
 
     /*Sets the order and loads next page*/
     function clickedOnExercise(){
         var currentOrder = document.getElementById("currentOrder").innerHTML;
         var id = this.id;
-        var thisExerciseOrder = "orderNumber" + id;
-        var clickedOrder = document.getElementById("orderNumber").innerHTML;
+        console.log(id);
+        var exerciseNumber = id.slice(-1);
+        var orderNumber = "orderNumber"+ exerciseNumber;
+        console.log(exerciseNumber);
+        var clickedOrder = document.getElementById(orderNumber).innerHTML;
         localStorage.setItem("orderValue", currentOrder);
-        if ((currentOrder == clickedOrder) || currentOrder == ""){
-            window.location = "exercise"
-            //updateCurrentOrder(id);
+        if (!((currentOrder == clickedOrder) || (currentOrder == ""))){
+            var buttonId = "button"+exerciseNumber;
+            document.getElementById(buttonId).click();
         } else{
             $('#noValidInputModule').modal('show');
         }
@@ -576,7 +468,7 @@
 
 <!--- Colouring every row --->
 <script>
-    var numberOfExercises = 10; /*TODO thymeleaf list.length*/
+    var numberOfExercises = 30;
 
     document.onLoad(initializeData());
 
@@ -587,7 +479,7 @@
         document.getElementById('button_trainingExit').style.display = "none";
         document.getElementById('button_trainingFinished').style.display = "none";
         for (var i = 0; i < numberOfExercises; i++){
-            colourCoding(i + 1);
+            colourCoding(i+1);
         }
     }
 
@@ -598,7 +490,10 @@
     function colourCoding(exerciseID){
         var exercise = "exercise" + exerciseID;
         var currentID = "orderNumber" + exerciseID;
+        console.log("CurrentID:" + currentID);
+        console.log("Exercise:" + exercise);
         var currentOrder = document.getElementById(currentID).innerHTML;
+        console.log("currentOrder:" + currentOrder);
         document.getElementById(exercise).style.background = colorPick(currentOrder);
     }
 
@@ -610,9 +505,11 @@
     function colorPick(orderNumber){
         var colour = "#ffaa00";
         var testingVariable = orderNumber.charCodeAt(0);
+        console.log("Ordnung:" + testingVariable);
         if (testingVariable %2 == 0) {
             colour = "#aaff00";
         }
+        console.log(colour);
         return colour;
     }
 
