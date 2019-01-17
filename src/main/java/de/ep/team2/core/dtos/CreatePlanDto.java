@@ -8,7 +8,7 @@ import java.util.LinkedList;
 public class CreatePlanDto {
 
     private String planName;
-    private String trainingsFocus; //todo as enum
+    private String trainingsFocus; // values = muscle,stamina,pain todo as enum
     private String targetGroup; // todo as enum
     private Integer id;
     private Integer sessionNums;

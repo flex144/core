@@ -2,6 +2,8 @@ package de.ep.team2.core.dtos;
 
 import de.ep.team2.core.entities.Exercise;
 
+import java.util.LinkedList;
+
 public class ExerciseDto {
 
     private Integer indexInList = null;
@@ -9,6 +11,7 @@ public class ExerciseDto {
     private int idExerciseInstance;
     private Exercise exercise;
     private String category;
+    private LinkedList<String> tags;
     private int sets;
     private String tempo;
     private int pause;
@@ -27,11 +30,12 @@ public class ExerciseDto {
 
 
     public ExerciseDto(int idUserPlan, int idExerciseInstance, Exercise exercise, String category, int sets, String tempo, int pause,
-                       Integer[] reps, Integer[] weights, Boolean isFirstTraining, int repMax) {
+                       LinkedList<String> tags, Integer[] reps, Integer[] weights, Boolean isFirstTraining, int repMax) {
         this.idUserPlan = idUserPlan;
         this.idExerciseInstance = idExerciseInstance;
         this.exercise = exercise;
         this.category = category;
+        this.tags = tags;
         this.sets = sets;
         this.tempo = tempo;
         this.pause = pause;
@@ -75,6 +79,14 @@ public class ExerciseDto {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public LinkedList<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(LinkedList<String> tags) {
+        this.tags = tags;
     }
 
     public int getSets() {

@@ -816,8 +816,26 @@ public class DataBaseService {
 
     // User Plan
 
+    /**
+     * Creates a new User plan for the User with mail userMail based on template wit templateId.
+     * Sets CurrentSession 0 and MaxSession based on template.
+     *
+     * Throws exception when either template or User are missing.
+     *
+     * @param userMail identify user the Plan is for.
+     * @param templateId identify template the plan is based on.
+     * @return Id of new created plan.
+     */
     public Integer insertUserPlan(String userMail, int templateId) {
         TrainingsPlanTemplate template = getOnlyPlanTemplateById(templateId);
+        User user = getUserByEmail(userMail);
+        if (user == null) {
+            log.debug("Can't create User Plan because User doesn't exist. User mail: " + userMail);
+            throw new IllegalArgumentException("Can't create User Plan because User doesn't exist. User mail: " + userMail);
+        } else if (template == null) {
+            log.debug("Can't create User Plan because Template doesn't exist. Template ID: " + templateId);
+            throw new IllegalArgumentException("Can't create User Plan because Template doesn't exist. Template ID: " + templateId);
+        }
         Object[] insertValues = new Object[]{userMail, templateId, template.getNumTrainSessions()};
         jdbcTemplate.update("insert into user_plans(\"user\",template,cursession,maxsession,initial_training_done) values (?,?,0,?,false)"
         , insertValues );
@@ -860,6 +878,11 @@ public class DataBaseService {
         }
     }
 
+    /**
+     *
+     * @param userPlanID
+     * @return
+     */
     public Integer increaseCurSession(int userPlanID) {
         UserPlan userPlan = getUserPlanById(userPlanID);
         userPlan.setCurrentSession(userPlan.getCurrentSession() + 1);
