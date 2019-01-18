@@ -6,9 +6,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.security.Key;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -33,6 +30,7 @@ public class SeleniumTestTrainingOverview {
      * Function to log into the webpage as user
      */
     public void login(){
+        //needs to be set to own path!
         //System.setProperty("webdriver.gecko.driver", "/Users/flex/Downloads/geckodriver");
         driver = new FirefoxDriver();
 

@@ -147,4 +147,7 @@ public class UserService {
         return errorMessage;
     }
 
+    public void deleteTokenById(int tokenId) {
+        DataBaseService.getInstance().deleteTokenById(tokenId);
+    }
 }

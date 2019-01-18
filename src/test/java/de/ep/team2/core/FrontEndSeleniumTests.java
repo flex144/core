@@ -125,6 +125,107 @@ public class FrontEndSeleniumTests {
     }
 
     /**
+     * Test for all functionalities on the page user_data
+     */
+    @Test
+    public void userEnterDataTest() {
+        WebDriver driver = sysProperties();
+
+        // Set the wait time of the driver in case of timeouts to 1 second
+        driver.manage().timeouts().implicitlyWait(1, TimeUnit.SECONDS);
+
+        // Login at the website as user
+        loginAsUser(driver);
+
+        // Go to page user_data
+        driver.navigate().to("http://localhost:8080/user/new");
+
+        // Get the title of the current website
+        String currentTitle = driver.getTitle();
+
+        // Check if the correct site loaded by comparing the website title
+        assertEquals(currentTitle, "Nutzerdaten eingeben");
+
+        // Enter personal data
+        driver.findElement(By.id("firstname")).sendKeys("Benedikt");
+        driver.findElement(By.id("lastname")).sendKeys("Schwarz");
+        driver.findElement(By.id("gender")).sendKeys("männlich");
+        driver.findElement(By.id("age")).sendKeys("12021992");
+        driver.findElement(By.id("height")).sendKeys("183");
+        driver.findElement(By.id("weight")).sendKeys("80");
+
+        // Continue to the next page
+        driver.findElement(By.className("btn-success")).click();
+        waitDuration(500);
+
+        // Return to the previous page
+        driver.findElement(By.id("btnReturnPage1")).click();
+        waitDuration(500);
+
+        // Continue to the next page
+        driver.findElement(By.className("btn-success")).click();
+        waitDuration(500);
+
+        // Choose single-day-plan
+        driver.findElement(By.id("btnSingleDayPlan")).click();
+        waitDuration(500);
+
+        // Return to the choice of plan type
+        driver.findElement(By.id("btnReturnPage12")).click();
+        waitDuration(500);
+
+        // Choose an individual plan
+        driver.findElement(By.id("btnIndividualPlan")).click();
+        waitDuration(500);
+
+        // Enter that you haven´t trained on a regular basis before
+        driver.findElement(By.id("btn1stQuestionNo")).click();
+        waitDuration(500);
+
+        // Return to the page to enter your previous experience
+        driver.findElement(By.id("btnReturnPage6")).click();
+        waitDuration(500);
+
+        // Enter that you have trained on a regular basis before
+        driver.findElement(By.id("btn1stQuestionYes")).click();
+        waitDuration(500);
+
+        // Enter that you have trained less than 4 months ago
+        driver.findElement(By.id("btnPage3Option1")).click();
+        waitDuration(500);
+
+        // Enter that you have trained longer than 5 month without a break
+        driver.findElement(By.id("btnPage4Option2")).click();
+        waitDuration(500);
+
+        // Enter that you have trained two times per week during that time
+        driver.findElement(By.id("btnPage5Option2")).click();
+        waitDuration(500);
+
+        // Choose endurance focus
+        driver.findElement(By.id("btnPage6Option2")).click();
+        waitDuration(500);
+
+        // Return to the page to change the chosen focus
+        driver.findElement(By.id("btnReturnPage8")).click();
+        waitDuration(500);
+
+        // Choose endurance focus
+        driver.findElement(By.id("btnPage6Option1")).click();
+        waitDuration(500);
+
+        // Continue after reading the description
+        driver.findElement(By.id("btnContinuePage7")).click();
+        waitDuration(500);
+
+        // Enter that you want to train two times per week
+        driver.findElement(By.id("btnPage10Option2")).click();
+        waitDuration(500);
+
+        driver.close();
+    }
+
+    /**
      * Tests for all functionalities and modals on the page mod_create_plan
      */
     @Test
@@ -193,21 +294,21 @@ public class FrontEndSeleniumTests {
         /* Test for changing amount of TE´s */
 
         // Increase the te-amount by 2 to 8 in total (6 is default te value)
-        driver.findElement(By.id("btnIncrement")).click();
-        driver.findElement(By.id("btnIncrement")).click();
+        driver.findElement(By.id("btnIncrementTEs")).click();
+        driver.findElement(By.id("btnIncrementTEs")).click();
         // Check if a 8th input field for repeats has appeared (7 because id-nr starts with 0)
         WebElement inputField = driver.findElement(By.id("repsInput7"));
         assertTrue(inputField.isDisplayed());
         // Decrease the te-amount by 3 to 5 in total
-        driver.findElement(By.id("btnDecrement")).click();
-        driver.findElement(By.id("btnDecrement")).click();
-        driver.findElement(By.id("btnDecrement")).click();
+        driver.findElement(By.id("btnDecrementTEs")).click();
+        driver.findElement(By.id("btnDecrementTEs")).click();
+        driver.findElement(By.id("btnDecrementTEs")).click();
         // Check if inputs after the 5th one have disappeared
         assertTrue(driver.findElements(By.id("repsInput5")).isEmpty());
 
         /* Test for alert if amount of training units is increased over 15 */
         for(int i=0; i<11; i++) {
-            driver.findElement(By.id("btnIncrement")).click();
+            driver.findElement(By.id("btnIncrementTEs")).click();
         }
         // Switch driver to alert window
         driver.switchTo().alert();
@@ -220,7 +321,7 @@ public class FrontEndSeleniumTests {
 
         // Decrease the te-amount to 1 to trigger the modal
         for(int i=0; i<14; i++) {
-            driver.findElement(By.id("btnDecrement")).click();
+            driver.findElement(By.id("btnDecrementTEs")).click();
         }
         // Check if modal to convert the plan to a single day plan has opened
         modal = driver.findElement(By.id("modalConvertPlan"));
@@ -234,9 +335,35 @@ public class FrontEndSeleniumTests {
         /* Test for alert if amount of training units is decreased below 1 */
 
         // Try to decrease the amount below 1
-        driver.findElement(By.id("btnDecrement")).click();
+        driver.findElement(By.id("btnDecrementTEs")).click();
         // Switch driver to alert window
         driver.switchTo().alert();
+        // Accept the alert to close the alert window
+        driver.switchTo().alert().accept();
+        // Switch driver back to the previous window
+        driver.switchTo().defaultContent();
+
+        /* Test for alert if amount of weekly training units is decreased under 1 */
+        for(int i=0; i<2; i++) {
+            driver.findElement(By.id("btnDecrementWeeklyTes")).click();
+        }
+        // Switch driver to alert window
+        driver.switchTo().alert();
+        String alertMessage = driver.switchTo().alert().getText();
+        assertTrue(alertMessage.contains("Ein Trainingsplan ist nicht regelmäßig"));
+        // Accept the alert to close the alert window
+        driver.switchTo().alert().accept();
+        // Switch driver back to the previous window
+        driver.switchTo().defaultContent();
+
+        /* Test for alert if amount of weekly training units is increased over 7 */
+        for(int i=0; i<7; i++) {
+            driver.findElement(By.id("btnIncrementWeeklyTes")).click();
+        }
+        // Switch driver to alert window
+        driver.switchTo().alert();
+        alertMessage = driver.switchTo().alert().getText();
+        assertTrue(alertMessage.contains("kann nicht mehr Trainigseinheiten pro Woche haben"));
         // Accept the alert to close the alert window
         driver.switchTo().alert().accept();
         // Switch driver back to the previous window
@@ -245,7 +372,7 @@ public class FrontEndSeleniumTests {
         /* Test for the singleDayCheckbox */
 
         // Increase the te-amount to 2
-        driver.findElement(By.id("btnIncrement")).click();
+        driver.findElement(By.id("btnIncrementTEs")).click();
         // Check the checkbox
         driver.findElement(By.id("singleDayCheck")).click();
         // Check if there are not more than 1 input field for the repeats
@@ -281,7 +408,15 @@ public class FrontEndSeleniumTests {
     @Test
     public void checkDeletionSuccess() {
         WebDriver driver = sysProperties();
-        loginAsUser(driver);
+        // Login at website as user with email "yannick@gmail.com" and password "123"
+        driver.navigate().to("http://localhost:8080/");
+        driver.findElement(By.id("email"))
+                .sendKeys("yannick@gmail.com");
+        driver.findElement(By.id("password")).sendKeys("123");
+        driver.findElement(By.cssSelector("input.btn")).click();
+
+        // Check User is logged in
+        assertEquals(driver.getCurrentUrl(), "http://localhost:8080/user/home");
 
         //locate delete button and delete own profile
         driver.navigate().to("http://localhost:8080/users/");
@@ -299,8 +434,8 @@ public class FrontEndSeleniumTests {
         //check if he can log in to the deleted profile
         driver.navigate().to("http://localhost:8080/");
         driver.findElement(By.id("email"))
-                .sendKeys("alex@gmail.com");
-        driver.findElement(By.id("password")).sendKeys("password");
+                .sendKeys("yannick@gmail.com");
+        driver.findElement(By.id("password")).sendKeys("123");
         driver.findElement(By.cssSelector("input.btn")).click();
         url = driver.getCurrentUrl();
         assertTrue(url.equals("http://localhost:8080/login?error"));
@@ -308,18 +443,7 @@ public class FrontEndSeleniumTests {
         //check as moderator if the profile is deleted
         loginAsModerator(driver);
         driver.navigate().to("http://localhost:8080/mods/searchuser");
-        assertTrue(driver.findElements(By.id("2")).size() == 0);
-
-        //recreate profile of alex since other tests depend on it
-        driver.navigate().to("http://localhost:8080/registration");
-        driver.findElement(By.id("email"))
-                .sendKeys("alex@gmail.com");
-        driver.findElement(By.id("password"))
-                .sendKeys("password");
-        driver.findElement(By.id("confirmPassword"))
-                .sendKeys("password");
-        driver.findElement(By.id("register")).click();
-        loginAsUser(driver);
+        assertTrue(driver.findElements(By.id("4")).size() == 0);
 
         driver.quit();
 

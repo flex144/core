@@ -203,11 +203,11 @@
                 <div class="col col-general">
                     <div class="input-group input-group-general">
                         <span class="input-group-addon">Zielgruppe:</span>
-                        <select id="targetGroup" class="form-control" required>
-                            <option selected disabled hidden>Wähle eine Gruppe aus...</option>
-                            <option>Anfänger</option>
-                            <option>Fortgeschritten</option>
-                            <option>Profi</option>
+                        <select id="targetGroup" class="form-control" required th:field="*{targetGroup}">
+                            <option th:value="null" selected disabled hidden>Wähle eine Gruppe aus...</option>
+                            <option th:value="beginner">Anfänger</option>
+                            <option th:value="medium">Fortgeschritten</option>
+                            <option th:value="expert">Profi</option>
                         </select>
                     </div>
                 </div>
@@ -258,7 +258,7 @@
                                 </button>
                             </div>
                             <input type="text" name="trainingUnitsPerWeek" class="form-control" id="inputUnitsPerWeek"
-                                   value="2" align="center" readonly>
+                                   value="2" align="center" readonly th:field="*{recomSessionsPerWeek}">
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default" id="btnIncrementWeeklyTes"
                                         onclick="incrementWeeklyTEs()" style="border-radius: 0px 4px 4px 0px">
@@ -332,7 +332,7 @@
                     <div class="col col-exercise">
                         <div class="input-group">
                             <span class="input-group-addon">RM:</span>
-                            <input  type="text" class="form-control" id="inputRM"
+                            <input th:field="*{repetitionMaximum}" type="text" class="form-control" id="inputRM"
                                     placeholder="Hier repetition Maximum eingeben..">
                         </div>
                     </div>
@@ -1233,7 +1233,7 @@
             $('#counterTE').append(
                 '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
             $('#weightsInputs').append(
-                '<li>' + '<input id="'+weightsInputId+'" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+weightsInputId+'" name="weightDiff" type="text" class="form-control">' + '</li>');
             $('#repsInputs').append(
                 '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
             $('#tempoInputs').append(

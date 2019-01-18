@@ -122,7 +122,7 @@ public class PlanService {
             if (!validateWeightWithReps(reps, weightDiff)) {
                 throw new IllegalArgumentException("reps and weights do not match!");
             }
-            db.insertTrainingsSession(exInstanceId, i + 1, reps.length, weightDiff, reps,
+            db.insertTrainingsSession(exInstanceId, i + 1, reps.length, setWeightDiffToReps(reps,weightDiff), reps,
                     dto.getTempo().get(i), dto.getPause().get(i));
         }
     }
@@ -139,12 +139,20 @@ public class PlanService {
         if (weightDiff.length == reps.length) {
             return true;
         } else if (weightDiff.length == 1 && reps.length > 1) {
-            Integer value = weightDiff[0];
-            weightDiff = new Integer[reps.length];
-            Arrays.fill(weightDiff, value);
             return true;
         } else {
             return false;
+        }
+    }
+
+    private Integer[] setWeightDiffToReps(Integer[] reps, Integer[] weightDiff) {
+        if (weightDiff.length == 1 && reps.length > 1) {
+            Integer value = weightDiff[0];
+            Integer[] toReturn = new Integer[reps.length];
+            Arrays.fill(toReturn, value);
+            return toReturn;
+        } else {
+            return weightDiff;
         }
     }
 
