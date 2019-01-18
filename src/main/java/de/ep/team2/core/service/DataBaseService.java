@@ -296,6 +296,10 @@ public class DataBaseService {
         }
     }
 
+    public void deleteTokenById(int tokenId) {
+        jdbcTemplate.update("DELETE FROM confirmation_token WHERE id = ?", tokenId);
+    }
+
     class TokenRowMapper implements RowMapper<ConfirmationToken> {
         public ConfirmationToken mapRow(ResultSet rs, int rowNum) throws SQLException {
             ConfirmationToken token = new ConfirmationToken();

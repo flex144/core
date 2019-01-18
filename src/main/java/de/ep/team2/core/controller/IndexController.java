@@ -33,6 +33,7 @@ public class IndexController {
         if (token != null) {
             userService.confirmUser(token.getUser());
             redirectAttributes.addFlashAttribute("verified", "Account wurde verifiziert");
+            userService.deleteTokenById(token.getTokenId());
             return "redirect:/login";
         } else {
             model.addAttribute("error", "Link is invalid or broken!");
