@@ -69,6 +69,7 @@ public class TrainingsController {
         dto.setPlanName(tpt.getName());
         dto.setTrainingsFocus(tpt.getTrainingsFocus());
         dto.setSessionNums(tpt.getNumTrainSessions());
+        dto.setRecomSessionsPerWeek(tpt.getRecomSessionsPerWeek());
         redirectAttributes.addFlashAttribute("createDto", dto);
         return "redirect:/mods/createplan";
     }

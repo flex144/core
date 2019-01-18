@@ -39,6 +39,7 @@ public class ModController {
         if (!model.containsAttribute("createDto")) {
             CreatePlanDto dto = new CreatePlanDto();
             dto.setSessionNums(6);
+            dto.setRecomSessionsPerWeek(2);
             model.addAttribute("createDto", dto);
         }
         model.addAttribute("allExercises", exerciseService.getAllExercises());
