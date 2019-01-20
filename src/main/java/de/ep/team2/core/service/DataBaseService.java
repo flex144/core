@@ -206,10 +206,11 @@ public class DataBaseService {
      *
      * @param id user to delete.
      */
-    public void deleteUserById(Integer id) {
+    public void deleteUserById(int id) {
         User toDelete = getUserById(id);
         if (toDelete != null) {
             deleteUserFromPlan(toDelete.getEmail());
+            deleteUserPlanOfUser(toDelete);
             jdbcTemplate.update("DELETE FROM users WHERE id = ?",
                     (Object[]) new Integer[]{id});
             User deleter = (User) SecurityContextHolder.getContext().getAuthentication()
@@ -220,10 +221,22 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Checks if the User to delete has an active plan an if thats the case the deletes the plan from the database.
+     *
+     * @param user user to delete.
+     */
+    private void deleteUserPlanOfUser(User user) {
+       UserPlan userPlan = getUserPlanByUserMail(user.getEmail());
+       if (userPlan != null) {
+           deleteUserPlanAndWeightsById(userPlan.getId());
+       }
+    }
+
     //checks if user is author of a plan template and deletes him from the plan
     private void deleteUserFromPlan (String email) {
         jdbcTemplate.update("UPDATE plan_templates SET author = NULL WHERE " +
-                "author = ?", email);
+                "author = ?", email.toLowerCase());
     }
 
     /**
@@ -256,7 +269,7 @@ public class DataBaseService {
     public void confirmUser(String email) {
         User toChange = getUserByEmail(email);
         if (toChange != null) {
-            jdbcTemplate.update("UPDATE users SET enabled = true WHERE email = ?", email);
+            jdbcTemplate.update("UPDATE users SET enabled = true WHERE email = ?", email.toLowerCase());
             log.debug("Email '" + email + "' is now verificated!");
         }
     }
@@ -329,7 +342,7 @@ public class DataBaseService {
     }
 
     private void changeDetails(String column, String value, String email) {
-        jdbcTemplate.update("UPDATE users SET "+column+" = ? WHERE email = ?", value, email);
+        jdbcTemplate.update("UPDATE users SET "+column+" = ? WHERE email = ?", value, email.toLowerCase());
         log.debug("User '" + email + "' changed " + column + "!");
 
     }
@@ -513,7 +526,7 @@ public class DataBaseService {
         if (name == null || author == null || (oneShotPlan && numTrainSessions > 1)) {
             throw new IllegalArgumentException();
         } else {
-            Object[] insertValues = new Object[]{name, trainingsFocus, targetGroup, author, oneShotPlan, recomSessionsPerWeek,
+            Object[] insertValues = new Object[]{name, trainingsFocus, targetGroup, author.toLowerCase(), oneShotPlan, recomSessionsPerWeek,
                     numTrainSessions,
                     exercisesPerSession};
             jdbcTemplate.update("insert into plan_templates(name,trainings_focus, target_group," +
@@ -982,7 +995,7 @@ public class DataBaseService {
             log.debug("Can't create User Plan because Template doesn't exist. Template ID: " + templateId);
             throw new IllegalArgumentException("Can't create User Plan because Template doesn't exist. Template ID: " + templateId);
         }
-        Object[] insertValues = new Object[]{userMail, templateId, template.getNumTrainSessions()};
+        Object[] insertValues = new Object[]{userMail.toLowerCase(), templateId, template.getNumTrainSessions()};
         jdbcTemplate.update("insert into user_plans(\"user\",template,cursession,maxsession,initial_training_done) values (?,?,0,?,false)"
         , insertValues );
         Integer id = jdbcTemplate.query("select currval" +
@@ -1015,7 +1028,7 @@ public class DataBaseService {
     public UserPlan getUserPlanByUserMail(String userMail) {
         LinkedList<UserPlan> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM user_plans WHERE \"user\" = ?",
-                new String[]{userMail},
+                new String[]{userMail.toLowerCase()},
                 new UserPlanMapper()));
         if (toReturn.isEmpty()) {
             return null;
@@ -1055,7 +1068,7 @@ public class DataBaseService {
         jdbcTemplate.update("DELETE FROM weights WHERE iduserplan = ?",
                     (Object[]) new Integer[]{userPlanID});
         jdbcTemplate.update("DELETE FROM user_plans where id = ?", (Object[]) new Integer[]{userPlanID});
-        log.debug("User plan of " + toDelete.getUserMail() + "with id " + userPlanID + " deleted!");
+        log.debug("User plan with id " + userPlanID + " of " + toDelete.getUserMail() + " deleted!");
     }
 
     // weights

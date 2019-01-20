@@ -1,8 +1,6 @@
-package de.ep.team2.core;
+package de.ep.team2.core.Unit;
 
 
-import de.ep.team2.core.dtos.CreatePlanDto;
-import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.Gender;
 import de.ep.team2.core.enums.TrainingsFocus;

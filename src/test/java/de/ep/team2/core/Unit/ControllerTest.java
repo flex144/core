@@ -1,4 +1,4 @@
-package de.ep.team2.core;
+package de.ep.team2.core.Unit;
 
 import org.junit.Before;
 import org.junit.Test;

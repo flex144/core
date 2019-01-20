@@ -1,4 +1,4 @@
-package de.ep.team2.core;
+package de.ep.team2.core.Selenium;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -6,13 +6,10 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.security.Key;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SeleniumTestUser {
+public class SeleniumTestTrainingOverview {
     WebDriver driver;
     String title;
 
@@ -33,14 +30,15 @@ public class SeleniumTestUser {
      * Function to log into the webpage as user
      */
     public void login(){
+        //needs to be set to own path!
         //System.setProperty("webdriver.gecko.driver", "/Users/flex/Downloads/geckodriver");
         driver = new FirefoxDriver();
 
         //login at website as user with email "alex@gmail.com" and password "password";
         driver.navigate().to("http://localhost:8080/");
         driver.findElement(By.id("email"))
-                .sendKeys("timo@gmail.com");
-        driver.findElement(By.id("password")).sendKeys("hello");
+                .sendKeys("alex@gmail.com");
+        driver.findElement(By.id("password")).sendKeys("password");
         driver.findElement(By.cssSelector("input.btn")).click();
     }
 
@@ -64,36 +62,19 @@ public class SeleniumTestUser {
     @Test
     public void overviewPage(){
         login();
-        String url;
         //check if user can access a Plan
-        driver.findElement(By.id("buttonPlan")).click();
+        driver.navigate().to("http://localhost:8080/user/plan/overview");
+
         title = driver.getTitle();
         assertEquals(title, "Your personalized training page");
 
         modalCheckOverview();
-        waitDuration(500);
 
-        driver.findElement(By.id("exercise1")).click();
-        url = driver.getCurrentUrl();
-        assertEquals(url, "http://localhost:8080/user/plan/exercise/0");
+        driver.findElement(By.id("column")).click();
+
         title = driver.getTitle();
-        assertEquals(title, "Bitte gib deine Daten ein!");
-        driver.findElement(By.id("backButton")).click();
-        url = driver.getCurrentUrl();
-        assertEquals(url, "http://localhost:8080/user/plan");
-
-        String order = driver.findElement(By.id("orderNumber1")).getAttribute("value");
-        driver.findElement(By.id("exercise1")).click();
-        driver.findElement(By.id("userMaxWeight")).sendKeys("1");
-        driver.findElement(By.id("startButton")).click();
-        assertEquals(order, driver.findElement(By.id("currentOrder")).getAttribute("value"));
-        driver.findElement(By.id("exercise2")).click();
-        driver.findElement(By.id("userMaxWeight")).sendKeys("1");
-        driver.findElement(By.id("startButton")).click();
-
-        url = driver.getCurrentUrl();
-        assertEquals(url, "http://localhost:8080/user/home");
-
+        assertEquals(title, "In exercise");
+        driver.quit();
     }
 
     /**
@@ -107,7 +88,6 @@ public class SeleniumTestUser {
         waitDuration(800);
         assertTrue(!driver.findElement(By.id("infoModal")).isDisplayed());
 
-        /* TODO add back once session saves if training has started
         driver.findElement(By.id("startButton")).click();
 
         driver.findElement(By.id("exitOverview")).click();
@@ -115,7 +95,7 @@ public class SeleniumTestUser {
         waitDuration(800);
         driver.findElement(By.id("buttonContinue")).click();
         waitDuration(800);
-        assertTrue(!driver.findElement(By.id("exitModal")).isDisplayed()); */
+        assertTrue(!driver.findElement(By.id("exitModal")).isDisplayed());
 
         driver.findElement(By.id("infoButton")).click();
         assertTrue(driver.findElement(By.id("exerciseModal")).isDisplayed());
@@ -131,17 +111,10 @@ public class SeleniumTestUser {
      */
     @Test
     public void exercisePage(){
-        overviewPage();
-
+        login();
         //check if user can access a Plan
-        driver.findElement(By.id("buttonPlan")).click();
-        title = driver.getTitle();
-        assertEquals(title, "Your personalized training page");
+        driver.navigate().to("http://localhost:8080/user/plan/");
 
-        //accessing the first exercise
-        driver.findElement(By.id("exercise2")).click();
-        String url = driver.getCurrentUrl();
-        assertEquals(url, "http://localhost:8080/user/plan/exercise/1");
         title = driver.getTitle();
         assertEquals(title, "In exercise");
 
@@ -153,16 +126,12 @@ public class SeleniumTestUser {
         stopwatch();
         repCounter();
 
-
-
         driver.findElement(By.id("startButton")).click();
         buttonText = driver.findElement(By.id("startButton")).getText();
         assertEquals(buttonText, "Evaluation");
         driver.findElement(By.id("startButton")).click();
 
-        //feature is to be removed
         evaluation();
-        System.out.println("Evaluation passed");
 
         //Links to correct page on exit
         driver.findElement(By.id("startButton")).click();
@@ -218,19 +187,9 @@ public class SeleniumTestUser {
 
         //Value reset to default
         driver.findElement(By.id("startButton")).click();
-        waitDuration(500);
         repUser = driver.findElement(By.id("repInput")).getAttribute("value");
         userRepitions = Integer.parseInt(repUser);
-        waitDuration(500);
-        String testValue = driver.findElement(By.id("neededReps")).getAttribute("innerHTML");
-        neededRepitions = Integer.parseInt(testValue);
-        System.out.println("user:" + userRepitions);
-        System.out.println("needed:" + neededRepitions);
-        waitDuration(500);
         assertEquals(neededRepitions, userRepitions);
-
-        driver.findElement(By.id("repInput")).sendKeys("3");
-
     }
 
 
@@ -281,6 +240,7 @@ public class SeleniumTestUser {
      * Radio button functionality
      */
     public void evaluation(){
+        //TODO Buttons are not getting unselected after another one has been selected
         //1 not selected
         boolean oneNotSelected = driver.findElement(By.id("difficulty1")).isSelected();
         System.out.println("1" + oneNotSelected);

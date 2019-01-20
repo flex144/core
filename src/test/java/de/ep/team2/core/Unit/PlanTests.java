@@ -1,8 +1,11 @@
-package de.ep.team2.core;
+package de.ep.team2.core.Unit;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.dtos.TrainingsDayDto;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
+import de.ep.team2.core.entities.User;
+import de.ep.team2.core.entities.UserPlan;
+import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.PlanService;
 import org.junit.Rule;
 import org.junit.Test;
@@ -68,7 +71,7 @@ public class PlanTests {
 
     @Test
     @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
-    public void TestChangeNameAndFocus() {
+    public void testChangeNameAndFocus() {
         CreatePlanDto dto = createTestDto();
         CreatePlanDto returnedDto = planService.createPlan(dto);
         assertEquals("Testing the Plan creation", returnedDto.getPlanName());
@@ -82,7 +85,7 @@ public class PlanTests {
     }
 
     @Test
-    public void UserPlanDayCycle() {
+    public void userPlanDayCycle() {
         String userMail = "felix@gmail.com";
         TrainingsPlanTemplate planBasedOn = planService.getPlanTemplateAndSessionsByID(1); // initial tpt
         TrainingsDayDto dayDto = planService.fillTrainingsDayDto(userMail, new TrainingsDayDto());
@@ -114,5 +117,21 @@ public class PlanTests {
         dayDto.clear();
         planService.fillTrainingsDayDto(userMail, dayDto);
         assertTrue(dayDto.isInitialTraining());
+    }
+
+    @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
+    public void deletePlanOfUser() {
+        DataBaseService db = DataBaseService.getInstance();
+        String userMail = "PlanTest@Test.com";
+        // create user
+        int idOfNewUser = db.insertUser(userMail, null, null, "12345");
+        // create plan
+        planService.fillTrainingsDayDto(userMail, new TrainingsDayDto());
+        assertNotNull(db.getUserPlanByUserMail(userMail));
+        // delete user and plan
+        db.deleteUserById(idOfNewUser);
+        assertNull(db.getUserPlanByUserMail(userMail));
+        assertNull(db.getUserById(idOfNewUser));
     }
 }

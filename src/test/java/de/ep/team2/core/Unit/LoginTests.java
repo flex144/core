@@ -1,4 +1,4 @@
-package de.ep.team2.core;
+package de.ep.team2.core.Unit;
 
 import de.ep.team2.core.service.UserService;
 import org.junit.Before;

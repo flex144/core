@@ -1,4 +1,4 @@
-package de.ep.team2.core;
+package de.ep.team2.core.Selenium;
 
 import org.junit.Test;
 import org.openqa.selenium.By;
