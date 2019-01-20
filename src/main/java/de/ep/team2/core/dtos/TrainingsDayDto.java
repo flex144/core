@@ -13,6 +13,11 @@ public class TrainingsDayDto {
     private Boolean initialTraining;
     private String currentCategory;
     private Integer currentSession;
+    private boolean trainingStarted;
+
+    public TrainingsDayDto() {
+        trainingStarted = false;
+    }
 
     public LinkedList<ExerciseDto> getExercises() {
         return exercises;
@@ -68,6 +73,14 @@ public class TrainingsDayDto {
         this.currentSession = currentSession;
     }
 
+    public boolean isTrainingStarted() {
+        return trainingStarted;
+    }
+
+    public void setTrainingStarted(boolean trainingStarted) {
+        this.trainingStarted = trainingStarted;
+    }
+
     /**
      * resets the DTO without having to invalidate the session.
      */
@@ -76,5 +89,6 @@ public class TrainingsDayDto {
         this.initialTraining = null;
         this.currentCategory = null;
         this.currentSession = null;
+        this.trainingStarted = false;
     }
 }
