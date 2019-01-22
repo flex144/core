@@ -63,8 +63,68 @@
         <div class="panel-body">
             <div id="myCarousel" class="carousel slide" data-interval="false">
                 <div class="carousel-inner">
-                    <!-- Carousel page for personal data input -->
+                    <!-- Carousel page to determine the users wants an individual plan or a bullet plan -->
                     <div class="item active">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" align="center">
+                                <h5><b>Trainingsart wählen</b></h5>
+                            </div>
+                            <div class="panel-body">
+                                <div class="col-container">
+                                    <div class="col col-plan">
+                                        <br>
+                                        <div class="panel panel-default panel-plan-art">
+                                            <div class="panel-heading" align="center">
+                                                Eintages-Trainingsplan
+                                            </div>
+                                            <div class="panel-body">
+                                                <p style="font-size: 14px">
+                                                    Mit einem Eintagesplan erhältst du eine Auswahl an Trainingsübungen,
+                                                    die du an dem einen enthaltenen Trainingstag beliebig oft mit sich
+                                                    steigernder Schwierigkeit ausführen
+                                                </p>
+                                                <div class="visible-md visible-lg">
+                                                    <br><br><br>
+                                                </div>
+                                            </div>
+                                            <div class="panel-footer">
+                                                <a class="btn button btn-block" id="btnSingleDayPlan"
+                                                   onclick="jumpToBulletEnd()">
+                                                    Auswählen
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col col-plan">
+                                        <br>
+                                        <div class="panel panel-default panel-plan-art">
+                                            <div class="panel-heading" align="center">
+                                                Individueller Trainingsplan
+                                            </div>
+                                            <div class="panel-body">
+                                                <p style="font-size: 14px">
+                                                    Mit dieser Auswahl bekommst einen auf deine Bedürfnisse
+                                                    zugeschnittenen Trainingsplan, der sich an deinen Fähigkeiten
+                                                    orientiert und sich gemeinsam mit dir verändert.
+                                                    <br><br>
+                                                    Dieser Plan kann sich je nach Auswahl über mehrere Wochen
+                                                    erstrecken und bestimmte Trainingsziele beinhalten.
+                                                </p>
+                                            </div>
+                                            <div class="panel-footer">
+                                                <a class="btn button btn-block" id="btnIndividualPlan"
+                                                   href="#myCarousel" data-slide="next" type="button">
+                                                    Auswählen
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Carousel page for personal data input -->
+                    <div class="item">
                         <div class="jumbotron">
                             <div class="container-fluid">
                                 <h2>Relevante Informationen für deinen Trainingsplan angeben</h2>
@@ -78,8 +138,20 @@
                             </div>
                         </div>
                         <div class="panel panel-default">
-                            <div class="panel-heading" align="center">
-                                <h5><b>Persönliche Daten eingeben (Optional?)</b></h5>
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage1"
+                                           data-slide="prev">
+                                            <span class="glyphicon glyphicon-chevron-left"></span>
+                                            Zurück
+                                        </a>
+                                    </div>
+                                    <div class="col-md-8" align="center">
+                                        <h5><b>Persönliche Daten eingeben (Optional)</b></h5>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
                             </div>
                             <div class="panel-body">
                                 <div class="col-md-12">
@@ -148,78 +220,6 @@
                                             Weiter
                                             <span class="glyphicon glyphicon-chevron-right"></span>
                                         </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Carousel page to determine the users wants an individual plan or a bullet plan -->
-                    <div class="item">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage1"
-                                           data-slide="prev">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Trainingsplanart wählen</b></h5>
-                                    </div>
-                                    <div class="col-md-2"></div>
-                                </div>
-                            </div>
-                            <div class="panel-body">
-                                <div class="col-container">
-                                    <div class="col col-plan">
-                                        <br>
-                                        <div class="panel panel-default panel-plan-art">
-                                            <div class="panel-heading" align="center">
-                                                Eintages-Trainingsplan
-                                            </div>
-                                            <div class="panel-body">
-                                                <p style="font-size: 14px">
-                                                    Mit einem Eintagesplan erhältst du eine Auswahl an Trainingsübungen,
-                                                    die du an dem einen enthaltenen Trainingstag beliebig oft mit sich
-                                                    steigernder Schwierigkeit ausführen
-                                                </p>
-                                                <div class="visible-md visible-lg">
-                                                    <br><br><br>
-                                                </div>
-                                            </div>
-                                            <div class="panel-footer">
-                                                <a class="btn button btn-block" id="btnSingleDayPlan"
-                                                   onclick="jumpToBulletEnd()">
-                                                    Auswählen
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col col-plan">
-                                        <br>
-                                        <div class="panel panel-default panel-plan-art">
-                                            <div class="panel-heading" align="center">
-                                                Individueller Trainingsplan
-                                            </div>
-                                            <div class="panel-body">
-                                                <p style="font-size: 14px">
-                                                    Mit dieser Auswahl bekommst einen auf deine Bedürfnisse
-                                                    zugeschnittenen Trainingsplan, der sich an deinen Fähigkeiten
-                                                    orientiert und sich gemeinsam mit dir verändert.
-                                                    <br><br>
-                                                    Dieser Plan kann sich je nach Auswahl über mehrere Wochen
-                                                    erstrecken und bestimmte Trainingsziele beinhalten.
-                                                </p>
-                                            </div>
-                                            <div class="panel-footer">
-                                                <a class="btn button btn-block" id="btnIndividualPlan"
-                                                   href="#myCarousel" data-slide="next" type="button">
-                                                    Auswählen
-                                                </a>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -809,7 +809,7 @@
      * Function to jump to the crousel page to determine type of plan
      */
     function jumpToChoosePlan() {
-        $('#myCarousel').carousel(1);
+        $('#myCarousel').carousel(0);
     }
 
     /**
@@ -866,13 +866,6 @@
      */
     function jumpToBulletEnd() {
         $('#myCarousel').carousel(12);
-    }
-
-    /**
-     * Temporary function to show alert after data is supposed to be stored
-     */
-    function sendData() {
-        alert("Persönliche Daten wurden gespeichert");
     }
 </script>
 </body>

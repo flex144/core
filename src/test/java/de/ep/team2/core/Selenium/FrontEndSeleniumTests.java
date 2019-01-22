@@ -146,6 +146,18 @@ public class FrontEndSeleniumTests {
         // Check if the correct site loaded by comparing the website title
         assertEquals(currentTitle, "Nutzerdaten eingeben");
 
+        // Choose single-day-plan
+        driver.findElement(By.id("btnSingleDayPlan")).click();
+        waitDuration(500);
+
+        // Return to the choice of plan type
+        driver.findElement(By.id("btnReturnPage12")).click();
+        waitDuration(500);
+
+        // Choose an individual plan
+        driver.findElement(By.id("btnIndividualPlan")).click();
+        waitDuration(500);
+
         // Enter personal data
         driver.findElement(By.id("firstname")).sendKeys("Benedikt");
         driver.findElement(By.id("lastname")).sendKeys("Schwarz");
@@ -159,23 +171,11 @@ public class FrontEndSeleniumTests {
         waitDuration(500);
 
         // Return to the previous page
-        driver.findElement(By.id("btnReturnPage1")).click();
+        driver.findElement(By.id("btnReturnPage2")).click();
         waitDuration(500);
 
         // Continue to the next page
         driver.findElement(By.className("btn-success")).click();
-        waitDuration(500);
-
-        // Choose single-day-plan
-        driver.findElement(By.id("btnSingleDayPlan")).click();
-        waitDuration(500);
-
-        // Return to the choice of plan type
-        driver.findElement(By.id("btnReturnPage12")).click();
-        waitDuration(500);
-
-        // Choose an individual plan
-        driver.findElement(By.id("btnIndividualPlan")).click();
         waitDuration(500);
 
         // Enter that you haven´t trained on a regular basis before
