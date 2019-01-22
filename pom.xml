@@ -6,7 +6,8 @@
 	<groupId>de.ep.team2</groupId>
 	<artifactId>core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+    <!-- needed for deploy on tomcat otherwise jar -->
+	<packaging>war</packaging>
 
 	<name>core</name>
 	<description>Core for workout application</description>
@@ -22,6 +23,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+        <!-- used for tomcat deploying cause selenium tests don't run without server -->
+        <skipTests>true</skipTests>
 	</properties>
 
 	<dependencies>
@@ -41,6 +44,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+        <!-- needed to deploy on tomcat -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
@@ -81,6 +90,8 @@
     </dependencies>
 
     <build>
+        <finalName>team2</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
