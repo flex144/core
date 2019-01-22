@@ -67,7 +67,7 @@ public class DataBaseServiceUnitTests {
 
     @Test
     public void getAllUsers() {
-        assertEquals(4, DataBaseService.getInstance().getAllUsers().size());
+        assertEquals(5, DataBaseService.getInstance().getAllUsers().size());
     }
 
     @Test

@@ -45,11 +45,11 @@ public class CustomAuthSuccessHandler implements AuthenticationSuccessHandler {
         if(mod) {
             User loggedInUser = (User) authentication.getPrincipal();
             log.debug("Mod " + loggedInUser.getEmail() + " logged in successfully.");
-            response.sendRedirect("/mods/home");
+            response.sendRedirect("mods/home");
         } else {
             User loggedInUser = (User) authentication.getPrincipal();
             log.debug("User " + loggedInUser.getEmail() + " logged in successfully.");
-            response.sendRedirect("/user/home");
+            response.sendRedirect("user/home");
         }
     }
 }

@@ -5,6 +5,7 @@ import de.ep.team2.core.entities.ConfirmationToken;
 import de.ep.team2.core.service.EmailSenderService;
 import de.ep.team2.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import javax.xml.ws.spi.http.HttpContext;
 
 /**
  * Controller, which handles the registration process.
@@ -23,6 +27,9 @@ public class RegistrationController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ApplicationContext appContext;
 
     @Autowired
     private EmailSenderService emailSenderService;
@@ -57,7 +64,8 @@ public class RegistrationController {
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(userDto.getEmail());
             mailMessage.setSubject("Complete Registration!");
-            String url = "http://localhost:8080/confirm?token=" + confirmationToken.getConfirmationToken();
+            String uri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString();
+            String url = uri + "/confirm?token=" + confirmationToken.getConfirmationToken();
             mailMessage.setText("To confirm your account, please click here : '" + url + "' . (If that" +
                     " doesn't work, please copy and paste the link into your browser.)");
 

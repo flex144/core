@@ -19,15 +19,11 @@
 
     <!-- Here the Archiving can be configured. -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>target/logs/core.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>target/logs/core_archived.%i.log.zip</fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>3</maxIndex>
+        <!-- used for IDE logging --><file>target/logs/core.log</file>
+        <!-- used for external tomcat <file>webapps/team2/logs/core.log</file>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>target/logs/core_archived.%d.log.zip</fileNamePattern>
         </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>10 MB</maxFileSize>
-        </triggeringPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${FILE_LOG_PATTERN}</pattern>
             <charset>utf8</charset>

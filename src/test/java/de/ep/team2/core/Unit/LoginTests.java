@@ -49,7 +49,7 @@ public class LoginTests {
             .andDo(print())
             .andExpect(status().is(302));
         String redirectUrl = action.andReturn().getResponse().getHeader("Location");
-        assertTrue("redirect to user/home", redirectUrl.equals("/user/home"));
+        assertTrue("redirect to user/home", redirectUrl.equals("user/home"));
 
         //test if non existing user can log in
         requestBuilder = formLogin().user("test@test.de").password("password");

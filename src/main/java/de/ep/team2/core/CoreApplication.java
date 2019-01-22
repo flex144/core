@@ -7,16 +7,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
+// needed for tomcat deploy
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+
 
 @SpringBootApplication
-public class CoreApplication implements CommandLineRunner{
+public class CoreApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
-    private final JdbcTemplate jdbcTemplate;
-
+    //needed for tomcat deploy
     @Autowired
-    public CoreApplication(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
+    private JdbcTemplate jdbcTemplate;
 
     public static void main(String args[]) {
         SpringApplication.run(CoreApplication.class, args);

@@ -1,24 +1,17 @@
 package de.ep.team2.core.dataInit;
 
-import de.ep.team2.core.enums.ExperienceLevel;
-import de.ep.team2.core.enums.Gender;
-import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.dtos.TrainingsDayDto;
 import de.ep.team2.core.entities.UserPlan;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Calendar;
-import java.util.Date;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,22 +20,99 @@ import java.util.List;
  */
 public class DataInit {
 
-    public static final int MAX_SETS = 7;
+    // Variables used to configure the Application
+
+    private final String adminMail = "admin@ep18.com";
+    private final String adminPassword = "QxA4cxKWAT2bwmsD";
+    private final boolean fillWithExampleData = true;
+    // clears Database on each server start, required 'true' to run unit tests
+    private final boolean alwaysClearDb = true;
 
     private JdbcTemplate jdbcTemplate;
     private static final Logger log = LoggerFactory.getLogger(DataInit.class);
     private UserService userService = new UserService();
 
+    /**
+     * Initiates the data when this wasn't already done.
+     *
+     * @param jdbcTemplate jdbc Connection to the Database.
+     */
     public DataInit(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        if (alwaysClearDb) {
+            initateDatabase();
+        } else {
+            switch (checkTables()) {
+            case "AllExisting":
+                log.info("All Tables found. Launch Completed.");
+                break;
+            case "FirstLaunch":
+                log.info("No Tables found. Initiating first Launch and creating tables.");
+                initateDatabase();
+                break;
+            case "Error":
+                log.error("One or more tables are missing in the Database! This will cause Failures.");
+            }
+        }
+    }
+
+    private void initateDatabase() {
         initTables();
-        fillUsers();
-        fillExercises();
-        fillPlanTemplates();
-        fillExerciseInstances();
-        fillTrainingSessions();
-        fillUserPlans();
-        fillWeights();
+        addAdmin();
+        if (fillWithExampleData) {
+            fillUsers();
+            fillExercises();
+            fillPlanTemplates();
+            fillExerciseInstances();
+            fillTrainingSessions();
+            fillUserPlans();
+            fillWeights();
+        }
+    }
+
+    /**
+     * Checks if all, no or just a few tables are present.
+     *
+     * @return 'AllExisting' when all Tables are present;
+     * 'FirstLaunch' when there are none of the tables in the Database;
+     * 'Error' when some tables are missing cause this shouldn't be the case.
+     */
+    private String checkTables() {
+        boolean allExist = true;
+        boolean noneExist = true;
+        String[] tableNames = new String[]{"users", "confirmation_token", "exercises", "images",
+                "plan_templates", "exercise_instances", "execution_tags", "ex_tags_map",
+                "trainings_sessions", "user_plans", "weights"};
+        try {
+            for (String tableName : tableNames) {
+                Connection connection = jdbcTemplate.getDataSource().getConnection();
+                DatabaseMetaData md = connection.getMetaData();
+                ResultSet rs = md.getTables(null, null, tableName, null);
+                if (rs.next()) {
+                    log.debug("Table '" + tableName + "' exists!");
+                    noneExist = false;
+                } else {
+                    log.debug("Table '" + tableName + "' missing!");
+                    allExist = false;
+                }
+            }
+        } catch (Exception exception) {
+            log.error("Server couldn't be started because of an SQL Exception! check the Database." + exception.getMessage());
+            return "Error";
+        }
+        if (allExist) {
+            return "AllExisting";
+        } else if (noneExist) {
+            return "FirstLaunch";
+        } else {
+            return "Error";
+        }
+    }
+
+    private void addAdmin() {
+        int id = DataBaseService.getInstance().insertUser(adminMail, null, null, userService.encode(adminPassword));
+        DataBaseService.getInstance().confirmUser(adminMail);
+        DataBaseService.getInstance().changeToMod(id);
     }
 
     private void initTables() {
@@ -86,7 +156,7 @@ public class DataInit {
                 "exercise integer references exercises not null," +
                 "path varchar(400) PRIMARY KEY," +
                 "img_type varchar(10) NOT NULL)");
-        initImages();
+        //initImages();
         log.debug("Created table images");
         // Plan Templates
         jdbcTemplate.execute("DROP TABLE IF EXISTS plan_templates cascade ");
@@ -165,27 +235,9 @@ public class DataInit {
         log.debug("Created table weights");
     }
 
-    private void initImages() {
-        try {
-            FileUtils.deleteDirectory(new File("src/main/resources/static/images/"));
-            String sourceBank = "src/main/resources/static/initFileBackup/Bankdrücken";
-            String destBank = "src/main/resources/static/images/Bankdrücken";
-            String sourceLieg = "src/main/resources/static/initFileBackup/Liegestütz";
-            String destLieg = "src/main/resources/static/images/Liegestütz";
-            Files.createDirectories(Paths.get(destBank));
-            Files.createDirectories(Paths.get(destLieg));
-            Files.copy(Paths.get(sourceBank + "/3-Narrow-grip-bench-press_zpsysfv9zvj.png"), Paths.get(destBank + "/3-Narrow-grip-bench-press_zpsysfv9zvj.png"));
-            Files.copy(Paths.get(sourceBank + "/Bankdruecken-Bench-Press.jpg"), Paths.get(destBank + "/Bankdruecken-Bench-Press.jpg"));
-            Files.copy(Paths.get(sourceLieg + "/Liegestuetze-Startposition.jpg"), Paths.get(destLieg + "/Liegestuetze-Startposition.jpg"));
-            Files.copy(Paths.get(sourceLieg + "/Liegestuetze-Muskelgruppen.jpg"), Paths.get(destLieg + "/Liegestuetze-Muskelgruppen.jpg"));
-            Files.copy(Paths.get(sourceLieg + "/Liegestuetze-Endposition.jpg"), Paths.get(destLieg + "/Liegestuetze-Endposition.jpg"));
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
     private void fillUsers() {
         LinkedList<String[]> initTestData = new LinkedList<>();
+        String[] admin = {"admin@ep18.com", null, null, userService.encode("QxA4cxKWAT2bwmsD")};
         String[] timo = {"timo@gmail.com", "Timo", "Heinrich", userService.encode("hello")};
         String[] alex = {"alex@gmail.com", "Alexander", "Reißig", userService.encode("password")};
         String[] felix = {"felix@gmail.com", "Felix", "Wilhelm", userService.encode("123")};
@@ -198,13 +250,13 @@ public class DataInit {
             DataBaseService.getInstance().insertUser(o[0], o[1], o[2], o[3]);
             DataBaseService.getInstance().confirmUser(o[0]);
         }
-        DataBaseService.getInstance().changeToMod(3);
+        DataBaseService.getInstance().changeToMod(4);
     }
 
     private void fillExercises() {
         List<String[]> paths = new LinkedList<>();
-        paths.add(new String[]{"/images/Bankdrücken/Bankdruecken-Bench-Press.jpg", "muscle"});
-        paths.add(new String[]{"/images/Bankdrücken/3-Narrow-grip-bench-press_zpsysfv9zvj.png", "other"});
+        paths.add(new String[]{"/images/Exercises/Bankdrücken/Bankdruecken-Bench-Press.jpg", "muscle"});
+        paths.add(new String[]{"/images/Exercises/Bankdrücken/3-Narrow-grip-bench-press_zpsysfv9zvj.png", "other"});
         DataBaseService.getInstance().insertExercise("Bankdrücken", "Lege " +
                         "dich mit dem Rücken auf die Flachbank und positioniere deinen Oberkörper so," +
                         " dass sich die in der Halterung liegende Langhantel etwa auf Augenhöhe befindet. " +
@@ -213,29 +265,13 @@ public class DataInit {
                         "\n" +
                         "Wichtig ist auch die Haltung der Schulterblätter: " +
                         "Ziehe sie nach hinten, um die Schultergelenke zu " +
-                        "stabilisieren.\n" +
-                        "\n" +
-                        "Wenn du deinen Körper in die oben beschriebene " +
-                        "Position gebracht hast, kannst du die Langhantel " +
-                        "etwas breiter als schulterbreit umgreifen und sie " +
-                        "aus der Halterung heben.\n" +
-                        "\n" +
-                        "Zur Griffweise beim Bankdrücken: Im Kraftsport ist " +
-                        "es mitunter üblich, die Hantelstange nicht mit dem " +
-                        "Daumen zu umgreifen, sondern selbigen neben die " +
-                        "anderen Finger zu legen. Die Stange ist dann nicht " +
-                        "fest umschlossen, sondern ruht zwischen Handflächen " +
-                        "und Fingern. Man nennt dies den Affengriff. Diese " +
-                        "Grifftechnik birgt ein hohes Risiko, denn die Stange" +
-                        " kann abrutschen. Wir empfehlen deshalb, die " +
-                        "Hantelstange mit dem Daumen und den anderen Fingern " +
-                        "vollständig zu umschließen ",
+                        "stabilisieren.\n",
                 WeightType.FIXED_WEIGHT,
                 "https://www.youtube.com/embed/jYQtBKRs_D8", paths);
         List<String[]> paths2 = new LinkedList<>();
-        paths2.add(new String[]{"/images/Liegestütz/Liegestuetze-Muskelgruppen.jpg", "muscle"});
-        paths2.add(new String[]{"/images/Liegestütz/Liegestuetze-Startposition.jpg", "other"});
-        paths2.add(new String[]{"/images/Liegestütz/Liegestuetze-Endposition.jpg", "other"});
+        paths2.add(new String[]{"/images/Exercises/Liegestütz/Liegestuetze-Muskelgruppen.jpg", "muscle"});
+        paths2.add(new String[]{"/images/Exercises/Liegestütz/Liegestuetze-Startposition.jpg", "other"});
+        paths2.add(new String[]{"/images/Exercises/Liegestütz/Liegestuetze-Endposition.jpg", "other"});
         DataBaseService.getInstance().insertExercise("Liegestütz", "Genauso " +
                         "wie beim Bankdrücken. Nur dass du deinen Körper bewegt, anstelle der Stange.\n" +
                         "Hände sind schulterweit auf dem Boden.\n" +
