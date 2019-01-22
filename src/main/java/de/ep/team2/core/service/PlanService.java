@@ -279,6 +279,10 @@ public class PlanService {
         }
     }
 
+    public void confirmPlan(int idOfTemplate) {
+        DataBaseService.getInstance().confirmPlan(idOfTemplate);
+    }
+
     private Integer[] calcWeights(Integer weight, int setsNum, Integer[] weightDiff) {
         Integer[] weights = new Integer[setsNum];
         Arrays.fill(weights, weight);

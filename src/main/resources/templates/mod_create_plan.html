@@ -441,8 +441,9 @@
                 </div>
             </div>
         </div>
-
+    </form>
         <!-- panel with overview of final plan and button to save the plan -->
+    <form th:action="@{/mods/confirmPlan}" method="post">
         <div class="panel panel-success outerPanel">
             <div class="panel-heading">
                 Aktueller Trainingsplan
@@ -504,7 +505,7 @@
                         </button>
                     </div>
                     <div class="col-md-2">
-                        <button type="button" id="savePlan" class="btn btn-success btn-block" onclick="resetPlan()">
+                        <button type="submit" id="savePlan" class="btn btn-success btn-block" onclick="resetPlan()">
                             <span class="glyphicon glyphicon-floppy-save"></span>
                             Plan speichern
                         </button>

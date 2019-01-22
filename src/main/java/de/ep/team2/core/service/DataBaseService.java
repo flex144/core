@@ -704,6 +704,23 @@ public class DataBaseService {
         return numOfExes;
     }
 
+    /**
+     * Confirms a plan (indicating it's complete), so users can use it.
+     * @param idOfTemplate Id of the Template to confirm
+     */
+    public void confirmPlan(int idOfTemplate) {
+        TrainingsPlanTemplate toConfirm = getOnlyPlanTemplateById(idOfTemplate);
+        if(toConfirm != null) {
+            jdbcTemplate.update("UPDATE plan_templates SET complete = TRUE where id = ?",
+                    idOfTemplate);
+            User user = (User) SecurityContextHolder.getContext().getAuthentication()
+                    .getPrincipal();
+            log.debug("Plan Template '" + toConfirm.getName() + "' with ID: '"
+                    + toConfirm.getId() + "' confirmed by " + user.getEmail() + "!");
+
+        }
+    }
+
     // Exercises Instances
 
     /**
