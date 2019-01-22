@@ -1025,6 +1025,11 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Deletes all userplans, which are based on the searched plan template.
+     * @param templateId Id of the searched plan template
+     * @return Returns users whose plan was based on the plan template.
+     */
     public LinkedList<User> deleteUserPlansByTemplateId(int templateId) {
         LinkedList<UserPlan> userPlans = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM user_plans WHERE template = ?",

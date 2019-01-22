@@ -38,11 +38,12 @@ public class PlanService {
      * Deletes a Template and all its Children.
      *
      * @param id id of template to delete.
+     * @return List of users whose plan was based on the deleted plan template
      */
-    public void deleteTemplateAndChildrenById(int id) {
+    public LinkedList<User> deleteTemplateAndChildrenById(int id) {
         DataBaseService db = DataBaseService.getInstance();
         TrainingsPlanTemplate tempToDelete = db.getPlanTemplateAndSessionsByID(id);
-        db.deleteUserPlansByTemplateId(id);
+         LinkedList<User> users = db.deleteUserPlansByTemplateId(id);
         for (ExerciseInstance ei : tempToDelete.getExerciseInstances()) {
             for (TrainingsSession ts : ei.getTrainingsSessions()) {
                 db.deleteTrainingsSessionById(ts.getId());
@@ -50,6 +51,7 @@ public class PlanService {
             db.deleteExerciseInstanceByID(ei.getId());
         }
         db.deletePlanTemplateByID(id);
+        return users;
     }
 
     /**

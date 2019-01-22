@@ -2,8 +2,12 @@ package de.ep.team2.core.controller;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
+import de.ep.team2.core.entities.User;
+import de.ep.team2.core.service.EmailSenderService;
 import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.PlanService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -13,6 +17,9 @@ import java.util.LinkedList;
 @Controller
 @RequestMapping("/mods/")
 public class TrainingsController {
+
+    @Autowired
+    private EmailSenderService emailSenderService;
 
     /**
      * Handles the adding of an exercise to a plan template or creating a new template with an
@@ -75,7 +82,7 @@ public class TrainingsController {
     }
 
     /**
-     * deletes a plan with an specific id.
+     * deletes a plan with an specific id and sends an email to all users whose plan was based on the deleted plan.
      *
      * @param id id of plan to delete.
      * @return the page mods_plan_search.
@@ -83,7 +90,15 @@ public class TrainingsController {
     @DeleteMapping("/plans/{id}")
     public String deletePlanAndChildren(@PathVariable("id") Integer id) {
         PlanService service = new PlanService();
-        service.deleteTemplateAndChildrenById(id);
+        LinkedList<User> users = service.deleteTemplateAndChildrenById(id);
+        for (User user : users) {
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setTo(user.getEmail());
+            mailMessage.setSubject("Plan has been reset!");
+            mailMessage.setText("Unfortunately your plan has been deleted since your plan is outdated. Please " +
+                    "log in and create a new one and keep training!");
+            emailSenderService.sendEmail(mailMessage);
+        }
         return "redirect:/mods/searchplan";
     }
 
