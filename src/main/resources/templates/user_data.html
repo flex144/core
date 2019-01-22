@@ -61,116 +61,116 @@
 <div class="container">
     <div class="panel panel-default outerPanel">
         <div class="panel-body">
-            <div id="myCarousel" class="carousel slide" data-interval="false">
-                <div class="carousel-inner">
-                    <!-- Carousel page to determine the users wants an individual plan or a bullet plan -->
-                    <div class="item active">
-                        <div class="panel panel-default">
-                            <div class="panel-heading" align="center">
-                                <h5><b>Trainingsart wählen</b></h5>
-                            </div>
-                            <div class="panel-body">
-                                <div class="col-container">
-                                    <div class="col col-plan">
-                                        <br>
-                                        <div class="panel panel-default panel-plan-art">
-                                            <div class="panel-heading" align="center">
-                                                Eintages-Trainingsplan
-                                            </div>
-                                            <div class="panel-body">
-                                                <p style="font-size: 14px">
-                                                    Mit einem Eintagesplan erhältst du eine Auswahl an Trainingsübungen,
-                                                    die du an dem einen enthaltenen Trainingstag beliebig oft mit sich
-                                                    steigernder Schwierigkeit ausführen
-                                                </p>
-                                                <div class="visible-md visible-lg">
-                                                    <br><br><br>
+            <!-- TODO add th:action and th:object to the form -->
+            <form  th:action="@{}" th:object="${}" method="post">
+                <div id="myCarousel" class="carousel slide" data-interval="false">
+                    <div class="carousel-inner">
+                        <!-- Carousel page to determine the users wants an individual plan or a bullet plan -->
+                        <div class="item active">
+                            <div class="panel panel-default">
+                                <div class="panel-heading" align="center">
+                                    <h5><b>Trainingsart wählen</b></h5>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="col-container">
+                                        <div class="col col-plan">
+                                            <br>
+                                            <div class="panel panel-default panel-plan-art">
+                                                <div class="panel-heading" align="center">
+                                                    Eintages-Trainingsplan
+                                                </div>
+                                                <div class="panel-body">
+                                                    <p style="font-size: 14px">
+                                                        Mit einem Eintagesplan erhältst du eine Auswahl an
+                                                        Trainingsübungen, die du an dem einen enthaltenen Trainingstag
+                                                        beliebig oft mit sich steigernder Schwierigkeit ausführen
+                                                    </p>
+                                                    <div class="visible-md visible-lg">
+                                                        <br><br><br>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-footer">
+                                                    <a class="btn button btn-block" id="btnSingleDayPlan"
+                                                       onclick="jumpToBulletEnd()">
+                                                        Auswählen
+                                                    </a>
                                                 </div>
                                             </div>
-                                            <div class="panel-footer">
-                                                <a class="btn button btn-block" id="btnSingleDayPlan"
-                                                   onclick="jumpToBulletEnd()">
-                                                    Auswählen
-                                                </a>
-                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col col-plan">
-                                        <br>
-                                        <div class="panel panel-default panel-plan-art">
-                                            <div class="panel-heading" align="center">
-                                                Individueller Trainingsplan
-                                            </div>
-                                            <div class="panel-body">
-                                                <p style="font-size: 14px">
-                                                    Mit dieser Auswahl bekommst einen auf deine Bedürfnisse
-                                                    zugeschnittenen Trainingsplan, der sich an deinen Fähigkeiten
-                                                    orientiert und sich gemeinsam mit dir verändert.
-                                                    <br><br>
-                                                    Dieser Plan kann sich je nach Auswahl über mehrere Wochen
-                                                    erstrecken und bestimmte Trainingsziele beinhalten.
-                                                </p>
-                                            </div>
-                                            <div class="panel-footer">
-                                                <a class="btn button btn-block" id="btnIndividualPlan"
-                                                   href="#myCarousel" data-slide="next" type="button">
-                                                    Auswählen
-                                                </a>
+                                        <div class="col col-plan">
+                                            <br>
+                                            <div class="panel panel-default panel-plan-art">
+                                                <div class="panel-heading" align="center">
+                                                    Individueller Trainingsplan
+                                                </div>
+                                                <div class="panel-body">
+                                                    <p style="font-size: 14px">
+                                                        Mit dieser Auswahl bekommst einen auf deine Bedürfnisse
+                                                        zugeschnittenen Trainingsplan, der sich an deinen Fähigkeiten
+                                                        orientiert und sich gemeinsam mit dir verändert.
+                                                        <br><br>
+                                                        Dieser Plan kann sich je nach Auswahl über mehrere Wochen
+                                                        erstrecken und bestimmte Trainingsziele beinhalten.
+                                                    </p>
+                                                </div>
+                                                <div class="panel-footer">
+                                                    <a class="btn button btn-block" id="btnIndividualPlan"
+                                                       href="#myCarousel" data-slide="next" type="button">
+                                                        Auswählen
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Carousel page for personal data input -->
-                    <div class="item">
-                        <div class="jumbotron">
-                            <div class="container-fluid">
-                                <h2>Relevante Informationen für deinen Trainingsplan angeben</h2>
-                                <br>
-                                <p style="font-size: 14px">
-                                    Fülle jeweils das aktuelle Formular oder triff deine Wahl und bestätige deine Angaben mit
-                                    einem Klick auf den Button <mark>"Weiter"</mark>. Nachdem du alle notwendigen Informationen
-                                    angegeben hast, werden dir deine Angaben noch einmal angezeigt und du kannst diese endgültig
-                                    absenden.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage1"
-                                           data-slide="prev">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Persönliche Daten eingeben (Optional)</b></h5>
-                                    </div>
-                                    <div class="col-md-2"></div>
+                        <!-- Carousel page for personal data input -->
+                        <div class="item">
+                            <div class="jumbotron">
+                                <div class="container-fluid">
+                                    <h2>Relevante Informationen für deinen Trainingsplan angeben</h2>
+                                    <br>
+                                    <p style="font-size: 14px">
+                                        Fülle jeweils das aktuelle Formular oder triff deine Wahl und bestätige deine
+                                        Angaben mit einem Klick auf den Button <mark>"Weiter"</mark>. Nachdem du alle
+                                        notwendigen Informationen angegeben hast, werden dir deine Angaben noch einmal
+                                        angezeigt und du kannst diese endgültig absenden.
+                                    </p>
                                 </div>
                             </div>
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <form>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage1"
+                                               data-slide="prev">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                Zurück
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8" align="center">
+                                            <h5><b>Persönliche Daten eingeben (Optional)</b></h5>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <!-- TODO add th:fields to each input -->
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="firstname">Vorname:</label>
                                                     <input  type="text" class="form-control" id="firstname"
-                                                            placeholder="Hier deinen Vornamen eingeben..."
-                                                            required>
+                                                            placeholder="Hier deinen Vornamen eingeben...">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="lastname">Nachname:</label>
                                                     <input  type="text" class="form-control" id="lastname"
-                                                            placeholder="Hier deinen Nachnamen eingeben..."
-                                                            required>
+                                                            placeholder="Hier deinen Nachnamen eingeben...">
                                                 </div>
                                             </div>
                                         </div>
@@ -178,8 +178,10 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="gender">Geschlecht auswählen</label>
-                                                    <select id="gender" class="form-control" required>
-                                                        <option selected disabled hidden>Wähle eine Option aus...</option>
+                                                    <select id="gender" class="form-control">
+                                                        <option selected disabled hidden>
+                                                            Wähle eine Option aus...
+                                                        </option>
                                                         <option>Männlich</option>
                                                         <option>Weiblich</option>
                                                     </select>
@@ -188,8 +190,9 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="age">Geburtsdatum:</label>
-                                                    <input  type="date" class="form-control" style="height: auto"
-                                                            placeholder="Hier deinen Geburtsdatum eingeben..." id="age">
+                                                    <input  type="date" class="form-control"
+                                                            style="height: auto" id="age"
+                                                            placeholder="Hier deinen Geburtsdatum eingeben...">
                                                 </div>
                                             </div>
                                         </div>
@@ -209,518 +212,534 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="panel-footer">
-                                <div class="row">
-                                    <div class="col-md-10"></div>
-                                    <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-success btn-block" data-slide="next">
-                                            Weiter
-                                            <span class="glyphicon glyphicon-chevron-right"></span>
-                                        </a>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Carousel page to determine the users experience level - 1st question -->
-                    <div class="item">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage2"
-                                           data-slide="prev">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Bisherige Trainingserfahrung</b></h5>
-                                    </div>
-                                    <div class="col-md-2"></div>
-                                </div>
-                            </div>
-                            <div class="panel-body" style="text-align: center">
-                                <br>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4>Hast du zuvor schon einmal regelmäßig trainiert?</h4>
-                                        <p class="text-muted" style="font-size: 16px">(Regelmäßig: über einen
-                                            längeren Zeitraum mindestens einmal pro Woche)</p>
-                                    </div>
-                                    <div class="panel-footer">
-                                        <div class="col-container">
-                                            <div class="col col-no-yes">
-                                                <a class="button btn btn-block" id="btn1stQuestionNo"
-                                                   onclick="jumpToChooseFocus()">
-                                                    Nein
-                                                </a>
-                                            </div>
-                                            <div class="col col-no-yes">
-                                                <a class="button btn btn-block" id="btn1stQuestionYes"
-                                                   href="#myCarousel" data-slide="next">
-                                                    Ja
-                                                </a>
-                                            </div>
+                                <div class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-10"></div>
+                                        <div class="col-md-2">
+                                            <a href="#myCarousel" class="btn btn-success btn-block" data-slide="next">
+                                                Weiter
+                                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Carousel page to determine the users experience level - 2nd question  -->
-                    <div class="item">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage3"
-                                           data-slide="prev">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Bisherige Trainingserfahrung</b></h5>
-                                    </div>
-                                    <div class="col-md-2"></div>
-                                </div>
-                            </div>
-                            <div class="panel-body" style="text-align: center">
-                                <br>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4>Wie lange ist der Zeitraum des Trainings her, bzw. wie groß ist die
-                                            Pause seitdem?</h4>
-                                    </div>
-                                    <div class="panel-footer">
-                                        <div class="col-container">
-                                            <div class="col">
-                                                <a class="button btn btn-block" id="btnPage3Option1" href="#myCarousel"
-                                                   data-slide="next">
-                                                    Wenige Monate (1-4)
-                                                </a>
-                                            </div>
-                                            <div class="col">
-                                                <a class="button btn btn-block" id="btnPage3Option2" href="#myCarousel"
-                                                   data-slide="next">
-                                                    Mehrere Monate (5-11)
-                                                </a>
-                                            </div>
-                                            <div class="col">
-                                                <a class="button btn btn-block" id="btnPage3Option3" href="#myCarousel"
-                                                   onclick="jumpToChooseFocus()">
-                                                    Ein Jahr oder länger
-                                                </a>
-                                            </div>
+                        <!-- Carousel page to determine the users experience level - 1st question -->
+                        <div class="item">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage2"
+                                               data-slide="prev">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                Zurück
+                                            </a>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Carousel page to determine the users experience level - 3rd question   -->
-                    <div class="item">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage4"
-                                           data-slide="prev">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Bisherige Trainingserfahrung</b></h5>
-                                    </div>
-                                    <div class="col-md-2"></div>
-                                </div>
-                            </div>
-                            <div class="panel-body" style="text-align: center">
-                                <br>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4>Wie lange hast du in dem besagten Zeitraum durchgängig regelmäßig
-                                            trainiert?</h4>
-                                    </div>
-                                    <div class="panel-footer">
-                                        <div class="col-container">
-                                            <div class="col">
-                                                <a class="button btn btn-block" id="btnPage4Option1" href="#myCarousel"
-                                                   onclick="jumpToChooseFocus()">
-                                                    Wenige Monate (1-4)
-                                                </a>
-                                            </div>
-                                            <div class="col">
-                                                <a class="button btn btn-block" id="btnPage4Option2" href="#myCarousel"
-                                                   data-slide="next">
-                                                    Mehrere Monate (5-11)
-                                                </a>
-                                            </div>
-                                            <div class="col">
-                                                <a class="button btn btn-block" id="btnPage4Option3" href="#myCarousel"
-                                                   data-slide="next">
-                                                    Ein Jahr oder länger
-                                                </a>
-                                            </div>
+                                        <div class="col-md-8" align="center">
+                                            <h5><b>Bisherige Trainingserfahrung</b></h5>
                                         </div>
+                                        <div class="col-md-2"></div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Carousel page to determine the users experience level - 4th question   -->
-                    <div class="item">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage5"
-                                           data-slide="prev">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Bisherige Trainingserfahrung</b></h5>
-                                    </div>
-                                    <div class="col-md-2"></div>
-                                </div>
-                            </div>
-                            <div class="panel-body" style="text-align: center">
-                                <br>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4>
-                                            Wie oft hast du in diesem Zeitraum regelmäßig in einer Woche trainiert?
-                                        </h4>
-                                        <p class="text-muted" style="font-size: 16px">
-                                            (Durchschnittlich, falls nicht konstant)
-                                        </p>
-                                    </div>
-                                    <div class="panel-footer">
-                                        <div class="col-container">
-                                            <div class="col">
-                                                <a class="button btn btn-block" id="btnPage5Option1" href="#myCarousel"
-                                                   data-slide="next">
-                                                    Einmal pro Woche
-                                                </a>
-                                            </div>
-                                            <div class="col">
-                                                <a class="button btn btn-block" id="btnPage5Option2" href="#myCarousel"
-                                                   data-slide="next">
-                                                    Zweimal pro Woche
-                                                </a>
-                                            </div>
-                                            <div class="col">
-                                                <a class="button btn btn-block" id="btnPage5Option3" href="#myCarousel"
-                                                   data-slide="next">
-                                                    Dreimal oder häufiger
-                                                </a>
-                                            </div>
+                                <div class="panel-body" style="text-align: center">
+                                    <br>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4>Hast du zuvor schon einmal regelmäßig trainiert?</h4>
+                                            <p class="text-muted" style="font-size: 16px">(Regelmäßig: über einen
+                                                längeren Zeitraum mindestens einmal pro Woche)</p>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Carousel page to choose the trainingsfocus -->
-                    <div class="item">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a class="btn btn-danger btn-block" id="btnReturnPage6"
-                                           onclick="jumpToExperience()">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Trainingsfokus auswählen</b></h5>
-                                    </div>
-                                    <div class="col-md-2"></div>
-                                </div>
-                            </div>
-                            <div class="panel-body">
-                                <h4 align="center">Wähle einen Trainingsfokus aus um fortzufahren</h4>
-                                <div class="col-container">
-                                    <div class="col">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <div class="overlayContainer">
-                                                    <a onclick="jumpToFocus1()">
-                                                        <img src="/initFileBackup/Icons/icon_dumbbells.png">
-                                                        <div class="overlay">
-                                                            <div class="text">
-                                                                Muskelfokus
-                                                            </div>
-                                                        </div>
+                                        <div class="panel-footer">
+                                            <div class="col-container">
+                                                <div class="col col-no-yes">
+                                                    <a class="button btn btn-block" id="btn1stQuestionNo"
+                                                       onclick="jumpToChooseFocus(); determineExperience(0)">
+                                                        Nein
+                                                    </a>
+                                                </div>
+                                                <div class="col col-no-yes">
+                                                    <a class="button btn btn-block" id="btn1stQuestionYes"
+                                                       href="#myCarousel" data-slide="next">
+                                                        Ja
                                                     </a>
                                                 </div>
                                             </div>
-                                            <div class="panel-footer">
-                                                <a class="btn button btn-block" id="btnPage6Option1"
-                                                   onclick="jumpToFocus1()">
-                                                    Muskelfokus
-                                                </a>
-                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <div class="overlayContainer">
-                                                    <a onclick="jumpToFocus2()">
-                                                        <img src="/initFileBackup/Icons/icon_shoe.png">
-                                                        <div class="overlay">
-                                                            <div class="text">
-                                                                Ausdauerfokus
-                                                            </div>
-                                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Carousel page to determine the users experience level - 2nd question  -->
+                        <div class="item">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage3"
+                                               data-slide="prev">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                Zurück
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8" align="center">
+                                            <h5><b>Bisherige Trainingserfahrung</b></h5>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                </div>
+                                <div class="panel-body" style="text-align: center">
+                                    <br>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4>Wie lange ist der Zeitraum des Trainings her, bzw. wie groß ist die
+                                                Pause seitdem?</h4>
+                                        </div>
+                                        <div class="panel-footer">
+                                            <div class="col-container">
+                                                <div class="col">
+                                                    <a class="button btn btn-block" id="btnPage3Option1"
+                                                       href="#myCarousel" data-slide="next"
+                                                       onclick="setPauseToPrevTraining(false)">
+                                                        Wenige Monate (1-4)
+                                                    </a>
+                                                </div>
+                                                <div class="col">
+                                                    <a class="button btn btn-block" id="btnPage3Option2"
+                                                       href="#myCarousel" data-slide="next"
+                                                       onclick="setPauseToPrevTraining(true)">
+                                                        Mehrere Monate (5-11)
+                                                    </a>
+                                                </div>
+                                                <div class="col">
+                                                    <a class="button btn btn-block" id="btnPage3Option3"
+                                                       href="#myCarousel" onclick="jumpToChooseFocus();
+                                                       determineExperience(0)">
+                                                        Ein Jahr oder länger
                                                     </a>
                                                 </div>
                                             </div>
-                                            <div class="panel-footer">
-                                                <a class="btn button btn-block" id="btnPage6Option2"
-                                                   onclick="jumpToFocus2()">
-                                                    Ausdauerfokus
-                                                </a>
-                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col">
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading">
-                                                <div class="overlayContainer">
-                                                    <a onclick="jumpToFocus3()">
-                                                        <img src="/initFileBackup/Icons/icon_scale.png">
-                                                        <div class="overlay">
-                                                            <div class="text">
-                                                                Gewichtsreduktion
-                                                            </div>
-                                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Carousel page to determine the users experience level - 3rd question   -->
+                        <div class="item">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage4"
+                                               data-slide="prev">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                Zurück
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8" align="center">
+                                            <h5><b>Bisherige Trainingserfahrung</b></h5>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                </div>
+                                <div class="panel-body" style="text-align: center">
+                                    <br>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4>Wie lange hast du in dem besagten Zeitraum durchgängig regelmäßig
+                                                trainiert?</h4>
+                                        </div>
+                                        <div class="panel-footer">
+                                            <div class="col-container">
+                                                <div class="col">
+                                                    <a class="button btn btn-block" id="btnPage4Option1"
+                                                        href="#myCarousel" onclick="jumpToChooseFocus();
+                                                        determineExperience(0)">
+                                                        Wenige Monate (1-4)
+                                                    </a>
+                                                </div>
+                                                <div class="col">
+                                                    <a class="button btn btn-block" id="btnPage4Option2"
+                                                        href="#myCarousel" data-slide="next"
+                                                        onclick="setPrevTraining(false)">
+                                                        Mehrere Monate (5-11)
+                                                    </a>
+                                                </div>
+                                                <div class="col">
+                                                    <a class="button btn btn-block" id="btnPage4Option3"
+                                                        href="#myCarousel" data-slide="next"
+                                                        onclick="setPrevTraining(true)">
+                                                        Ein Jahr oder länger
                                                     </a>
                                                 </div>
                                             </div>
-                                            <div class="panel-footer">
-                                                <a class="btn button btn-block" id="btnPage6Option3"
-                                                   onclick="jumpToFocus3()">
-                                                    Gewichtsreduktion
-                                                </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Carousel page to determine the users experience level - 4th question   -->
+                        <div class="item">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage5"
+                                               data-slide="prev">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                Zurück
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8" align="center">
+                                            <h5><b>Bisherige Trainingserfahrung</b></h5>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                </div>
+                                <div class="panel-body" style="text-align: center">
+                                    <br>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4>
+                                                Wie oft hast du in diesem Zeitraum regelmäßig in einer Woche trainiert?
+                                            </h4>
+                                            <p class="text-muted" style="font-size: 16px">
+                                                (Durchschnittlich, falls nicht konstant)
+                                            </p>
+                                        </div>
+                                        <div class="panel-footer">
+                                            <div class="col-container">
+                                                <div class="col">
+                                                    <a class="button btn btn-block" id="btnPage5Option1"
+                                                        href="#myCarousel" data-slide="next"
+                                                        onclick="determineExperience(1)">
+                                                        Einmal pro Woche
+                                                    </a>
+                                                </div>
+                                                <div class="col">
+                                                    <a class="button btn btn-block" id="btnPage5Option2"
+                                                        href="#myCarousel" data-slide="next"
+                                                        onclick="determineExperience(2)">
+                                                        Zweimal pro Woche
+                                                    </a>
+                                                </div>
+                                                <div class="col">
+                                                    <a class="button btn btn-block" id="btnPage5Option3"
+                                                        href="#myCarousel" data-slide="next"
+                                                        onclick="determineExperience(3)">
+                                                        Dreimal oder häufiger
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Carousel page with information about the musclefocus -->
-                    <div class="item">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a class="btn btn-danger btn-block" id="btnReturnPage7"
-                                           onclick="jumpToChooseFocus()">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Informationen zum gewählten Muskelfokus</b></h5>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <a class="btn btn-success btn-block" id="btnContinuePage7"
-                                           onclick="jumpToFrequency()">
-                                            Weiter
-                                            <span class="glyphicon glyphicon-chevron-right"></span>
-                                        </a>
+                        <!-- Carousel page to choose the trainingsfocus -->
+                        <div class="item">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <a class="btn btn-danger btn-block" id="btnReturnPage6"
+                                               onclick="jumpToExperience()">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                Zurück
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8" align="center">
+                                            <h5><b>Trainingsfokus auswählen</b></h5>
+                                        </div>
+                                        <div class="col-md-2"></div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="panel-body">
-                                <h2>Informationen zu Muskelfokus</h2>
-                                <p style="font-size: 14px">Beispielinhalt Beispielinhalt Beispielinhalt Beispielinhalt </p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Carousel page with information about the endurancefocus -->
-                    <div class="item">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a class="btn btn-danger btn-block" id="btnReturnPage8"
-                                           onclick="jumpToChooseFocus()">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Informationen zum gewählten Ausdauerfokus</b></h5>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <a class="btn btn-success btn-block" id="btnContinuePage8"
-                                           onclick="jumpToFrequency()">
-                                            Weiter
-                                            <span class="glyphicon glyphicon-chevron-right"></span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel-body" align="center">
-                                <h2>Informationen zu Ausdauerfokus</h2>
-                                <p style="font-size: 14px">Beispielinhalt Beispielinhalt Beispielinhalt Beispielinhalt </p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Carousel page with information about the weight-reduction -->
-                    <div class="item">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a class="btn btn-danger btn-block" id="btnReturnPage9"
-                                           onclick="jumpToChooseFocus()">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Informationen zur gewählten Gewichtsreduktion</b></h5>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <a class="btn btn-success btn-block" id="btnContinuePage9"
-                                           onclick="jumpToFrequency()">
-                                            Weiter
-                                            <span class="glyphicon glyphicon-chevron-right"></span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel-body">
-                                <h2>Informationen zur Gewichtsreduktion</h2>
-                                <p style="font-size: 14px">Beispielinhalt Beispielinhalt Beispielinhalt Beispielinhalt </p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Carousel page to determine the desired trainings per week -->
-                    <div class="item">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a class="btn btn-danger btn-block" id="btnReturnPage10"
-                                           onclick="jumpToChooseFocus()">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
-                                    </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Trainingshäufigkeit</b></h5>
-                                    </div>
-                                    <div class="col-md-2"></div>
-                                </div>
-                            </div>
-                            <div class="panel-body" style="text-align: center">
-                                <br>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h4>Wie oft möchtest du durchschnittlich pro Woche trainieren?</h4>
-                                    </div>
-                                    <div class="panel-footer">
-                                        <div class="col-container">
-                                            <div class="col col-frequency">
-                                                <a class="button btn btn-block" id="btnPage10Option1" href="#myCarousel"
-                                                   data-slide="next">
-                                                    Einmal
-                                                </a>
+                                <div class="panel-body">
+                                    <h4 align="center">Wähle einen Trainingsfokus aus um fortzufahren</h4>
+                                    <div class="col-container">
+                                        <div class="col">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="overlayContainer">
+                                                        <a onclick="jumpToFocus1()">
+                                                            <img src="/initFileBackup/Icons/icon_dumbbells.png">
+                                                            <div class="overlay">
+                                                                <div class="text">
+                                                                    Muskelfokus
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-footer">
+                                                    <a class="btn button btn-block" id="btnPage6Option1"
+                                                       onclick="jumpToFocus1()">
+                                                        Muskelfokus
+                                                    </a>
+                                                </div>
                                             </div>
-                                            <div class="col col-frequency">
-                                                <a class="button btn btn-block" id="btnPage10Option2" href="#myCarousel"
-                                                   data-slide="next">
-                                                    Zweimal
-                                                </a>
+                                        </div>
+                                        <div class="col">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="overlayContainer">
+                                                        <a onclick="jumpToFocus2()">
+                                                            <img src="/initFileBackup/Icons/icon_shoe.png">
+                                                            <div class="overlay">
+                                                                <div class="text">
+                                                                    Ausdauerfokus
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-footer">
+                                                    <a class="btn button btn-block" id="btnPage6Option2"
+                                                       onclick="jumpToFocus2()">
+                                                        Ausdauerfokus
+                                                    </a>
+                                                </div>
                                             </div>
-                                            <div class="col col-frequency">
-                                                <a class="button btn btn-block" id="btnPage10Option3" href="#myCarousel"
-                                                   data-slide="next">
-                                                    Dreimal oder häufiger
-                                                </a>
+                                        </div>
+                                        <div class="col">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="overlayContainer">
+                                                        <a onclick="jumpToFocus3()">
+                                                            <img src="/initFileBackup/Icons/icon_scale.png">
+                                                            <div class="overlay">
+                                                                <div class="text">
+                                                                    Gewichtsreduktion
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-footer">
+                                                    <a class="btn button btn-block" id="btnPage6Option3"
+                                                       onclick="jumpToFocus3()">
+                                                        Gewichtsreduktion
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Carousel page with recommended individual plans -->
-                    <div class="item">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage11"
-                                           data-slide="prev">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
+                        <!-- Carousel page with information about the musclefocus -->
+                        <div class="item">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <a class="btn btn-danger btn-block" id="btnReturnPage7"
+                                               onclick="jumpToChooseFocus()">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                Zurück
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8" align="center">
+                                            <h5><b>Informationen zum gewählten Muskelfokus</b></h5>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a class="btn btn-success btn-block" id="btnContinuePage7"
+                                               onclick="jumpToFrequency(); setFocus('Muskelfokus')">
+                                                Weiter
+                                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                            </a>
+                                        </div>
                                     </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Abschlussseite</b></h5>
-                                    </div>
-                                    <!--
-                                    <div class="col-md-2">
-                                        <a type="button" data-toggle="modal" data-target="#modal_preview"
-                                           class="btn btn-success btn-block">
-                                            <span class="glyphicon glyphicon-blackboard"></span>
-                                            Vorschau
-                                        </a>
-                                    </div>-->
                                 </div>
-                            </div>
-                            <div class="panel-body" align="center">
-                                <h3>Liste mit vorgeschlagenen individuellen Planvorlagen ?</h3>
+                                <div class="panel-body">
+                                    <h2>Informationen zu Muskelfokus</h2>
+                                    <p style="font-size: 14px">Beispielinhalt Beispielinhalt Beispielinhalt Beispielinhalt </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Carousel page with recommended bullet training plans -->
-                    <div class="item">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <a class="btn btn-danger btn-block" id="btnReturnPage12"
-                                           onclick="jumpToChoosePlan()">
-                                            <span class="glyphicon glyphicon-chevron-left"></span>
-                                            Zurück
-                                        </a>
+                        <!-- Carousel page with information about the endurancefocus -->
+                        <div class="item">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <a class="btn btn-danger btn-block" id="btnReturnPage8"
+                                               onclick="jumpToChooseFocus()">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                Zurück
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8" align="center">
+                                            <h5><b>Informationen zum gewählten Ausdauerfokus</b></h5>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a class="btn btn-success btn-block" id="btnContinuePage8"
+                                               onclick="jumpToFrequency(); setFocus('Ausdauerfokus')">
+                                                Weiter
+                                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                            </a>
+                                        </div>
                                     </div>
-                                    <div class="col-md-8" align="center">
-                                        <h5><b>Abschlussseite</b></h5>
-                                    </div>
-                                    <!--
-                                    <div class="col-md-2">
-                                        <a type="button" data-toggle="modal" data-target="#modal_preview"
-                                           class="btn btn-success btn-block">
-                                            <span class="glyphicon glyphicon-blackboard"></span>
-                                            Vorschau
-                                        </a>
-                                    </div>-->
+                                </div>
+                                <div class="panel-body" align="center">
+                                    <h2>Informationen zu Ausdauerfokus</h2>
+                                    <p style="font-size: 14px">Beispielinhalt Beispielinhalt Beispielinhalt Beispielinhalt </p>
                                 </div>
                             </div>
-                            <div class="panel-body" align="center">
-                                <h3>Liste mit vorgeschlagenen Eintages-Plänen ?</h3>
+                        </div>
+                        <!-- Carousel page with information about the weight-reduction -->
+                        <div class="item">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <a class="btn btn-danger btn-block" id="btnReturnPage9"
+                                               onclick="jumpToChooseFocus()">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                Zurück
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8" align="center">
+                                            <h5><b>Informationen zur gewählten Gewichtsreduktion</b></h5>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a class="btn btn-success btn-block" id="btnContinuePage9"
+                                               onclick="jumpToFrequency(); setFocus('Gewichtsreduktion')">
+                                                Weiter
+                                                <span class="glyphicon glyphicon-chevron-right"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <h2>Informationen zur Gewichtsreduktion</h2>
+                                    <p style="font-size: 14px">Beispielinhalt Beispielinhalt Beispielinhalt Beispielinhalt </p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Carousel page to determine the desired trainings per week -->
+                        <div class="item">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <a class="btn btn-danger btn-block" id="btnReturnPage10"
+                                               onclick="jumpToChooseFocus()">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                Zurück
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8" align="center">
+                                            <h5><b>Trainingshäufigkeit</b></h5>
+                                        </div>
+                                        <div class="col-md-2"></div>
+                                    </div>
+                                </div>
+                                <div class="panel-body" style="text-align: center">
+                                    <br>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4>Wie oft möchtest du durchschnittlich pro Woche trainieren?</h4>
+                                        </div>
+                                        <div class="panel-footer">
+                                            <div class="col-container">
+                                                <div class="col col-frequency">
+                                                    <a class="button btn btn-block" id="btnPage10Option1"
+                                                       href="#myCarousel" data-slide="next" onclick="setTEperWeek(1)">
+                                                        Einmal
+                                                    </a>
+                                                </div>
+                                                <div class="col col-frequency">
+                                                    <a class="button btn btn-block" id="btnPage10Option2"
+                                                       href="#myCarousel" data-slide="next" onclick="setTEperWeek(2)">
+                                                        Zweimal
+                                                    </a>
+                                                </div>
+                                                <div class="col col-frequency">
+                                                    <a class="button btn btn-block" id="btnPage10Option3"
+                                                       href="#myCarousel" data-slide="next" onclick="setTEperWeek(3)">
+                                                        Dreimal oder häufiger
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Carousel page with recommended individual plans -->
+                        <div class="item">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <a href="#myCarousel" class="btn btn-danger btn-block" id="btnReturnPage11"
+                                               data-slide="prev">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                Zurück
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8" align="center">
+                                            <h5><b>Daten abschicken</b></h5>
+                                        </div>
+                                        <!--
+                                        <div class="col-md-2">
+                                            <a type="button" data-toggle="modal" data-target="#modal_preview"
+                                               class="btn btn-success btn-block">
+                                                <span class="glyphicon glyphicon-blackboard"></span>
+                                                Vorschau
+                                            </a>
+                                        </div>-->
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <p style="font-size: 14px">Du hast deine Daten vollstänig eingegeben und kannst
+                                        diese nun mit einem Klick auf den Button <mark>"Daten abschicken"</mark>
+                                        absenden. Anschließend wird dir ein passender Plan zugeordnet und du musst
+                                        als nächstes dein Repetition Maximum für jede Übung mit Gewicht bestimmten um
+                                        mit diesem Plan trainieren zu können.</p>
+                                    <br>
+                                    <p style="font-size: 12px" class="text-muted">(Falls du deine Eingaben nochmal
+                                        ändern möchtest, kannst du jederzeit mit den <mark>"Zurück"</mark>-Buttons zu
+                                        dem jeweiligen Abschnitt zurück navigieren)</p>
+                                    <!-- TODO add th:fields to each input and add attribute 'hidden' -->
+                                    <input  type="text" class="form-control" id="inputExperience">
+                                    <input  type="text" class="form-control" id="inputFocus">
+                                    <input  type="text" class="form-control" id="inputTEperWeek">
+                                </div>
+                                <div class="panel-footer">
+                                    <input class="button btn btn-block" type="submit" value="Daten abschicken"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Carousel page with recommended bullet training plans -->
+                        <div class="item">
+                            <div class="panel panel-success">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <a class="btn btn-danger btn-block" id="btnReturnPage12"
+                                               onclick="jumpToChoosePlan()">
+                                                <span class="glyphicon glyphicon-chevron-left"></span>
+                                                Zurück
+                                            </a>
+                                        </div>
+                                        <div class="col-md-8" align="center">
+                                            <h5><b>Auswahl Eintages-Plan</b></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-body" align="center">
+                                    <h3>Liste mit vorgeschlagenen Eintages-Plänen ?</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
@@ -805,6 +824,9 @@
 -->
 
 <script>
+    var longPauseToPrevTraining;
+    var longPrevTraining;
+
     /**
      * Function to jump to the crousel page to determine type of plan
      */
@@ -866,6 +888,83 @@
      */
     function jumpToBulletEnd() {
         $('#myCarousel').carousel(12);
+    }
+
+    /**
+     * Function to set longPauseToPrevTraining to true or false
+     * @param booleanPause has the pause been long or not?
+     */
+    function setPauseToPrevTraining(booleanPause) {
+        longPauseToPrevTraining = booleanPause;
+    }
+
+    /**
+     * Function to set longPrevTraining to true or false
+     * @param booleanLongTraining has the previous training been for a long time or not?
+     */
+    function setPrevTraining(booleanLongTraining) {
+        longPrevTraining = booleanLongTraining;
+    }
+
+    /**
+     * Function to set inputExperience to a determined level
+     * @param selectedCase input to determine which decision tree branch applies
+     */
+    function determineExperience(selectedCase) {
+        switch (selectedCase) {
+            // Select "Anfänger" without further condition
+            case 0:
+                $('#inputExperience').val('Anfänger'); break;
+            // Frequency of 1 selected
+            case 1:
+                // Select "Anfänger" if previous Training was short or distinguish further
+                if(longPrevTraining) {
+                    // Select "Anfänger" if the pause between the previous training and now was long, select
+                    // "Fortgeschritten" if it was not
+                    if(longPauseToPrevTraining) {
+                        $('#inputExperience').val('Anfänger');
+                    } else {
+                        $('#inputExperience').val('Fortgeschritten');
+                    }
+                } else {
+                    $('#inputExperience').val('Anfänger');
+                }
+                break;
+            // Frequency of 2 selected
+            case 2:
+                // Select "Fortgeschritten" if previous Training was long, select "Anfänger" if it was not
+                if(longPrevTraining) {
+                    $('#inputExperience').val('Fortgeschritten');
+                } else {
+                    $('#inputExperience').val('Anfänger');
+                }
+                break;
+            // Frequency of 3 or more selected
+            case 3:
+                // Select "Experte" if previous Training was long, select "Fortgeschritten" if it was not
+                if(longPrevTraining) {
+                    $('#inputExperience').val('Experte');
+                } else {
+                    $('#inputExperience').val('Fortgeschritten');
+                }
+                break;
+        }
+    }
+
+    /**
+     * Function to set inputFocus to the selected focus
+     * @param chosenFocus string describing the selected focus
+     */
+    function setFocus(chosenFocus) {
+        $('#inputFocus').val(chosenFocus);
+    }
+
+    /**
+     * Function to set the amount of TE´s per week to the selected amount
+     * @param chosenTe int with selected amount of TE´s per week
+     */
+    function setTEperWeek(chosenTe) {
+        document.getElementById("inputTEperWeek").value = chosenTe;
     }
 </script>
 </body>
