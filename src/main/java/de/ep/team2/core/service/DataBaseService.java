@@ -1025,6 +1025,19 @@ public class DataBaseService {
         }
     }
 
+    public LinkedList<User> deleteUserPlansByTemplateId(int templateId) {
+        LinkedList<UserPlan> userPlans = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM user_plans WHERE template = ?",
+                new Integer[]{templateId},
+                new UserPlanMapper()));
+        LinkedList<User> users = new LinkedList<>();
+        for (UserPlan plan : userPlans) {
+            users.add(getUserByEmail(plan.getUserMail()));
+            deleteUserPlanAndWeightsById(plan.getId());
+        }
+        return users;
+    }
+
     public UserPlan getUserPlanByUserMail(String userMail) {
         LinkedList<UserPlan> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM user_plans WHERE \"user\" = ?",

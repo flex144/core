@@ -42,6 +42,7 @@ public class PlanService {
     public void deleteTemplateAndChildrenById(int id) {
         DataBaseService db = DataBaseService.getInstance();
         TrainingsPlanTemplate tempToDelete = db.getPlanTemplateAndSessionsByID(id);
+        db.deleteUserPlansByTemplateId(id);
         for (ExerciseInstance ei : tempToDelete.getExerciseInstances()) {
             for (TrainingsSession ts : ei.getTrainingsSessions()) {
                 db.deleteTrainingsSessionById(ts.getId());
