@@ -14,10 +14,11 @@ public class TrainingsPlanTemplate {
     private int numTrainSessions;
     private int exercisesPerSession;
     private LinkedList<ExerciseInstance> exerciseInstances;
+    private boolean confirmed;
 
     public TrainingsPlanTemplate(int id, String name, String trainingsFocus, String targetGroup, User author, boolean oneShotPlan,
                                  int recomSessionsPerWeek, int numTrainSessions, int exercisesPerSession,
-                                 LinkedList<ExerciseInstance> exerciseInstances) {
+                                 LinkedList<ExerciseInstance> exerciseInstances, boolean confirmed) {
         this.id = id;
         this.name = name;
         this.trainingsFocus = trainingsFocus;
@@ -28,6 +29,7 @@ public class TrainingsPlanTemplate {
         this.numTrainSessions = numTrainSessions;
         this.exercisesPerSession = exercisesPerSession;
         this.exerciseInstances = exerciseInstances;
+        this.confirmed = confirmed;
     }
 
     public TrainingsPlanTemplate() {
@@ -111,5 +113,25 @@ public class TrainingsPlanTemplate {
 
     public void setTrainingsSessions(LinkedList<ExerciseInstance> trainingsSessions) {
         this.exerciseInstances = exerciseInstances;
+    }
+
+    public boolean isConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed = confirmed;
+    }
+
+    /**
+     * Returns a String representation of the boolean 'confirmed'.
+     * @return "Ja" if confirmed, "Nein" if otherwise
+     */
+    public String confirmed() {
+        if(confirmed) {
+            return "Ja";
+        } else {
+            return "Nein";
+        }
     }
 }

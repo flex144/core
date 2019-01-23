@@ -169,7 +169,8 @@ public class DataInit {
                 "one_shot_plan boolean," +
                 "recom_sessions_per_week integer," +
                 "num_train_sessions integer NOT NULL," +
-                "exercises_per_session integer NOT NULL)");
+                "exercises_per_session integer NOT NULL, " +
+                "complete boolean NOT NULL DEFAULT FALSE )");
         log.debug("Created table plan_templates");
         // Exercise Instance
         jdbcTemplate.execute("DROP TABLE IF EXISTS exercise_instances CASCADE ");

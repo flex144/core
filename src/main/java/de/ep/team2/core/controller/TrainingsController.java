@@ -9,6 +9,7 @@ import de.ep.team2.core.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -99,6 +100,13 @@ public class TrainingsController {
                     "log in and create a new one and keep training!");
             emailSenderService.sendEmail(mailMessage);
         }
+        return "redirect:/mods/searchplan";
+    }
+
+    @PostMapping("/confirmPlan")
+    public String confirmPlan(@ModelAttribute("createDto") CreatePlanDto dto) {
+        PlanService service = new PlanService();
+        service.confirmPlan(dto.getId());
         return "redirect:/mods/searchplan";
     }
 

@@ -279,6 +279,14 @@ public class PlanService {
         }
     }
 
+    /**
+     * Confirms a plantemplate so users can use it.
+     * @param idOfTemplate id of template
+     */
+    public void confirmPlan(int idOfTemplate) {
+        DataBaseService.getInstance().confirmPlan(idOfTemplate);
+    }
+
     private Integer[] calcWeights(Integer weight, int setsNum, Integer[] weightDiff) {
         Integer[] weights = new Integer[setsNum];
         Arrays.fill(weights, weight);

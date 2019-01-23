@@ -189,6 +189,20 @@ public class DataBaseServiceUnitTests {
         db.deletePlanTemplateByID(id);
     }
 
+    /**
+     * Tests if the confirmPlan function of the databaseService is working.
+     */
+    @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
+    public void conirmPlanTemplate() {
+        DataBaseService db = DataBaseService.getInstance();
+        Integer id = db.insertPlanTemplate("Hallo5", "stamina", "beginner",
+                "felix@gmail.com", false, 1, 5,5);
+        assertEquals(false, db.getOnlyPlanTemplateById(id).isConfirmed());
+        db.confirmPlan(id);
+        assertEquals(true, db.getOnlyPlanTemplateById(id).isConfirmed());
+    }
+
     // Exercise Instance
 
 
