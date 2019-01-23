@@ -279,6 +279,10 @@ public class PlanService {
         }
     }
 
+    /**
+     * Confirms a plantemplate so users can use it.
+     * @param idOfTemplate id of template
+     */
     public void confirmPlan(int idOfTemplate) {
         DataBaseService.getInstance().confirmPlan(idOfTemplate);
     }

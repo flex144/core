@@ -178,6 +178,9 @@
             <div class="row">
                 <p th:if="${errorMsg}" th:text="${errorMsg}" style="color: red"></p>
             </div>
+            <div class="row" id="errorConfirm" style="display: none">
+                <p style="color: red">Ein leerer Plan kann nicht gespeichert werden!</p>
+            </div>
             <div class="col-container">
                 <div class="col col-general">
                     <div class="input-group input-group-general">
@@ -443,15 +446,17 @@
         </div>
     </form>
         <!-- panel with overview of final plan and button to save the plan -->
-    <form th:action="@{/mods/confirmPlan}" method="post">
+    <form th:action="@{/mods/confirmPlan}" method="post" th:object="${createDto}" id="confirmPlan">
         <div class="panel panel-success outerPanel">
             <div class="panel-heading">
                 Aktueller Trainingsplan
             </div>
+            <input th:field="*{id}" hidden>
             <div class="panel-body">
                 <div class="col-md-12" th:if="${plan}">
                     <!-- Table to list the added exercises in the final plan -->
-                    <table class="table table-bordered table-condensed" border="1" width="100%">
+                    <table class="table table-bordered table-condensed" border="1" width="100%"
+                           id="detailsExercises">
                         <colgroup>
                             <col width="5%">
                             <col width="85%">
@@ -505,7 +510,7 @@
                         </button>
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" id="savePlan" class="btn btn-success btn-block" onclick="resetPlan()">
+                        <button type="button" id="savePlan" class="btn btn-success btn-block" onclick="confirmPlan()">
                             <span class="glyphicon glyphicon-floppy-save"></span>
                             Plan speichern
                         </button>
@@ -986,6 +991,9 @@
         accordionJS();
     });
 
+    /**
+     * Sets the tags for the plan in it's detailed preview.
+     */
     function setPlanTags(value) {
         var x = document.getElementsByClassName("planTagsClass" + value);
         var i;
@@ -1500,6 +1508,21 @@
                 '<li>' + '<input id="'+pauseInputId+'" disabled value="60" type="text" class="form-control">' + '</li>');
         }
     }
+
+    /**
+     * Function to validate if confirming a plan is possible.
+     * It shows an error message if the plan is empty and submits a form to confirm the plan otherwise.
+     */
+    function confirmPlan() {
+        var x = document.getElementById("detailsExercises");
+        if(x === null) {
+            document.getElementById("errorConfirm").style.display = "block";
+            $('html, body').animate({ scrollTop: 0}, 'slow');
+        } else {
+            document.getElementById("confirmPlan").submit();
+        }
+    }
+
 </script>
 
 </body>

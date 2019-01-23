@@ -71,6 +71,9 @@
                         <th data-field="timeSpan" data-sortable="true">
                             <span class="glyphicon glyphicon-sort"></span> Dauer in Trainingseinheiten
                         </th>
+                        <th data-field="confirmed" data-sortable="true">
+                            <span class="glyphicon glyphicon-sort"></span> Für Nutzer freigegeben
+                        </th>
                         <th data-field="author" data-sortable="true">
                             <span class="glyphicon glyphicon-sort"></span> Autor
                         </th>
@@ -83,6 +86,7 @@
                         <td th:text="${planTemplate.getName()}"></td>
                         <td th:text="${planTemplate.getTrainingsFocus()}"></td>
                         <td th:text="${planTemplate.getNumTrainSessions()}"></td>
+                        <td th:text="${planTemplate.confirmed()}"></td>
                         <td th:if="${planTemplate.getAuthor()}" th:text="${planTemplate.author.getEmail()}"></td>
                         <td th:if="${planTemplate.getAuthor()} == null" th:text="'Gelöschtes Profil'"></td>
                     </tr>

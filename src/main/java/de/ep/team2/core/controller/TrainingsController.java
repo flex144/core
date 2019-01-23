@@ -104,9 +104,9 @@ public class TrainingsController {
     }
 
     @PostMapping("/confirmPlan")
-    public String confirmPlan(@ModelAttribute("plan") TrainingsPlanTemplate tpt, Model model) {
+    public String confirmPlan(@ModelAttribute("createDto") CreatePlanDto dto) {
         PlanService service = new PlanService();
-        service.confirmPlan(tpt.getId());
+        service.confirmPlan(dto.getId());
         return "redirect:/mods/searchplan";
     }
 

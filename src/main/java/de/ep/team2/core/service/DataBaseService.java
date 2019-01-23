@@ -547,7 +547,7 @@ public class DataBaseService {
             return new TrainingsPlanTemplate(rs.getInt("id"), rs.getString("name"),
                     rs.getString("trainings_focus"), rs.getString("target_group"), getUserByEmail(rs.getString("author")),
                     rs.getBoolean("one_shot_plan"), rs.getInt("recom_sessions_per_week"), rs.getInt("num_train_sessions"),
-                    rs.getInt("exercises_per_session"), null);
+                    rs.getInt("exercises_per_session"), null, rs.getBoolean("complete"));
         }
 
     }
@@ -568,7 +568,7 @@ public class DataBaseService {
                         resultSet.getBoolean("one_shot_plan"), resultSet.getInt("recom_sessions_per_week"), resultSet.getInt(
                         "num_train_sessions"),
                         resultSet.getInt("exercises_per_session"),
-                        getExInstancesOfTemplate(id))));
+                        getExInstancesOfTemplate(id), resultSet.getBoolean("complete"))));
         if (toReturn.isEmpty()) {
             return null;
         } else {
