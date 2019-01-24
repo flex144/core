@@ -520,13 +520,13 @@ public class DataBaseService {
      *                            (number increases initial 1)
      * @return id od the just inserted template.
      */
-    public Integer insertPlanTemplate(String name, String trainingsFocus, String targetGroup,
+    public Integer insertPlanTemplate(String name, TrainingsFocus trainingsFocus, ExperienceLevel targetGroup,
                                       String author, Boolean oneShotPlan, Integer recomSessionsPerWeek,
                                       Integer numTrainSessions, Integer exercisesPerSession) {
         if (name == null || author == null || (oneShotPlan && numTrainSessions > 1)) {
             throw new IllegalArgumentException();
         } else {
-            Object[] insertValues = new Object[]{name, trainingsFocus, targetGroup, author.toLowerCase(), oneShotPlan, recomSessionsPerWeek,
+            Object[] insertValues = new Object[]{name, trainingsFocus.toString(), targetGroup.toString(), author.toLowerCase(), oneShotPlan, recomSessionsPerWeek,
                     numTrainSessions,
                     exercisesPerSession};
             jdbcTemplate.update("insert into plan_templates(name,trainings_focus, target_group," +
@@ -545,7 +545,7 @@ public class DataBaseService {
         @Override
         public TrainingsPlanTemplate mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new TrainingsPlanTemplate(rs.getInt("id"), rs.getString("name"),
-                    rs.getString("trainings_focus"), rs.getString("target_group"), getUserByEmail(rs.getString("author")),
+                    TrainingsFocus.getValueByName(rs.getString("trainings_focus")), ExperienceLevel.getValueByName(rs.getString("target_group")), getUserByEmail(rs.getString("author")),
                     rs.getBoolean("one_shot_plan"), rs.getInt("recom_sessions_per_week"), rs.getInt("num_train_sessions"),
                     rs.getInt("exercises_per_session"), null, rs.getBoolean("complete"));
         }
@@ -563,12 +563,12 @@ public class DataBaseService {
                 "SELECT * FROM plan_templates WHERE id = ?",
                 new Integer[]{id},
                 (resultSet, i) -> new TrainingsPlanTemplate(id, resultSet.getString("name"),
-                        resultSet.getString(
-                                "trainings_focus"), resultSet.getString("target_group"), getUserByEmail(resultSet.getString("author")),
-                        resultSet.getBoolean("one_shot_plan"), resultSet.getInt("recom_sessions_per_week"), resultSet.getInt(
-                        "num_train_sessions"),
-                        resultSet.getInt("exercises_per_session"),
-                        getExInstancesOfTemplate(id), resultSet.getBoolean("complete"))));
+                        TrainingsFocus.getValueByName(resultSet.getString("trainings_focus")),
+                        ExperienceLevel.getValueByName(resultSet.getString("target_group")),
+                        getUserByEmail(resultSet.getString("author")), resultSet.getBoolean("one_shot_plan"),
+                        resultSet.getInt("recom_sessions_per_week"), resultSet.getInt("num_train_sessions"),
+                        resultSet.getInt("exercises_per_session"), getExInstancesOfTemplate(id),
+                        resultSet.getBoolean("complete"))));
         if (toReturn.isEmpty()) {
             return null;
         } else {
@@ -633,9 +633,20 @@ public class DataBaseService {
      * @param newFocus new focus of the template.
      * @param idToRename id of the template to be altered.
      */
-    public void changeTrainingsFocus(String newFocus, int idToRename) {
+    public void changeTrainingsFocus(TrainingsFocus newFocus, int idToRename) {
         jdbcTemplate.update("update plan_templates set trainings_focus = ? where id = ?",
-                newFocus, idToRename);
+                newFocus.toString(), idToRename);
+    }
+
+    /**
+     * sets the target group of a template to something.
+     *
+     * @param targetGroup Value of the enum Experience level.
+     * @param idToChange id of the template to change.
+     */
+    public void changeTargetGroup(ExperienceLevel targetGroup, int idToChange) {
+        jdbcTemplate.update("update plan_templates set trainings_focus = ? where id = ?",
+                targetGroup.toString(), idToChange);
     }
 
     /**
@@ -724,6 +735,19 @@ public class DataBaseService {
             log.debug("Plan Template '" + toConfirm.getName() + "' with ID: '"
                     + toConfirm.getId() + "' confirmed by " + changerMail + "!");
 
+        }
+    }
+
+    public LinkedList<TrainingsPlanTemplate> getSuitedPlans(boolean oneShotPlan, ExperienceLevel experience,
+                                                            TrainingsFocus trainingsFocus, Integer trainingsFrequency) {
+        LinkedList<TrainingsPlanTemplate> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM plan_templates WHERE one_shot_plan = ? AND target_group = ? AND trainings_focus = ? AND (recom_sessions_per_week = ? or recom_sessions_per_week = ? or recom_sessions_per_week = ?)",
+                new Object[]{oneShotPlan, experience, trainingsFocus, trainingsFrequency - 1, trainingsFrequency, trainingsFrequency + 1},
+                new PlanTemplateMapperNoChildren()));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn;
         }
     }
 

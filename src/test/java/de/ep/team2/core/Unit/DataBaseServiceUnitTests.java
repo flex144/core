@@ -154,7 +154,7 @@ public class DataBaseServiceUnitTests {
     @Test
     public void insertTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        Integer id = db.insertPlanTemplate("Hallo2","muscle","beginner","felix@gmail.com",false,1,5,5);
+        Integer id = db.insertPlanTemplate("Hallo2",TrainingsFocus.MUSCLE, ExperienceLevel.BEGINNER,"felix@gmail.com",false,1,5,5);
         assertEquals("Hallo2", db.getOnlyPlanTemplateById(id).getName());
     }
 
@@ -162,7 +162,7 @@ public class DataBaseServiceUnitTests {
     @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void deleteTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        Integer id = db.insertPlanTemplate("Hallo3","stamina","beginner","felix@gmail.com",false,1,5,5);
+        Integer id = db.insertPlanTemplate("Hallo3",TrainingsFocus.MUSCLE, ExperienceLevel.BEGINNER,"felix@gmail.com",false,1,5,5);
         assertEquals("Hallo3", db.getOnlyPlanTemplateById(id).getName());
         db.deletePlanTemplateByID(id);
         assertNull(db.getOnlyPlanTemplateById(id));
@@ -172,7 +172,7 @@ public class DataBaseServiceUnitTests {
     @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void renameTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        Integer id = db.insertPlanTemplate("Hallo3","stamina","beginner","felix@gmail.com",false,1,5,5);
+        Integer id = db.insertPlanTemplate("Hallo3",TrainingsFocus.MUSCLE, ExperienceLevel.BEGINNER,"felix@gmail.com",false,1,5,5);
         assertEquals("Hallo3", db.getOnlyPlanTemplateById(id).getName());
         db.renameTemplate("TestTest3",id);
         assertEquals("TestTest3", db.getOnlyPlanTemplateById(id).getName());
@@ -183,10 +183,10 @@ public class DataBaseServiceUnitTests {
     @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void changeTrainingsFocusTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        Integer id = db.insertPlanTemplate("Hallo4","stamina","beginner","felix@gmail.com",false,1,5,5);
-        assertEquals("stamina", db.getOnlyPlanTemplateById(id).getTrainingsFocus());
-        db.changeTrainingsFocus("muscle",id);
-        assertEquals("muscle", db.getOnlyPlanTemplateById(id).getTrainingsFocus());
+        Integer id = db.insertPlanTemplate("Hallo4",TrainingsFocus.STAMINA, ExperienceLevel.BEGINNER,"felix@gmail.com",false,1,5,5);
+        assertEquals(TrainingsFocus.STAMINA, db.getOnlyPlanTemplateById(id).getTrainingsFocus());
+        db.changeTrainingsFocus(TrainingsFocus.MUSCLE,id);
+        assertEquals(TrainingsFocus.MUSCLE, db.getOnlyPlanTemplateById(id).getTrainingsFocus());
         db.deletePlanTemplateByID(id);
     }
 
@@ -197,7 +197,7 @@ public class DataBaseServiceUnitTests {
     @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
     public void conirmPlanTemplate() {
         DataBaseService db = DataBaseService.getInstance();
-        Integer id = db.insertPlanTemplate("Hallo5", "stamina", "beginner",
+        Integer id = db.insertPlanTemplate("Hallo5", TrainingsFocus.MUSCLE, ExperienceLevel.BEGINNER,
                 "felix@gmail.com", false, 1, 5,5);
         assertEquals(false, db.getOnlyPlanTemplateById(id).isConfirmed());
         db.confirmPlan(id);

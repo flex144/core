@@ -2,6 +2,8 @@ package de.ep.team2.core.dataInit;
 
 import de.ep.team2.core.dtos.TrainingsDayDto;
 import de.ep.team2.core.entities.UserPlan;
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.PlanService;
@@ -287,7 +289,7 @@ public class DataInit {
     }
 
     private void fillPlanTemplates() {
-        int id = DataBaseService.getInstance().insertPlanTemplate("Test Plan", "muscle","beginner",
+        int id = DataBaseService.getInstance().insertPlanTemplate("Test Plan", TrainingsFocus.MUSCLE, ExperienceLevel.BEGINNER,
                 "felix@gmail.com",false,1,6,2);
         DataBaseService.getInstance().confirmPlan(id);
     }

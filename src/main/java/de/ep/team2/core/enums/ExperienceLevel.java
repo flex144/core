@@ -29,4 +29,16 @@ public enum ExperienceLevel {
     public String toString() {
         return this.name;
     }
+
+    public String getConst() {
+        if (this.name.equals("Anfänger")) {
+            return "BEGINNER";
+        } else if (this.name.equals("Fortgeschritten")) {
+            return "MEDIUM";
+        } else if (this.name.equals("Profi")) {
+            return "EXPERT";
+        } else {
+            return null;
+        }
+    }
 }

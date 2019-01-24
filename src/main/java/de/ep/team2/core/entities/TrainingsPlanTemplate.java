@@ -1,13 +1,16 @@
 package de.ep.team2.core.entities;
 
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.TrainingsFocus;
+
 import java.util.LinkedList;
 
 public class TrainingsPlanTemplate {
 
     private int id;
     private String name;
-    private String trainingsFocus;
-    private String targetGroup;
+    private TrainingsFocus trainingsFocus;
+    private ExperienceLevel targetGroup;
     private User author;
     private boolean oneShotPlan;
     private int recomSessionsPerWeek;
@@ -16,7 +19,7 @@ public class TrainingsPlanTemplate {
     private LinkedList<ExerciseInstance> exerciseInstances;
     private boolean confirmed;
 
-    public TrainingsPlanTemplate(int id, String name, String trainingsFocus, String targetGroup, User author, boolean oneShotPlan,
+    public TrainingsPlanTemplate(int id, String name, TrainingsFocus trainingsFocus, ExperienceLevel targetGroup, User author, boolean oneShotPlan,
                                  int recomSessionsPerWeek, int numTrainSessions, int exercisesPerSession,
                                  LinkedList<ExerciseInstance> exerciseInstances, boolean confirmed) {
         this.id = id;
@@ -51,19 +54,19 @@ public class TrainingsPlanTemplate {
         this.name = name;
     }
 
-    public String getTrainingsFocus() {
+    public TrainingsFocus getTrainingsFocus() {
         return trainingsFocus;
     }
 
-    public void setTrainingsFocus(String trainingsFocus) {
+    public void setTrainingsFocus(TrainingsFocus trainingsFocus) {
         this.trainingsFocus = trainingsFocus;
     }
 
-    public String getTargetGroup() {
+    public ExperienceLevel getTargetGroup() {
         return targetGroup;
     }
 
-    public void setTargetGroup(String targetGroup) {
+    public void setTargetGroup(ExperienceLevel targetGroup) {
         this.targetGroup = targetGroup;
     }
 

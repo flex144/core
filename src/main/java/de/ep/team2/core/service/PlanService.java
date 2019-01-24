@@ -103,6 +103,9 @@ public class PlanService {
         if (!template.getTrainingsFocus().equals(dto.getTrainingsFocus())) {
             db.changeTrainingsFocus(dto.getTrainingsFocus(), dto.getId());
         }
+        if (!template.getTargetGroup().equals(dto.getTargetGroup())) {
+            db.changeTargetGroup(dto.getTargetGroup(), dto.getId());
+        }
     }
 
     private Integer insertNewPlan(CreatePlanDto dto) {
@@ -327,5 +330,12 @@ public class PlanService {
             DataBaseService.getInstance().increaseCurSession(dayDto.getExercises().getFirst().getIdUserPlan());
         }
         return isDone;
+    }
+
+    public LinkedList<TrainingsPlanTemplate> getOneShotPlansForUser(String userMail) {
+        DataBaseService db = DataBaseService.getInstance();
+        User user = db.getUserByEmail(userMail);
+        LinkedList<TrainingsPlanTemplate> suitedPlans = db.getSuitedPlans(true, user.getExperience(), user.getTrainingsFocus(), user.getTrainingsFrequency());
+        return null; // TODO: 24.01.2019
     }
 }

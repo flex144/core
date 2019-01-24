@@ -28,4 +28,16 @@ public enum TrainingsFocus {
     public String toString() {
         return this.name;
     }
+
+    public String getConst() {
+        if (this.name.equals("Muskelaufbau")) {
+            return "MUSCLE";
+        } else if (this.name.equals("Ausdauer")) {
+            return "STAMINA";
+        } else if (this.name.equals("Gewichtsreduktion")) {
+            return "WEIGHT";
+        } else {
+            return null;
+        }
+    }
 }

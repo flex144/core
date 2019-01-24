@@ -1,6 +1,8 @@
 package de.ep.team2.core.dtos;
 
 import de.ep.team2.core.entities.Exercise;
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.service.ExerciseService;
 
 import java.util.LinkedList;
@@ -8,8 +10,8 @@ import java.util.LinkedList;
 public class CreatePlanDto {
 
     private String planName;
-    private String trainingsFocus; // values = muscle,stamina,pain todo as enum
-    private String targetGroup; // todo as enum
+    private TrainingsFocus trainingsFocus;
+    private ExperienceLevel targetGroup;
     private Integer id;
     private Integer sessionNums;
     private String category;
@@ -32,19 +34,19 @@ public class CreatePlanDto {
         this.planName = planName;
     }
 
-    public String getTrainingsFocus() {
+    public TrainingsFocus getTrainingsFocus() {
         return trainingsFocus;
     }
 
-    public void setTrainingsFocus(String trainingsFocus) {
+    public void setTrainingsFocus(TrainingsFocus trainingsFocus) {
         this.trainingsFocus = trainingsFocus;
     }
 
-    public String getTargetGroup() {
+    public ExperienceLevel getTargetGroup() {
         return targetGroup;
     }
 
-    public void setTargetGroup(String targetGroup) {
+    public void setTargetGroup(ExperienceLevel targetGroup) {
         this.targetGroup = targetGroup;
     }
 

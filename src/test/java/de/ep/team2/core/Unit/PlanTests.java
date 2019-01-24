@@ -5,6 +5,8 @@ import de.ep.team2.core.dtos.TrainingsDayDto;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.entities.User;
 import de.ep.team2.core.entities.UserPlan;
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.PlanService;
 import org.junit.Rule;
@@ -51,8 +53,8 @@ public class PlanTests {
     private CreatePlanDto createTestDto() {
         CreatePlanDto createPlanDto = new CreatePlanDto();
         createPlanDto.setPlanName("Testing the Plan creation");
-        createPlanDto.setTrainingsFocus("muscle");
-        createPlanDto.setTargetGroup("beginner");
+        createPlanDto.setTrainingsFocus(TrainingsFocus.MUSCLE);
+        createPlanDto.setTargetGroup(ExperienceLevel.BEGINNER);
         createPlanDto.setId(null); // for creating new plan
         createPlanDto.setSessionNums(3);
         createPlanDto.setCategory("A1");
@@ -75,12 +77,12 @@ public class PlanTests {
         CreatePlanDto dto = createTestDto();
         CreatePlanDto returnedDto = planService.createPlan(dto);
         assertEquals("Testing the Plan creation", returnedDto.getPlanName());
-        assertEquals("muscle", returnedDto.getTrainingsFocus());
+        assertEquals(TrainingsFocus.MUSCLE, returnedDto.getTrainingsFocus());
         returnedDto.setPlanName("Anderung");
-        returnedDto.setTrainingsFocus("stamina");
+        returnedDto.setTrainingsFocus(TrainingsFocus.STAMINA);
         returnedDto = planService.createPlan(returnedDto);
         assertEquals("Anderung", returnedDto.getPlanName());
-        assertEquals("stamina", returnedDto.getTrainingsFocus());
+        assertEquals(TrainingsFocus.STAMINA, returnedDto.getTrainingsFocus());
         planService.deleteTemplateAndChildrenById(returnedDto.getId());
     }
 

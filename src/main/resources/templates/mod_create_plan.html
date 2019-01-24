@@ -132,7 +132,7 @@
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
 <div class="container">
-    <form th:action="@{/mods/plans}" method="post" th:object="${createDto}">
+    <form th:action="@{/mods/plans}" method="post" th:object="${createDto}" id="createForm">
     <!-- Jumbotron with information for the page and inputs for general data for the plan -->
         <div class="jumbotron">
             <h2>Erstelle eine neue Trainingsplanvorlage</h2>
@@ -193,10 +193,8 @@
                     <div class="input-group input-group-general">
                         <span class="input-group-addon">Trainingsfokus:</span>
                         <select id="focus" class="form-control" required th:field="*{trainingsFocus}">
-                            <option th:value="null" selected disabled hidden>Wähle eine Option aus...</option>
-                            <option th:value="muscle">Muskelaufbau</option>
-                            <option th:value="stamina">Ausdauer</option>
-                            <option th:value="pain">Gewichtsreduktion</option>
+                            <option th:value="null" selected>Wähle eine Option aus...</option>
+                            <option th:each="focus : ${T(de.ep.team2.core.enums.TrainingsFocus).values()}" th:value="${focus.getConst()}" th:text="${focus.toString()}"></option>
                         </select>
                     </div>
                 </div>
@@ -207,10 +205,8 @@
                     <div class="input-group input-group-general">
                         <span class="input-group-addon">Zielgruppe:</span>
                         <select id="targetGroup" class="form-control" required th:field="*{targetGroup}">
-                            <option th:value="null" selected disabled hidden>Wähle eine Gruppe aus...</option>
-                            <option th:value="beginner">Anfänger</option>
-                            <option th:value="medium">Fortgeschritten</option>
-                            <option th:value="expert">Profi</option>
+                            <option th:value="null" selected>Wähle eine Gruppe aus...</option>
+                            <option th:each="level : ${T(de.ep.team2.core.enums.ExperienceLevel).values()}" th:value="${level.getConst()}" th:text="${level.toString()}"></option>
                         </select>
                     </div>
                 </div>
@@ -221,7 +217,7 @@
                         <a class="form-control" type="input" id="inputFieldCheckbox">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input" onchange="checkboxChanged()"
-                                       id="singleDayCheck" th:field="*{oneShot}">
+                                       id="singleDayCheck" th:field="*{oneShot}" th:disabled="${plan}">
                             </div>
                         </a>
                     </div>
@@ -235,7 +231,7 @@
                         <div class="input-group">
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default" id="btnDecrementTEs"
-                                        onclick="decrementTEs(); decreaseTeInputs()" style="border-radius: 0px">
+                                        onclick="decrementTEs(); decreaseTeInputs()" style="border-radius: 0px" th:disabled="${plan}">
                                     <span class="glyphicon glyphicon-minus"></span>
                                 </button>
                             </div>
@@ -243,7 +239,7 @@
                                    th:field="*{sessionNums}" readonly>
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default" id="btnIncrementTEs"
-                                        onclick="incrementTEs(); increaseTeInputs()">
+                                        onclick="incrementTEs(); increaseTeInputs()" th:disabled="${plan}">
                                     <span class="glyphicon glyphicon-plus"></span>
                                 </button>
                             </div>
@@ -968,6 +964,14 @@
 </div>
 
 <script th:inline="javascript">
+
+    /**
+     * Enables the disabled input fields when the request is submitted to send their data too.
+     */
+    $("form").submit(function() {
+        $("input").removeAttr("disabled");
+    });
+
     /**
      * Execute various functions when the page is loaded
      */
