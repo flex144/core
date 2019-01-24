@@ -1,5 +1,6 @@
 package de.ep.team2.core.controller;
 
+import de.ep.team2.core.Exceptions.NoPlanException;
 import de.ep.team2.core.dtos.ExerciseDto;
 import de.ep.team2.core.dtos.RegistrationDto;
 import de.ep.team2.core.dtos.TrainingsDayDto;
@@ -56,7 +57,11 @@ public class UserController {
         // start Training
         if (dayDto.getExercises() == null) {
             User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            dayDto = planService.fillTrainingsDayDto(principal.getEmail(), dayDto);
+            try {
+                dayDto = planService.fillTrainingsDayDto(principal.getEmail(), dayDto);
+            } catch (NoPlanException noPlan) {
+                return "user_choose_plan";
+            }
             model.addAttribute("dayDto", dayDto);
             return "user_training_overview";
         } else { // Training already started

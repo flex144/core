@@ -713,10 +713,16 @@ public class DataBaseService {
         if(toConfirm != null) {
             jdbcTemplate.update("UPDATE plan_templates SET complete = TRUE where id = ?",
                     idOfTemplate);
-            User user = (User) SecurityContextHolder.getContext().getAuthentication()
-                    .getPrincipal();
+            String changerMail;
+            if (SecurityContextHolder.getContext().getAuthentication() != null) {
+                User changer = (User) SecurityContextHolder.getContext().getAuthentication()
+                        .getPrincipal();
+                changerMail = changer.getEmail();
+            } else {
+                changerMail = "Default";
+            }
             log.debug("Plan Template '" + toConfirm.getName() + "' with ID: '"
-                    + toConfirm.getId() + "' confirmed by " + user.getEmail() + "!");
+                    + toConfirm.getId() + "' confirmed by " + changerMail + "!");
 
         }
     }

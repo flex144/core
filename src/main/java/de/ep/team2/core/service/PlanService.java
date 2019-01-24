@@ -1,5 +1,6 @@
 package de.ep.team2.core.service;
 
+import de.ep.team2.core.Exceptions.NoPlanException;
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.dtos.ExerciseDto;
 import de.ep.team2.core.dtos.TrainingsDayDto;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class PlanService {
@@ -121,6 +123,10 @@ public class PlanService {
         DataBaseService db = DataBaseService.getInstance();
         for (int i = 0; i < dto.getSessionNums(); i++) {
             Integer[] reps = parseReps(dto.getSets().get(i));
+            // fixes special case where weightDiff input isn't set as List in the Dto, when only one empty weightDiff is provided.
+            if (dto.getWeightDiff().size() == 0) {
+                dto.setWeightDiff(new LinkedList<String>() {{add("");}});
+            }
             Integer[] weightDiff = parseWeightDiff(dto.getWeightDiff().get(i));
             if (!validateWeightWithReps(reps, weightDiff)) {
                 throw new IllegalArgumentException("reps and weights do not match!");
@@ -141,11 +147,7 @@ public class PlanService {
     private boolean validateWeightWithReps(Integer[] reps, Integer[] weightDiff) {
         if (weightDiff.length == reps.length) {
             return true;
-        } else if (weightDiff.length == 1 && reps.length > 1) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return weightDiff.length == 1 && reps.length > 1;
     }
 
     private Integer[] setWeightDiffToReps(Integer[] reps, Integer[] weightDiff) {
@@ -211,8 +213,7 @@ public class PlanService {
         DataBaseService db = DataBaseService.getInstance();
         UserPlan userPlan = db.getUserPlanByUserMail(userMail);
         if (userPlan == null) {     // if the user has no plan assign one to him
-            db.insertUserPlan(userMail, 1); // atm the user just gets the initial plan
-            userPlan = db.getUserPlanByUserMail(userMail);
+             throw new NoPlanException();
         }
         int currentSession = userPlan.getCurrentSession();
         if (currentSession < 0) {

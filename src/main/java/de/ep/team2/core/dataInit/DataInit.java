@@ -287,8 +287,9 @@ public class DataInit {
     }
 
     private void fillPlanTemplates() {
-        DataBaseService.getInstance().insertPlanTemplate("Test Plan", "muscle","beginner",
+        int id = DataBaseService.getInstance().insertPlanTemplate("Test Plan", "muscle","beginner",
                 "felix@gmail.com",false,1,6,2);
+        DataBaseService.getInstance().confirmPlan(id);
     }
 
     private void fillTrainingSessions() {
