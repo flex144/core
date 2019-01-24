@@ -113,8 +113,8 @@ public class DataBaseService {
             user.setPassword(rs.getString("password"));
             user.setEnabled(rs.getBoolean("enabled"));
             user.setRole(rs.getString("role"));
-            user.setHeightInCm(rs.getInt("height_in_cm"));
-            user.setWeightInKg(rs.getInt("weight_in_kg"));
+            user.setHeightInCm(rs.getObject("height_in_cm", Integer.class));
+            user.setWeightInKg(rs.getObject("weight_in_kg", Integer.class));
             String genderString = rs.getString("gender");
             if (genderString != null) {
                 user.setGender(Gender.getValueByName(genderString));
@@ -128,7 +128,7 @@ public class DataBaseService {
                 user.setExperience(ExperienceLevel.getValueByName(experienceString));
             }
             user.setBirthDate(rs.getDate("birth_date"));
-            user.setTrainingsFrequency(rs.getInt("trainings_frequency"));
+            user.setTrainingsFrequency(rs.getObject("trainings_frequency", Integer.class));
             return user;
         }
     }
@@ -181,11 +181,11 @@ public class DataBaseService {
      * @param gender Enum Gender
      * @param experience Enum Experience
      * @param birthDate Date birthday
-     * @param userId id to identify user.
+     * @param userMail email to identify user.
      */
     public void setAdvancedUserData(Integer weightInKg, Integer heightInCm,
                                     TrainingsFocus trainingsFocus, Integer trainingsFrequency,
-                                    Gender gender, ExperienceLevel experience, Date birthDate, int userId) {
+                                    Gender gender, ExperienceLevel experience, Date birthDate, String userMail) {
         Object[] values = new Object[8];
         Arrays.fill(values,null);
         values[0] = weightInKg;
@@ -195,9 +195,9 @@ public class DataBaseService {
         values[4] = gender == null ? "" : gender.toString();
         values[5] = experience == null ? "" : experience.toString();
         values[6] = birthDate;
-        values[7] = userId;
+        values[7] = userMail.toLowerCase();
         jdbcTemplate.update("update users set weight_in_kg = ?, height_in_cm = ?, trainings_focus" +
-                " = ?, trainings_frequency = ?, gender = ?, experience = ?, birth_date = ? where id = ?",
+                " = ?, trainings_frequency = ?, gender = ?, experience = ?, birth_date = ? where email = ?",
                 values);
     }
 

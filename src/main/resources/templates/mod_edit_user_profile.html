@@ -140,10 +140,12 @@
                                     Geschlecht:
                                 </div>
                                 <div class="panel-body">
-                                    <select id="gender" class="form-control">
-                                        <option selected disabled hidden>Aktuelles Geschlecht ausgewählt</option>
-                                        <option>Männlich</option>
-                                        <option>Weiblich</option>
+                                    <select id="gender" class="form-control" th:field="*{gender}">
+                                        <option selected th:value="${null}">
+                                            Wähle eine Option aus...
+                                        </option>
+                                        <option th:each="gen : ${T(de.ep.team2.core.enums.Gender).values()}"
+                                                th:value="${gen.getConst()}" th:text="${gen.toString()}"></option>
                                     </select>
                                 </div>
                             </div>
@@ -154,7 +156,7 @@
                                     Geburtsdatum:
                                 </div>
                                 <div class="panel-body">
-                                    <input class="form-control" id="dateOfBirthInput" type="date" style="height: auto"
+                                    <input class="form-control" id="dateOfBirthInput" type="date" style="height: auto" th:field="*{birthDate}"
                                            name="dateOfBirthInput" placeholder="Hier steht das aktuelle Geburtsdatum">
                                 </div>
                             </div>
@@ -175,7 +177,7 @@
                                 </div>
                                 <div class="panel-body">
                                     <input class="form-control" id="heightInput" type="number" name="heightInput"
-                                           placeholder="Hier steht die aktuelle Größe">
+                                           placeholder="Hier steht die aktuelle Größe" th:field="*{heightInCm}">
                                 </div>
                             </div>
                         </div>
@@ -186,7 +188,7 @@
                                 </div>
                                 <div class="panel-body">
                                     <input class="form-control" id="weightInput" type="number" name="weightInput"
-                                           placeholder="Hier steht das aktuelle Gewicht">
+                                           placeholder="Hier steht das aktuelle Gewicht" th:field="*{weightInKg}">
                                 </div>
                             </div>
                         </div>

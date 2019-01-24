@@ -61,8 +61,7 @@
 <div class="container">
     <div class="panel panel-default outerPanel">
         <div class="panel-body">
-            <!-- TODO add th:action and th:object to the form -->
-            <form  th:action="@{}" th:object="${}" method="post">
+            <form  th:action="@{/user/new}" th:object="${user}" method="post">
                 <div id="myCarousel" class="carousel slide" data-interval="false">
                     <div class="carousel-inner">
                         <!-- Carousel page to determine the users wants an individual plan or a bullet plan -->
@@ -157,20 +156,19 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="col-md-12">
-                                        <!-- TODO add th:fields to each input -->
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="firstname">Vorname:</label>
                                                     <input  type="text" class="form-control" id="firstname"
-                                                            placeholder="Hier deinen Vornamen eingeben...">
+                                                            placeholder="Hier deinen Vornamen eingeben..." th:field="*{firstName}">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="lastname">Nachname:</label>
                                                     <input  type="text" class="form-control" id="lastname"
-                                                            placeholder="Hier deinen Nachnamen eingeben...">
+                                                            placeholder="Hier deinen Nachnamen eingeben..." th:field="*{lastName}">
                                                 </div>
                                             </div>
                                         </div>
@@ -178,12 +176,12 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="gender">Geschlecht auswählen</label>
-                                                    <select id="gender" class="form-control">
-                                                        <option selected disabled hidden>
+                                                    <select id="gender" class="form-control" th:field="*{gender}">
+                                                        <option selected th:value="${null}">
                                                             Wähle eine Option aus...
                                                         </option>
-                                                        <option>Männlich</option>
-                                                        <option>Weiblich</option>
+                                                        <option th:each="gen : ${T(de.ep.team2.core.enums.Gender).values()}"
+                                                                th:value="${gen.getConst()}" th:text="${gen.toString()}"></option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -191,8 +189,8 @@
                                                 <div class="form-group">
                                                     <label for="age">Geburtsdatum:</label>
                                                     <input  type="date" class="form-control"
-                                                            style="height: auto" id="age"
-                                                            placeholder="Hier deinen Geburtsdatum eingeben...">
+                                                            style="height: auto" id="age" th:field="*{birthDate}"
+                                                            placeholder="Hier deinen Geburtsdatum eingeben..." >
                                                 </div>
                                             </div>
                                         </div>
@@ -201,14 +199,14 @@
                                                 <div class="form-group">
                                                     <label for="height">Körpergröße: (in cm)</label>
                                                     <input  type="number" class="form-control" id="height"
-                                                            placeholder="Hier deine Größe in cm eingeben...">
+                                                            placeholder="Hier deine Größe in cm eingeben..." th:field="*{heightInCm}">
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="weight">Gewicht: (in kg)</label>
                                                     <input  type="number" class="form-control" id="weight"
-                                                            placeholder="Hier dein Gewicht in kg eingeben...">
+                                                            placeholder="Hier dein Gewicht in kg eingeben..." th:field="*{weightInKg}">
                                                 </div>
                                             </div>
                                         </div>
@@ -547,7 +545,7 @@
                                         </div>
                                         <div class="col-md-2">
                                             <a class="btn btn-success btn-block" id="btnContinuePage7"
-                                               onclick="jumpToFrequency(); setFocus('Muskelfokus')">
+                                               onclick="jumpToFrequency(); setFocus('Muskelaufbau')">
                                                 Weiter
                                                 <span class="glyphicon glyphicon-chevron-right"></span>
                                             </a>
@@ -577,7 +575,7 @@
                                         </div>
                                         <div class="col-md-2">
                                             <a class="btn btn-success btn-block" id="btnContinuePage8"
-                                               onclick="jumpToFrequency(); setFocus('Ausdauerfokus')">
+                                               onclick="jumpToFrequency(); setFocus('Ausdauer')">
                                                 Weiter
                                                 <span class="glyphicon glyphicon-chevron-right"></span>
                                             </a>
@@ -705,10 +703,10 @@
                                     <p style="font-size: 12px" class="text-muted">(Falls du deine Eingaben nochmal
                                         ändern möchtest, kannst du jederzeit mit den <mark>"Zurück"</mark>-Buttons zu
                                         dem jeweiligen Abschnitt zurück navigieren)</p>
-                                    <!-- TODO add th:fields to each input and add attribute 'hidden' -->
-                                    <input  type="text" class="form-control" id="inputExperience">
-                                    <input  type="text" class="form-control" id="inputFocus">
-                                    <input  type="text" class="form-control" id="inputTEperWeek">
+                                    <input  type="text" id="inputExperience" name="experienceLevel" hidden>
+                                    <input  type="text" class="form-control" id="inputFocus" name="focus" hidden>
+                                    <input  type="text" class="form-control" id="inputTEperWeek" th:field="*{trainingsFrequency}" hidden>
+                                    <input  type="text" th:field="*{email}" hidden>
                                 </div>
                                 <div class="panel-footer">
                                     <input class="button btn btn-block" type="submit" value="Daten abschicken"/>
@@ -743,85 +741,6 @@
         </div>
     </div>
 </div>
-
-<!-- Modal with example data to show at the end of carousel
-<div id="modal_preview" class="modal fade">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title">Eingegebene persönliche Daten:</h4>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleFirstname">Vorname:</label>
-                            <input  type="text" class="form-control" value="Benedikt" disabled id="exampleFirstname">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleLastname">Nachname:</label>
-                            <input  type="text" class="form-control" value="Schwarz" disabled id="exampleLastname">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleGender">Geschlecht:</label>
-                            <input id="exampleGender" type="text" class="form-control" disabled value="Männlich">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleAge">Alter:</label>
-                            <input id="exampleAge"  type="text" class="form-control" disabled value="21" >
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleHeight">Körpergröße: (in cm)</label>
-                            <input  type="text" class="form-control" id="exampleHeight" value="183" disabled>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleWeight">Gewicht: (in kg)</label>
-                            <input type="text" class="form-control" id="exampleWeight" value="80" disabled>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="exampleExperience">Gewählte Erfahrungsstufe:</label>
-                    <input id="exampleExperience" type="text" class="form-control" disabled value="Anfänger">
-                </div>
-
-                <div class="form-group">
-                    <label for="exampleFocus">Gewählter Trainingsfokus:</label>
-                    <input id="exampleFocus" type="text" class="form-control" disabled value="Muskelfokus">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="row">
-                    <div class="col-md-3">
-                        <button type="button" class="btn btn-danger btn-block" data-dismiss="modal">Zurück</button>
-                    </div>
-                    <div class="col-md-6"></div>
-                    <div class="col-md-3">
-                        <a type="button" class="btn btn-primary btn-block" th:href="@{/user/plan}">
-                            Absenden
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
--->
 
 <script>
     var longPauseToPrevTraining;
@@ -943,7 +862,7 @@
             case 3:
                 // Select "Experte" if previous Training was long, select "Fortgeschritten" if it was not
                 if(longPrevTraining) {
-                    $('#inputExperience').val('Experte');
+                    $('#inputExperience').val('Profi');
                 } else {
                     $('#inputExperience').val('Fortgeschritten');
                 }

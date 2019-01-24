@@ -103,6 +103,13 @@
                         Bearbeiten
                     </a>
                 </div>
+                <!-- todo soll man das so lassen? evtl rework-->
+                <div class="col">
+                    <a th:href="@{/user/new}" type="button" class="btn btn-block btn-default">
+                        <span class="glyphicon glyphicon-wrench"></span>
+                        Erfahrungslevel/Trainingsziel erneut bestimmen
+                    </a>
+                </div>
                 <div class="col">
                     <a type="button" class="btn btn-block btn-danger" data-toggle="modal"
                        data-target="#confirm_delete" id="deleteButton">
@@ -116,7 +123,7 @@
                 <table class="table table-striped table-bordered" id="user">
                     <tbody>
                     <tr>
-                        <th>User ID</th>
+                        <th>Benutzer ID</th>
                         <td><p th:text="${user.id}" style="font-size: 14px"/></td>
                     </tr>
                     <tr>
@@ -124,12 +131,36 @@
                         <td><p th:text="${user.email}" style="font-size: 14px"/></td>
                     </tr>
                     <tr>
-                        <th>First name</th>
+                        <th>Vorname</th>
                         <td><p th:text="${user.firstName}" style="font-size: 14px" id="firstName"/></td>
                     </tr>
                     <tr>
-                        <th>Last name</th>
-                        <td><p th:text="${user.lastName}" style="font-size: 14px" id="lastName"/></td>
+                        <th>Nachname</th>
+                        <td><p th:text="${user.lastName}" style="font-size: 14px" /></td>
+                    </tr>
+                    <tr>
+                        <th>Körpergröße (in cm)</th>
+                        <td><p th:text="${user.heightInCm}" style="font-size: 14px" /></td>
+                    </tr>
+                    <tr>
+                        <th>Körpergewicht (in Kg)</th>
+                        <td><p th:text="${user.weightInKg}" style="font-size: 14px" /></td>
+                    </tr>
+                    <tr>
+                        <th>Geschlecht</th>
+                        <td><p th:text="${user.gender}" style="font-size: 14px"/></td>
+                    </tr>
+                    <tr>
+                        <th>Geburtsdatum</th>
+                        <td><p th:text="${user.birthDate}" style="font-size: 14px" /></td>
+                    </tr>
+                    <tr>
+                        <th>Trainingsziel</th>
+                        <td><p th:text="${user.trainingsFocus}" style="font-size: 14px"/></td>
+                    </tr>
+                    <tr>
+                        <th>angestrebte Trainingshäufigkeit (pro Woche)</th>
+                        <td><p th:text="${user.trainingsFrequency}" style="font-size: 14px"/></td>
                     </tr>
                     <tr>
                         <th>Rolle</th>
@@ -141,43 +172,6 @@
             </div>
         </div>
     </div>
-    <!--
-    <div class="container">
-        <table class="table table-striped table-hover table-bordered" id="plan"
-               style="text-align: center">
-            <thead>
-            <tr>
-                <th>Montag</th>
-                <th>Dienstag</th>
-                <th>Mittwoch</th>
-                <th>Donnerstag</th>
-                <th>Freitag</th>
-                <th>Samstag</th>
-                <th>Sonntag</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>11:00</td>
-                <td></td>
-                <td></td>
-                <td>11:00</td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>12:00</td>
-                <td></td>
-                <td></td>
-                <td>14:00</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>-->
 </div>
 
 <div class="modal fade" id="confirm_delete">

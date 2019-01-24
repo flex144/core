@@ -77,13 +77,13 @@ public class DataBaseServiceUnitTests {
         cal.set(1998,Calendar.AUGUST,22);
         Date date = cal.getTime();
         Integer id = db.insertUser("test@user.de", "test", "user", "password");
-        db.setAdvancedUserData(77,180, TrainingsFocus.STAMINA,2, Gender.MALE, ExperienceLevel.BEGINNER,date,id);
+        db.setAdvancedUserData(77,180, TrainingsFocus.STAMINA,2, Gender.MALE, ExperienceLevel.BEGINNER,date,"test@user.de");
         assertEquals(ExperienceLevel.BEGINNER, db.getUserById(id).getExperience());
         assertEquals(Gender.MALE, db.getUserById(id).getGender());
-        db.setAdvancedUserData(null,null,null,null,Gender.FEMALE,null,null,id);
+        db.setAdvancedUserData(null,null,null,null,Gender.FEMALE,null,null,"test@user.de");
         assertNull(db.getUserById(id).getExperience());
         assertEquals(Gender.FEMALE, db.getUserById(id).getGender());
-        db.setAdvancedUserData(null,null,null,null,Gender.FEMALE,null,null,3);
+        db.setAdvancedUserData(null,null,null,null,Gender.FEMALE,null,null,"felix@gmail.com");
         assertEquals(Gender.FEMALE, db.getUserById(3).getGender());
     }
 

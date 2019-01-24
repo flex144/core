@@ -3,6 +3,7 @@ package de.ep.team2.core.entities;
 import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.Gender;
 import de.ep.team2.core.enums.TrainingsFocus;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,6 +16,7 @@ import java.util.Set;
  * Class which represents a User of the Database table 'users'.
  */
 public class User implements UserDetails {
+
     private int id;
     private String email, firstName, lastName, password;
     private String role;
@@ -24,6 +26,7 @@ public class User implements UserDetails {
     private Gender gender;
     private TrainingsFocus trainingsFocus;
     private ExperienceLevel experience;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthDate;
     private Integer trainingsFrequency;
 
@@ -202,5 +205,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
-
 }
