@@ -1,21 +1,19 @@
 package de.ep.team2.core.controller;
 
 import de.ep.team2.core.dtos.ExerciseDto;
+import de.ep.team2.core.dtos.RegistrationDto;
 import de.ep.team2.core.dtos.TrainingsDayDto;
 import de.ep.team2.core.entities.User;
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.service.PlanService;
+import de.ep.team2.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
-import de.ep.team2.core.dtos.RegistrationDto;
-import de.ep.team2.core.entities.User;
-import de.ep.team2.core.service.UserService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -31,9 +29,24 @@ public class UserController {
     @RequestMapping("/home")
     public String startUp() { return "user_startup_page"; }
 
-    @RequestMapping("/new")
-    public String newUser() {
+    @GetMapping("/new")
+    public String newUser(Model model) {
+        UserService service = new UserService();
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        principal.setPassword(null);
+        model.addAttribute("user", service.getUserByEmail(principal.getEmail()));
         return "user_data";
+    }
+
+    @PostMapping("/new")
+    public String addUserData(@ModelAttribute("user") User user, @RequestParam("focus") String focus,
+                              @RequestParam("experienceLevel") String experience) {
+        UserService service = new UserService();
+        user.setExperience(ExperienceLevel.getValueByName(experience));
+        user.setTrainingsFocus(TrainingsFocus.getValueByName(focus));
+        service.changeAdvancedUserDetails(user);
+        service.changeUserDetails(user);
+        return "redirect:/user/home";
     }
 
     @RequestMapping("/plan")
@@ -104,8 +117,10 @@ public class UserController {
 
     @RequestMapping(value="/editprofile", method = RequestMethod.GET)
     public String showEditUserProfile(Model model) {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication()
+        UserService service = new UserService();
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
+        User user = service.getUserByEmail(principal.getEmail());
         model.addAttribute("user", user);
         model.addAttribute("dto", new RegistrationDto());
         return "mod_edit_user_profile";
@@ -117,6 +132,7 @@ public class UserController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         editUser.setEmail(user.getEmail());
+        service.changeAdvancedUserDetails(editUser);
         editUser = service.changeUserDetails(editUser);
         Authentication auth = new UsernamePasswordAuthenticationToken(editUser, editUser.getPassword(),
                 editUser.getAuthorities());

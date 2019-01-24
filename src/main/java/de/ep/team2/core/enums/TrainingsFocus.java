@@ -4,7 +4,7 @@ public enum TrainingsFocus {
 
     MUSCLE("Muskelaufbau"),
     STAMINA("Ausdauer"),
-    PAIN("Schmerzreduktion");
+    WEIGHT("Gewichtsreduktion");
 
     private final String name;
 
@@ -18,8 +18,8 @@ public enum TrainingsFocus {
             return TrainingsFocus.MUSCLE;
         case "Ausdauer":
             return TrainingsFocus.STAMINA;
-        case "Schmerzreduktion":
-            return TrainingsFocus.PAIN;
+        case "Gewichtsreduktion":
+            return TrainingsFocus.WEIGHT;
         default : return null;
         }
     }

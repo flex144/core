@@ -12,18 +12,32 @@ public enum Gender {
     }
 
     public static Gender getValueByName(String name) {
-        switch (name) {
-        case "Männlich":
-            return Gender.MALE;
-        case "Weiblich":
-            return Gender.FEMALE;
-        default:
+        if (name == null) {
             return null;
+        } else {
+            switch (name) {
+            case "Männlich":
+                return Gender.MALE;
+            case "Weiblich":
+                return Gender.FEMALE;
+            default:
+                return null;
+            }
         }
     }
 
     @Override
     public String toString() {
         return this.name;
+    }
+
+    public String getConst() {
+        if (this.name.equals("Männlich")) {
+            return "MALE";
+        } else if (this.name.equals("Weiblich")) {
+            return "FEMALE";
+        } else {
+            return null;
+        }
     }
 }
