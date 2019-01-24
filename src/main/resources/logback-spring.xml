@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <!-- Configured to display Level INFO or more severe on the Console and write it
-     to the Log-file. Level DEBUG is only written to the Logfile. Once the Logfile reached a size
-     of 10MB the file is archived. Up to 3 Log archive files are stored. -->
+     to the Log-file. Level DEBUG is only written to the Logfile. -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -22,7 +21,8 @@
         <!-- used for IDE logging --><file>target/logs/core.log</file>
         <!-- used for external tomcat <file>webapps/team2/logs/core.log</file>-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>target/logs/core_archived.%d.log.zip</fileNamePattern>
+            <!-- used for IDE logging --><fileNamePattern>target/logs/core_archived.%d.log.zip</fileNamePattern>
+            <!-- used for external tomcat <fileNamePattern>webapps/team2/logs/core_archived.%d.log.zip</fileNamePattern>-->
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${FILE_LOG_PATTERN}</pattern>

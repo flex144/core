@@ -43,7 +43,7 @@ By default the Application is configured to be run in the IDE with the integrate
 If you want to deploy the Application as a war on a seperate Tomcat-server, two slight changes have to be made.
 1. Change the value of the Attribute 'deployOnTomcat' in the class `src/main/java/de/ep/team2/core/service/ExerciseService.java` to 'true'.
 This changes the Filepath of the images to the required value.
-2. In the Xml-File `src/main/resources/logback-spring.xml` change the Value "<file>target/logs/core.log</file>" to "<file>webapps/team2/logs/core.log</file>" as written there in the commentation. This changes the path of the Logging-file to the required location.
+2. In the Xml-File `src/main/resources/logback-spring.xml` change the Path-values as written in the Comments of the File. This changes the path of the Logging-file to the required location.
 (If you want to run the System in the IDE again you have to revert this changes.)
 Now execute the Maven Goal "clean package", the project should build and in the target folder a war file named 'team2.war' should be created.
 Use this File to Deploy the Application on the Tomcat.
