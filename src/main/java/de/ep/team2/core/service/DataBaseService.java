@@ -741,8 +741,9 @@ public class DataBaseService {
     public LinkedList<TrainingsPlanTemplate> getSuitedPlans(boolean oneShotPlan, ExperienceLevel experience,
                                                             TrainingsFocus trainingsFocus, Integer trainingsFrequency) {
         LinkedList<TrainingsPlanTemplate> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT * FROM plan_templates WHERE one_shot_plan = ? AND target_group = ? AND trainings_focus = ? AND (recom_sessions_per_week = ? or recom_sessions_per_week = ? or recom_sessions_per_week = ?)",
-                new Object[]{oneShotPlan, experience, trainingsFocus, trainingsFrequency - 1, trainingsFrequency, trainingsFrequency + 1},
+                "SELECT * FROM plan_templates WHERE complete = true AND one_shot_plan = ? AND target_group = ? AND trainings_focus = ? " +
+                        "AND (recom_sessions_per_week = ? or recom_sessions_per_week = ? or recom_sessions_per_week = ?)",
+                new Object[]{oneShotPlan, experience.toString(), trainingsFocus.toString(), trainingsFrequency - 1, trainingsFrequency, trainingsFrequency + 1},
                 new PlanTemplateMapperNoChildren()));
         if (toReturn.isEmpty()) {
             return null;
@@ -1033,7 +1034,7 @@ public class DataBaseService {
      * @return Id of new created plan.
      */
     public Integer insertUserPlan(String userMail, int templateId) {
-        TrainingsPlanTemplate template = getOnlyPlanTemplateById(templateId);
+        TrainingsPlanTemplate template = getOnlyPlanTemplateById(templateId); // TODO: 24.01.2019 User already has a plan
         User user = getUserByEmail(userMail);
         if (user == null) {
             log.debug("Can't create User Plan because User doesn't exist. User mail: " + userMail);

@@ -90,6 +90,7 @@ public class PlanTests {
     public void userPlanDayCycle() {
         String userMail = "felix@gmail.com";
         TrainingsPlanTemplate planBasedOn = planService.getPlanTemplateAndSessionsByID(1); // initial tpt
+        DataBaseService.getInstance().insertUserPlan(userMail, 1); // initial tpt
         TrainingsDayDto dayDto = planService.fillTrainingsDayDto(userMail, new TrainingsDayDto());
         assertTrue(dayDto.isInitialTraining());
         assertEquals(0, (int) dayDto.getCurrentSession());
@@ -117,6 +118,7 @@ public class PlanTests {
         }
         // creates a new User plan
         dayDto.clear();
+        DataBaseService.getInstance().insertUserPlan(userMail, 1); // initial tpt
         planService.fillTrainingsDayDto(userMail, dayDto);
         assertTrue(dayDto.isInitialTraining());
     }
@@ -129,6 +131,7 @@ public class PlanTests {
         // create user
         int idOfNewUser = db.insertUser(userMail, null, null, "12345");
         // create plan
+        DataBaseService.getInstance().insertUserPlan(userMail, 1); // initial tpt
         planService.fillTrainingsDayDto(userMail, new TrainingsDayDto());
         assertNotNull(db.getUserPlanByUserMail(userMail));
         // delete user and plan

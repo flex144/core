@@ -59,12 +59,14 @@
 <body>
 <div th:replace="/fragments/navbar :: navbar_user"></div>
 <!-- Carousel page to determine the users wants an individual plan or a bullet plan -->
+
 <div class="item active">
     <div class="panel panel-default">
         <div class="panel-heading" align="center">
             <h5><b>Trainingsart wählen</b></h5>
         </div>
         <div class="panel-body">
+            <span th:if="${errorMsg}" th:text="${errorMsg}"></span>
             <div class="col-container">
                 <div class="col col-plan">
                     <br>
@@ -83,10 +85,9 @@
                             </div>
                         </div>
                         <div class="panel-footer">
-                            <a class="btn button btn-block" id="btnSingleDayPlan"
-                               onclick="jumpToBulletEnd()">
-                                Auswählen
-                            </a>
+                            <form th:action="@{/user/plan/choose}" method="post">
+                            <input type="submit" class="btn button btn-block" id="btnSingleDayPlan" value="Auswählen">
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -107,10 +108,9 @@
                             </p>
                         </div>
                         <div class="panel-footer">
-                            <a class="btn button btn-block" id="btnIndividualPlan"
-                               href="#myCarousel" data-slide="next" type="button">
-                                Auswählen
-                            </a>
+                            <form th:action="@{/user/plan/getNormal}" method="post">
+                            <input type="submit" class="btn button btn-block" id="btnIndividualPlan" value="Auswählen">
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -119,16 +119,11 @@
     </div>
 </div>
 <!-- Carousel page with recommended bullet training plans -->
-<div class="moda">
+<div>
     <div class="panel panel-success">
         <div class="panel-heading">
             <div class="row">
                 <div class="col-md-2">
-                    <a class="btn btn-danger btn-block" id="btnReturnPage12"
-                       onclick="jumpToChoosePlan()">
-                        <span class="glyphicon glyphicon-chevron-left"></span>
-                        Zurück
-                    </a>
                 </div>
                 <div class="col-md-8" align="center">
                     <h5><b>Auswahl Eintages-Plan</b></h5>
@@ -136,9 +131,29 @@
             </div>
         </div>
         <div class="panel-body" align="center">
-            <h3>Liste mit vorgeschlagenen Eintages-Plänen ?</h3>
+            <table id="userTable" class="table table-bordered table-condensed" data-toggle="table">
+                <thead>
+                <tr>
+                    <th data-field="PlanName">
+                        Plan Name
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="myTable">
+                <tr th:each="tpt : ${plans}" th:onclick="'javascript:rowClicked(\'' + ${tpt.getId()} + '\');'" style="cursor: pointer">
+                    <td th:text="${tpt.getName()}"></td>
+                </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+
 </body>
+
+<script>
+    function rowClicked(value) {
+        location.href = "choose/" + value;
+    }
+</script>
 </html>

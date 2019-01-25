@@ -68,6 +68,12 @@
                         <th data-field="focus" data-sortable="true">
                             Schwerpunkt
                         </th>
+                        <th data-field="targetGroup" data-sortable="true">
+                            Zielgruppe
+                        </th>
+                        <th data-field="timeSpan" data-sortable="true">
+                            Empfohlen Einheiten pro Woche
+                        </th>
                         <th data-field="timeSpan" data-sortable="true">
                              Dauer in Trainingseinheiten
                         </th>
@@ -85,6 +91,8 @@
                         <td th:text="${planTemplate.getId()}"></td>
                         <td th:text="${planTemplate.getName()}"></td>
                         <td th:text="${planTemplate.getTrainingsFocus()}"></td>
+                        <td th:text="${planTemplate.getTargetGroup()}"></td>
+                        <td th:text="${planTemplate.getRecomSessionsPerWeek()}"></td>
                         <td th:text="${planTemplate.getNumTrainSessions()}"></td>
                         <td th:text="${planTemplate.confirmed()}"></td>
                         <td th:if="${planTemplate.getAuthor()}" th:text="${planTemplate.author.getEmail()}"></td>

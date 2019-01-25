@@ -4,6 +4,7 @@ import de.ep.team2.core.Exceptions.NoPlanException;
 import de.ep.team2.core.dtos.ExerciseDto;
 import de.ep.team2.core.dtos.RegistrationDto;
 import de.ep.team2.core.dtos.TrainingsDayDto;
+import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.entities.User;
 import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.TrainingsFocus;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.LinkedList;
 
 @Controller
 @RequestMapping("/user")
@@ -60,7 +63,13 @@ public class UserController {
             try {
                 dayDto = planService.fillTrainingsDayDto(principal.getEmail(), dayDto);
             } catch (NoPlanException noPlan) {
-                return "user_choose_plan";
+                UserService userService = new UserService();
+                User user = userService.getUserByEmail(principal.getEmail());
+                if (user.getExperience() != null && user.getTrainingsFocus() != null && user.getTrainingsFrequency() != null) {
+                    return "user_choose_plan";
+                } else {
+                    return "redirect:/user/new";
+                }
             }
             model.addAttribute("dayDto", dayDto);
             return "user_training_overview";
@@ -99,6 +108,50 @@ public class UserController {
         dayDto.setCurrentCategory(exerciseDto.getCategory());
         dayDto.changeExercise(exerciseDto, indexInList);
         return "redirect:/user/plan";
+    }
+
+    @GetMapping("/plan/choose/{index}")
+    public String assignOneShotUserPlans(@PathVariable("index") Integer id, Model model) {
+        PlanService planService = new PlanService();
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        try {
+            planService.assignPlan(principal.getEmail(), id);
+        } catch (Exception exception) {
+            model.addAttribute("error", exception.getMessage());
+            return "error";
+        }
+        return "redirect:/user/plan";
+    }
+
+    @PostMapping("/plan/choose")
+    public String chooseOneShotUserPlans(Model model) {
+        PlanService planService = new PlanService();
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        LinkedList<TrainingsPlanTemplate> suitedPlans = planService.getOneShotPlansForUser(principal.getEmail());
+        if (suitedPlans == null) {
+            model.addAttribute("errorMsg", "Kein passender Plan gefunden Tut uns Leid.");
+        } else {
+            model.addAttribute("plans", suitedPlans);
+        }
+        return "user_choose_plan";
+    }
+
+    @PostMapping("/plan/getNormal")
+    public String getNormalPlan(Model model) {
+        PlanService planService = new PlanService();
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        TrainingsPlanTemplate suitedPlan;
+        try {
+            suitedPlan = planService.getPlansForUser(principal.getEmail());
+        } catch (IllegalArgumentException exception) {
+            return "redirect:/user/new";
+        }
+        if (suitedPlan == null) {
+            model.addAttribute("errorMsg", "Kein passender Plan gefunden Tut uns Leid.");
+            return "user_choose_plan";
+        } else {
+            return "redirect:/user/plan";
+        }
     }
 
     @RequestMapping("/plan/exercise/{index}")

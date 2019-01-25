@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Random;
 
 public class PlanService {
 
@@ -335,7 +336,36 @@ public class PlanService {
     public LinkedList<TrainingsPlanTemplate> getOneShotPlansForUser(String userMail) {
         DataBaseService db = DataBaseService.getInstance();
         User user = db.getUserByEmail(userMail);
-        LinkedList<TrainingsPlanTemplate> suitedPlans = db.getSuitedPlans(true, user.getExperience(), user.getTrainingsFocus(), user.getTrainingsFrequency());
-        return null; // TODO: 24.01.2019
+        return db.getSuitedPlans(true, user.getExperience(), user.getTrainingsFocus(), user.getTrainingsFrequency());
+    }
+
+    public TrainingsPlanTemplate getPlansForUser(String userMail) throws IllegalArgumentException {
+        DataBaseService db = DataBaseService.getInstance();
+        User user = db.getUserByEmail(userMail);
+        if (user.getExperience() != null && user.getTrainingsFocus() != null && user.getTrainingsFrequency() != null) {
+            LinkedList<TrainingsPlanTemplate> suitedPlans = db.getSuitedPlans(false, user.getExperience(),
+                    user.getTrainingsFocus(), user.getTrainingsFrequency());
+            if (suitedPlans == null) {
+                return null;
+            } else {
+                Random rand = new Random();
+                TrainingsPlanTemplate randomTemplate = suitedPlans.get(rand.nextInt(suitedPlans.size()));
+                db.insertUserPlan(userMail, randomTemplate.getId());
+                return randomTemplate;
+            }
+        } else {
+            throw new IllegalArgumentException("no user data found.");
+        }
+    }
+
+    public void assignPlan(String email, int id) throws  IllegalArgumentException {
+        DataBaseService db = DataBaseService.getInstance();
+        if (db.getOnlyPlanTemplateById(id) == null) {
+            throw new IllegalArgumentException("Vorlage existiert nicht");
+        } else if(db.getUserByEmail(email) == null) {
+            throw new IllegalArgumentException("Benutzer existiert nicht");
+        } else {
+            db.insertUserPlan(email, id);
+        }
     }
 }

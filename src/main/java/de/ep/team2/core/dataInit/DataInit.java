@@ -292,6 +292,9 @@ public class DataInit {
         int id = DataBaseService.getInstance().insertPlanTemplate("Test Plan", TrainingsFocus.MUSCLE, ExperienceLevel.BEGINNER,
                 "felix@gmail.com",false,1,6,2);
         DataBaseService.getInstance().confirmPlan(id);
+        id = DataBaseService.getInstance().insertPlanTemplate("Test One Shot Plan", TrainingsFocus.WEIGHT, ExperienceLevel.EXPERT,
+                "felix@gmail.com",true,1,1,4);
+        DataBaseService.getInstance().confirmPlan(id);
     }
 
     private void fillTrainingSessions() {
@@ -310,6 +313,13 @@ public class DataInit {
         db.insertTrainingsSession(2,4,4, new Integer[]{0,0,5,10}, new Integer[]{30,30,30,30},"Schnell",90);
         db.insertTrainingsSession(2,5,4, new Integer[]{0,0,5,10}, new Integer[]{35,35,35,35},"Langsam",90);
         db.insertTrainingsSession(2,6,4, new Integer[]{0,0,5,10}, new Integer[]{35,40,40,35},"Schnell",90);
+        // Test One Shot Plan
+        //Liegestütz
+        db.insertTrainingsSession(5,1,4, new Integer[]{0,0,5,10}, new Integer[]{20,25,25,20},"Langsam",90);
+        db.insertTrainingsSession(6,1,4, new Integer[]{0,0,5,10}, new Integer[]{22,30,30,22},"Langsam",90);
+        //Bankdrücken
+        db.insertTrainingsSession(3,1,3, new Integer[]{0,0,5}, new Integer[]{12,12,12},"Langsam",90);
+        db.insertTrainingsSession(4,1,3, new Integer[]{0,0,5}, new Integer[]{12,12,12},"Langsam",90);
     }
 
     private void fillExerciseInstances() {
@@ -319,14 +329,20 @@ public class DataInit {
         LinkedList<String> toAdd2 = new LinkedList<>();
         toAdd2.add("Eng");
         DataBaseService db = DataBaseService.getInstance();
+        // Test Plan
         db.insertExerciseInstance(1, "A1", 15, toAdd, 1);
         db.insertExerciseInstance(2, "A2", 15, toAdd2, 1);
+        // Test One Shot Plan
+        LinkedList<String> toAdd3 = new LinkedList<>();
+        db.insertExerciseInstance(1, "A1", 15, toAdd3, 2);
+        db.insertExerciseInstance(1, "B1", 25, toAdd3, 2);
+        db.insertExerciseInstance(2, "A2", 20, toAdd3, 2);
+        db.insertExerciseInstance(2, "B2", 10, toAdd3, 2);
     }
 
     private void fillUserPlans() {
         DataBaseService db = DataBaseService.getInstance();
         db.insertUserPlan("timo@gmail.com", 1);
-        UserPlan test = db.getUserPlanById(1);
     }
 
     private void fillWeights() {
