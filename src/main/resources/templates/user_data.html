@@ -803,6 +803,59 @@
     </div>
 </div>
 -->
+<script>
+
+    /**
+     * Tests the value in the input field on Null, empty or special characters
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkValues(id){
+        var passesTest = true;
+        var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        var valueInField = document.getElementById(id).value;
+        if (valueInField == null || valueInField == "") {
+            passesTest = false;
+        } else {
+            if (format.test(valueInField)){
+                passesTest = false;
+            }
+        }
+        return passesTest;
+    }
+
+    /**
+     * Tests the value in the input on if it only has Letters from a-Z
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkText(id){
+        if (checkValues(id)) {
+            var format = /^[a-zäöüA-ZÄÄÖÜ ]+$/
+            var valueInField = document.getElementById(id).value;
+            var passesTest =  format.test(valueInField);
+            if (passesTest){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tests the value in the input field on if it is a Number
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkNumber(id) {
+        if (checkValues(id)) {
+            var valueInField = document.getElementById(id).value;
+            if (!isNaN(valueInField)){
+                return true;
+            }
+        }
+        return false;
+    }
+</script>
 
 <script>
     /**
