@@ -231,7 +231,7 @@
                         <div class="input-group">
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default" id="btnDecrementTEs"
-                                        onclick="decrementTEs(); decreaseTeInputs()" style="border-radius: 0px" th:disabled="${plan}">
+                                        onclick="decrementTEs();" style="border-radius: 0px" th:disabled="${plan}">
                                     <span class="glyphicon glyphicon-minus"></span>
                                 </button>
                             </div>
@@ -239,7 +239,7 @@
                                    th:field="*{sessionNums}" readonly>
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default" id="btnIncrementTEs"
-                                        onclick="incrementTEs(); increaseTeInputs()" th:disabled="${plan}">
+                                        onclick="incrementTEs();" th:disabled="${plan}">
                                     <span class="glyphicon glyphicon-plus"></span>
                                 </button>
                             </div>
@@ -1395,6 +1395,7 @@
         if (oldValue < 15) {
             // Increase the value by 1
             var newValue = parseFloat(oldValue) + 1;
+            increaseTeInputs()
         } else {
             // Alert to inform the user that the top limit is reached
             alert("Ein Trainingsplan kann nicht aus mehr als 15 Trainingseinheiten bestehen");
@@ -1419,6 +1420,7 @@
                 // Open modal to ask if the editor wants to convert the plan to a single day plan
                 $('#modalConvertPlan').modal({});
             }
+            decreaseTeInputs()
         } else {
             // Alert to inform the user that the bottom limit is reached
             alert("Ein Trainingsplan kann nicht aus weniger als einer Trainingseinheit bestehen");

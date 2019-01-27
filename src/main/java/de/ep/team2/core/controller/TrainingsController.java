@@ -40,7 +40,12 @@ public class TrainingsController {
 
         if (checkArgs.equals("valid!")) {
             dto.nameToId();
-            redirectAttributes.addFlashAttribute("createDto", service.createPlan(dto));
+            try {
+                redirectAttributes.addFlashAttribute("createDto", service.createPlan(dto));
+            } catch (IllegalArgumentException exception) {
+                redirectAttributes.addFlashAttribute("errorMsg", exception.getMessage());
+                return "redirect:/mods/createplan";
+            }
             //Add Exercises to the thymeleaf model
             TrainingsPlanTemplate tpt = service
                     .getPlanTemplateAndSessionsByID(dto.getId());

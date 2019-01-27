@@ -137,7 +137,10 @@ public class PlanService {
             }
             Integer[] weightDiff = parseWeightDiff(dto.getWeightDiff().get(i));
             if (!validateWeightWithReps(reps, weightDiff)) {
-                throw new IllegalArgumentException("reps and weights do not match!");
+                throw new IllegalArgumentException("Wiederholungen und Gewichtsunterschiede stimmen nicht überein!");
+            }
+            if (reps.length > 7) {
+                throw new IllegalArgumentException("Zu viele Sätze maximal 7 erlaubt!");
             }
             db.insertTrainingsSession(exInstanceId, i + 1, reps.length, setWeightDiffToReps(reps,weightDiff), reps,
                     dto.getTempo().get(i), dto.getPause().get(i));
