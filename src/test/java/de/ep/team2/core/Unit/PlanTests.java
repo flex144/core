@@ -139,4 +139,34 @@ public class PlanTests {
         assertNull(db.getUserPlanByUserMail(userMail));
         assertNull(db.getUserById(idOfNewUser));
     }
+
+    @Test
+    public void assignPlan() {
+        String userMail = "alex@gmail.com";
+        DataBaseService db = DataBaseService.getInstance();
+        assertNull(db.getUserPlanByUserMail(userMail));
+        try {
+            planService.getPlanForUser(userMail);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Du musst erst dein Nutzerdaten angeben bevor wir dir einen Plan zuweisen können.",
+                    e.getMessage());
+        }
+        assertNull(db.getUserPlanByUserMail(userMail));
+        db.setAdvancedUserData(null, null, TrainingsFocus.STAMINA, 2, null, ExperienceLevel.BEGINNER, null, userMail); // no plan for this data in the system
+        assertNull(planService.getPlanForUser(userMail));
+        assertNull(db.getUserPlanByUserMail(userMail));
+        db.setAdvancedUserData(null, null, TrainingsFocus.MUSCLE, 2, null, ExperienceLevel.BEGINNER, null, userMail); // test plan matches
+        assertNotNull(planService.getPlanForUser(userMail));
+        assertNotNull(db.getUserPlanByUserMail(userMail));
+        try {
+            planService.getPlanForUser(userMail);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Du musst erst deinen aktuellen Plan beenden bevor du einen neuen erhalten kannst.",
+                    e.getMessage());
+        }
+        db.deleteUserPlanAndWeightsById(db.getUserPlanByUserMail(userMail).getId());
+        assertNull(db.getUserPlanByUserMail(userMail));
+        planService.assignPlan(userMail, 2); // id of the one shot test plan
+        assertNotNull(db.getUserPlanByUserMail(userMail));
+    }
 }

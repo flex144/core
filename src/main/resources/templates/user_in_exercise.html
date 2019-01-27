@@ -244,7 +244,7 @@
 </div>
 
 <!--- submit Thymeleaf request --->
-<form th:action="@{/user/plan/done}" method="post" hidden>
+<form th:action="@{/user/plan/exercise/done}" method="post" hidden>
     <input title="done" type="checkbox" name="doneFlag" hidden checked>
     <input type="" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
     <input title="send" id="submitButton" type="submit" hidden>

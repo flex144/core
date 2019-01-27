@@ -738,12 +738,47 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Gets a list of suited plan specified by the given data.
+     *
+     * @param oneShotPlan if the plan should be a one shot plan.
+     * @param experience ExperienceLevel the plan is made for.
+     * @param trainingsFocus TrainingsFocus the plan targets.
+     * @param trainingsFrequency Number of Trainings the plan recommends per week.
+     * @param withExactFrequency if the method should look for the exact frequency otherwise +/- 1
+     * @return returns Linked List of suited plans; if no one is suitable null;
+     */
     public LinkedList<TrainingsPlanTemplate> getSuitedPlans(boolean oneShotPlan, ExperienceLevel experience,
-                                                            TrainingsFocus trainingsFocus, Integer trainingsFrequency) {
+                                                            TrainingsFocus trainingsFocus, Integer trainingsFrequency, boolean withExactFrequency) {
+        LinkedList<TrainingsPlanTemplate> toReturn;
+        if (withExactFrequency) {
+            toReturn = new LinkedList<>(jdbcTemplate.query(
+                    "SELECT * FROM plan_templates WHERE complete = true AND one_shot_plan = ? AND target_group = ? AND trainings_focus = ? " +
+                            "AND recom_sessions_per_week = ?",
+                    new Object[]{oneShotPlan, experience.toString(), trainingsFocus.toString(), trainingsFrequency},
+                    new PlanTemplateMapperNoChildren()));
+        } else {
+            toReturn = new LinkedList<>(jdbcTemplate.query(
+                    "SELECT * FROM plan_templates WHERE complete = true AND one_shot_plan = ? AND target_group = ? AND trainings_focus = ? " +
+                            "AND (recom_sessions_per_week = ? or recom_sessions_per_week = ? or recom_sessions_per_week = ?)",
+                    new Object[]{oneShotPlan, experience.toString(), trainingsFocus.toString(), trainingsFrequency - 1, trainingsFrequency, trainingsFrequency + 1},
+                    new PlanTemplateMapperNoChildren()));
+        }
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn;
+        }
+    }
+
+    /**
+     * Returns a LinkedList of TrainingsPlanTemplates without children representing all one shot plans in the Database.
+     *
+     * @return LinkedList of TrainingsPlanTemplates without children representing all one shot plans in the Database.
+     */
+    public LinkedList<TrainingsPlanTemplate> getAllOneShotPlans() {
         LinkedList<TrainingsPlanTemplate> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT * FROM plan_templates WHERE complete = true AND one_shot_plan = ? AND target_group = ? AND trainings_focus = ? " +
-                        "AND (recom_sessions_per_week = ? or recom_sessions_per_week = ? or recom_sessions_per_week = ?)",
-                new Object[]{oneShotPlan, experience.toString(), trainingsFocus.toString(), trainingsFrequency - 1, trainingsFrequency, trainingsFrequency + 1},
+                "SELECT * FROM plan_templates WHERE complete = true AND one_shot_plan = true",
                 new PlanTemplateMapperNoChildren()));
         if (toReturn.isEmpty()) {
             return null;
@@ -861,6 +896,12 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Returns a LinkedList of all Exercise Instances representing the given Exercise.
+     *
+     * @param idOfExercise to identify the Exercise
+     * @return LinkedList of all Exercise Instances representing the given Exercise.
+     */
     public LinkedList<ExerciseInstance> getInstancesOfExercise(int idOfExercise) {
         return new LinkedList<>(jdbcTemplate.query(
                 "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name, ei.repetition_maximum" +
@@ -1027,14 +1068,14 @@ public class DataBaseService {
      * Creates a new User plan for the User with mail userMail based on template wit templateId.
      * Sets CurrentSession 0 and MaxSession based on template.
      *
-     * Throws exception when either template or User are missing.
+     * Throws exception when either template or User are missing or the User already has a plan.
      *
      * @param userMail identify user the Plan is for.
      * @param templateId identify template the plan is based on.
      * @return Id of new created plan.
      */
     public Integer insertUserPlan(String userMail, int templateId) {
-        TrainingsPlanTemplate template = getOnlyPlanTemplateById(templateId); // TODO: 24.01.2019 User already has a plan
+        TrainingsPlanTemplate template = getOnlyPlanTemplateById(templateId);
         User user = getUserByEmail(userMail);
         if (user == null) {
             log.debug("Can't create User Plan because User doesn't exist. User mail: " + userMail);
@@ -1042,6 +1083,9 @@ public class DataBaseService {
         } else if (template == null) {
             log.debug("Can't create User Plan because Template doesn't exist. Template ID: " + templateId);
             throw new IllegalArgumentException("Can't create User Plan because Template doesn't exist. Template ID: " + templateId);
+        } else if (getUserPlanByUserMail(userMail) != null) {
+            log.debug("Can't create User Plan because User already has a plan. User mail: " + userMail);
+            throw new IllegalArgumentException("Can't create User Plan because User already has a plan. User mail: " + userMail);
         }
         Object[] insertValues = new Object[]{userMail.toLowerCase(), templateId, template.getNumTrainSessions()};
         jdbcTemplate.update("insert into user_plans(\"user\",template,cursession,maxsession,initial_training_done) values (?,?,0,?,false)"
@@ -1061,6 +1105,12 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Returns the plan with the provided id if it exists.
+     *
+     * @param idUserPlan to specify the plan.
+     * @return null if no plan with this id exists; UserPlan object representing the plan if it does.
+     */
     public UserPlan getUserPlanById(int idUserPlan) {
         LinkedList<UserPlan> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM user_plans WHERE id = ?",
@@ -1091,6 +1141,12 @@ public class DataBaseService {
         return users;
     }
 
+    /**
+     * Returns the plan of a user if he has one.
+     *
+     * @param userMail to specify the user.
+     * @return null if he has none; if one was found, UserPlan Object representing his plan.
+     */
     public UserPlan getUserPlanByUserMail(String userMail) {
         LinkedList<UserPlan> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM user_plans WHERE \"user\" = ?",
@@ -1124,12 +1180,22 @@ public class DataBaseService {
         return userPlan.getCurrentSession();
     }
 
+    /**
+     * Sets the initial Training of user plan to done in the database.
+     *
+     * @param userPlanId to specify the plan.
+     */
     public void setInitialTrainDone(int userPlanId) {
         Object[] values = new Object[]{userPlanId};
         jdbcTemplate.update("update user_plans set initial_training_done = true where id = ?", values);
     }
 
-    private void deleteUserPlanAndWeightsById(int userPlanID) {
+    /**
+     * Deletes a user plan and all weights assigned to plan from the database.
+     *
+     * @param userPlanID plan ti delete
+     */
+    public void deleteUserPlanAndWeightsById(int userPlanID) {
         UserPlan toDelete = getUserPlanById(userPlanID);
         jdbcTemplate.update("DELETE FROM weights WHERE iduserplan = ?",
                     (Object[]) new Integer[]{userPlanID});

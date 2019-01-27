@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -87,6 +86,11 @@ public class PlanService {
         }
     }
 
+    /**
+     * Get a List of all Tag names in the database and returns it.
+     *
+     * @return Linked List of all Tag names.
+     */
     public LinkedList<String> getAllTagNames() {
         return DataBaseService.getInstance().getAllTagNames();
     }
@@ -265,6 +269,11 @@ public class PlanService {
         }
     }
 
+    /**
+     * Sets the initial Training for a user plan in the Database done
+     *
+     * @param userPlanId id to identify plan.
+     */
     public void setUserPlanInitialTrainDone(int userPlanId) {
         DataBaseService.getInstance().setInitialTrainDone(userPlanId);
     }
@@ -310,8 +319,6 @@ public class PlanService {
         throw new IllegalArgumentException("No Session with this ordering available!");
     }
 
-    //
-
     /**
      * Checks all exercises of a TrainingsDayDto are completed. When they are increments the currentSession
      * stat of the UserPlan in the database. When a Plan expires (reaches its MaxSessions)
@@ -333,34 +340,69 @@ public class PlanService {
         return isDone;
     }
 
-    public LinkedList<TrainingsPlanTemplate> getOneShotPlansForUser(String userMail) {
+    /**
+     * Get all TrainingPlanTemplates without children where the flag oneshot plan is set from the database.
+     *
+     * @return LinkedList of the templates
+     */
+    public LinkedList<TrainingsPlanTemplate> getOneShotPlansForUser() {
         DataBaseService db = DataBaseService.getInstance();
-        User user = db.getUserByEmail(userMail);
-        return db.getSuitedPlans(true, user.getExperience(), user.getTrainingsFocus(), user.getTrainingsFrequency());
+        return db.getAllOneShotPlans();
     }
 
-    public TrainingsPlanTemplate getPlansForUser(String userMail) throws IllegalArgumentException {
+    /**
+     * Checks if the necessary user data is missing or if the user already has an active plan.
+     * Throws an according exception.
+     *
+     * Otherwise will search for a plans suited for the user. First try with exact Trainings frequency if nothing was found with frequency +/-1.
+     * When still no plan is found returns null.
+     * If plans were found chooses a plan at random, assign it to the user in the database and returns it.
+     *
+     * @param userMail email of the user to identify him.
+     * @return null if no suited plan was found; the TrainingsPlanTemplate the plan is based on.
+     * @throws IllegalArgumentException when user has no data or an active plan an according exception is thrown.
+     */
+    public TrainingsPlanTemplate getPlanForUser(String userMail) throws IllegalArgumentException {
         DataBaseService db = DataBaseService.getInstance();
         User user = db.getUserByEmail(userMail);
         if (user.getExperience() != null && user.getTrainingsFocus() != null && user.getTrainingsFrequency() != null) {
+            if (db.getUserPlanByUserMail(userMail) != null) {
+                throw new IllegalArgumentException("Du musst erst deinen aktuellen Plan beenden bevor du einen neuen erhalten kannst.");
+            }
             LinkedList<TrainingsPlanTemplate> suitedPlans = db.getSuitedPlans(false, user.getExperience(),
-                    user.getTrainingsFocus(), user.getTrainingsFrequency());
-            if (suitedPlans == null) {
+                    user.getTrainingsFocus(), user.getTrainingsFrequency(), true); // looks for plans with exact Trainings Frequency
+            if (suitedPlans == null){
+                suitedPlans = db.getSuitedPlans(false, user.getExperience(),
+                        user.getTrainingsFocus(), user.getTrainingsFrequency(), false); // looks for plans with similar Trainings Frequency
+            }
+            if (suitedPlans == null){
                 return null;
-            } else {
+            } else  {
                 Random rand = new Random();
                 TrainingsPlanTemplate randomTemplate = suitedPlans.get(rand.nextInt(suitedPlans.size()));
                 db.insertUserPlan(userMail, randomTemplate.getId());
                 return randomTemplate;
             }
         } else {
-            throw new IllegalArgumentException("no user data found.");
+            throw new IllegalArgumentException("Du musst erst dein Nutzerdaten angeben bevor wir dir einen Plan zuweisen können.");
         }
     }
 
+    /**
+     * Checks if the user already as an active plan and whether the templates and the user with the provided ids exist.
+     * Throws an according exception.
+     *
+     * Assigns the given plan to the user in the database.
+     *
+     * @param email to identify user.
+     * @param id to identify plan.
+     * @throws IllegalArgumentException when user has active plan, template or user doesn't exist.
+     */
     public void assignPlan(String email, int id) throws  IllegalArgumentException {
         DataBaseService db = DataBaseService.getInstance();
-        if (db.getOnlyPlanTemplateById(id) == null) {
+        if (db.getUserPlanByUserMail(email) != null) {
+            throw new IllegalArgumentException("Du musst erst deinen aktuellen Plan beenden bevor du einen neuen erhalten kannst.");
+        } else if (db.getOnlyPlanTemplateById(id) == null) {
             throw new IllegalArgumentException("Vorlage existiert nicht");
         } else if(db.getUserByEmail(email) == null) {
             throw new IllegalArgumentException("Benutzer existiert nicht");

@@ -17,7 +17,7 @@
 </head>
 <body>
 
-<form th:action="@{/user/plan/done/init}" method="post">
+<form th:action="@{/user/plan/exercise/done/init}" method="post">
 <div class="container" id="panelContainer">
     <div class="visible-md visible-lg">
         <br><br>
@@ -30,8 +30,8 @@
                 <input type="text" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
                 <!--- Short description --->
                 <div class="panel-heading" >
-                    <h3 th:text="'Bitte trage ein mit wie viel Gewicht (in kg) du die Übung'
-                    + ${exerciseDto.getExercise().getName()} + ',' + ${exerciseDto.getRepMax()} + 'mal wiederholen kannst.'"></h3>
+                    <h3 th:text="'Bitte trage ein mit wie viel Gewicht (in kg) du die Übung '
+                    + ${exerciseDto.getExercise().getName()} + ', ' + ${exerciseDto.getRepMax()} + ' mal wiederholen kannst.'"></h3>
                 </div>
                 <!-- TODO Info zur Übung -->
                 <!--- form for user to write into --->

@@ -70,6 +70,7 @@
                                 <div class="panel-heading" align="center">
                                     <h5><b>Trainingsart wählen</b></h5>
                                 </div>
+                                <span th:if="${errorMsg}" th:text="${errorMsg}"></span> <!-- todo as alert or anything better noticeable -->
                                 <div class="panel-body">
                                     <div class="col-container">
                                         <div class="col col-plan">
@@ -111,11 +112,22 @@
                                                         Dieser Plan kann sich je nach Auswahl über mehrere Wochen
                                                         erstrecken und bestimmte Trainingsziele beinhalten.
                                                     </p>
+                                                    <!-- Todo Design and text evtl -->
+                                                    <div th:if="${user.experience != null and user.trainingsFrequency != null and user.trainingsFocus != null}">
+                                                        <p>Deine Daten wurden bereits erfassst. Hier siehst du dein akutelles Trainingsziel
+                                                            und wie oft du wöchentlich trainieren möchtest. Wenn diese Angaben stimmen klicke auf "Mit diesen Angaben Plan finden".
+                                                            Möchtest du etwas daran ändern oder glaubst du dass sich dein Erfahrungslevel geändert hat, dann klicke auf "Daten angeben und Plan starten"</p>
+                                                        <a class="btn button btn-block" th:href="@{/user/plan/getNormal}">Mit diesen Angaben Plan finden</a>
+                                                        <label for="actTrainingsFocus">Trainingsziel</label>
+                                                        <p th:text="${user.trainingsFocus}" id="actTrainingsFocus" style="font-size: 14px"/>
+                                                        <label for="actTrainingsFrequency">angestrebte Trainingshäufigkeit (pro Woche)</label>
+                                                        <p th:text="${user.trainingsFrequency}" id="actTrainingsFrequency" style="font-size: 14px"/>
+                                                    </div>
                                                 </div>
                                                 <div class="panel-footer">
                                                     <a class="btn button btn-block" id="btnIndividualPlan"
                                                        href="#myCarousel" data-slide="next" type="button">
-                                                        Auswählen
+                                                        Daten angeben und Plan starten
                                                     </a>
                                                 </div>
                                             </div>
@@ -703,10 +715,10 @@
                                     <p style="font-size: 12px" class="text-muted">(Falls du deine Eingaben nochmal
                                         ändern möchtest, kannst du jederzeit mit den <mark>"Zurück"</mark>-Buttons zu
                                         dem jeweiligen Abschnitt zurück navigieren)</p>
-                                    <input  type="text" id="inputExperience" name="experienceLevel" hidden>
-                                    <input  type="text" class="form-control" id="inputFocus" name="focus" hidden>
-                                    <input  type="text" class="form-control" id="inputTEperWeek" th:field="*{trainingsFrequency}" hidden>
-                                    <input  type="text" th:field="*{email}" hidden>
+                                    <input  type="hidden" id="inputExperience" name="experienceLevel">
+                                    <input  type="hidden" class="form-control" id="inputFocus" name="focus">
+                                    <input  type="hidden" class="form-control" id="inputTEperWeek" th:field="*{trainingsFrequency}">
+                                    <input  type="hidden" th:field="*{email}">
                                 </div>
                                 <div class="panel-footer">
                                     <input class="button btn btn-block" type="submit" value="Daten abschicken"/>
@@ -732,6 +744,28 @@
                                 </div>
                                 <div class="panel-body" align="center">
                                     <h3>Liste mit vorgeschlagenen Eintages-Plänen ?</h3>
+                                    <table id="userTable" class="table table-bordered table-condensed" data-toggle="table">
+                                        <thead>
+                                        <tr>
+                                            <th data-field="PlanName">
+                                                Plan Name
+                                            </th>
+                                            <th data-field="PlanTargetGroup">
+                                                Zielgruppe
+                                            </th>
+                                            <th data-field="PlanTrainingsFocus">
+                                                Ziel des Plans
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="myTable">
+                                        <tr th:each="tpt : ${bulletPlans}" th:onclick="'javascript:rowClicked(\'' + ${tpt.getId()} + '\');'" style="cursor: pointer">
+                                            <td th:text="${tpt.getName()}"></td>
+                                            <td th:text="${tpt.getTargetGroup()}"></td>
+                                            <td th:text="${tpt.getTrainingsFocus()}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -745,6 +779,10 @@
 <script>
     var longPauseToPrevTraining;
     var longPrevTraining;
+
+    function rowClicked(value) {
+        location.href = "plan/choose/" + value;
+    }
 
     /**
      * Function to jump to the crousel page to determine type of plan
