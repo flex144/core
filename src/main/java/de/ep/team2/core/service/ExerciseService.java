@@ -173,4 +173,13 @@ public class ExerciseService {
     public Exercise getExerciseByName(String name) {
         return DataBaseService.getInstance().getExerciseByName(name);
     }
+
+    /**
+     * todo
+     *
+     * @param exercise
+     */
+    public void updateExerciseWithoutImg(Exercise exercise) {
+        DataBaseService.getInstance().updateExerciseWithoutImg(exercise.getId(), exercise.getName(), exercise.getDescription(), exercise.getWeightType(), exercise.getVideoLink());
+    }
 }

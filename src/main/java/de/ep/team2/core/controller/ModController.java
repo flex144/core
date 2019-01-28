@@ -8,6 +8,7 @@ import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -76,6 +77,48 @@ public class ModController {
         }
         model.addAttribute("exercises", toReturn);
         return "mod_exercise_search";
+    }
+
+    /**
+     * todo
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping("/exercise/edit/{id}")
+    public String editExerciseGet(@PathVariable("id") int id, Model model) {
+        ExerciseService exerciseService = new ExerciseService();
+        Exercise toEdit = exerciseService.getExerciseById(id);
+        if (toEdit == null) {
+            model.addAttribute("error", "Übung existiert nicht!");
+            return "error";
+        } else {
+            model.addAttribute("exercise", toEdit);
+            return "mod_exercise_edit";
+        }
+    }
+
+    /**
+     * todo
+     * @param exercise
+     * @param model
+     * @param redirectAttributes
+     * @return
+     */
+    @PostMapping("/exercise/edit")
+    public String editExercisePost(@ModelAttribute("exercise") Exercise exercise, Model model, RedirectAttributes redirectAttributes) {
+        ExerciseService exerciseService = new ExerciseService();
+        if (exerciseService.getExerciseById(exercise.getId()) == null) {
+            model.addAttribute("error", "Übung existiert nicht!");
+            return "error";
+        }
+        try {
+            exerciseService.updateExerciseWithoutImg(exercise);
+        } catch (IllegalArgumentException exception) {
+            redirectAttributes.addFlashAttribute("errorMsg", exception.getMessage());
+            return "redirect:/mods/exercise/edit/" + exercise.getId();
+        }
+        return "redirect:/mods/searchexercise";
     }
 
     @GetMapping(value = {"/searchplan"})

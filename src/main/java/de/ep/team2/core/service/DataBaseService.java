@@ -380,12 +380,45 @@ public class DataBaseService {
                             insert);
                 }
             }
+            String inserterMail;
+            if (SecurityContextHolder.getContext().getAuthentication() != null) {
+                User changer = (User) SecurityContextHolder.getContext().getAuthentication()
+                        .getPrincipal();
+                inserterMail = changer.getEmail();
+            } else {
+                inserterMail = "Default";
+            }
             log.debug("Exercise '" + name + "' inserted in Table 'exercises' with " +
                     "Id "
-                    + id + " !");
+                    + id + " by " + inserterMail + " !");
             return id;
         } else {
             throw new IllegalArgumentException("Exercise name already in use");
+        }
+    }
+
+    /**
+     * todo
+     *
+     * @param id
+     * @param name
+     * @param description
+     * @param weightType
+     * @param videoLink
+     */
+    public void updateExerciseWithoutImg(int id, String name, String description, WeightType weightType,
+                                         String videoLink) {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        jdbcTemplate.update("update exercises set description = ?, weight_type = ?, video_link = ? where id = ?",
+                description, weightType.toString(), videoLink, id);
+        log.debug("Exercise with id '" + id + "' was altered by " + principal.getEmail() + " !");
+        if (!exerciseNameUnique(name) && getExerciseByName(name).getId() != id) {
+            log.debug("New Name for Exercise with id '" + id + "' is already in use!");
+            throw new IllegalArgumentException("Name wird schon genutzt bitte wähle einen anderen!");
+        } else {
+            jdbcTemplate.update("update exercises set name = ? where id = ?",
+                    name, id);
         }
     }
 
@@ -535,7 +568,15 @@ public class DataBaseService {
             Integer id = jdbcTemplate.query("select currval" +
                             "(pg_get_serial_sequence('plan_templates','id'));",
                     (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
-            log.debug("Plan Template '" + name + "' created with Id: " + id + " !");
+            String inserterMail;
+            if (SecurityContextHolder.getContext().getAuthentication() != null) {
+                User changer = (User) SecurityContextHolder.getContext().getAuthentication()
+                        .getPrincipal();
+                inserterMail = changer.getEmail();
+            } else {
+                inserterMail = "Default";
+            }
+            log.debug("Plan Template '" + name + "' created with Id: " + id + " by " + inserterMail + " !");
             return id;
         }
     }

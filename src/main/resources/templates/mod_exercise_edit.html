@@ -1,312 +1,151 @@
-<!doctype html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Übung ansehen</title>
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
-          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
-          crossorigin="anonymous">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <div th:include="/fragments/navbar :: style_fragment"></div>
-    <style>
-        .greyContainer {
-            width: 100%;
-            height: 100%;
-            text-align: center;
-        }
+    <title>Übung bearbeiten</title>
 
-        .buttonBar{
-            height: 10%;
-            width: 100%;
-            background: #dddddd;
-            border: 1px solid #2E2E2E;
-            padding: 5px;
-        }
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-        .highlightedContainer {
-            background: #fd8900; /*light orange*/
-            border: 2px solid #2E2E2E;
-            text-align: center;
+    <div th:include="/fragments/navbar :: style_fragment"></div></head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    .col-container {
+        display: table;
+        width: 100%;
+    }
+    .col {
+        display: table-cell;
+        padding: 5px;
+    }
+    .col-text {
+        width:60%;
+    }
+    @media only screen and (max-width: 600px) {
+        .col {
+            display: block;
             width: 100%;
-            height: 100%;
         }
-    </style>
-</head>
+        #newExercisePanel {
+            padding-left: 0px;
+        }
+    }
+</style>
 <body>
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
-<!--- Data container --->
-<div class="container" id="container_Data">
-    <!--- Header of the page-->
-    <div class="greyContainer" style="height: 100%;">
-        <div class="highlightedContainer" style="height: 10%">
-            <div style="height: 100%">
-                <h1 align="center" id="exerciseNameData">Klimmzug</h1>
+<div class="container">
+    <form th:action="@{/mods/exercise/edit}" th:object="${exercise}" method="POST" enctype="multipart/form-data">
+        <div class="panel panel-default outerPanel">
+            <div class="panel-heading" style="padding-left: 30px"
+                 id="newExercisePanel">
+                <h3>Trainingsübung bearbeiten</h3>
+                <p style="font-size: 12pt">Fülle das folgende Formular aus und klicke Speichern um die bestehende Übung zu bearbeiten.</p>
+                <p th:if="${errorMsg}" th:text="${errorMsg}" style="color: red"></p>
             </div>
-        </div>
-        <div class="buttonBar" id="container_buttons" style="height: 10%">
-            <h4 id="alternateExerciseData"> alternative Übung: Hanteln jonglieren</h4>
-        </div>
-    </div>
-    <!--- Details to the exercise -->
-    <div class="container" id="container_details" style="height: 50%; padding-top: 5px;
-            overflow-y: scroll; overflow-x: fragments">
-        <div class="row">
-            <!--- The link to the referenced Picture-->
-            <div class="container" style="width: 50%; text-align: center">
-                <img id="pictureURL" src="https://images-na.ssl-images-amazon.com/images/I/41rWGxlUPHL._SX355_.jpg" alt="Hantel" width="180px" style="float:left; width: 200px;">
-            </div>
-            <!--- short explanation to the exercise-->
-            <div class="container" style="width: 50%;" id="descriptionData">
-                <p >Der Klimmzug (von klimmen, ein Synonym für „klettern“)
-                    ist eine Eigengewichtübung, bei der der Körper durch
-                    den Rücken in Zusammenarbeit mit den Armen an einer
-                    waagerechten Stange (Klimmzugstange) hochgezogen
-                    und wieder herabgelassen wird.</p>
-            </div>
-        </div>
-    </div>
-    <!--- The link to the referenced Youtube video-->
-    <div id="container_youtubeEmbeding" style="height: 30%; text-align: center">
-        <iframe width="384" height="216" id="videoLink" src="https://www.youtube.com/embed/kdiFoOpL4E8">
-        </iframe>
-    </div>
-    <!--- The buttons that toggle the Interface-->
-    <div class="buttonBar" style="height: 10%">
-        <div class="row">
-            <div class="col-3">
-                <button type="button"
-                        class="btn btn-block btn-secondary" style="height: 100%">
-                    Übungs- <br> übersicht
-                </button>
-            </div>
-            <div class="col-1">
-
-            </div>
-            <div class="col-4">
-                <div id="container_saveButton" style="height: 100%;">
-                    <button type="button"
-                            class="btn btn-block btn-success" style="height: 100%" id="button_saveChanges" onclick="saveChanges()">
-                        Speichern
-                    </button>
-                </div>
-            </div>
-            <div class="col-4">
-                <button type="button"
-                        class="btn btn-block btn-secondary" data-toggle="modal" data-target="#myModal" onclick="toggleContainer()">
-                    Übung <br> bearbeiten
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div id="myModal" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-body">
-                <form>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="exerciseName">Name der Übung:</label>
+            <input type="hidden" th:field="*{id}">
+            <div class="panel-body">
+                <div class="col-container">
+                    <div class="col">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Name der Übung:
+                            </div>
+                            <div class="panel-body">
                                 <input  type="text" class="form-control" id="exerciseName"
-                                        placeholder="Hier die Übungsbezeichnung eingeben..." oninput="updateName()" value="">
+                                        placeholder="Hier die Übungsbezeichnung eingeben..." th:field="*{name}" required>
                             </div>
                         </div>
                     </div>
-                    <!--------------------------- TODO alternative exercise search "exercise" class elements ------------>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="exerciseName">Name der Alternative:</label>
-                                <input  type="text" class="form-control" id="alternateExercise"
-                                        placeholder="Hier die Übungsbezeichnung eingeben..." oninput="updateAlternate()" value="">
+                    <div class="col">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Gewichtsart auswählen
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="description">Beschreibung der Übung:</label>
-                                <textarea id="description" class="form-control" rows="6" oninput="updateDescription()"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="weightType">Gewichtsart auswählen</label>
-                                <select id="weightType" class="form-control">
-                                    <option selected disabled hidden>Wähle eine Option aus...</option>
-                                    <option id="ownWeight">Eigengewicht</option>
-                                    <option id="additionalWeight">Befestigtes Gewicht</option>
+                            <div class="panel-body">
+                                <select id="weightType" class="form-control" th:field="*{weightType}" required>
+                                    <option th:value="${T(de.ep.team2.core.enums.WeightType).SELF_WEIGHT}">Eigengewicht</option>
+                                    <option th:value="${T(de.ep.team2.core.enums.WeightType).FIXED_WEIGHT}">Befestigtes Gewicht</option>
                                 </select>
                             </div>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="videoLink1">Erklärungsvideos: (Optional)</label>
+                </div>
+                <div class="col-container">
+                    <div class="col col-text">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Beschreibung der Übung: (Optional)
+                            </div>
+                            <div class="panel-body">
+                                <textarea id="description" class="form-control" rows="6" th:field="*{description}"
+                                          maxlength="2000"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Erklärungsvideo: (Optional)
+                            </div>
+                            <div class="panel-body">
                                 <input  type="url" class="form-control" id="videoLink1"
-                                        placeholder="Hier Link zu einem Erklärungsvideo einfügen..." oninput="updateVideo()" value="">
+                                        placeholder="Hier Link zu einem Erklärungsvideo einfügen..."
+                                        th:field="*{videoLink}">
+                            </div>
+                            <div class="panel-footer text-muted" style="font-size: 10px">
+                                Damit das Video korrekt angezeigt wird <br/>
+                                muss der Einbettungslink zu einem Youtubevideo verwendet werden
                             </div>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label for="videoLink1">Erklärungsvideos: (Optional)</label>
-                                <input  type="url" class="form-control" id="imageInput"
-                                        placeholder="Hier Link zu einem Bild einfügen..." oninput="updatePicture()" value="">
+                </div>
+                <div class="col-container">
+                    <div class="col">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Muskelgruppen Bilder hochladen (Optional)
+                            </div>
+                            <div class="panel-body">
+                                <input  type="file" name="muscleImage" class="form-control" id="imageInput1" multiple
+                                        style="height: auto">
+                            </div>
+                            <div class="panel-footer text-muted" style="font-size: 10px">
+                                Maximale Uploadgröße pro Bildergruppe: 10 MB; <br/>
+                                Unterstützte Dateitypen: .jpg, .png; <br/>
+                                Um mehrere Bilder hochzuladen müssen Sie bei "Dateien auswählen", <br/>
+                                die gewünscheten Bilder markieren (Strg + Linksklick) und auf "öffnen" klicken. <br/>
+                                Laden sie keine Bilder mit gleichem Namen bei der gleichen Übung hoch.
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <!--- Buttonbar --->
-                <div class="buttonBar" style="height: 10%">
-                    <div class="row">
-                        <div class="col-3">
-                            <button type="button"
-                                    class="btn btn-block btn-danger" onclick="abortChanges()" data-dismiss="modal" style="font-size: small">
-                                Abbrechen
-                            </button>
-                        </div>
-                        <div class="col-1">
-
-                        </div>
-                        <div class="col-4">
-                        </div>
-                        <div class="col-4">
-                            <button type="button"
-                                    class="btn btn-block btn-success" onclick="viewPreview()" data-dismiss="modal">
-                                Vorschau
-                            </button>
+                    <div class="col">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Weitere Bilder hochladen (Optional)
+                            </div>
+                            <div class="panel-body">
+                                <input  type="file" name="otherImage" class="form-control" id="imageInput2" multiple
+                                        style="height: auto">
+                                <output id="list"></output>
+                            </div>
+                            <div class="panel-footer text-muted" style="font-size: 10px">
+                                Es gelten die selben Beschränkungen wie für die Muskelgruppenbilder
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="panel-footer">
+                <input class="button btn btn-block" type="submit" value="Speichern"/>
+            </div>
         </div>
-    </div>
+    </form>
 </div>
-
-
-<script>
-    /*** Needed parameters for container Switch***/
-    var containerSaveButton = document.getElementById("container_saveButton");
-    var showsData = true;
-
-    /*TODO read from Database*/
-    var exerciseName = "fetchName";
-    var alternativeExercise = "fetchAlternateName";
-    var description = "fetchDescription";
-    var pictureURL = "https://images-na.ssl-images-amazon.com/images/I/81S5rzpsuqL._SY355_.jpg";
-    var videoLink = "https://www.youtube.com/embed/CGOu4Iyy_Ns";
-    var weightType = document.getElementById('ownWeight').value;
-
-    var tempName;
-    var tempAlternateName;
-    var tempDescription;
-    var tempPictureURL;
-    var tempVideoLink;
-
-
-    /*** Instancing first values**/
-    document.onLoad(initializeValues());
-    function initializeValues() {
-        document.getElementById('exerciseNameData').innerHTML = exerciseName;
-        document.getElementById('alternateExerciseData').innerHTML = alternativeExercise;
-        document.getElementById('descriptionData').innerHTML = description;
-        document.getElementById('pictureURL').src = pictureURL;
-        document.getElementById('videoLink').src = videoLink;
-        containerSaveButton.style.display = "none";
-        tempName = exerciseName;
-        tempAlternateName = alternativeExercise;
-        tempDescription = description;
-        tempPictureURL = pictureURL;
-        tempVideoLink = videoLink;
-    }
-
-    function updateName() {
-        tempName = document.getElementById('exerciseName').value;
-    }
-
-    function updateAlternate() {
-        tempAlternateName = document.getElementById('alternateExercise').value;
-    }
-
-    function updateDescription() {
-        tempDescription = document.getElementById('description').value;
-    }
-
-    function updatePicture() {
-        tempPictureURL = document.getElementById('imageInput').value.toString();
-    }
-
-    function updateVideo(){
-        tempVideoLink = document.getElementById('videoLink1').value;
-    }
-
-    function abortChanges() {
-        containerSaveButton.style.display = "none";
-        toggleContainer();
-    }
-
-    function viewPreview() {
-        exerciseName = tempName;
-        alternativeExercise = tempAlternateName;
-        description = tempDescription;
-        pictureURL = tempPictureURL;
-        videoLink = tempVideoLink;
-        if(document.getElementById('weightType').value == document.getElementById('additionalWeight').value){
-            weightType = document.getElementById('additionalWeight').value;
-        }
-        containerSaveButton.style.display = "inherit";
-        toggleContainer();
-    }
-
-    /*TODO Write into Database*/
-    function saveChanges() {
-        
-    }
-
-    /*** Toggling Data/Form ***/
-    function toggleContainer(){
-        if (showsData){
-            showsData = false;
-            document.getElementById('exerciseName').value = exerciseName;
-            document.getElementById('alternateExercise').value = alternativeExercise;
-            document.getElementById('description').value = description;
-            document.getElementById('imageInput').value = pictureURL;
-            document.getElementById('videoLink1').value = videoLink;
-            document.getElementById('weightType').value = weightType;
-
-        } else {
-            showsData = true;
-            document.getElementById('exerciseNameData').innerHTML = exerciseName;
-            document.getElementById('alternateExerciseData').innerHTML = alternativeExercise;
-            document.getElementById('descriptionData').innerHTML = description;
-            document.getElementById('pictureURL').src = pictureURL;
-            document.getElementById('videoLink').src = videoLink;
-        }
-    }
-</script>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-        crossorigin="anonymous"></script>
 </body>
 </html>

@@ -1,11 +1,14 @@
 package de.ep.team2.core.Unit;
 
 
+import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.Gender;
 import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
+import de.ep.team2.core.service.ExerciseService;
+import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.junit.Rule;
 import org.junit.Test;
@@ -147,6 +150,41 @@ public class DataBaseServiceUnitTests {
     public void getExerciseByName() {
         assertEquals("Bankdrücken",
                 DataBaseService.getInstance().getExerciseByName("Bankdrücken").getName());
+    }
+
+    @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
+    public void alterExerciseTestWithoutImg() {
+        ExerciseService service = new ExerciseService();
+        int id = service.insertExercise("TestExercise", "I was created to test the altering of exercises, but not the images", WeightType.FIXED_WEIGHT, null, null, null);
+        Exercise exercise = service.getExerciseById(id); // get exercise from database
+        assertEquals("TestExercise", exercise.getName());
+        assertEquals("I was created to test the altering of exercises, but not the images", exercise.getDescription());
+        assertEquals(WeightType.FIXED_WEIGHT, exercise.getWeightType());
+        assertNull(exercise.getVideoLink());
+        exercise.setName("Liegestütz"); // name already in use
+        exercise.setDescription("Liegestütz is already in use but i should be altered anyway");
+        try {
+            service.updateExerciseWithoutImg(exercise);
+        } catch (IllegalArgumentException exception) {
+            assertEquals("Name wird schon genutzt bitte wähle einen anderen!", exception.getMessage());
+        }
+        exercise = service.getExerciseById(id); // get exercise from database
+        assertEquals("Liegestütz is already in use but i should be altered anyway", exercise.getDescription());
+        // leave name the same
+        exercise.setDescription("when the name is left the same i should be altered");
+        service.updateExerciseWithoutImg(exercise);
+        exercise = service.getExerciseById(id); // get exercise from database
+        assertEquals("when the name is left the same i should be altered", exercise.getDescription());
+        assertEquals(WeightType.FIXED_WEIGHT, exercise.getWeightType());
+        exercise.setName("newNameThatIsn'tInUse");
+        exercise.setWeightType(WeightType.SELF_WEIGHT);
+        service.updateExerciseWithoutImg(exercise);
+        exercise = service.getExerciseById(id); // get exercise from database
+        assertEquals("newNameThatIsn'tInUse", exercise.getName());
+        assertEquals(WeightType.SELF_WEIGHT, exercise.getWeightType());
+        assertEquals("when the name is left the same i should be altered", exercise.getDescription());
+        service.deleteExercise(id);
     }
 
     // Trainingsplan Templates
