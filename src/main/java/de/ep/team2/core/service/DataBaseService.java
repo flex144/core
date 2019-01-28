@@ -397,6 +397,12 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Gets a List of new image paths as Parameter and saves them to the database if they aren't already in the database for the same exercise.
+     *
+     * @param id id of the exercise the images belong to.
+     * @param imgPaths new img paths to add.
+     */
     public void addNewImgPaths(int id, List<String[]> imgPaths) {
         LinkedList<String> paths = new LinkedList<>(jdbcTemplate.query(
                 "SELECT path, img_type FROM images WHERE exercise = ?",
@@ -420,13 +426,14 @@ public class DataBaseService {
     }
 
     /**
-     * todo
+     * Updates the values the method gets as parameter in the Database on the exercise with given id.
+     * Checks if the new name already is in the Database if that is the case update all other values and throw an exception.
      *
-     * @param id
-     * @param name
-     * @param description
-     * @param weightType
-     * @param videoLink
+     * @param id id of the exercise to update.
+     * @param name new name of the exercise.
+     * @param description new description of the exercise.
+     * @param weightType new weightType of the exercise.
+     * @param videoLink new videoLink of the exercise.
      */
     public void updateExerciseWithoutImg(int id, String name, String description, WeightType weightType,
                                          String videoLink) {
@@ -512,6 +519,18 @@ public class DataBaseService {
             log.debug("Exercise '" + toDelete.getName() + "' with ID: '"
                     + toDelete.getId() + "' deleted by " + deleter.getEmail() + "!");
         }
+    }
+
+    /**
+     * Deletes the images with the given path from the table Images.
+     *
+     * @param pathToDelete to specify the image.
+     */
+    public void deleteImg(String pathToDelete) {
+        jdbcTemplate.update("DELETE FROM  images WHERE path = ?", pathToDelete);
+        User deleter = (User) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        log.debug("Image with Path '" + pathToDelete + "' deleted by " + deleter.getEmail() + "!");
     }
 
     /**

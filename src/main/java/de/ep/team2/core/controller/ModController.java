@@ -81,10 +81,11 @@ public class ModController {
     }
 
     /**
-     * todo
-     * @param id
-     * @param model
-     * @return
+     * Provides the page to edit an exercise. Gets the Exercise to edit from teh database.
+     *
+     * @param id of the exercise to be edited.
+     * @param model thymeleaf uses.
+     * @return "error" when the exercise isn't in the database; "mod_exercise_edit" when everything went fine.
      */
     @GetMapping("/exercise/edit/{id}")
     public String editExerciseGet(@PathVariable("id") int id, Model model) {
@@ -100,16 +101,25 @@ public class ModController {
     }
 
     /**
-     * todo
-     * @param exercise
-     * @param model
-     * @param redirectAttributes
-     * @return
+     * Updates All values of the Provided Exercise.
+     * If the new name is already in the database the data is updated but no images are uploaded or deleted and an error message is displayed.
+     * Adds the new images to the FileSystem and the Database.
+     * Deletes the image with the given path if one was provided.
+     *
+     * @param exercise Exercise Object which holds the Data filled with thymeleaf.
+     * @param otherImage Array of the new images.
+     * @param muscleImage Array of the new images.
+     * @param pathToDelete path of the File to delete.
+     * @param model thymeleaf uses.
+     * @param redirectAttributes used to redirect attributes.
+     * @return "error" when the exercise doesn't exist;
+     * "redirect:/mods/exercise/edit/" when no complications occurred or the new name wasn't unique to display the error message.
      */
     @PostMapping("/exercise/edit")
     public String editExercisePost(@ModelAttribute("exercise") Exercise exercise,
                                    @RequestParam("otherImage") MultipartFile[] otherImage,
                                    @RequestParam("muscleImage") MultipartFile[] muscleImage,
+                                   @RequestParam("pathPictureToDelete") String pathToDelete,
                                    Model model, RedirectAttributes redirectAttributes) {
         ExerciseService exerciseService = new ExerciseService();
         if (exerciseService.getExerciseById(exercise.getId()) == null) {
@@ -120,11 +130,14 @@ public class ModController {
             ExerciseController exerciseController = new ExerciseController();
             exerciseController.addImgPathsAndUploadFile(exercise, otherImage, muscleImage);
             exerciseService.updateExerciseAndAddNewImg(exercise);
+            if (pathToDelete != null && !pathToDelete.equals("")) {
+                exerciseService.deleteImg(pathToDelete);
+            }
         } catch (IllegalArgumentException exception) {
             redirectAttributes.addFlashAttribute("errorMsg", exception.getMessage());
             return "redirect:/mods/exercise/edit/" + exercise.getId();
         }
-        return "redirect:/mods/searchexercise";
+        return "redirect:/mods/exercise/edit/" + exercise.getId();
     }
 
     @GetMapping(value = {"/searchplan"})

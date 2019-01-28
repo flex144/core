@@ -150,6 +150,11 @@ public class ExerciseService {
         }
     }
 
+    /**
+     * gets a List of all existing exercises in the Database.
+     *
+     * @return a List of all existing exercises in the Database.
+     */
     public List<Exercise> getAllExercises() {
         return DataBaseService.getInstance().getAllExercises();
     }
@@ -180,13 +185,38 @@ public class ExerciseService {
     }
 
     /**
-     * todo
+     * Updates all values of the provided Exercise in the Database.
+     * Throws exception if the new Name is already in the Database, but saves all other Data.
+     * Uploads all new images. (images are not uploaded when the name is not unique)
      *
-     * @param exercise
+     * @param exercise Exercise Object which holds the data.
      */
     public void updateExerciseAndAddNewImg(Exercise exercise) {
         DataBaseService.getInstance().updateExerciseWithoutImg(exercise.getId(), exercise.getName(), exercise.getDescription(), exercise.getWeightType(), exercise.getVideoLink());
         DataBaseService.getInstance().addNewImgPaths(exercise.getId(), uniteImgPaths(exercise.getMuscleImgPaths(), exercise.getOtherImgPaths()));
     }
 
+    /**
+     * Deletes the image with the provided path from the File System and the Database.
+     *
+     * @param pathToDelete to specify the File.
+     */
+    public void deleteImg(String pathToDelete) {
+        String dirDestString;
+        if (deployOnTomcat) {
+            // path to files on tomcat
+            dirDestString = "webapps/team2/WEB-INF/classes/static";
+        } else {
+            // path to files in IDE
+            dirDestString = "src/main/resources/static";
+        }
+        try {
+            Path toDelete = Paths.get(dirDestString + pathToDelete);
+            Files.delete(toDelete);
+        } catch (IOException exception) {
+            System.err.println(exception.getMessage());
+            return;
+        }
+        DataBaseService.getInstance().deleteImg(pathToDelete);
+    }
 }

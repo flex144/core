@@ -40,7 +40,7 @@
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
 <div class="container">
-    <form th:action="@{/mods/exercise/edit}" th:object="${exercise}" method="POST" enctype="multipart/form-data">
+    <form th:action="@{/mods/exercise/edit}" th:object="${exercise}" method="POST" enctype="multipart/form-data" id="editForm">
         <div class="panel panel-default outerPanel">
             <div class="panel-heading" style="padding-left: 30px"
                  id="newExercisePanel">
@@ -108,9 +108,6 @@
                 <div class="col-container">
                     <div class="col">
                         <div class="panel panel-default">
-                            <div class="panel-heading" style="font-weight: bold">
-                                Neue Bilder hinzufügen
-                            </div>
                             <div class="panel panel-default">
                                 <div class="panel-heading" style="font-weight: bold">
                                     Muskelgruppen Bilder hochladen (Optional)
@@ -151,6 +148,38 @@
                         </div>
                     </div>
                 </div>
+                <input type="hidden" name="pathPictureToDelete" id="pathToDelete">
+                <div class="panel panel-default" th:if="${!exercise.getMuscleImgPaths().isEmpty()}">
+                    <div class="panel-heading">
+                        <p th:if="${!exercise.getMuscleImgPaths().isEmpty()}" style="font-size: 16px;
+                        font-weight: bold">
+                            Muskelgruppen Bilder:</p>
+                    </div>
+                    <div class="panel-body">
+
+                        <div th:each="path : ${exercise.getMuscleImgPaths()}"
+                             class="image">
+                            <img th:src="@{${path}}"/>
+                            <button th:value="${path}" onclick="valueToPathToDelete(this.value)">
+                                <span class="glyphicon glyphicon-remove"></span> Löschen</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default" th:if="${!exercise.getOtherImgPaths().isEmpty()}">
+                    <div class="panel-heading" style="height: auto">
+                        <p th:if="${!exercise.getOtherImgPaths().isEmpty()}" style="font-size: 16px;
+                        font-weight: bold">
+                            Andere Bilder:</p>
+                    </div>
+                    <div class="panel-body">
+                        <div th:each="path : ${exercise.getOtherImgPaths()}"
+                             class="image">
+                            <img th:src="@{${path}}"/>
+                            <button th:value="${path}" onclick="valueToPathToDelete(this.value)">
+                                <span class="glyphicon glyphicon-remove"></span> Löschen</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="panel-footer">
                 <input class="button btn btn-block" type="submit" value="Speichern"/>
@@ -159,4 +188,10 @@
     </form>
 </div>
 </body>
+<script>
+    function valueToPathToDelete(path) {
+        document.getElementById("pathToDelete").value = path;
+        document.getElementById("editForm").submit();
+    }
+</script>
 </html>
