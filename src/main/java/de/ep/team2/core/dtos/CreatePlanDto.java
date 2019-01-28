@@ -1,6 +1,8 @@
 package de.ep.team2.core.dtos;
 
 import de.ep.team2.core.entities.Exercise;
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.service.ExerciseService;
 
 import java.util.LinkedList;
@@ -8,13 +10,17 @@ import java.util.LinkedList;
 public class CreatePlanDto {
 
     private String planName;
-    private String trainingsFocus; // todo as enum
+    private TrainingsFocus trainingsFocus;
+    private ExperienceLevel targetGroup;
     private Integer id;
     private Integer sessionNums;
     private String category;
     private String exerciseName;
     private Integer exerciseID;
     private boolean oneShot;
+    private Integer repetitionMaximum;
+    private Integer recomSessionsPerWeek;
+    private LinkedList<String> weightDiff;
     private LinkedList<String> sets;
     private LinkedList<String> tempo;
     private LinkedList<Integer> pause;
@@ -28,12 +34,20 @@ public class CreatePlanDto {
         this.planName = planName;
     }
 
-    public String getTrainingsFocus() {
+    public TrainingsFocus getTrainingsFocus() {
         return trainingsFocus;
     }
 
-    public void setTrainingsFocus(String trainingsFocus) {
+    public void setTrainingsFocus(TrainingsFocus trainingsFocus) {
         this.trainingsFocus = trainingsFocus;
+    }
+
+    public ExperienceLevel getTargetGroup() {
+        return targetGroup;
+    }
+
+    public void setTargetGroup(ExperienceLevel targetGroup) {
+        this.targetGroup = targetGroup;
     }
 
     public Integer getId() {
@@ -82,6 +96,30 @@ public class CreatePlanDto {
 
     public void setOneShot(boolean oneShot) {
         this.oneShot = oneShot;
+    }
+
+    public Integer getRepetitionMaximum() {
+        return repetitionMaximum;
+    }
+
+    public void setRepetitionMaximum(Integer repetitionMaximum) {
+        this.repetitionMaximum = repetitionMaximum;
+    }
+
+    public Integer getRecomSessionsPerWeek() {
+        return recomSessionsPerWeek;
+    }
+
+    public void setRecomSessionsPerWeek(Integer recomSessionsPerWeek) {
+        this.recomSessionsPerWeek = recomSessionsPerWeek;
+    }
+
+    public LinkedList<String> getWeightDiff() {
+        return weightDiff;
+    }
+
+    public void setWeightDiff(LinkedList<String> weightDiff) {
+        this.weightDiff = weightDiff;
     }
 
     public LinkedList<String> getSets() {

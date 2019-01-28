@@ -1,4 +1,4 @@
-package de.ep.team2.core;
+package de.ep.team2.core.Unit;
 
 import de.ep.team2.core.service.UserService;
 import org.junit.Before;
@@ -49,7 +49,7 @@ public class LoginTests {
             .andDo(print())
             .andExpect(status().is(302));
         String redirectUrl = action.andReturn().getResponse().getHeader("Location");
-        assertTrue("redirect to user/home", redirectUrl.equals("/user/home"));
+        assertTrue("redirect to user/home", redirectUrl.equals("user/home"));
 
         //test if non existing user can log in
         requestBuilder = formLogin().user("test@test.de").password("password");

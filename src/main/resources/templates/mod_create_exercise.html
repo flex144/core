@@ -10,116 +10,183 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <div th:include="/fragments/navbar :: navbar_style"></div>
-</head>
-
+    <div th:include="/fragments/navbar :: style_fragment"></div></head>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .col-container {
+            display: table;
+            width: 100%;
+        }
+        .col {
+            display: table-cell;
+            padding: 5px;
+        }
+        .col-text {
+            width:60%;
+        }
+        @media only screen and (max-width: 600px) {
+            .col {
+                display: block;
+                width: 100%;
+            }
+            #newExercisePanel {
+                padding-left: 0px;
+            }
+        }
+    </style>
 <body>
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
 <div class="container">
-    <div class="jumbotron">
-        <h2>Neue Trainingseinheit erstellen</h2>
-        <br>
-        <p style="font-size: 12pt">Fülle das folgende Formular und speichere anschließend die eingegebenen
-            Daten um die neue Übung hinzuzufügen.</p>
-    </div>
-    <div class="col-md-12">
-        <form th:action="@{/exercises}" th:object="${exercise}" method="post" enctype="multipart/form-data">
-            <div class="row">
-                <div class="col-md-5">
-                    <div class="form-group">
-                        <label for="exerciseName">Name der Übung:</label>
-                        <input  type="text" class="form-control" id="exerciseName"
-                                placeholder="Hier die Übungsbezeichnung eingeben..." th:field="*{name}" required>
+    <form th:action="@{/exercises}" th:object="${exercise}" method="post" enctype="multipart/form-data">
+        <div class="panel panel-default outerPanel">
+            <div class="panel-heading" style="padding-left: 30px"
+                id="newExercisePanel">
+                <h3>Neue Trainingsübung erstellen</h3>
+                <p style="font-size: 12pt">Fülle das folgende Formular und speichere anschließend die eingegebenen
+                    Daten um die neue Übung hinzuzufügen.</p>
+            </div>
+            <div class="panel-body">
+                <div class="col-container">
+                    <div class="col">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Name der Übung:
+                            </div>
+                            <div class="panel-body">
+                                <input  type="text" class="form-control" id="exerciseName"
+                                        placeholder="Hier die Übungsbezeichnung eingeben..." th:field="*{name}" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Gewichtsart auswählen
+                            </div>
+                            <div class="panel-body">
+                                <select id="weightType" class="form-control" th:field="*{weightType}" required>
+                                    <option th:value="${T(de.ep.team2.core.enums.WeightType).SELF_WEIGHT}">Eigengewicht</option>
+                                    <option th:value="${T(de.ep.team2.core.enums.WeightType).FIXED_WEIGHT}">Befestigtes Gewicht</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Muskelgruppe(n) hinzufügen:
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group">
+                                    <input id="inputMuscle" type="text" name="muscleGroup"
+                                           class="form-control" list="stored_muscleGroups">
+                                    <datalist id="stored_muscleGroups">
+                                        <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).BRUST.getName()}"></option>
+                                        <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).BIZEPS.getName()}"></option>
+                                        <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).TRIZEPS.getName()}"></option>
+                                        <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).ABDOMINALS.getName()}"></option>
+                                    </datalist>
+                                    </input>
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-success" type="button" id="buttonAddExecution"
+                                                onclick="addToList()">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-footer" id="addedMuscleTypes">
+                                <label for="displaySelected">Ausgewählte Muskelgruppen:</label>
+                                <span id="displaySelected"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-container">
+                    <div class="col col-text">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Beschreibung der Übung: (Optional)
+                            </div>
+                            <div class="panel-body">
+                                <textarea id="description" class="form-control" rows="6" th:field="*{description}"
+                                          maxlength="2000"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Erklärungsvideo: (Optional)
+                            </div>
+                            <div class="panel-body">
+                                <input  type="url" class="form-control" id="videoLink1"
+                                        placeholder="Hier Link zu einem Erklärungsvideo einfügen..."
+                                        th:field="*{videoLink}">
+                            </div>
+                            <div class="panel-footer text-muted" style="font-size: 10px">
+                                Damit das Video korrekt angezeigt wird <br/>
+                                muss der Einbettungslink zu einem Youtubevideo verwendet werden
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-container">
+                    <div class="col">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Muskelgruppen Bilder hochladen (Optional)
+                            </div>
+                            <div class="panel-body">
+                                <input  type="file" name="muscleImage" class="form-control" id="imageInput1" multiple
+                                        style="height: auto">
+                            </div>
+                            <div class="panel-footer text-muted" style="font-size: 10px">
+                                Maximale Uploadgröße pro Bildergruppe: 10 MB; <br/>
+                                Unterstützte Dateitypen: .jpg, .png; <br/>
+                                Um mehrere Bilder hochzuladen müssen Sie bei "Dateien auswählen", <br/>
+                                die gewünscheten Bilder markieren (Strg + Linksklick) und auf "öffnen" klicken. <br/>
+                                Laden sie keine Bilder mit gleichem Namen bei der gleichen Übung hoch.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" style="font-weight: bold">
+                                Weitere Bilder hochladen (Optional)
+                            </div>
+                            <div class="panel-body">
+                                <input  type="file" name="otherImage" class="form-control" id="imageInput2" multiple
+                                        style="height: auto">
+                                <output id="list"></output>
+                            </div>
+                            <div class="panel-footer text-muted" style="font-size: 10px">
+                                Es gelten die selben Beschränkungen wie für die Muskelgruppenbilder
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="form-group">
-                        <label for="description">Beschreibung der Übung: (Optional)</label>
-                        <textarea id="description" class="form-control" rows="6" th:field="*{description}" maxlength="2000"></textarea>
-                    </div>
-                </div>
+            <div class="panel-footer">
+                <input class="button btn btn-block" type="submit" value="Speichern"/>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="weightType">Gewichtsart auswählen</label>
-                        <select id="weightType" class="form-control" th:field="*{weightType}" required>
-                            <option th:value="${T(de.ep.team2.core.enums.WeightType).SELF_WEIGHT}">Eigengewicht</option>
-                            <option th:value="${T(de.ep.team2.core.enums.WeightType).FIXED_WEIGHT}">Befestigtes Gewicht</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="displaySelected">Ausgewählte Muskelgruppen:</label>
-                        <span id="displaySelected"></span>
-                        <label for="inputMuscle">Muskelgruppe Hinzufügen:</label>
-                        <input id="inputMuscle" type="text" name="muscleGroup"
-                               class="form-control" list="stored_muscleGroups">
-                        <datalist id="stored_muscleGroups">
-                            <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).BRUST.getName()}"></option>
-                            <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).BIZEPS.getName()}"></option>
-                            <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).TRIZEPS.getName()}"></option>
-                            <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).ABDOMINALS.getName()}"></option>
-                        </datalist>
-                        </input>
-                        <button id="addMuscle" onclick="addToList()" type="button">Hinzufügen</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <p style="font-size: 10px" class="text-muted">Damit das Video korrekt angezeigt wird muss der Einbettungslink zu einem Youtubevideo verwendet werden </p>
-                        <label for="videoLink1">Erklärungsvideos: (Optional)</label>
-                        <input  type="url" class="form-control" id="videoLink1"
-                                placeholder="Hier Link zu einem Erklärungsvideo einfügen..." th:field="*{videoLink}">
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <p style="font-size: 10px" class="text-muted">Maximale Uploadgröße pro Bildergruppe: 10 MB; <br/>
-                            Unterstützte Dateitypen: .jpg, .png; <br/>
-                            Um mehrere Bilder hochzuladen müssen Sie bei "Dateien auswählen", <br/>
-                            die gewünscheten Bilder markieren(Strg + Linksklick) und auf "öffnen" klicken; <br/>
-                            Laden sie keine Bilder mit gleichem namen, bei der gleichen Übung, hoch.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="imageInput1">Muskelgruppen Bilder hochladen (Optional)</label>
-                        <input  type="file" name="muscleImage" class="form-control" id="imageInput1" multiple>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="imageInput2">Andere Bilder hochladen (Optional)</label>
-                        <input  type="file" name="otherImage" class="form-control" id="imageInput2" multiple>
-                        <output id="list"></output>
-                    </div>
-                </div>
-            </div>
-            <input type="submit"
-               class="btn btn-primary btn-lg" value="Speichern"/>
-        </form>
-    </div>
+        </div>
+    </form>
 </div>
 <script>
     var selectedMuscles = [];
-    
+
+    /**
+     * Execute functions when the page is loaded
+     */
+    $(document).ready(function(){
+        // Hide the panel footer that displays added muscle groups
+        document.getElementById("addedMuscleTypes").style.display = "none";
+    });
+
     function addToList() {
         var toadd = document.getElementById('inputMuscle').value;
         selectedMuscles.push(toadd);
@@ -129,6 +196,8 @@
     
     function display() {
         document.getElementById("displaySelected").innerHTML = selectedMuscles;
+        // Show the panel footer that displays added muscle groups
+        document.getElementById("addedMuscleTypes").style.display = "block";
     }
 
 </script>

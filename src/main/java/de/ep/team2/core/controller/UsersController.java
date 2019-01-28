@@ -122,41 +122,6 @@ public class UsersController {
     }
 
     /**
-     * Adds a new User to the Database if the email is unique and valid.
-     * If an error occurs it adds a fitting error message to the model
-     * so thymeleaf can display it.
-     *
-     * @param user  User to add to the DB.
-     * @param redirectAttributes Used to redirect attributes.
-     * @return at success redirect to the 'user_data' page. If something went
-     * wrong goes back to the login page(returns "login_page".
-     */
-
-    /* Depricated
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public String createUser(@ModelAttribute("user") User user
-            , RedirectAttributes redirectAttributes) {
-        UserService userService = new UserService();
-        String email = user.getEmail();
-        String password = user.getPassword();
-        String errorMessage;
-        if (email == null || email.isEmpty()) {
-            errorMessage = "E-Mail Feld muss ausgefüllt werden!";
-        } else if (!userService.checkEmailPattern(email)) {
-            errorMessage = "Das ist keine E-Mail!";
-        } else if (userService.getUserByEmail(email) != null) {
-            errorMessage = "E-Mail existiert bereits!";
-        } else {
-            userService.createUser(email, null, null, password);
-            User addedUser = userService.getUserByEmail(email);
-            return String.format("redirect:/user/new", addedUser.getId());
-        }
-        model.addAttribute("errorMessage", errorMessage);
-        return "login_page";
-    }
-    */
-
-    /**
      * Checks if the String is an Integer.
      *
      * @param toCheck String to check.

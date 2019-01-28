@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
  */
 public class ExerciseService {
 
+    private final boolean deployOnTomcat = false; // 'true' to deploy on tomcat
+
     public Exercise getExerciseById(int id) {
         return DataBaseService.getInstance().getExerciseById(id);
     }
@@ -71,7 +73,15 @@ public class ExerciseService {
      */
     public String uploadImg(MultipartFile image, Exercise exercise) {
         String fileName = image.getOriginalFilename();
-        String dirDestString = "src/main/resources/static/images/" +  exercise.getName();
+        String dirDestString;
+        // Used to adjust File Path to IDE or Tomcat.
+        if (deployOnTomcat) {
+            // path to files on tomcat
+            dirDestString = "webapps/team2/WEB-INF/classes/static/images/Exercises/" +  exercise.getName();
+        } else {
+            // path to files in IDE
+            dirDestString = "src/main/resources/static/images/Exercises/" +  exercise.getName();
+        }
         Path dirDest = Paths.get(dirDestString);
         Path dest = Paths.get( dirDestString, fileName);
         try {
@@ -81,7 +91,7 @@ public class ExerciseService {
         } catch (IOException exception) {
             return null;
         }
-        return "/images/" + exercise.getName() + "/" + fileName;
+        return "/images/Exercises/" + exercise.getName() + "/" + fileName;
     }
 
     /**
@@ -100,8 +110,17 @@ public class ExerciseService {
         if (dependentInstances == null || dependentInstances.isEmpty()) {
             Exercise toDelete = db.getExerciseById(id);
             try {
-                FileUtils.deleteDirectory(new File("src/main/resources/static/images/" +
-                        toDelete.getName()));
+                String dirDestString;
+                // Used to adjust File Path to IDE or Tomcat.
+                if (deployOnTomcat) {
+                    // path to files on tomcat
+                    dirDestString = "webapps/team2/WEB-INF/classes/static/images/Exercises/" +  toDelete.getName();
+                } else {
+                    // path to files in IDE
+                    dirDestString = "src/main/resources/static/images/Exercises/" +  toDelete.getName();
+                }
+                File newFile = new File(dirDestString);
+                FileUtils.deleteDirectory(newFile);
             } catch (IOException exception) {
                 System.err.println(exception.getMessage());
                 return;
@@ -130,6 +149,13 @@ public class ExerciseService {
         return DataBaseService.getInstance().getAllExercises();
     }
 
+    /**
+     * Returns a List of exercise where the name is part of the name.
+     * If name left empty returns all exercises.
+     *
+     * @param name Name to search for; if left blank returns all exercises.
+     * @return List of matching exercises; null if nothing was found.
+     */
     public List<Exercise> getExerciseListByName(String name) {
         if (name == null || name.equals("")) {
             return getAllExercises();
@@ -138,6 +164,12 @@ public class ExerciseService {
         }
     }
 
+    /**
+     * Returns one exercise with the exact name.
+     *
+     * @param name exact name you are looking for.
+     * @return matching exercise or null if nothing was found.
+     */
     public Exercise getExerciseByName(String name) {
         return DataBaseService.getInstance().getExerciseByName(name);
     }

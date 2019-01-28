@@ -1,29 +1,38 @@
 package de.ep.team2.core.entities;
 
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.TrainingsFocus;
+
 import java.util.LinkedList;
 
 public class TrainingsPlanTemplate {
 
     private int id;
     private String name;
-    private String trainingsFocus;
+    private TrainingsFocus trainingsFocus;
+    private ExperienceLevel targetGroup;
     private User author;
     private boolean oneShotPlan;
+    private int recomSessionsPerWeek;
     private int numTrainSessions;
     private int exercisesPerSession;
     private LinkedList<ExerciseInstance> exerciseInstances;
+    private boolean confirmed;
 
-    public TrainingsPlanTemplate(int id, String name, String trainingsFocus, User author, boolean oneShotPlan,
-                                 int numTrainSessions, int exercisesPerSession,
-                                 LinkedList<ExerciseInstance> exerciseInstances) {
+    public TrainingsPlanTemplate(int id, String name, TrainingsFocus trainingsFocus, ExperienceLevel targetGroup, User author, boolean oneShotPlan,
+                                 int recomSessionsPerWeek, int numTrainSessions, int exercisesPerSession,
+                                 LinkedList<ExerciseInstance> exerciseInstances, boolean confirmed) {
         this.id = id;
         this.name = name;
         this.trainingsFocus = trainingsFocus;
+        this.targetGroup = targetGroup;
         this.author = author;
         this.oneShotPlan = oneShotPlan;
+        this.recomSessionsPerWeek = recomSessionsPerWeek;
         this.numTrainSessions = numTrainSessions;
         this.exercisesPerSession = exercisesPerSession;
         this.exerciseInstances = exerciseInstances;
+        this.confirmed = confirmed;
     }
 
     public TrainingsPlanTemplate() {
@@ -45,12 +54,20 @@ public class TrainingsPlanTemplate {
         this.name = name;
     }
 
-    public String getTrainingsFocus() {
+    public TrainingsFocus getTrainingsFocus() {
         return trainingsFocus;
     }
 
-    public void setTrainingsFocus(String trainingsFocus) {
+    public void setTrainingsFocus(TrainingsFocus trainingsFocus) {
         this.trainingsFocus = trainingsFocus;
+    }
+
+    public ExperienceLevel getTargetGroup() {
+        return targetGroup;
+    }
+
+    public void setTargetGroup(ExperienceLevel targetGroup) {
+        this.targetGroup = targetGroup;
     }
 
     public User getAuthor() {
@@ -67,6 +84,14 @@ public class TrainingsPlanTemplate {
 
     public void setOneShotPlan(boolean oneShotPlan) {
         this.oneShotPlan = oneShotPlan;
+    }
+
+    public int getRecomSessionsPerWeek() {
+        return recomSessionsPerWeek;
+    }
+
+    public void setRecomSessionsPerWeek(int recomSessionsPerWeek) {
+        this.recomSessionsPerWeek = recomSessionsPerWeek;
     }
 
     public int getNumTrainSessions() {
@@ -93,10 +118,23 @@ public class TrainingsPlanTemplate {
         this.exerciseInstances = exerciseInstances;
     }
 
-    /**
-    public void addExerciseInstance (ExerciseInstance exerciseInstance) {
-        this.exerciseInstances.add(exerciseInstance);
+    public boolean isConfirmed() {
+        return confirmed;
     }
-     */
 
+    public void setConfirmed(boolean confirmed) {
+        this.confirmed = confirmed;
+    }
+
+    /**
+     * Returns a String representation of the boolean 'confirmed'.
+     * @return "Ja" if confirmed, "Nein" if otherwise
+     */
+    public String confirmed() {
+        if(confirmed) {
+            return "Ja";
+        } else {
+            return "Nein";
+        }
+    }
 }

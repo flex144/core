@@ -1,6 +1,7 @@
 package de.ep.team2.core.service;
 
 import de.ep.team2.core.dtos.RegistrationDto;
+import de.ep.team2.core.entities.ConfirmationToken;
 import de.ep.team2.core.entities.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,9 @@ public class UserService {
         DataBaseService.getInstance().insertUser(email, firstName, lastName, password);
     }
 
-    public void changeToMod(int id) { DataBaseService.getInstance().changeToMod(id);}
+    public void changeToMod(int id) {
+        DataBaseService.getInstance().changeToMod(id);
+    }
 
     /**
      * This method is used for registration. It checks whether an email is valid, if the given passwords match
@@ -43,7 +46,7 @@ public class UserService {
      * @param userDto A user Data Transfer Object is used to provide the method with email, password, and
      *                a second password (needs to be equal to first password).
      * @return It returns an error message as String if the given values can't meet the requirements of the method.
-     *          Otherwise the returned String is empty.
+     * Otherwise the returned String is empty.
      */
     public String checkToCreateUser(RegistrationDto userDto) {
         String errorMessage = "";
@@ -64,11 +67,24 @@ public class UserService {
         return errorMessage;
     }
 
-    public List<User> getAllUsers() { return DataBaseService.getInstance().getAllUsers(); }
+    public List<User> getAllUsers() {
+        return DataBaseService.getInstance().getAllUsers();
+    }
+
+    public User changeUserDetails (User user) {
+        return DataBaseService.getInstance().changeUserDetails(user);
+    }
+
+    public void changeAdvancedUserDetails(User user) {
+        DataBaseService.getInstance().setAdvancedUserData(user.getWeightInKg(), user.getHeightInCm(),
+                user.getTrainingsFocus(), user.getTrainingsFrequency(), user.getGender(), user.getExperience(),
+                user.getBirthDate(), user.getEmail());
+    }
 
     /**
      * This method creates a secure password hash, using the BCryptPasswordEncoder.
      * It is used to ensure a password isn't saved as plaintext in the database.
+     *
      * @param pw Password in plaintext.
      * @return Password as a hash value.
      */
@@ -80,7 +96,8 @@ public class UserService {
     /**
      * Function to see, if a password in plain text matches the hash of the encrypted version of the password.
      * It calls the matches function of the BCrypt PasswordEncoder.
-     * @param pw Password in plaintext
+     *
+     * @param pw          Password in plaintext
      * @param encryptedPw Password as hash
      * @return True, if passwords match. False, if not.
      */
@@ -90,6 +107,7 @@ public class UserService {
 
     /**
      * This method checks if the given String is a valid E-Mail.
+     *
      * @param email E-Mail that needs to be checked.
      * @return "true", if E-Mail is valid, "false", if not.
      */
@@ -97,6 +115,23 @@ public class UserService {
         Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
         Matcher m = p.matcher(email);
         return (m.matches() || email.equals(""));
+    }
+
+    /**
+     * This method searches for a user in the database and sets him to enabled.
+     *
+     * @param email Email of the user to confirm
+     */
+    public void confirmUser(String email) {
+        DataBaseService.getInstance().confirmUser(email);
+    }
+
+    public void createConfirmationToken(ConfirmationToken confirmationToken) {
+        DataBaseService.getInstance().createConfirmationToken(confirmationToken);
+    }
+
+    public ConfirmationToken findConfirmationToken(String token) {
+        return DataBaseService.getInstance().findConfirmationToken(token);
     }
 
     /**
@@ -118,4 +153,7 @@ public class UserService {
         return errorMessage;
     }
 
+    public void deleteTokenById(int tokenId) {
+        DataBaseService.getInstance().deleteTokenById(tokenId);
+    }
 }

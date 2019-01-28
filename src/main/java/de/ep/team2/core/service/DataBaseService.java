@@ -1,6 +1,9 @@
 package de.ep.team2.core.service;
 
 import de.ep.team2.core.entities.*;
+import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.Gender;
+import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,10 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Singleton Data Access Object which handles all SQL queries with the Database.
@@ -65,10 +65,10 @@ public class DataBaseService {
      */
     public User getUserById(Integer id) {
         LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                "SELECT id, email, first_name, last_name, role FROM users WHERE id " +
+                "SELECT * FROM users WHERE id " +
                         "= ?",
                 new Integer[]{id},
-                new BeanPropertyRowMapper<>(User.class)
+                new UserRowMapper()
         ));
         if (toReturn.isEmpty()) {
             return null;
@@ -91,15 +91,45 @@ public class DataBaseService {
             return null;
         } else {
             LinkedList<User> toReturn = new LinkedList<>(jdbcTemplate.query(
-                    "SELECT id, email, first_name, last_name, password, role FROM users WHERE " +
+                    "SELECT * FROM users WHERE " +
                             "email = ?",
                     new String[]{email.toLowerCase()},
-                    new BeanPropertyRowMapper<>(User.class)));
+                    new UserRowMapper()));
             if (toReturn.isEmpty()) {
                 return null;
             } else {
                 return toReturn.getFirst();
             }
+        }
+    }
+
+    class UserRowMapper implements RowMapper<User> {
+        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+            User user = new User();
+            user.setId(rs.getInt("id"));
+            user.setEmail(rs.getString("email"));
+            user.setFirstName(rs.getString("first_name"));
+            user.setLastName(rs.getString("last_name"));
+            user.setPassword(rs.getString("password"));
+            user.setEnabled(rs.getBoolean("enabled"));
+            user.setRole(rs.getString("role"));
+            user.setHeightInCm(rs.getObject("height_in_cm", Integer.class));
+            user.setWeightInKg(rs.getObject("weight_in_kg", Integer.class));
+            String genderString = rs.getString("gender");
+            if (genderString != null) {
+                user.setGender(Gender.getValueByName(genderString));
+            }
+            String focusString = rs.getString("trainings_focus");
+            if (focusString != null) {
+                user.setTrainingsFocus(TrainingsFocus.getValueByName(focusString));
+            }
+            String experienceString = rs.getString("experience");
+            if (experienceString != null) {
+                user.setExperience(ExperienceLevel.getValueByName(experienceString));
+            }
+            user.setBirthDate(rs.getDate("birth_date"));
+            user.setTrainingsFrequency(rs.getObject("trainings_frequency", Integer.class));
+            return user;
         }
     }
 
@@ -109,8 +139,8 @@ public class DataBaseService {
      * @return Returns a List of Users.
      */
     public List<User> getAllUsers() {
-        String sql = "SELECT id, email, first_name, last_name, role FROM users";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
+        String sql = "SELECT * FROM users";
+        return jdbcTemplate.query(sql, new UserRowMapper());
     }
 
     /**
@@ -123,7 +153,7 @@ public class DataBaseService {
      * @param password  Password, as Hash, of the User.
      */
     public Integer insertUser(String email, String firstName, String lastName, String password) {
-        Object[] toInsert = {email.toLowerCase(), firstName, lastName, password, true, "ROLE_USER"};
+        Object[] toInsert = {email.toLowerCase(), firstName, lastName, password, false, "ROLE_USER"};
         if (getUserByEmail(email) != null) {
             log.debug("Insert User failed! Email " + email + " already in the " +
                     "Database!");
@@ -142,14 +172,45 @@ public class DataBaseService {
     }
 
     /**
+     * Updates all provided data in the db to the user. Null values are saved to db too.
+     *
+     * @param weightInKg weight.
+     * @param heightInCm height.
+     * @param trainingsFocus Enum TrainingsFocus.
+     * @param trainingsFrequency frequency of training.
+     * @param gender Enum Gender
+     * @param experience Enum Experience
+     * @param birthDate Date birthday
+     * @param userMail email to identify user.
+     */
+    public void setAdvancedUserData(Integer weightInKg, Integer heightInCm,
+                                    TrainingsFocus trainingsFocus, Integer trainingsFrequency,
+                                    Gender gender, ExperienceLevel experience, Date birthDate, String userMail) {
+        Object[] values = new Object[8];
+        Arrays.fill(values,null);
+        values[0] = weightInKg;
+        values[1] = heightInCm;
+        values[2] = trainingsFocus == null ? "" : trainingsFocus.toString();
+        values[3] = trainingsFrequency;
+        values[4] = gender == null ? "" : gender.toString();
+        values[5] = experience == null ? "" : experience.toString();
+        values[6] = birthDate;
+        values[7] = userMail.toLowerCase();
+        jdbcTemplate.update("update users set weight_in_kg = ?, height_in_cm = ?, trainings_focus" +
+                " = ?, trainings_frequency = ?, gender = ?, experience = ?, birth_date = ? where email = ?",
+                values);
+    }
+
+    /**
      * Deletes a user in the table with the given id.
      *
      * @param id user to delete.
      */
-    public void deleteUserById(Integer id) {
+    public void deleteUserById(int id) {
         User toDelete = getUserById(id);
         if (toDelete != null) {
             deleteUserFromPlan(toDelete.getEmail());
+            deleteUserPlanOfUser(toDelete);
             jdbcTemplate.update("DELETE FROM users WHERE id = ?",
                     (Object[]) new Integer[]{id});
             User deleter = (User) SecurityContextHolder.getContext().getAuthentication()
@@ -160,10 +221,22 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Checks if the User to delete has an active plan an if thats the case the deletes the plan from the database.
+     *
+     * @param user user to delete.
+     */
+    private void deleteUserPlanOfUser(User user) {
+       UserPlan userPlan = getUserPlanByUserMail(user.getEmail());
+       if (userPlan != null) {
+           deleteUserPlanAndWeightsById(userPlan.getId());
+       }
+    }
+
     //checks if user is author of a plan template and deletes him from the plan
     private void deleteUserFromPlan (String email) {
         jdbcTemplate.update("UPDATE plan_templates SET author = NULL WHERE " +
-                "author = ?", email);
+                "author = ?", email.toLowerCase());
     }
 
     /**
@@ -186,6 +259,92 @@ public class DataBaseService {
             log.debug("User '" + toChange.getEmail() + "' was " +
                         "upgraded to Mod by " + changerMail + "!");
         }
+    }
+
+    /**
+     * Enables a user, so he can access the website.
+     *
+     * @param email Email of the user.
+     */
+    public void confirmUser(String email) {
+        User toChange = getUserByEmail(email);
+        if (toChange != null) {
+            jdbcTemplate.update("UPDATE users SET enabled = true WHERE email = ?", email.toLowerCase());
+            log.debug("Email '" + email + "' is now verificated!");
+        }
+    }
+
+    /**
+     * Adds a new confirmation token to the database.
+     *
+     * @param confirmationToken Token to be safed.
+     */
+    public void createConfirmationToken(ConfirmationToken confirmationToken) {
+        Object[] token = {confirmationToken.getConfirmationToken(), confirmationToken.getUser(),
+                confirmationToken.getCreatedDate()};
+        jdbcTemplate.update("INSERT INTO confirmation_token(token, userToConfirm, createdDate) " +
+                "VALUES (?,?,?)", token);
+        Integer id = jdbcTemplate.query("select currval" +
+                        "(pg_get_serial_sequence('confirmation_token','id'));",
+                (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+        log.debug("Token for email '" + confirmationToken.getUser() + "' has been created" +
+                " with ID: '" + id + "' !");
+    }
+
+    /**
+     * Searches for a specific Confirmation Token.
+     *
+     * @param confirmationToken Key of the searched token.
+     * @return Searched confirmation token if it's found.
+     */
+    public ConfirmationToken findConfirmationToken(String confirmationToken) {
+        LinkedList<ConfirmationToken> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT id, token, usertoconfirm, createddate FROM confirmation_token WHERE token = ?",
+                new String[]{confirmationToken},
+                new TokenRowMapper()));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
+    }
+
+    public void deleteTokenById(int tokenId) {
+        jdbcTemplate.update("DELETE FROM confirmation_token WHERE id = ?", tokenId);
+    }
+
+    class TokenRowMapper implements RowMapper<ConfirmationToken> {
+        public ConfirmationToken mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ConfirmationToken token = new ConfirmationToken();
+            token.setTokenId(rs.getInt("id"));
+            token.setConfirmationToken(rs.getString("token"));
+            token.setUser(rs.getString("usertoconfirm"));
+            token.setCreatedDate(rs.getDate("createddate"));
+            return token;
+        }
+    }
+
+    public User changeUserDetails(User user) {
+        String email = user.getEmail();
+        User toChange = getUserByEmail(email);
+        if (toChange != null) {
+            if (user.getFirstName() != null) {
+                changeDetails("first_name", user.getFirstName(), email);
+            }
+            if (user.getLastName() != null) {
+                changeDetails("last_name", user.getLastName(), email);
+            }
+            if (user.getPassword() != null) {
+                changeDetails("password", user.getPassword(), email);
+            }
+        }
+        return getUserByEmail(email);
+    }
+
+    private void changeDetails(String column, String value, String email) {
+        jdbcTemplate.update("UPDATE users SET "+column+" = ? WHERE email = ?", value, email.toLowerCase());
+        log.debug("User '" + email + "' changed " + column + "!");
+
     }
 
     // Exercise
@@ -352,27 +511,27 @@ public class DataBaseService {
     /**
      * Inserts a new Trainings plan Template in teh Database with the provided values.
      *
-     * @param name unique name of the template.
-     * @param trainingsFocus focus of the trainingsplan.
-     * @param author email of the mod who created the template.
-     * @param oneShotPlan boolean if the plan has more than one trainings session.
-     * @param numTrainSessions duration of the plan in sessions.
+     * @param name                unique name of the template.
+     * @param trainingsFocus      focus of the trainingsplan.
+     * @param author              email of the mod who created the template.
+     * @param oneShotPlan         boolean if the plan has more than one trainings session.
+     * @param numTrainSessions    duration of the plan in sessions.
      * @param exercisesPerSession how many exercises have to be done in one session.
      *                            (number increases initial 1)
      * @return id od the just inserted template.
      */
-    public Integer insertPlanTemplate(String name, String trainingsFocus,
-                                      String author, Boolean oneShotPlan,
+    public Integer insertPlanTemplate(String name, TrainingsFocus trainingsFocus, ExperienceLevel targetGroup,
+                                      String author, Boolean oneShotPlan, Integer recomSessionsPerWeek,
                                       Integer numTrainSessions, Integer exercisesPerSession) {
         if (name == null || author == null || (oneShotPlan && numTrainSessions > 1)) {
             throw new IllegalArgumentException();
         } else {
-            Object[] insertValues = new Object[]{name, trainingsFocus, author, oneShotPlan,
+            Object[] insertValues = new Object[]{name, trainingsFocus.toString(), targetGroup.toString(), author.toLowerCase(), oneShotPlan, recomSessionsPerWeek,
                     numTrainSessions,
                     exercisesPerSession};
-            jdbcTemplate.update("insert into plan_templates(name,trainings_focus," +
-                    "author,one_shot_plan,num_train_sessions," +
-                    "exercises_per_session) values (?,?,?,?,?,?)", insertValues);
+            jdbcTemplate.update("insert into plan_templates(name,trainings_focus, target_group," +
+                    "author,one_shot_plan,recom_sessions_per_week,num_train_sessions," +
+                    "exercises_per_session) values (?,?,?,?,?,?,?,?)", insertValues);
             Integer id = jdbcTemplate.query("select currval" +
                             "(pg_get_serial_sequence('plan_templates','id'));",
                     (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
@@ -386,9 +545,9 @@ public class DataBaseService {
         @Override
         public TrainingsPlanTemplate mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new TrainingsPlanTemplate(rs.getInt("id"), rs.getString("name"),
-                    rs.getString("trainings_focus"), getUserByEmail(rs.getString("author")),
-                    rs.getBoolean("one_shot_plan"), rs.getInt("num_train_sessions"),
-                    rs.getInt("exercises_per_session"), null);
+                    TrainingsFocus.getValueByName(rs.getString("trainings_focus")), ExperienceLevel.getValueByName(rs.getString("target_group")), getUserByEmail(rs.getString("author")),
+                    rs.getBoolean("one_shot_plan"), rs.getInt("recom_sessions_per_week"), rs.getInt("num_train_sessions"),
+                    rs.getInt("exercises_per_session"), null, rs.getBoolean("complete"));
         }
 
     }
@@ -404,12 +563,12 @@ public class DataBaseService {
                 "SELECT * FROM plan_templates WHERE id = ?",
                 new Integer[]{id},
                 (resultSet, i) -> new TrainingsPlanTemplate(id, resultSet.getString("name"),
-                        resultSet.getString(
-                                "trainings_focus"), getUserByEmail(resultSet.getString("author")),
-                        resultSet.getBoolean("one_shot_plan"), resultSet.getInt(
-                        "num_train_sessions"),
-                        resultSet.getInt("exercises_per_session"),
-                        getExInstancesOfTemplate(id))));
+                        TrainingsFocus.getValueByName(resultSet.getString("trainings_focus")),
+                        ExperienceLevel.getValueByName(resultSet.getString("target_group")),
+                        getUserByEmail(resultSet.getString("author")), resultSet.getBoolean("one_shot_plan"),
+                        resultSet.getInt("recom_sessions_per_week"), resultSet.getInt("num_train_sessions"),
+                        resultSet.getInt("exercises_per_session"), getExInstancesOfTemplate(id),
+                        resultSet.getBoolean("complete"))));
         if (toReturn.isEmpty()) {
             return null;
         } else {
@@ -474,9 +633,20 @@ public class DataBaseService {
      * @param newFocus new focus of the template.
      * @param idToRename id of the template to be altered.
      */
-    public void changeTrainingsFocus(String newFocus, int idToRename) {
+    public void changeTrainingsFocus(TrainingsFocus newFocus, int idToRename) {
         jdbcTemplate.update("update plan_templates set trainings_focus = ? where id = ?",
-                newFocus, idToRename);
+                newFocus.toString(), idToRename);
+    }
+
+    /**
+     * sets the target group of a template to something.
+     *
+     * @param targetGroup Value of the enum Experience level.
+     * @param idToChange id of the template to change.
+     */
+    public void changeTargetGroup(ExperienceLevel targetGroup, int idToChange) {
+        jdbcTemplate.update("update plan_templates set trainings_focus = ? where id = ?",
+                targetGroup.toString(), idToChange);
     }
 
     /**
@@ -545,6 +715,78 @@ public class DataBaseService {
         return numOfExes;
     }
 
+    /**
+     * Confirms a plan (indicating it's complete), so users can use it.
+     * @param idOfTemplate Id of the Template to confirm
+     */
+    public void confirmPlan(int idOfTemplate) {
+        TrainingsPlanTemplate toConfirm = getOnlyPlanTemplateById(idOfTemplate);
+        if(toConfirm != null) {
+            jdbcTemplate.update("UPDATE plan_templates SET complete = TRUE where id = ?",
+                    idOfTemplate);
+            String changerMail;
+            if (SecurityContextHolder.getContext().getAuthentication() != null) {
+                User changer = (User) SecurityContextHolder.getContext().getAuthentication()
+                        .getPrincipal();
+                changerMail = changer.getEmail();
+            } else {
+                changerMail = "Default";
+            }
+            log.debug("Plan Template '" + toConfirm.getName() + "' with ID: '"
+                    + toConfirm.getId() + "' confirmed by " + changerMail + "!");
+
+        }
+    }
+
+    /**
+     * Gets a list of suited plan specified by the given data.
+     *
+     * @param oneShotPlan if the plan should be a one shot plan.
+     * @param experience ExperienceLevel the plan is made for.
+     * @param trainingsFocus TrainingsFocus the plan targets.
+     * @param trainingsFrequency Number of Trainings the plan recommends per week.
+     * @param withExactFrequency if the method should look for the exact frequency otherwise +/- 1
+     * @return returns Linked List of suited plans; if no one is suitable null;
+     */
+    public LinkedList<TrainingsPlanTemplate> getSuitedPlans(boolean oneShotPlan, ExperienceLevel experience,
+                                                            TrainingsFocus trainingsFocus, Integer trainingsFrequency, boolean withExactFrequency) {
+        LinkedList<TrainingsPlanTemplate> toReturn;
+        if (withExactFrequency) {
+            toReturn = new LinkedList<>(jdbcTemplate.query(
+                    "SELECT * FROM plan_templates WHERE complete = true AND one_shot_plan = ? AND target_group = ? AND trainings_focus = ? " +
+                            "AND recom_sessions_per_week = ?",
+                    new Object[]{oneShotPlan, experience.toString(), trainingsFocus.toString(), trainingsFrequency},
+                    new PlanTemplateMapperNoChildren()));
+        } else {
+            toReturn = new LinkedList<>(jdbcTemplate.query(
+                    "SELECT * FROM plan_templates WHERE complete = true AND one_shot_plan = ? AND target_group = ? AND trainings_focus = ? " +
+                            "AND (recom_sessions_per_week = ? or recom_sessions_per_week = ? or recom_sessions_per_week = ?)",
+                    new Object[]{oneShotPlan, experience.toString(), trainingsFocus.toString(), trainingsFrequency - 1, trainingsFrequency, trainingsFrequency + 1},
+                    new PlanTemplateMapperNoChildren()));
+        }
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn;
+        }
+    }
+
+    /**
+     * Returns a LinkedList of TrainingsPlanTemplates without children representing all one shot plans in the Database.
+     *
+     * @return LinkedList of TrainingsPlanTemplates without children representing all one shot plans in the Database.
+     */
+    public LinkedList<TrainingsPlanTemplate> getAllOneShotPlans() {
+        LinkedList<TrainingsPlanTemplate> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM plan_templates WHERE complete = true AND one_shot_plan = true",
+                new PlanTemplateMapperNoChildren()));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn;
+        }
+    }
+
     // Exercises Instances
 
     /**
@@ -556,13 +798,14 @@ public class DataBaseService {
      */
     public LinkedList<ExerciseInstance> getExInstancesOfTemplate(int idOfTemplate) {
         return new LinkedList<>(jdbcTemplate.query(
-                "SELECT ei.id, ei.is_exercise, ei.category, ex.name" +
+                "SELECT ei.id, ei.is_exercise, ei.category, ex.name, ei.repetition_maximum" +
                         " FROM exercise_instances ei, exercises ex " +
                         " WHERE ei.plan_template = ? " +
                         " AND ei.is_exercise = ex.id ",
                 new Integer[]{idOfTemplate},
                 (resultSet, i) -> new ExerciseInstance(idOfTemplate, resultSet.getInt(
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
+                        resultSet.getInt("repetition_maximum"),
                         getTagsOfExInstance(resultSet.getInt("id")),
                         getSessionsOfExerciseInstance(resultSet.getInt("id")),
                         resultSet.getString("name"))));
@@ -584,17 +827,17 @@ public class DataBaseService {
      * @param templateId id of the plan template which contains this exercise instance.
      * @return Id of the just inserted exercise instance.
      */
-    public Integer insertExerciseInstance(int isExerciseID, String category, LinkedList<String> tags,
+    public Integer insertExerciseInstance(int isExerciseID, String category, Integer repetitionMaximum, LinkedList<String> tags,
                                           int templateId) {
-        Object[] insertValues = new Object[]{isExerciseID, category, templateId};
-        jdbcTemplate.update("INSERT INTO exercise_instances(is_exercise, category, " +
-                        "plan_template) values (?,?,?)",
+        Object[] insertValues = new Object[]{isExerciseID, category, repetitionMaximum, templateId};
+        jdbcTemplate.update("INSERT INTO exercise_instances(is_exercise, category,repetition_maximum, " +
+                        "plan_template) values (?,?,?,?)",
                 insertValues);
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('exercise_instances','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
         addTagsToExercise(tags, id);
-        log.debug("Exercise Instance created with Id: " + id + " !");
+        log.debug("Exercise Instance for Plan Template with ID '" + templateId + "' created with Id: " + id + " !");
         return id;
     }
 
@@ -635,13 +878,14 @@ public class DataBaseService {
      */
     public ExerciseInstance getExercisInstanceById(int id) {
         LinkedList<ExerciseInstance> toReturn =  new LinkedList<>(jdbcTemplate.query(
-                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name" +
+                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name, ei.repetition_maximum" +
                         " FROM exercise_instances ei, exercises ex " +
                         " WHERE ei.id = ? " +
                         " AND ei.is_exercise = ex.id ",
                 new Integer[]{id},
                 (resultSet, i) -> new ExerciseInstance(resultSet.getInt("plan_template"), resultSet.getInt(
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
+                        resultSet.getInt("repetition_maximum"),
                         getTagsOfExInstance(resultSet.getInt("id")),
                         getSessionsOfExerciseInstance(resultSet.getInt("id")),
                         resultSet.getString("name"))));
@@ -652,15 +896,22 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Returns a LinkedList of all Exercise Instances representing the given Exercise.
+     *
+     * @param idOfExercise to identify the Exercise
+     * @return LinkedList of all Exercise Instances representing the given Exercise.
+     */
     public LinkedList<ExerciseInstance> getInstancesOfExercise(int idOfExercise) {
         return new LinkedList<>(jdbcTemplate.query(
-                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name" +
+                "SELECT ei.id, ei.is_exercise, ei.category, ei.plan_template, ex.name, ei.repetition_maximum" +
                         " FROM exercise_instances ei, exercises ex " +
                         " WHERE ei.is_exercise = ? " +
                         " AND ei.is_exercise = ex.id ",
                 new Integer[]{idOfExercise},
                 (resultSet, i) -> new ExerciseInstance(resultSet.getInt("plan_template"), resultSet.getInt(
                         "is_exercise"), resultSet.getInt("id"), resultSet.getString("category"),
+                        resultSet.getInt("repetition_maximum"),
                         getTagsOfExInstance(resultSet.getInt("id")),
                         getSessionsOfExerciseInstance(resultSet.getInt("id")),
                         resultSet.getString("name"))));
@@ -693,7 +944,6 @@ public class DataBaseService {
      *
      * @param exerciseInstanceID id of the exercise instance the session belongs to.
      * @param ordering indicates in which sequence the sessions have to be performed.
-     * @param repetitionMaximum used to determine the weights for each individual user.
      * @param sets number of the sets.
      * @param reps array with the size {@code sets} where the repetitions of the single sets are saved.
      * @param tempo tempo in which the exercise should be executed.
@@ -701,33 +951,40 @@ public class DataBaseService {
      * @return Id of the just inserted Trainings session.
      */
     public Integer insertTrainingsSession(int exerciseInstanceID, int ordering,
-                                          int repetitionMaximum, int sets, Integer[] reps,
+                                          int sets, Integer[] weightDiff, Integer[] reps,
                                           String tempo, Integer pauseInSec) {
         ArrayList<Object> insertValues = new ArrayList<>();
         insertValues.ensureCapacity(13);
         insertValues.add(exerciseInstanceID);
         insertValues.add(ordering);
-        insertValues.add(repetitionMaximum);
         insertValues.add(sets);
         insertValues.add(tempo);
         insertValues.add(pauseInSec);
+        if (weightDiff.length > 7) {
+            throw new IllegalArgumentException("to many sets!");
+        }
+        insertValues.addAll(Arrays.asList(weightDiff));
+        for (int i = insertValues.size(); i < 12; i++) {
+            insertValues.add(null);
+        }
         if (reps.length > 7) {
             throw new IllegalArgumentException("to many sets!");
         }
         insertValues.addAll(Arrays.asList(reps));
-        for (int i = insertValues.size(); i < 13; i++) {
+        for (int i = insertValues.size(); i < 19; i++) {
             insertValues.add(null);
         }
         jdbcTemplate.update(
-                "insert into trainings_sessions(exercise_instance, ordering, rep_maximum, " +
-                        "sets, tempo, pause, reps_set1, reps_set2, reps_set3, reps_set4,reps_set5," +
-                        " reps_set6, reps_set7) values " +
-                        "(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "insert into trainings_sessions(exercise_instance, ordering, sets, tempo, pause, weightdiff_set1," +
+                        " weightdiff_set2, weightdiff_set3, weightdiff_set4, weightdiff_set5, weightdiff_set6," +
+                        " weightdiff_set7, reps_set1, reps_set2, reps_set3, reps_set4," +
+                        " reps_set5, reps_set6, reps_set7) values " +
+                        "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 insertValues.toArray());
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('trainings_sessions','id'));",
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
-        log.debug("Trainings Session created with Id: " + id + " !");
+        log.debug("Trainings Session for Exercise Instance with ID '" + exerciseInstanceID + "' created with Id: " + id + " !");
         return id;
     }
 
@@ -741,19 +998,32 @@ public class DataBaseService {
         return new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM trainings_sessions WHERE exercise_instance = ?",
                 new Integer[]{idOfInstance},
-                (resultSet, i) -> {
-                    ArrayList<Integer> reps = new ArrayList<>();
-                    for (int j = 1; j < 8; j++) {
-                        Integer wdh = resultSet.getObject(String.format("reps_set%d", j), Integer.class);
-                        if(wdh != null && wdh != 0) {
-                            reps.add(reps.size(), wdh);
-                        }
-                    }
-                    return new TrainingsSession(resultSet.getInt("id"), resultSet.getInt("ordering"),
-                            resultSet.getInt("exercise_instance"),
-                            resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
-                            resultSet.getString("tempo"), resultSet.getInt("pause"));
-                }));
+                new TrainingsSessionMapper()));
+    }
+
+    class TrainingsSessionMapper implements RowMapper<TrainingsSession> {
+        @Override
+        public TrainingsSession mapRow(ResultSet rs, int rowNum) throws SQLException {
+            ArrayList<Integer> weightDiff = new ArrayList<>();
+            for (int j = 1; j < 8; j++) {
+                Integer toAdd = rs.getObject(String.format("weightdiff_set%d", j), Integer.class);
+                if (toAdd != null) {
+                    weightDiff.add(toAdd);
+                }
+            }
+            ArrayList<Integer> reps = new ArrayList<>();
+            for (int j = 1; j < 8; j++) {
+                Integer toAdd = rs.getObject(String.format("reps_set%d", j), Integer.class);
+                if (toAdd != null) {
+                    reps.add(toAdd);
+                }
+            }
+            return new TrainingsSession(rs.getInt("id"), rs.getInt("ordering"),
+                    rs.getInt("exercise_instance"),
+                    rs.getInt("sets"), weightDiff.toArray(new Integer[0]),
+                    reps.toArray(new Integer[0]),
+                    rs.getString("tempo"), rs.getInt("pause"));
+        }
     }
 
     /**
@@ -766,19 +1036,7 @@ public class DataBaseService {
         LinkedList<TrainingsSession> toReturn = new LinkedList<>(jdbcTemplate.query(
                 "SELECT * FROM trainings_sessions WHERE id = ?",
                 new Integer[]{id},
-                (resultSet, i) -> {
-                    ArrayList<Integer> reps = new ArrayList<>();
-                    for (int j = 1; j < 8; j++) {
-                        Integer wdh = resultSet.getObject(String.format("reps_set%d", j), Integer.class);
-                        if(wdh != 0 && wdh != null) {
-                            reps.add(reps.size(), wdh);
-                        }
-                    }
-                    return new TrainingsSession(id, resultSet.getInt("ordering"),
-                            resultSet.getInt("exercise_instance"),
-                            resultSet.getInt("rep_maximum"), resultSet.getInt("sets"), reps,
-                            resultSet.getString("tempo"), resultSet.getInt("pause"));
-                }));
+                new TrainingsSessionMapper()));
         if (toReturn.isEmpty()) {
             return null;
         } else {
@@ -804,5 +1062,183 @@ public class DataBaseService {
         }
     }
 
+    // User Plan
+
+    /**
+     * Creates a new User plan for the User with mail userMail based on template wit templateId.
+     * Sets CurrentSession 0 and MaxSession based on template.
+     *
+     * Throws exception when either template or User are missing or the User already has a plan.
+     *
+     * @param userMail identify user the Plan is for.
+     * @param templateId identify template the plan is based on.
+     * @return Id of new created plan.
+     */
+    public Integer insertUserPlan(String userMail, int templateId) {
+        TrainingsPlanTemplate template = getOnlyPlanTemplateById(templateId);
+        User user = getUserByEmail(userMail);
+        if (user == null) {
+            log.debug("Can't create User Plan because User doesn't exist. User mail: " + userMail);
+            throw new IllegalArgumentException("Can't create User Plan because User doesn't exist. User mail: " + userMail);
+        } else if (template == null) {
+            log.debug("Can't create User Plan because Template doesn't exist. Template ID: " + templateId);
+            throw new IllegalArgumentException("Can't create User Plan because Template doesn't exist. Template ID: " + templateId);
+        } else if (getUserPlanByUserMail(userMail) != null) {
+            log.debug("Can't create User Plan because User already has a plan. User mail: " + userMail);
+            throw new IllegalArgumentException("Can't create User Plan because User already has a plan. User mail: " + userMail);
+        }
+        Object[] insertValues = new Object[]{userMail.toLowerCase(), templateId, template.getNumTrainSessions()};
+        jdbcTemplate.update("insert into user_plans(\"user\",template,cursession,maxsession,initial_training_done) values (?,?,0,?,false)"
+        , insertValues );
+        Integer id = jdbcTemplate.query("select currval" +
+                        "(pg_get_serial_sequence('user_plans','id'));",
+                (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+        log.debug("User Plan based on template '" + template.getName() + "' created with Id " + id + " for user " + userMail + " !");
+        return id;
+    }
+
+    class UserPlanMapper implements RowMapper<UserPlan> {
+        @Override
+        public UserPlan mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new UserPlan(rs.getInt("id"), rs.getString("user"), rs.getInt("template"),
+                    rs.getInt("cursession"), rs.getInt("maxsession"), rs.getBoolean("initial_training_done"));
+        }
+    }
+
+    /**
+     * Returns the plan with the provided id if it exists.
+     *
+     * @param idUserPlan to specify the plan.
+     * @return null if no plan with this id exists; UserPlan object representing the plan if it does.
+     */
+    public UserPlan getUserPlanById(int idUserPlan) {
+        LinkedList<UserPlan> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM user_plans WHERE id = ?",
+                new Integer[]{idUserPlan},
+                new UserPlanMapper()));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
+    }
+
+    /**
+     * Deletes all userplans, which are based on the searched plan template.
+     * @param templateId Id of the searched plan template
+     * @return Returns users whose plan was based on the plan template.
+     */
+    public LinkedList<User> deleteUserPlansByTemplateId(int templateId) {
+        LinkedList<UserPlan> userPlans = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM user_plans WHERE template = ?",
+                new Integer[]{templateId},
+                new UserPlanMapper()));
+        LinkedList<User> users = new LinkedList<>();
+        for (UserPlan plan : userPlans) {
+            users.add(getUserByEmail(plan.getUserMail()));
+            deleteUserPlanAndWeightsById(plan.getId());
+        }
+        return users;
+    }
+
+    /**
+     * Returns the plan of a user if he has one.
+     *
+     * @param userMail to specify the user.
+     * @return null if he has none; if one was found, UserPlan Object representing his plan.
+     */
+    public UserPlan getUserPlanByUserMail(String userMail) {
+        LinkedList<UserPlan> toReturn = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM user_plans WHERE \"user\" = ?",
+                new String[]{userMail.toLowerCase()},
+                new UserPlanMapper()));
+        if (toReturn.isEmpty()) {
+            return null;
+        } else {
+            return toReturn.getFirst();
+        }
+    }
+
+    /**
+     * Increases the CurrentSession of a userPlan by one when the maxSession
+     * is reached userplan is deleted.
+     *
+     * @param userPlanID plan to increase session.
+     * @return current session after increase.
+     */
+    public Integer increaseCurSession(int userPlanID) {
+        UserPlan userPlan = getUserPlanById(userPlanID);
+        userPlan.setCurrentSession(userPlan.getCurrentSession() + 1);
+        if (userPlan.getCurrentSession() > userPlan.getMaxSession()) {
+            log.debug("Max Sessions of Plan for User " + userPlan.getUserMail() + " reached! deleting Plan!");
+            deleteUserPlanAndWeightsById(userPlanID);
+            return -1;
+        } else {
+            Object[] values = new Object[]{userPlan.getCurrentSession(), userPlanID};
+            jdbcTemplate.update("update user_plans set cursession = ? where id = ?", values);
+        }
+        return userPlan.getCurrentSession();
+    }
+
+    /**
+     * Sets the initial Training of user plan to done in the database.
+     *
+     * @param userPlanId to specify the plan.
+     */
+    public void setInitialTrainDone(int userPlanId) {
+        Object[] values = new Object[]{userPlanId};
+        jdbcTemplate.update("update user_plans set initial_training_done = true where id = ?", values);
+    }
+
+    /**
+     * Deletes a user plan and all weights assigned to plan from the database.
+     *
+     * @param userPlanID plan ti delete
+     */
+    public void deleteUserPlanAndWeightsById(int userPlanID) {
+        UserPlan toDelete = getUserPlanById(userPlanID);
+        jdbcTemplate.update("DELETE FROM weights WHERE iduserplan = ?",
+                    (Object[]) new Integer[]{userPlanID});
+        jdbcTemplate.update("DELETE FROM user_plans where id = ?", (Object[]) new Integer[]{userPlanID});
+        log.debug("User plan with id " + userPlanID + " of " + toDelete.getUserMail() + " deleted!");
+    }
+
+    // weights
+
+    /**
+     * creates a weight instance in its table for a specific exercise instance in a plan.
+     *
+     * @param idUserPlan plan weight belongs to.
+     * @param idOfInstance exercise instance weight belongs to.
+     * @param weight value of the weight.
+     */
+    public void insertWeightsForUserPlan(int idUserPlan, int idOfInstance, Integer weight) {
+        jdbcTemplate.update("insert into weights(iduserplan, idexerciseinstance, weight) values (?,?,?)"
+                , idUserPlan, idOfInstance, weight);
+        Integer id = jdbcTemplate.query("select currval" +
+                        "(pg_get_serial_sequence('weights','id'));",
+                (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+        log.debug("Weights for User Plan with ID '" + idUserPlan + "', for exercise Instance with ID '" +
+                idOfInstance + "' created with Id '" + id + "'!");
+    }
+
+    /**
+     * get the weight assigned to a specific exercise instance for a specific plan.
+     *
+     * @param idUserPlan id of the plan.
+     * @param idOfInstance id of the exercise instance.
+     * @return value of the weight.
+     */
+    public Integer getWeightForUserPlanExercise(int idUserPlan, int idOfInstance) {
+        LinkedList<Integer> result = new LinkedList<>(jdbcTemplate.query(
+                "SELECT * FROM weights WHERE iduserplan = ? AND idexerciseinstance = ?",
+                new Integer[]{idUserPlan, idOfInstance},
+                (rs, i) -> rs.getInt("weight")));
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.getFirst();
+        }
+    }
 
 }
