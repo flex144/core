@@ -8,7 +8,6 @@ import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.ExerciseService;
-import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.junit.Rule;
 import org.junit.Test;
@@ -165,7 +164,7 @@ public class DataBaseServiceUnitTests {
         exercise.setName("Liegestütz"); // name already in use
         exercise.setDescription("Liegestütz is already in use but i should be altered anyway");
         try {
-            service.updateExerciseWithoutImg(exercise);
+            service.updateExerciseAndAddNewImg(exercise);
         } catch (IllegalArgumentException exception) {
             assertEquals("Name wird schon genutzt bitte wähle einen anderen!", exception.getMessage());
         }
@@ -173,13 +172,13 @@ public class DataBaseServiceUnitTests {
         assertEquals("Liegestütz is already in use but i should be altered anyway", exercise.getDescription());
         // leave name the same
         exercise.setDescription("when the name is left the same i should be altered");
-        service.updateExerciseWithoutImg(exercise);
+        service.updateExerciseAndAddNewImg(exercise);
         exercise = service.getExerciseById(id); // get exercise from database
         assertEquals("when the name is left the same i should be altered", exercise.getDescription());
         assertEquals(WeightType.FIXED_WEIGHT, exercise.getWeightType());
         exercise.setName("newNameThatIsn'tInUse");
         exercise.setWeightType(WeightType.SELF_WEIGHT);
-        service.updateExerciseWithoutImg(exercise);
+        service.updateExerciseAndAddNewImg(exercise);
         exercise = service.getExerciseById(id); // get exercise from database
         assertEquals("newNameThatIsn'tInUse", exercise.getName());
         assertEquals(WeightType.SELF_WEIGHT, exercise.getWeightType());

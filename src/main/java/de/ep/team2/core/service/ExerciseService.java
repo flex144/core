@@ -47,6 +47,12 @@ public class ExerciseService {
     public Integer insertExercise(String name, String description,
                                   WeightType weightType, String link,
                                   List<String> muscleImgPaths, List<String> otherImgPaths) {
+        LinkedList<String[]> imgPaths = uniteImgPaths(muscleImgPaths, otherImgPaths);
+        return DataBaseService.getInstance().insertExercise(name, description,
+                weightType, link, imgPaths);
+    }
+
+    private LinkedList<String[]> uniteImgPaths(List<String> muscleImgPaths, List<String> otherImgPaths) {
         LinkedList<String[]> imgPaths = new LinkedList<>();
         if (muscleImgPaths != null) {
             for (String s : muscleImgPaths) {
@@ -58,8 +64,7 @@ public class ExerciseService {
                 imgPaths.add(new String[]{s, ImageType.OTHER_IMAGE.toString()});
             }
         }
-        return DataBaseService.getInstance().insertExercise(name, description,
-                weightType, link, imgPaths);
+        return imgPaths;
     }
 
     /**
@@ -179,7 +184,9 @@ public class ExerciseService {
      *
      * @param exercise
      */
-    public void updateExerciseWithoutImg(Exercise exercise) {
+    public void updateExerciseAndAddNewImg(Exercise exercise) {
         DataBaseService.getInstance().updateExerciseWithoutImg(exercise.getId(), exercise.getName(), exercise.getDescription(), exercise.getWeightType(), exercise.getVideoLink());
+        DataBaseService.getInstance().addNewImgPaths(exercise.getId(), uniteImgPaths(exercise.getMuscleImgPaths(), exercise.getOtherImgPaths()));
     }
+
 }

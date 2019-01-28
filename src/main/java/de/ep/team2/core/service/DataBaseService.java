@@ -397,6 +397,28 @@ public class DataBaseService {
         }
     }
 
+    public void addNewImgPaths(int id, List<String[]> imgPaths) {
+        LinkedList<String> paths = new LinkedList<>(jdbcTemplate.query(
+                "SELECT path, img_type FROM images WHERE exercise = ?",
+                new Integer[]{id},
+                (rs, rowNum) -> rs.getString("path")));
+        if (imgPaths != null) {
+            for (String[] s : imgPaths) {
+                boolean newImg = true;
+                for (String path : paths) {
+                    if (path.equals(s[0])) {
+                        newImg = false;
+                    }
+                }
+                if (newImg) {
+                    Object[] insert = {id, s[0], s[1]};
+                    jdbcTemplate.update(
+                            "insert into images(exercise, path, img_type) values (?,?,?)", insert);
+                }
+            }
+        }
+    }
+
     /**
      * todo
      *

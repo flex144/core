@@ -62,36 +62,42 @@ public class ExerciseController {
             model.addAttribute("error", "Übungsname schon vorhanden!");
             return "error";
         } else {
-            for (MultipartFile img : otherImage) {
-                if (!img.isEmpty() || img.getContentType() != null) {
-                    if (img.getContentType().equals("image/jpeg")
-                            || img.getContentType().equals("image/png")) {
-                        String imgPath = service.uploadImg(img, exercise);
-                        if (imgPath == null) {
-                            System.err.println("Image upload failed!");
-                        } else {
-                            exercise.addOtherImgPath(imgPath);
-                        }
-                    }
-                }
-            }
-            for (MultipartFile img : muscleImage) {
-                if (!img.isEmpty() || img.getContentType() != null) {
-                    if (img.getContentType().equals("image/jpeg")
-                            || img.getContentType().equals("image/png")) {
-                        String imgPath = service.uploadImg(img, exercise);
-                        if (imgPath == null) {
-                            System.err.println("Image upload failed!");
-                        } else {
-                            exercise.addMuscleImgPath(imgPath);
-                        }
-                    }
-                }
-            }
+            addImgPathsAndUploadFile(exercise, otherImage, muscleImage);
             service.insertExercise(exercise.getName(), exercise.getDescription(),
                     exercise.getWeightType(), exercise.getVideoLink()
                     , exercise.getMuscleImgPaths(), exercise.getOtherImgPaths());
             return "redirect:/mods/searchexercise";
+        }
+    }
+
+    void addImgPathsAndUploadFile(Exercise exercise, MultipartFile[] otherImage,
+                                          MultipartFile[] muscleImage) {
+        ExerciseService service = new ExerciseService();
+        for (MultipartFile img : otherImage) {
+            if (!img.isEmpty() || img.getContentType() != null) {
+                if (img.getContentType().equals("image/jpeg")
+                        || img.getContentType().equals("image/png")) {
+                    String imgPath = service.uploadImg(img, exercise);
+                    if (imgPath == null) {
+                        System.err.println("Image upload failed!");
+                    } else {
+                        exercise.addOtherImgPath(imgPath);
+                    }
+                }
+            }
+        }
+        for (MultipartFile img : muscleImage) {
+            if (!img.isEmpty() || img.getContentType() != null) {
+                if (img.getContentType().equals("image/jpeg")
+                        || img.getContentType().equals("image/png")) {
+                    String imgPath = service.uploadImg(img, exercise);
+                    if (imgPath == null) {
+                        System.err.println("Image upload failed!");
+                    } else {
+                        exercise.addMuscleImgPath(imgPath);
+                    }
+                }
+            }
         }
     }
 

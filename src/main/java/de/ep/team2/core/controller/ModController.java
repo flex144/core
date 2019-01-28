@@ -8,6 +8,7 @@ import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -106,14 +107,19 @@ public class ModController {
      * @return
      */
     @PostMapping("/exercise/edit")
-    public String editExercisePost(@ModelAttribute("exercise") Exercise exercise, Model model, RedirectAttributes redirectAttributes) {
+    public String editExercisePost(@ModelAttribute("exercise") Exercise exercise,
+                                   @RequestParam("otherImage") MultipartFile[] otherImage,
+                                   @RequestParam("muscleImage") MultipartFile[] muscleImage,
+                                   Model model, RedirectAttributes redirectAttributes) {
         ExerciseService exerciseService = new ExerciseService();
         if (exerciseService.getExerciseById(exercise.getId()) == null) {
             model.addAttribute("error", "Übung existiert nicht!");
             return "error";
         }
         try {
-            exerciseService.updateExerciseWithoutImg(exercise);
+            ExerciseController exerciseController = new ExerciseController();
+            exerciseController.addImgPathsAndUploadFile(exercise, otherImage, muscleImage);
+            exerciseService.updateExerciseAndAddNewImg(exercise);
         } catch (IllegalArgumentException exception) {
             redirectAttributes.addFlashAttribute("errorMsg", exception.getMessage());
             return "redirect:/mods/exercise/edit/" + exercise.getId();
