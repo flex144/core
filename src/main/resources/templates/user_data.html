@@ -144,10 +144,15 @@
                                 <div class="row">
                                     <div class="col-md-10"></div>
                                     <div class="col-md-2">
-                                        <a href="#myCarousel" class="btn btn-success btn-block" data-slide="next">
+                                        <div hidden name="hiddenElementToEnableScript">
+                                            <a href="#myCarousel" class="btn btn-success btn-block" data-slide="next" id="buttonWeiter">
+                                                Should not be visible
+                                            </a>
+                                        </div>
+                                        <button type="button" class="btn btn-success btn-block" data-slide="next" onclick="checkUserData()">
                                             Weiter
                                             <span class="glyphicon glyphicon-chevron-right"></span>
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -803,6 +808,7 @@
     </div>
 </div>
 -->
+<!--- Checks the user inputs --->
 <script>
     /**
      * Tests the value in the input field on Null or empty
@@ -873,6 +879,43 @@
         }
         console.log(id + " :checkNumber : failed");
         return false;
+    }
+
+    function checkUserData(){
+        var alertmessage = "";
+        var passesTest = true;
+        console.log(alertmessage);
+        if(!checkText("firstname")){
+            alertmessage = alertmessage + "Du kannst keine Sonderzeichen in deinem Vornamen verwenden. "
+            passesTest = false;
+        }
+        console.log(alertmessage);
+        if(!checkText("lastname")){
+            alertmessage = alertmessage + "Du kannst keine Sonderzeichen in deinem Nachnamen verwenden. "
+            passesTest = false;
+        }
+        console.log(alertmessage);
+        //TODO maybe check birthday or remove other checks, depending on what will be optional
+        /*if(!checkNumber("height")){
+            alertmessage = alertmessage + "Buchstaben sind bei der Größe nicht möglich. "
+            passesTest = false;
+        }
+        if(!checkNumber("weight")){
+            alertmessage = alertmessage + "Buchstaben sind beim Gewicht nicht möglich. "
+            passesTest = false;
+        }
+        if (document.getElementById('gender').value == "Wähle eine Option aus...") {
+            alertmessage = alertmessage + "Du musst ein Geschlecht wählen"
+            passesTest = false;
+        }*/
+
+        if (passesTest){
+            console.log("passes");
+            document.getElementById('buttonWeiter').click();
+        } else{
+            console.log("fails");
+            alert(alertmessage);
+        }
     }
 </script>
 

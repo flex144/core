@@ -1544,6 +1544,21 @@
     }
 
     /**
+     * Tests on special characters, except for the allowed "/"
+     */
+    function checkWeightReps(id){
+        var passesTest = checkNotEmpty(id);
+        var valueInField = document.getElementById(id).value;
+        console.log(id + " :checkSpcialCharaters : value : " + valueInField);
+        var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\?]/;
+        if (format.test(valueInField)){
+            passesTest = false;
+            console.log(id + " :checkSpcialCharaters : failed");
+        }
+        return passesTest;
+    }
+
+    /**
      * Tests the value in the input on if it only has Letters from a-Z
      * @param id the id of the input field checked witht his method
      * @return if the value passes the evaluation
