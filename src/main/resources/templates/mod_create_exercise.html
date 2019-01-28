@@ -171,14 +171,16 @@
                 </div>
             </div>
             <div class="panel-footer">
-                <!-- TODO make submit --->
                 <input class="button btn btn-block" type="button" onclick="checkForms()" value="Speichern"/>
+                <div hidden>
+                    <input type="submit" id="submitPageButton">
+                </div>
             </div>
         </div>
     </form>
 </div>
 
-<!--- Form value checks--->
+<!--- Checks form/input Values for new Exercise creation--->
 <script>
     function checkForms(){
         var checkName = true;
@@ -210,13 +212,11 @@
         }
 
         if (checkName && checkMusclegroup){
-            document.submit();
+            document.getElementById('submitPageButton').click();
         } else{
             alert(errorMessage);
         }
     }
-
-
 </script>
 
 <script>

@@ -804,22 +804,37 @@
 </div>
 -->
 <script>
+    /**
+     * Tests the value in the input field on Null or empty
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkNotEmpty(id) {
+        var passesTest = true;
+        console.log(id);
+        var valueInField = document.getElementById(id).value;
+        console.log(valueInField);
+        if (valueInField == null || valueInField == "") {
+            passesTest = false;
+            console.log(id + " :checkNotEmpty : failed");
+        }
+        console.log(id + " :checkNotEmpty : passed");
+        return passesTest;
+    }
 
     /**
      * Tests the value in the input field on Null, empty or special characters
      * @param id the id of the input field checked witht his method
      * @return if the value passes the evaluation
      */
-    function checkValues(id){
-        var passesTest = true;
-        var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    function checkSpecialCharacters(id){
+        var passesTest = checkNotEmpty(id);
         var valueInField = document.getElementById(id).value;
-        if (valueInField == null || valueInField == "") {
+        console.log(id + " :checkSpcialCharaters : value : " + valueInField);
+        var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        if (format.test(valueInField)){
             passesTest = false;
-        } else {
-            if (format.test(valueInField)){
-                passesTest = false;
-            }
+            console.log(id + " :checkSpcialCharaters : failed");
         }
         return passesTest;
     }
@@ -830,14 +845,16 @@
      * @return if the value passes the evaluation
      */
     function checkText(id){
-        if (checkValues(id)) {
+        if (checkSpecialCharacters(id)) {
             var format = /^[a-zäöüA-ZÄÄÖÜ ]+$/
             var valueInField = document.getElementById(id).value;
             var passesTest =  format.test(valueInField);
             if (passesTest){
+                console.log(id + " :checkText : passed");
                 return true;
             }
         }
+        console.log(id + " :checkText : failed");
         return false;
     }
 
@@ -847,12 +864,14 @@
      * @return if the value passes the evaluation
      */
     function checkNumber(id) {
-        if (checkValues(id)) {
+        if (checkNotEmpty(id)) {
             var valueInField = document.getElementById(id).value;
             if (!isNaN(valueInField)){
+                console.log(id + " :checkNumber : passed");
                 return true;
             }
         }
+        console.log(id + " :checkNumber : failed");
         return false;
     }
 </script>

@@ -350,10 +350,10 @@
                         <div class="input-group">
                             <span class="input-group-addon">Ausführung(en):</span>
                             <input id="inputExecution" type="text" name="executions"
-                                   class="form-control" list="storedExecutions" onchange="addTag()">
+                                   class="form-control" list="storedExecutions">
                             <div class="input-group-btn">
                                 <button class="btn btn-success" id="buttonAddExecution"
-                                        onclick="addTag()" style="border-radius: 0px 4px 4px 0px" type="button">
+                                        onclick="checkExecution()" style="border-radius: 0px 4px 4px 0px" type="button">
                                     <span class="glyphicon glyphicon-plus"></span>
                                     Add
                                 </button>
@@ -421,7 +421,7 @@
                                 </td>
                                 <td>
                                     <div class="form-group">
-                                        <ul id="pauseInputs" class="list-group" ></ul> <!-- todo only numeric input -->
+                                        <ul id="pauseInputs" class="list-group" ></ul>
                                     </div>
                                 </td>
                             </tr>
@@ -433,10 +433,14 @@
                 <div class="row">
                     <div class="col-md-9"></div>
                     <div class="col-md-3">
-                        <button type="submit" class="btn btn-success btn-block" id="buttonAddExercise">
+                        <button type="button" class="btn btn-success btn-block" id="buttonAddExercise" onclick="checkExercise()">
                             <span class="glyphicon glyphicon-plus"></span>
                             Übung zum Plan hinzufügen
                         </button>
+                        <div hidden>
+                            <button type="submit" id="buttonAddExerciseClick">
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -504,7 +508,7 @@
                         </button>
                     </div>
                     <div class="col-md-2">
-                        <button type="button" id="savePlan" class="btn btn-success btn-block" onclick="resetPlan()">
+                        <button type="button" id="savePlan" class="btn btn-success btn-block" onclick="checkPlan()">
                             <span class="glyphicon glyphicon-floppy-save"></span>
                             Plan speichern
                         </button>
@@ -585,7 +589,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Speichern</button>
+                <button type="button" class="btn btn-primary" onclick="addNewExerciseCheck()">Speichern</button>
                 <button type="button" class="btn btn-default" id="buttonCloseExerciseForm"
                         data-dismiss="modal">
                     Schließen
@@ -611,7 +615,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="createExecution()" data-dismiss="modal">
+                <button type="button" class="btn btn-success" onclick="checkExecutionAdd()" data-dismiss="modal" id="saveNewExecution" >
                     Speichern</button>
                 <button type="button" class="btn btn-default" id="buttonCloseExecutionModal"
                         data-dismiss="modal">Schließen</button>
@@ -1504,23 +1508,37 @@
 
 <!--- Form value checks--->
 <script>
-    
-    
+    /**
+     * Tests the value in the input field on Null or empty
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkNotEmpty(id) {
+        var passesTest = true;
+        console.log(id);
+        var valueInField = document.getElementById(id).value;
+        console.log(valueInField);
+        if (valueInField == null || valueInField == "") {
+            passesTest = false;
+            console.log(id + " :checkNotEmpty : failed");
+        }
+        console.log(id + " :checkNotEmpty : passed");
+        return passesTest;
+    }
+
     /**
      * Tests the value in the input field on Null, empty or special characters
      * @param id the id of the input field checked witht his method
      * @return if the value passes the evaluation
      */
-    function checkValues(id){
-        var passesTest = true;
-        var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+    function checkSpecialCharacters(id){
+        var passesTest = checkNotEmpty(id);
         var valueInField = document.getElementById(id).value;
-        if (valueInField == null || valueInField == "") {
+        console.log(id + " :checkSpcialCharaters : value : " + valueInField);
+        var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        if (format.test(valueInField)){
             passesTest = false;
-        } else {
-            if (format.test(valueInField)){
-                passesTest = false;
-            }
+            console.log(id + " :checkSpcialCharaters : failed");
         }
         return passesTest;
     }
@@ -1531,14 +1549,16 @@
      * @return if the value passes the evaluation
      */
     function checkText(id){
-        if (checkValues(id)) {
+        if (checkSpecialCharacters(id)) {
             var format = /^[a-zäöüA-ZÄÄÖÜ ]+$/
             var valueInField = document.getElementById(id).value;
             var passesTest =  format.test(valueInField);
             if (passesTest){
+                console.log(id + " :checkText : passed");
                 return true;
             }
         }
+        console.log(id + " :checkText : failed");
         return false;
     }
 
@@ -1548,52 +1568,133 @@
      * @return if the value passes the evaluation
      */
     function checkNumber(id) {
-        if (checkValues(id)) {
+        if (checkNotEmpty(id)) {
             var valueInField = document.getElementById(id).value;
             if (!isNaN(valueInField)){
+                console.log(id + " :checkNumber : passed");
                 return true;
             }
         }
+        console.log(id + " :checkNumber : failed");
         return false;
     }
 
     /**
      * Checks if the execution field has the right format if the "add" or Speichern button is pressed.
      */
-    function checkExecution(id) {
+    function checkExecution() {
+        var id = "inputExecution";
+        console.log(document.getElementById(id).value +" : THis value should be whatever was typed in and not Null");
         if(checkText(id)){
-            //TODO click button
+            addTag();
+            console.log("CheckText : Test was passed ");
+        } else{
+            console.log("CheckText : Test was failed");
+            alert("Bitte stell sicher, dass keine Sonderzeichen und Ziffern" +
+                " verwendet werden");
+        }
+    }
+
+    /**
+     * Checks if the create new execution field has the correct format
+     */
+    function checkExecutionAdd() {
+        var id = "inputExecutionName";
+        console.log("checkExecutionName: " + id);
+        if(checkText(id)){
+            createExecution();
         } else{
             alert("Bitte stell sicher, dass keine Sonderzeichen und Ziffern" +
                 " verwendet werden");
         }
     }
+
+    /**
+     * Checks if the forms are filled out before adding exercise
+     * */
+    function addNewExerciseCheck() {
+        var weightType = document.getElementById('weightType').value;
+        console.log(weightType);
+        if (weightType == "Wähle eine Option aus...") {
+            alert("Bitte wähle eine Gewichtsart");
+        } else{
+            if(checkText('exerciseName')&& checkNotEmpty('exercise_description')){
+                console.log("Exercise would be saved.")
+                //TODO press button, once it has function
+            } else{
+                alert("Eine Übung braucht mindestens einen Namen, eine Beschreibung und eine Gewichtsart. Sonderzeichen sind nicht möglich.")
+            }
+        }
+    }
+
     /**
      * Checks if the exercise fullfills the requirements if the "Übung zum Plan hinzufügen"-button is pressed
      */
     function checkExercise() {
-        if (checkText(inputExercise) && checkValues(inputOrder) && checkNumber(inputRM)) {
-            //TODO make the button not be clicked before
-            document.getElementById('buttonAddExercise').click();
+        if (allTEFilled() ) {
+            if (checkText("inputExercise") && checkSpecialCharacters("inputOrder") && checkNumber("inputRM")) {
+                document.getElementById('buttonAddExerciseClick').click();
+            }else{
+                alert("Bitte stelle sicher, dass du auch die Felder für Übungsnamen, Ordnung und RM gefüllt hast.");
+            }
         } else{
-            alert("Bitte stell sicher, dass keine Felder leer sind und keine " +
-                "Sonderzeichen verwendet werden");
+            alert("Bitte stelle sicher, dass keine der Felder für die Übung leer sind und du keine Buchstaben bei Gewicht/Wiederholungen/Reps oder Zahlen beim Tempo verwendest");
         }
     }
+
+    /**
+     * Checks if all Fields for the exercise are filled.
+     * @return boolean 'passesTest'
+     */
+    function allTEFilled() {
+        var passesTest = true;
+        console.log("TE check start");
+        var units = document.getElementById('inputUnit').value;
+        for (var i = 0; i < units; i++){
+            var weightfield = "weightsInput" + i;
+            var repfield = "repsInput" + i;
+            var tempofield = "tempoInput" + i;
+            var pausefield = "pauseInput" + i;
+            if (!(checkNotEmpty(weightfield)&&checkNotEmpty(repfield)&&checkText(tempofield)&&checkNumber(pausefield))){
+                passesTest = false;
+            }
+        }
+        console.log("TE check passed");
+        return passesTest;
+    }
+
 
     function checkPlan() {
-        //TODO add checks or trainingsfokus and Zielgruppe
-        //TODO add checks for exercise in plan
-        if (checkText(planName) && checkNumber(inputUnit) && checkNumber(inputUnitsPerWeek)){
-            //TODO click button
+        var alertmessage = "";
+        var focus = document.getElementById('focus').value;
+        var targetGroup = document.getElementById('targetGroup').value;
+        console.log("0");
+        var focusBool = true;
+        var targetGroupBool = true;
+
+        if(focus == "Wähle eine Option aus..."){
+            focusBool = false;
+            alertmessage = "Ziel wird benötigt;";
+        }
+        console.log("1"+focusBool);
+
+        if(targetGroup == "Wähle eine Option aus..."){
+            targetGroupBool = false;
+            alertmessage = alertmessage + " Zielgruppe wird benötigt;";
+        }
+        console.log("2"+targetGroupBool);
+        console.log("3"+exerciseExistsBool);
+
+        if (checkText("planName") && checkNumber("inputUnit") && checkNumber("inputUnitsPerWeek") && focusBool && targetGroupBool && exerciseExistsBool){
+            console.log("plan passed");
+            resetPlan();
         } else {
-            alert("Bitte stell sicher, dass keine Felder leer sind und keine " +
-                "Sonderzeichen verwendet werden. Jeder Plan benötigt " +
-                "mindestens eine Übung.");
+            console.log("plan failed");
+            alert(alertmessage + " Bitte stell sicher, dass keine Felder leer sind und keine " +
+                "Sonderzeichen außer bei Gewicht/Wiederholungen verwendet werden");
         }
     }
-
-    //TODO check data for exercise creation in this form (copy paste and adjust ids)
 </script>
+
 </body>
 </html>
