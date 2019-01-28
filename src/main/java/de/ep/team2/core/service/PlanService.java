@@ -126,6 +126,10 @@ public class PlanService {
         db.increaseNumOfExercises(idOfTemplate);
     }
 
+    public ExerciseInstance getExerciseInstanceById(int id) {
+        return DataBaseService.getInstance().getExercisInstanceById(id);
+    }
+
     /**
      * removes all spaces, splits the string at the char '/' and tries to parse the results to
      * integers.

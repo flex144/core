@@ -24,6 +24,8 @@ public class ExerciseInstance {
         this.name = name;
     }
 
+    public ExerciseInstance() {}
+
     public int getPlanTemplateID() {
         return planTemplateID;
     }

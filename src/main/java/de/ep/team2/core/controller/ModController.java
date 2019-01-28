@@ -2,7 +2,9 @@ package de.ep.team2.core.controller;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.Exercise;
+import de.ep.team2.core.entities.ExerciseInstance;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
+import de.ep.team2.core.entities.TrainingsSession;
 import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
@@ -128,6 +130,23 @@ public class ModController {
         TrainingsPlanTemplate tpt = service.getPlanTemplateAndSessionsByID(id);
         redirectAttributes.addFlashAttribute("tpt", tpt);
         return "redirect:/mods/editplan";
+    }
+
+    @RequestMapping(value="/editplan/{id}/{exId}", method = RequestMethod.GET)
+    public String editExIn(@PathVariable("id") Integer id, @PathVariable("exId") Integer exId,
+                           Model model) {
+        PlanService service = new PlanService();
+        TrainingsPlanTemplate tpt = service.getPlanTemplateAndSessionsByID(id);
+        ExerciseInstance exIn = service.getExerciseInstanceById(exId);
+        model.addAttribute("tpt", tpt);
+        model.addAttribute("exIn", exIn);
+        return "mod_edit_exerciseInstance";
+    }
+
+    @RequestMapping(value="/editExerciseInstance", method = RequestMethod.POST)
+    public String postEditExIn(@ModelAttribute("exIn") ExerciseInstance exIn) {
+
+        return "redirect:/mods/home";
     }
 
 }

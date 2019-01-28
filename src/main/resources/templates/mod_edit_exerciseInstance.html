@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Planvorlage bearbeiten</title>
+    <title>Planübung bearbeiten</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
@@ -50,7 +50,7 @@
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
 <div class="container" >
-    <form th:action="@{/mods/editplan}" th:method="put" th:object="${tpt}">
+    <form th:action="@{/mods/editExerciseInstance}" method="post" th:object="${exIn}">
         <div class="panel panel-default outerPanel">
             <div class="panel-heading" id="panelEditPlan">
                 <h3>Planvorlage bearbeiten</h3>
@@ -60,10 +60,10 @@
                     <div class="col colGeneralInfo">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                Planbezeichnung:
+                                Übungsbezeichnung:
                             </div>
                             <div class="panel-body">
-                                <input  type="text" class="form-control" id="planName"
+                                <input  type="text" class="form-control" id="exName"
                                         placeholder="Hier bisherigen Namen anzeigen" th:field="*{name}">
                             </div>
                         </div>
@@ -71,35 +71,19 @@
                     <div class="col colGeneralInfo">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                Trainingsfokus:
+                                Ordnung:
                             </div>
                             <div class="panel-body">
-                                <select id="focus" class="form-control" required th:field="*{trainingsFocus}">
-                                    <option selected disabled hidden th:value="null">Hier bisherigen Fokus anzeigen</option>
-                                    <option th:value="'muscle'">Muskelaufbau</option>
-                                    <option th:value="'stamina'">Ausdauer</option>
-                                    <option th:value="'pain'">Schmerzreduktion</option>
-                                </select>
+                                <input  type="text" class="form-control" id="order"
+                                        placeholder="Hier bisherigen Namen anzeigen" th:field="*{category}">
+                                <input hidden th:field="*{id}">
+                                <input hidden th:field="*{planTemplateID}">
+                                <input hidden th:field="*{isExerciseID}">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-container">
-                    <div class="col colGeneralInfo">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                Zielgruppe: (Erfahrungslevel)
-                            </div>
-                            <div class="panel-body">
-                                <select id="targetExperience" class="form-control" required>
-                                    <option selected disabled hidden>Hier bisherige Erfahrung anzeigen</option>
-                                    <option>Anfänger</option>
-                                    <option>Fortgeschritten</option>
-                                    <option>Profi</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
                     <div class="col colGeneralInfo">
                         <div class="panel panel-default">
                             <div class="panel-heading">
@@ -113,25 +97,9 @@
                     </div>
                 </div>
 
-                <div class="panel panel-default" th:each="exercise, itemStat : *{exerciseInstances}">
+                <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="col-container">
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="exerciseName">Übungsname:</label>
-                                    <input type="text" class="form-control" id="exerciseName"
-                                           placeholder="Aktueller Übungsname"
-                                           th:field="*{exerciseInstances[__${itemStat.index}__].name}">
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="order">Ordnung:</label>
-                                    <input type="text" class="form-control" id="order"
-                                           placeholder="Aktuelle Ordnung"
-                                           th:field="*{exerciseInstances[__${itemStat.index}__].category}">
-                                </div>
-                            </div>
                             <div class="col">
                                 <div class="form-group">
                                     <label for="rm">Repetition Maximum:</label>
@@ -143,7 +111,7 @@
                                 <label for="tagBlockPlan">Ausführung(en):</label>
                                 <div id="tagBlockPlan">
                                     <input type="text" data-role="tagsinput"
-                                           value="" class="form-control tagsPlanInput" disabled>
+                                           value="" class="form-control tagsPlanInput" th:field="*{tags}">
                                 </div>
                             </div>
                         </div>
@@ -159,36 +127,37 @@
                                     <col width="15%">
                                 </colgroup>
                                 <thead>
-                                    <tr>
-                                        <th>TE</th>
-                                        <th>Gewichtsänderungen</th>
-                                        <th>Wiederholungen</th>
-                                        <th>Tempo</th>
-                                        <th>Pause</th>
-                                    </tr>
+                                <tr>
+                                    <th>TE</th>
+                                    <th>Gewichtsänderungen</th>
+                                    <th>Wiederholungen</th>
+                                    <th>Tempo</th>
+                                    <th>Pause</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="trainingssession, istat :
-                                    *{exerciseInstances[__${itemStat.index}__].trainingsSessions}">
-                                        <td>
-                                            <input type="text" class="form-control" disabled placeholder="TE"
-                                            th:value="${istat.count}">
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control" placeholder="Gewichtsänderung">
-                                        </td>
-
-
-                                        <td>
-                                            <input type="text" class="form-control" placeholder="Tempo"
-                                                    th:field="*{exerciseInstances[__${itemStat.index}__].
-                                                    trainingsSessions[__${istat.index}__].tempo}">
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control" placeholder="Pause"
-                                                   th:value="${trainingssession.pauseInSec}">
-                                        </td>
-                                    </tr>
+                                <tr th:each="trainingssession, istat : *{trainingsSessions}">
+                                    <td>
+                                        <input type="text" class="form-control" disabled placeholder="TE"
+                                               th:value="${istat.count}">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" placeholder="Gewichtsänderung">
+                                    </td>
+                                    <td>
+                                        <input id="repsInput" type="text" class="form-control"
+                                               placeholder="Wiederholungen"
+                                               th:field="*{trainingsSessions[__${istat.index}__].reps}">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" placeholder="Tempo"
+                                               th:field="*{trainingsSessions[__${istat.index}__].tempo}">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control" placeholder="Pause"
+                                               th:field="*{trainingsSessions[__${istat.index}__].pauseInSec}">
+                                    </td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>

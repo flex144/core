@@ -1,5 +1,7 @@
 package de.ep.team2.core.entities;
 
+import java.util.ArrayList;
+
 public class TrainingsSession {
 
     private int id;
@@ -7,12 +9,12 @@ public class TrainingsSession {
     private int exerciseInstanceId;
     private int repetitionMaximum;
     private int sets;
-    private Integer[] reps;
+    private ArrayList<Integer> reps;
     private String tempo;
     private int pauseInSec;
 
     public TrainingsSession(int id, int ordering, int exerciseInstanceId, int repetitionMaximum,
-                            int sets, Integer[] reps, String tempo, int pauseInSec) {
+                            int sets, ArrayList<Integer> reps, String tempo, int pauseInSec) {
         this.id = id;
         this.ordering = ordering;
         this.exerciseInstanceId = exerciseInstanceId;
@@ -22,6 +24,8 @@ public class TrainingsSession {
         this.tempo = tempo;
         this.pauseInSec = pauseInSec;
     }
+
+    public TrainingsSession() {}
 
     public int getId() {
         return id;
@@ -63,11 +67,11 @@ public class TrainingsSession {
         this.sets = sets;
     }
 
-    public Integer[] getReps() {
+    public ArrayList<Integer> getReps() {
         return reps;
     }
 
-    public void setReps(Integer[] reps) {
+    public void setReps(ArrayList<Integer> reps) {
         this.reps = reps;
     }
 

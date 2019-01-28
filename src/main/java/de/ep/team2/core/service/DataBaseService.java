@@ -742,9 +742,12 @@ public class DataBaseService {
                 "SELECT * FROM trainings_sessions WHERE exercise_instance = ?",
                 new Integer[]{idOfInstance},
                 (resultSet, i) -> {
-                    Integer[] reps = new Integer[7];
+                    ArrayList<Integer> reps = new ArrayList<>();
                     for (int j = 1; j < 8; j++) {
-                        reps[j - 1] = resultSet.getInt(String.format("reps_set%d", j));
+                        Integer wdh = resultSet.getObject(String.format("reps_set%d", j), Integer.class);
+                        if(wdh != null && wdh != 0) {
+                            reps.add(reps.size(), wdh);
+                        }
                     }
                     return new TrainingsSession(resultSet.getInt("id"), resultSet.getInt("ordering"),
                             resultSet.getInt("exercise_instance"),
@@ -764,9 +767,12 @@ public class DataBaseService {
                 "SELECT * FROM trainings_sessions WHERE id = ?",
                 new Integer[]{id},
                 (resultSet, i) -> {
-                    Integer[] reps = new Integer[7];
+                    ArrayList<Integer> reps = new ArrayList<>();
                     for (int j = 1; j < 8; j++) {
-                        reps[j - 1] = resultSet.getInt(String.format("reps_set%d", j));
+                        Integer wdh = resultSet.getObject(String.format("reps_set%d", j), Integer.class);
+                        if(wdh != 0 && wdh != null) {
+                            reps.add(reps.size(), wdh);
+                        }
                     }
                     return new TrainingsSession(id, resultSet.getInt("ordering"),
                             resultSet.getInt("exercise_instance"),
