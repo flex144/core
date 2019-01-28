@@ -236,7 +236,9 @@
     <p id="setNumber" th:text="${exerciseDto.getSets()}"></p>
     <p id="setPause"  th:text="${exerciseDto.getPause()}"></p>
     <div th:each="weight, stat : ${exerciseDto.getWeights()}">
-        <p th:id="weight + ${stat.count}" th:text="${weight}"></p>
+        <p th:unless="${exerciseDto.getExercise().getWeightType() == T(de.ep.team2.core.enums.WeightType).SELF_WEIGHT}" th:id="weight + ${stat.count}" th:text="${weight} + ' kg'"></p>
+        <p th:if="${exerciseDto.getExercise().getWeightType() == T(de.ep.team2.core.enums.WeightType).SELF_WEIGHT and weight < 0}" th:id="weight + ${stat.count}" th:text="${weight} + ' % deines Gewichts'"></p>
+        <p th:if="${exerciseDto.getExercise().getWeightType() == T(de.ep.team2.core.enums.WeightType).SELF_WEIGHT and weight > 0}" th:id="weight + ${stat.count}" th:text="'+' + ${weight} + ' % deines Gewichts'"></p>
     </div>
     <div th:each="reps, stats : ${exerciseDto.getReps()}">
         <p th:id="reps + ${stats.count}" th:text="${reps}"></p>
@@ -287,7 +289,8 @@
                          style="height: 40%;">
                         <table id="exerciseDetails" class="table-striped table-bordered">
                             <tr>
-                                <td>Gewicht</td>
+                                <td th:unless="${exerciseDto.getExercise().getWeightType() == T(de.ep.team2.core.enums.WeightType).SELF_WEIGHT}">Gewicht</td>
+                                <td th:if="${exerciseDto.getExercise().getWeightType() == T(de.ep.team2.core.enums.WeightType).SELF_WEIGHT}">Eigengewicht</td>
                                 <td id="weightLabel"></td>
                             </tr>
                             <tr>
@@ -481,7 +484,7 @@
     function updateValues(){
         getweight = "weight" + currentCounter;
         getReps = "reps" + currentCounter;
-        var newWeightCounter = document.getElementById(getweight).innerHTML + "kg";
+        var newWeightCounter = document.getElementById(getweight).innerHTML;
         var newRepCounter = document.getElementById(getReps).innerHTML;
         document.getElementById('weightLabel').innerHTML = newWeightCounter;
         totalReps = newRepCounter;
@@ -539,7 +542,7 @@
         console.log("8");
         document.getElementById('neededReps').innerHTML = document.getElementById('reps1').innerHTML;
         console.log("9");
-        document.getElementById('weightLabel').innerHTML = document.getElementById('weight1').innerHTML +"kg";
+        document.getElementById('weightLabel').innerHTML = document.getElementById('weight1').innerHTML;
         console.log("10");
     }
 

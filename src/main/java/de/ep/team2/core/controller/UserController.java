@@ -8,6 +8,7 @@ import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.entities.User;
 import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.TrainingsFocus;
+import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,20 +156,24 @@ public class UserController {
             } catch (NoPlanException noPlan) {
                 return "redirect:/user/new";
             }
+            if (dayDto.isInitialTraining()) {
+                for (ExerciseDto exDto : dayDto.getExercises()) {
+                    if (exDto.getExercise().getWeightType() == WeightType.SELF_WEIGHT) {
+                        exDto.setDone(true);
+                    }
+                }
+            }
+        }
+        // Training already started
+        if (planService.checkIfDayDone(dayDto)) {
+            if (dayDto.isInitialTraining()) {
+                planService.setUserPlanInitialTrainDone(dayDto.getExercises().getFirst().getIdUserPlan());
+            }
+            dayDto.clear();
+            return "redirect:/user/home"; // todo maybe info page that training is over
+        } else {
             model.addAttribute("dayDto", dayDto);
             return "user_training_overview";
-        } else { // Training already started
-            boolean isDone = planService.checkIfDayDone(dayDto);
-            if (isDone) {
-                if (dayDto.isInitialTraining()) {
-                    planService.setUserPlanInitialTrainDone(dayDto.getExercises().getFirst().getIdUserPlan());
-                }
-                dayDto.clear();
-                return "redirect:/user/home"; // todo maybe info page that training is over
-            } else {
-                model.addAttribute("dayDto", dayDto);
-                return "user_training_overview";
-            }
         }
     }
 

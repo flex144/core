@@ -5,6 +5,7 @@ import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.dtos.ExerciseDto;
 import de.ep.team2.core.dtos.TrainingsDayDto;
 import de.ep.team2.core.entities.*;
+import de.ep.team2.core.enums.WeightType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -147,6 +148,34 @@ public class PlanService {
         }
     }
 
+    /**
+     * Checks if the WeightDiff and the Reps are parsable. returns true if thats the case and throws an exception with
+     * an according message if its not possible.
+     *
+     * @param dto dto which holds the data provided by the user.
+     * @return true when it is parsable.
+     */
+    public boolean checkWeightDiffAndReps(CreatePlanDto dto) {
+        for (int i = 0; i < dto.getSessionNums(); i++) {
+            Integer[] reps = parseReps(dto.getSets().get(i));
+            // fixes special case where weightDiff input isn't set as List in the Dto, when only one empty weightDiff
+            // is provided.
+            if (dto.getWeightDiff().size() == 0) {
+                dto.setWeightDiff(new LinkedList<String>() {{
+                    add("");
+                }});
+            }
+            Integer[] weightDiff = parseWeightDiff(dto.getWeightDiff().get(i));
+            if (!validateWeightWithReps(reps, weightDiff)) {
+                throw new IllegalArgumentException("Wiederholungen und Gewichtsunterschiede stimmen nicht überein!");
+            }
+            if (reps.length > 7) {
+                throw new IllegalArgumentException("Zu viele Sätze maximal 7 erlaubt!");
+            }
+        }
+        return true;
+    }
+
     private void addInstanceAndSessionToExistingPlan(CreatePlanDto dto, Integer idOfTemplate) {
         DataBaseService db = DataBaseService.getInstance();
         Integer exInstanceId = db.insertExerciseInstance(dto.getExerciseID(), dto.getCategory(),
@@ -203,8 +232,6 @@ public class PlanService {
     }
 
     /**
-     * Huge method , has to be refactored!
-     *
      * Checks if the user with the Mail userMail has a plan and if he hasn't assigns the initial one to him.
      * Then checks if the CurrentSession the plan is in is valid and throws an RunTimeException if not.
      * Searches for the Plan Template the UserPlan is based on.
@@ -214,7 +241,8 @@ public class PlanService {
      * to be used on each exercise on each set.
      * Fills the Data for each Exercise in a ExerciseDto and adds it to the List in the TrainingsDayDto.
      *
-     * todo Handle 'Eigengewicht Übungen'
+     * For Exercises with WeightType SELF_WEIGHT, no weight is calculated with the Repetition Maximum but the value of
+     * weightDiff in the Plan Template is directly given to the user.
      *
      * @param userMail identifies the user.
      * @param trainingsDayDto dto to be filled with Data provided by the Controller.
@@ -233,43 +261,52 @@ public class PlanService {
             log.debug("User:" + userMail + ": Plan expired new Plan needed!");
             throw new IllegalArgumentException("Plan expired new Plan needed!");
         } else {
-            // get the Trainings plan Template the User plan is based on
-            TrainingsPlanTemplate template = db.getPlanTemplateAndSessionsByID(userPlan.getIdOfTemplate());
-            LinkedList<ExerciseDto> exerciseDtos = new LinkedList<>();
-            for (ExerciseInstance exInstance : template.getExerciseInstances()) {
-                // create the ExerciseDto based on each ExerciseInstance and the current TrainingsSession
-                ExerciseDto newDto = new ExerciseDto();
-                TrainingsSession trainingsSession;
-                if (!userPlan.isInitialTrainingDone() && currentSession == 0) {
-                    newDto.setWeights(null);
-                    newDto.setFirstTraining(true);
-                    newDto.setWeightDone(0);
-                    trainingsSession = getSessionByOrdering(1, exInstance.getTrainingsSessions()); // in initial Workout take values from first Trainings session
-                } else {
-                    // when the initial Training was already completed calculate the values for the current Session
-                    trainingsSession = getSessionByOrdering(currentSession, exInstance.getTrainingsSessions());
-                    newDto.setWeights(calcWeights(db.getWeightForUserPlanExercise(userPlan.getId(), exInstance.getId()), trainingsSession.getSets(), trainingsSession.getWeightDiff()));
-                    newDto.setFirstTraining(false);
-                }
-                // add all Data to the ExerciseDto
-                newDto.setIdUserPlan(userPlan.getId());
-                newDto.setIdExerciseInstance(exInstance.getId());
-                Exercise exercise = db.getExerciseById(exInstance.getIsExerciseID());
-                newDto.setExercise(exercise);
-                newDto.setCategory(exInstance.getCategory());
-                newDto.setTags(exInstance.getTags());
-                newDto.setSets(trainingsSession.getSets());
-                newDto.setTempo(trainingsSession.getTempo());
-                newDto.setPause(trainingsSession.getPauseInSec());
-                newDto.setReps(trainingsSession.getReps());
-                newDto.setRepMax(exInstance.getRepetitionMaximum());
-                exerciseDtos.add(newDto);
-            }
-            trainingsDayDto.setExercises(exerciseDtos);
+            trainingsDayDto.setExercises(createExerciseDtosForDay(userPlan, currentSession));
             trainingsDayDto.setInitialTraining(!userPlan.isInitialTrainingDone());
             trainingsDayDto.setCurrentSession(currentSession);
             return trainingsDayDto;
         }
+    }
+
+    private LinkedList<ExerciseDto> createExerciseDtosForDay(UserPlan userPlan, int currentSession) {
+        DataBaseService db = DataBaseService.getInstance();
+        // get the Trainings plan Template the User plan is based on
+        TrainingsPlanTemplate template = db.getPlanTemplateAndSessionsByID(userPlan.getIdOfTemplate());
+        LinkedList<ExerciseDto> toReturn = new LinkedList<>();
+        for (ExerciseInstance exInstance : template.getExerciseInstances()) {
+            // create the ExerciseDto based on each ExerciseInstance and the current TrainingsSession
+            ExerciseDto newDto = new ExerciseDto();
+            Exercise exercise = db.getExerciseById(exInstance.getIsExerciseID());
+            TrainingsSession trainingsSession;
+            if (!userPlan.isInitialTrainingDone() && currentSession == 0) {
+                newDto.setWeights(null);
+                newDto.setFirstTraining(true);
+                newDto.setWeightDone(0);
+                trainingsSession = getSessionByOrdering(1, exInstance.getTrainingsSessions()); // in initial Workout take values from first Trainings session
+            } else {
+                // when the initial Training was already completed calculate the values for the current Session
+                trainingsSession = getSessionByOrdering(currentSession, exInstance.getTrainingsSessions());
+                if (exercise.getWeightType() != WeightType.SELF_WEIGHT) {
+                    newDto.setWeights(calcWeights(db.getWeightForUserPlanExercise(userPlan.getId(), exInstance.getId()), trainingsSession.getSets(), trainingsSession.getWeightDiff()));
+                } else {
+                    newDto.setWeights(trainingsSession.getWeightDiff());
+                }
+                newDto.setFirstTraining(false);
+            }
+            // add all Data to the ExerciseDto
+            newDto.setIdUserPlan(userPlan.getId());
+            newDto.setIdExerciseInstance(exInstance.getId());
+            newDto.setExercise(exercise);
+            newDto.setCategory(exInstance.getCategory());
+            newDto.setTags(exInstance.getTags());
+            newDto.setSets(trainingsSession.getSets());
+            newDto.setTempo(trainingsSession.getTempo());
+            newDto.setPause(trainingsSession.getPauseInSec());
+            newDto.setReps(trainingsSession.getReps());
+            newDto.setRepMax(exInstance.getRepetitionMaximum());
+            toReturn.add(newDto);
+        }
+        return toReturn;
     }
 
     /**

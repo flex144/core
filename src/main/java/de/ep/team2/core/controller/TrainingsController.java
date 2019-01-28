@@ -1,8 +1,10 @@
 package de.ep.team2.core.controller;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
+import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.entities.User;
+import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.EmailSenderService;
 import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.PlanService;
@@ -123,6 +125,7 @@ public class TrainingsController {
      */
     private String checkIfArgsValid(CreatePlanDto dto) {
         ExerciseService exerciseService = new ExerciseService();
+        Exercise exercise = exerciseService.getExerciseByName(dto.getExerciseName());
         if (dto.getSessionNums() != dto.getSets().size() || dto.getSets().contains(null)
                 || dto.getSets().contains("")) {
             return "Anzahl der angegebenen Trainingseinheiten nicht passend!";
@@ -133,14 +136,27 @@ public class TrainingsController {
             return "Anzahl der angegebenen Tempowerte nicht passend!";
         } else if (!validStringsSets(dto)) {
             return "Eingabe bei Sets entspricht nicht den Vorschriften!";
-        } else if (exerciseService.getExerciseByName(dto.getExerciseName()) == null) {
+        } else if (exercise == null) {
             return "Übung nicht Vorhanden!";
         } else if (dto.getId() == null && !checkPlanNameUnique(dto)) {
             return "Planname schon vorhanden!";
+        } else if (exercise.getWeightType() == WeightType.FIXED_WEIGHT && (dto.getRepetitionMaximum() == null || dto.getRepetitionMaximum() < 1)) {
+            return "Bei Übungen mit festem Gewicht muss ein Repetition Maximum das größer als 0 ist angeben werden.";
         } else {
-            return "valid!";
+            try {
+                PlanService planService = new PlanService();
+                if (planService.checkWeightDiffAndReps(dto)) {
+                    return "valid!";
+                } else {
+                    return "unknown error!";
+                }
+            } catch (IllegalArgumentException exception) {
+                return  exception.getMessage();
+            }
         }
     }
+
+
 
     private boolean checkPlanNameUnique(CreatePlanDto dto) {
         PlanService planService = new PlanService();
