@@ -161,9 +161,37 @@ public class ModController {
     }
 
     @RequestMapping(value = {"/searchuser"}, method = RequestMethod.GET)
-    public String searchUser(Model model) {
-        UserService userService = new UserService();
-        model.addAttribute("users", userService.getAllUsers());
+    public String searchUser() {
         return "mod_user_search";
+    }
+
+    /**
+     * Searches for all Users whos email, first or Last name contains the parameter name,
+     * removes the password from the user object and returns the List.
+     * If the name is null or blank returns all User in the System.
+     *
+     * @param name String to look for.
+     * @param model model thymeleaf uses.
+     * @return "mod_user_search"
+     */
+    @PostMapping("/searchuser")
+    public String postSearchUser(@RequestParam("userName") String name, Model model) {
+        UserService userService = new UserService();
+        model.addAttribute("users", userService.getUserListByName(name));
+        return "mod_user_search";
+    }
+
+    /**
+     * gets all mods in the system removes the password form the object and redirects the list to the
+     * "/mods/searchuser" to display them.
+     *
+     * @param redirectAttributes used to pass the list.
+     * @return "redirect:/mods/searchuser"
+     */
+    @GetMapping("/searchmods")
+    public String getMods(RedirectAttributes redirectAttributes) {
+        UserService userService = new UserService();
+        redirectAttributes.addFlashAttribute("users", userService.getAllMods());
+        return "redirect:/mods/searchuser";
     }
 }

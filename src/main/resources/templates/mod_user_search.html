@@ -22,21 +22,34 @@
 <body>
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
-<form class="form-horizontal" th:action="@{usersearch}"
-      th:object="${searchtext}" method="post">
+<form class="form-horizontal" id="searchForm" th:action="@{/mods/searchuser}" method="post">
     <div class="container">
         <div class="jumbotron">
             <div class="container-fluid">
                 <h2>Liste aller auf der Webseite registrierten Nutzer</h2>
                 <br>
                 <br>
-                <p style="font-size: 12pt">Gib in die Eingabezeile über der Liste aller Nutzer
-                    ein beliebiges Attribut des oder der gesuchten Nutzer ein um nach diesem zu filtern</p>
+                <p style="font-size: 12pt">Gib in die Eingabezeile über der Tabelle den Namen oder die email
+                    oder einen Teil davon ein um gesuchte Nutzer zu finden.<br>
+                    Um dir alle Nutzer im System anzeigen zu lassen, klicke auf den Button <mark>"Suchen"</mark> ohne ein Suchwort
+                    anzugeben.<br> Klicke auf "Alle Moderatoren anzeigen lassen" um eine Liste aller Moderatoren zu erhalten.</p>
             </div>
         </div>
         <div class="panel panel-default outerPanel">
             <div class="panel-heading">
-                <input class="form-control" id="myInput" type="text" placeholder="Suchwort eingeben..">
+                <input class="form-control" name="userName" id="myInput" type="text" placeholder="Suchwort eingeben..">
+                <div class="input-group-btn">
+                    <a type="button" id="submitForm" class="btn btn-success">
+                        <span class="glyphicon glyphicon-search"></span>
+                        Suchen
+                    </a>
+                </div>
+                <div class="input-group-btn">
+                    <a type="button" th:href="@{/mods/searchmods}" class="btn btn-success">
+                        <span class="glyphicon glyphicon-education"></span>
+                        Alle Moderatoren anzeigen lassen
+                    </a>
+                </div>
             </div>
             <div class="panel-body">
                 <table id="userTable" class="table table-bordered table-condensed" data-toggle="table">
@@ -54,6 +67,9 @@
                         <th data-field="lastName" data-sortable="true">
                             Nachname
                         </th>
+                        <th data-field="role" data-sortable="true">
+                            Benutzer Gruppe
+                        </th>
                     </tr>
                     </thead>
                     <tbody id="myTable">
@@ -64,6 +80,7 @@
                         <td th:text="${user.getEmail()}"/>
                         <td th:text="${user.getFirstName()}"/>
                         <td th:text="${user.getLastName()}"/>
+                        <td th:text="${user.getRole()}"/>
                     </tr>
                     </tbody>
                 </table>
@@ -89,6 +106,11 @@
 <script>
     function rowClicked(value) {
         location.href = "../users/" + value;
+    }
+</script>
+<script>
+    document.getElementById("submitForm").onclick = function() {
+        document.getElementById("searchForm").submit();
     }
 </script>
 

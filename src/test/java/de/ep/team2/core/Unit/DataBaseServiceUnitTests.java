@@ -73,6 +73,19 @@ public class DataBaseServiceUnitTests {
     }
 
     @Test
+    public void getAllMods() {
+        assertEquals(2, DataBaseService.getInstance().getAllMods().size());
+    }
+
+    @Test
+    public void searchUser() {
+        UserService userService = new UserService();
+        assertEquals("timo@gmail.com", userService.getUserListByName("timo").get(0).getEmail()); // timo is unique
+        assertEquals(4, userService.getUserListByName("e").size()); // 4 users contain the letter e
+        assertEquals(5, userService.getUserListByName("").size()); // returns all user
+    }
+
+    @Test
     public void testAlterAdvancedData() {
         DataBaseService db = DataBaseService.getInstance();
         Calendar cal = Calendar.getInstance();

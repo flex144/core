@@ -103,6 +103,16 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Returns a List of all mods in the System.
+     *
+     * @return A list of all mods.
+     */
+    public List<User> getAllMods() {
+        String sql = "SELECT * FROM users where role = 'ROLE_MOD'";
+        return jdbcTemplate.query(sql, new UserRowMapper());
+    }
+
     class UserRowMapper implements RowMapper<User> {
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
             User user = new User();
@@ -141,6 +151,26 @@ public class DataBaseService {
     public List<User> getAllUsers() {
         String sql = "SELECT * FROM users";
         return jdbcTemplate.query(sql, new UserRowMapper());
+    }
+
+
+    /**
+     * Searches for Users whos email,first or last name contains the String searched for and returns them as a List.
+     * Returns null when the name is null or empty.
+     *
+     * @param name String or part of String to look for.
+     * @return List of User with matching names.
+     */
+    public List<User> getUserListByName(String name) {
+        if (name != null && !name.isEmpty()) {
+            String sql = String.format("SELECT * FROM users WHERE lower(email) LIKE '%%%s%%' OR" +
+                            " lower(first_name) LIKE '%%%s%%' OR lower(last_name) LIKE '%%%s%%' " +
+                            "GROUP BY email", name.toLowerCase(), name.toLowerCase(), name.toLowerCase());
+            return new LinkedList<>(jdbcTemplate.query(
+                    sql,
+                    new UserRowMapper()));
+        }
+        return null;
     }
 
     /**

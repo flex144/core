@@ -156,4 +156,42 @@ public class UserService {
     public void deleteTokenById(int tokenId) {
         DataBaseService.getInstance().deleteTokenById(tokenId);
     }
+
+    /**
+     * Searches for Users whos email, first or last name contains the String searched for.
+     * If the String is left null or empty, returns all User.
+     * Removes the Password from the User objects before returning it.
+     *
+     * @param name String to search for.
+     * @return List of User with matching name, or all user if name left blank.
+     */
+    public List<User> getUserListByName(String name) {
+        List<User> toReturn;
+        if (name == null || name.equals("")) {
+            toReturn = getAllUsers();
+        } else {
+            toReturn = DataBaseService.getInstance().getUserListByName(name);
+        }
+        if (toReturn != null && !toReturn.isEmpty()) {
+            for (User user : toReturn) {
+                user.setPassword(null);
+            }
+        }
+        return toReturn;
+    }
+
+    /**
+     * Returns a list of all mods in the system and removes the password of the object.
+     *
+     * @return a list of all mods.
+     */
+    public List<User> getAllMods() {
+        List<User> toReturn = DataBaseService.getInstance().getAllMods();
+        if (toReturn != null && !toReturn.isEmpty()) {
+            for (User user : toReturn) {
+                user.setPassword(null);
+            }
+        }
+        return toReturn;
+    }
 }
