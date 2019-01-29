@@ -109,13 +109,6 @@ public class ModController {
         return "mod_user_search";
     }
 
-    @RequestMapping(value="/editplan", method = RequestMethod.PUT)
-    public String postEditPlan(@ModelAttribute("tpt") TrainingsPlanTemplate tpt, Model model) {
-        PlanService service = new PlanService();
-        service.editPlanTemplate(tpt);
-        return "redirect:/mods/searchplan";
-    }
-
     @RequestMapping(value="/editplan/{id}", method = RequestMethod.GET)
     public String editPlan(@PathVariable("id") Integer id, Model model) {
         PlanService service = new PlanService();
@@ -124,22 +117,39 @@ public class ModController {
         return "mod_edit_plan";
     }
 
+    @RequestMapping(value="/editplan", method = RequestMethod.PUT)
+    public String postEditPlan(@ModelAttribute("tpt") TrainingsPlanTemplate tpt, Model model) {
+        PlanService service = new PlanService();
+        service.editPlanTemplate(tpt);
+        return "redirect:/mods/searchplan";
+    }
+
     @RequestMapping(value="/editplan/{id}/{exId}", method = RequestMethod.GET)
     public String editExIn(@PathVariable("id") Integer id, @PathVariable("exId") Integer exId,
                            Model model) {
         PlanService service = new PlanService();
+        ExerciseService exerciseService = new ExerciseService();
         TrainingsPlanTemplate tpt = service.getPlanTemplateAndSessionsByID(id);
         ExerciseInstance exIn = service.getExerciseInstanceById(exId);
         model.addAttribute("tpt", tpt);
         model.addAttribute("exIn", exIn);
+        model.addAttribute("allExercises", exerciseService.getAllExercises());
         return "mod_edit_exerciseInstance";
     }
 
     @RequestMapping(value="/editplan/{id}/{exId}", method = RequestMethod.POST)
     public String postEditExIn(@ModelAttribute("exIn") ExerciseInstance exIn,
                                @PathVariable("id") Integer id, @PathVariable("exId") Integer exId,
-                               Model model) {
+                               Model model, RedirectAttributes redirectAttributes) {
         PlanService service = new PlanService();
+        ExerciseService exerciseService = new ExerciseService();
+        Exercise toUpdate = exerciseService.getExerciseByName(exIn.getName());
+        if (toUpdate == null) {
+            String errorMessage = "Übung '"+exIn.getName()+"' nicht vorhanden!";
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            return "redirect:/mods/editplan/"+id+"/"+exId;
+        }
+        exIn.setIsExerciseID(toUpdate.getId());
         service.editExerciseInstance(exIn);
         return "redirect:/mods/editplan/"+id;
     }

@@ -56,6 +56,9 @@
             <div class="panel-heading" id="panelEditPlan">
                 <h3>Planvorlage bearbeiten</h3>
             </div>
+            <div class="panel panel-body" th:if="${errorMessage}">
+                <h5 th:text="${errorMessage}" style="color: red"></h5>
+            </div>
             <div class="panel-body">
                 <div class="col-container">
                     <div class="col colGeneralInfo">
@@ -64,8 +67,13 @@
                                 Übungsbezeichnung:
                             </div>
                             <div class="panel-body">
-                                <input  type="text" class="form-control" id="exName"
-                                        placeholder="Hier bisherigen Namen anzeigen" th:field="*{name}">
+                                <input id="inputExercise" type="text" class="form-control"
+                                       list="storedExercises" placeholder="Übung auswählen.."
+                                       name="exerciseName" required th:field="*{name}">
+                                <datalist id="storedExercises">
+                                    <option th:each="exercise : ${allExercises}" th:value="${exIn.name}"
+                                            th:text="${exIn.name}"/>
+                                </datalist>
                             </div>
                         </div>
                     </div>

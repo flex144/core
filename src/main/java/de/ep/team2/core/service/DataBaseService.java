@@ -966,11 +966,12 @@ public class DataBaseService {
             editTrainingsSession(session);
         }
         ArrayList<Object> insertValues = new ArrayList<>();
+        insertValues.add(exIn.getIsExerciseID());
         insertValues.add(exIn.getCategory());
         insertValues.add(exIn.getRepetitionMaximum());
         insertValues.add(exIn.getId());
         jdbcTemplate.update(
-                "UPDATE exercise_instances SET category=?, repetition_maximum=? " +
+                "UPDATE exercise_instances SET is_exercise=?, category=?, repetition_maximum=? " +
                         " WHERE id=?", insertValues.toArray()
         );
         log.debug("Updated values for Exercise-Instance with id: '"+exIn.getId()+"' !");
