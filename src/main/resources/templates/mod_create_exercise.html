@@ -74,36 +74,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col">
-                        <div class="panel panel-default">
-                            <div class="panel-heading" style="font-weight: bold">
-                                Muskelgruppe(n) hinzufügen:
-                            </div>
-                            <div class="panel-body">
-                                <div class="input-group">
-                                    <input id="inputMuscle" type="text" name="muscleGroup"
-                                           class="form-control" list="stored_muscleGroups">
-                                    <datalist id="stored_muscleGroups">
-                                        <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).BRUST.getName()}"></option>
-                                        <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).BIZEPS.getName()}"></option>
-                                        <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).TRIZEPS.getName()}"></option>
-                                        <option th:text="${T(de.ep.team2.core.enums.MuscleGroup).ABDOMINALS.getName()}"></option>
-                                    </datalist>
-                                    </input>
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-success" type="button" id="buttonAddExecution"
-                                                onclick="addToList()">
-                                            <span class="glyphicon glyphicon-plus"></span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel-footer" id="addedMuscleTypes">
-                                <label for="displaySelected">Ausgewählte Muskelgruppen:</label>
-                                <span id="displaySelected"></span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="col-container">
                     <div class="col col-text">
