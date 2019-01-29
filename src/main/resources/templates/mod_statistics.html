@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Statistiken</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+    <div th:include="/fragments/navbar :: style_fragment"></div></head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    .col-container {
+        display: table;
+        width: 100%;
+    }
+    .col {
+        display: table-cell;
+        padding: 5px;
+    }
+    @media only screen and (max-width: 600px) {
+        .col {
+            display: block;
+            width: 95%;
+        }
+    }
+</style>
+<body>
+<div th:replace="/fragments/navbar :: navbar_mod"></div>
+
+<div class="container">
+    <div class="panel panel-default outerPanel">
+        <div class="panel-heading" align="center">
+            <h3>Allgemeine Statistiken</h3>
+        </div>
+        <div class="panel-body">
+            <div class="col-container">
+                <div class="col">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Gewählte Ziele
+                        </div>
+                        <div class="panel-body">
+                            <canvas id="doughnutChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Erfahrung der Nutzer
+                        </div>
+                        <div class="panel-body">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Gewählte Häufigkeit
+                        </div>
+                        <div class="panel-body">
+                            <canvas id="polarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-container">
+                <div class="col">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Registrierte Personen
+                        </div>
+                        <div class="panel-body">
+                            <canvas id="lineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //doughnut
+    var ctxD = document.getElementById("doughnutChart").getContext('2d');
+    var myLineChart = new Chart(ctxD, {
+        type: 'doughnut',
+        data: {
+            labels: ["Muskelfokus", "Ausdauerfokus", "Gewichtsreduktion", "Ohne Ziel"],
+            datasets: [{
+                data: [120, 50, 20, 60],
+                backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1"],
+                hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5"]
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'bottom'
+            }
+        }
+    });
+
+    //pie
+    var ctxP = document.getElementById("pieChart").getContext('2d');
+    var myPieChart = new Chart(ctxP, {
+        type: 'pie',
+        data: {
+            labels: ["Anfänger", "Fortgeschritten", "Experte", "Unbekannt"],
+            datasets: [{
+                data: [160, 30, 10, 50],
+                backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1"],
+                hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5"]
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'bottom'
+            }
+        }
+    });
+
+    //polar
+    var ctxPA = document.getElementById("polarChart").getContext('2d');
+    var myPolarChart = new Chart(ctxPA, {
+        type: 'polarArea',
+        data: {
+            labels: ["1", "2", "3", "Unbekannt"],
+            datasets: [{
+                data: [140, 30, 20, 60],
+                backgroundColor: ["rgba(219, 0, 0, 0.1)", "rgba(0, 165, 2, 0.1)", "rgba(255, 195, 15, 0.2)",
+                    "rgba(55, 59, 66, 0.1)"
+                ],
+                hoverBackgroundColor: ["rgba(219, 0, 0, 0.2)", "rgba(0, 165, 2, 0.2)",
+                    "rgba(255, 195, 15, 0.3)", "rgba(55, 59, 66, 0.1)"
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'bottom'
+            }
+        }
+    });
+
+    //line
+    var ctxL = document.getElementById("lineChart").getContext('2d');
+    var myLineChart = new Chart(ctxL, {
+        type: 'line',
+        data: {
+            labels: ["January", "February", "March", "April", "May", "June", "July"],
+            datasets: [{
+                label: "Moderatoren",
+                data: [1, 3, 7, 5, 8, 10, 15],
+                backgroundColor: [
+                    'rgba(105, 0, 132, .2)',
+                ],
+                borderColor: [
+                    'rgba(200, 99, 132, .7)',
+                ],
+                borderWidth: 2
+            },
+                {
+                    label: "Nutzer",
+                    data: [15, 25, 40, 35, 50, 75, 80],
+                    backgroundColor: [
+                        'rgba(0, 137, 132, .2)',
+                    ],
+                    borderColor: [
+                        'rgba(0, 10, 130, .7)',
+                    ],
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'bottom'
+            }
+        }
+    });
+</script>
+</body>
+</html>

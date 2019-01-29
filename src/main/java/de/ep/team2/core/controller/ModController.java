@@ -194,4 +194,9 @@ public class ModController {
         redirectAttributes.addFlashAttribute("users", userService.getAllMods());
         return "redirect:/mods/searchuser";
     }
+
+    @RequestMapping(value = {"/statistics"}, method = RequestMethod.GET)
+    public String statistics() {
+        return "mod_statistics";
+    }
 }
