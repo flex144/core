@@ -122,7 +122,7 @@ public class UserController {
             return "redirect:/user/new";
         }
         if (suitedPlan == null) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Kein passender Plan gefunden Tut uns Leid. Versuch es doch mit einem Eintagesplan.");
+            redirectAttributes.addFlashAttribute("errorMsg", "Kein passender Plan gefunden. Versuch es doch mit einem Eintagesplan.");
             return "redirect:/user/new";
         } else {
             return "redirect:/user/plan";

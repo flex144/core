@@ -53,6 +53,9 @@
         a:active {
             outline: none;
         }
+        #textFrequency {
+            margin-bottom: 0px;
+        }
     </style>
 </head>
 <body>
@@ -66,11 +69,13 @@
                     <div class="carousel-inner">
                         <!-- Carousel page to determine the users wants an individual plan or a bullet plan -->
                         <div class="item active">
+                            <div class="alert alert-danger" th:if="${errorMsg}" style="font-size: 15px" align="center">
+                                <span th:text="${errorMsg}"></span>
+                            </div>
                             <div class="panel panel-default">
                                 <div class="panel-heading" align="center">
                                     <h5><b>Trainingsart wählen</b></h5>
                                 </div>
-                                <span th:if="${errorMsg}" th:text="${errorMsg}"></span> <!-- todo as alert or anything better noticeable -->
                                 <div class="panel-body">
                                     <div class="col-container">
                                         <div class="col col-plan">
@@ -113,15 +118,46 @@
                                                         erstrecken und bestimmte Trainingsziele beinhalten.
                                                     </p>
                                                     <!-- Todo Design and text evtl -->
-                                                    <div th:if="${user.experience != null and user.trainingsFrequency != null and user.trainingsFocus != null}">
-                                                        <p>Deine Daten wurden bereits erfassst. Hier siehst du dein akutelles Trainingsziel
-                                                            und wie oft du wöchentlich trainieren möchtest. Wenn diese Angaben stimmen klicke auf "Mit diesen Angaben Plan finden".
-                                                            Möchtest du etwas daran ändern oder glaubst du dass sich dein Erfahrungslevel geändert hat, dann klicke auf "Daten angeben und Plan starten"</p>
-                                                        <a class="btn button btn-block" th:href="@{/user/plan/getNormal}">Mit diesen Angaben Plan finden</a>
-                                                        <label for="actTrainingsFocus">Trainingsziel</label>
-                                                        <p th:text="${user.trainingsFocus}" id="actTrainingsFocus" style="font-size: 14px"/>
-                                                        <label for="actTrainingsFrequency">angestrebte Trainingshäufigkeit (pro Woche)</label>
-                                                        <p th:text="${user.trainingsFrequency}" id="actTrainingsFrequency" style="font-size: 14px"/>
+                                                    <div th:if="${user.experience != null and
+                                                        user.trainingsFrequency != null and
+                                                        user.trainingsFocus != null}">
+                                                        <p><mark>Deine Daten wurden bereits erfassst</mark>. Hier
+                                                            siehst du dein akutelles Trainingsziel und wie oft du
+                                                            wöchentlich trainieren möchtest:</p>
+                                                        <div class="panel panel-default">
+                                                            <div class="panel-body">
+                                                                <div class="input-group" style="margin-bottom: 5pt">
+                                                                    <span class="input-group-addon">
+                                                                        Trainingsziel
+                                                                    </span>
+                                                                    <input  type="text" class="form-control"
+                                                                            th:value="${user.trainingsFocus}"
+                                                                            id="actTrainingsFocus">
+                                                                </div>
+                                                                <div class="input-group" style="margin-bottom: 5pt">
+                                                                    <span class="input-group-addon">
+                                                                        Trainingshäufigkeit
+                                                                    </span>
+                                                                    <input  type="text" class="form-control"
+                                                                            th:value="${user.trainingsFrequency}"
+                                                                            id="actTrainingsFrequency">
+                                                                </div>
+                                                                <p class="text-muted" style="font-size: 12px"
+                                                                    id="textFrequency">
+                                                                    (Trainingseinheiten pro Woche)</p>
+                                                            </div>
+                                                            <div class="panel-footer">
+                                                                <a class="btn button btn-block"
+                                                                   th:href="@{/user/plan/getNormal}">
+                                                                    Mit diesen Angaben Plan finden
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <p>Wenn diese Angaben stimmen klicke auf
+                                                            <mark>"Mit diesen Angaben Plan finden"</mark>. Möchtest du
+                                                            etwas daran ändern oder glaubst du dass sich dein
+                                                            Erfahrungslevel geändert hat, dann klicke auf <mark>"Daten
+                                                                angeben und Plan starten"</mark></p>
                                                     </div>
                                                 </div>
                                                 <div class="panel-footer">
@@ -743,7 +779,9 @@
                                     </div>
                                 </div>
                                 <div class="panel-body" align="center">
-                                    <h3>Liste mit vorgeschlagenen Eintages-Plänen ?</h3>
+                                    <p>Wähle einen Eintages-Plan aus der Liste aus und klicke den Eintrag an um diesen
+                                    auszuwählen.</p>
+                                    <br>
                                     <table id="userTable" class="table table-bordered table-condensed" data-toggle="table">
                                         <thead>
                                         <tr>
