@@ -13,7 +13,8 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
 
-    <div th:include="/fragments/navbar :: navbar_style"></div>
+    <div th:include="/fragments/navbar :: style_fragment"></div>
+
     <style>
         * {
             box-sizing: border-box;
@@ -50,7 +51,7 @@
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
 <div class="container" >
-    <form th:action="@{/mods/editExerciseInstance}" method="post" th:object="${exIn}">
+    <form th:action="@{/mods/editplan/__${exIn.planTemplateID}__/__${exIn.id}__}" method="post" th:object="${exIn}">
         <div class="panel panel-default outerPanel">
             <div class="panel-heading" id="panelEditPlan">
                 <h3>Planvorlage bearbeiten</h3>
@@ -83,19 +84,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-container">
-                    <div class="col colGeneralInfo">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                Trainingseinheiten pro Woche:
-                            </div>
-                            <div class="panel-body">
-                                <input  type="number" class="form-control" id="weeklyTEs"
-                                        placeholder="Hier bisherigen TEs pro Woche anzeigen">
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -104,7 +92,7 @@
                                 <div class="form-group">
                                     <label for="rm">Repetition Maximum:</label>
                                     <input type="text" class="form-control" id="rm"
-                                           placeholder="Aktuelles Repetition Maximum">
+                                           placeholder="Aktuelles Repetition Maximum" th:field="*{repetitionMaximum}">
                                 </div>
                             </div>
                             <div class="col">
@@ -137,12 +125,17 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="trainingssession, istat : *{trainingsSessions}">
+                                    <input hidden th:field="*{trainingsSessions[__${istat.index}__].sets}">
+                                    <input hidden th:field="*{trainingsSessions[__${istat.index}__].exerciseInstanceId}">
+                                    <input hidden th:field="*{trainingsSessions[__${istat.index}__].ordering}">
+                                    <input hidden th:field="*{trainingsSessions[__${istat.index}__].id}">
                                     <td>
                                         <input type="text" class="form-control" disabled placeholder="TE"
                                                th:value="${istat.count}">
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" placeholder="Gewichtsänderung">
+                                        <input type="text" class="form-control" placeholder="Gewichtsänderung"
+                                        th:field="*{trainingsSessions[__${istat.index}__].weightDiff}">
                                     </td>
                                     <td>
                                         <input id="repsInput" type="text" class="form-control"

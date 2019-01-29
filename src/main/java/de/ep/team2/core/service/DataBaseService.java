@@ -739,6 +739,25 @@ public class DataBaseService {
     }
 
     /**
+     * Edits a plan templates values.
+     * @param tpt The trainingsplantemplate with the updated values. It holds the old Id.
+     */
+    public void editPlanTemplate(TrainingsPlanTemplate tpt) {
+        ArrayList<Object> insertValues = new ArrayList<>();
+        insertValues.add(tpt.getName());
+        insertValues.add(tpt.getTrainingsFocus().toString());
+        insertValues.add(tpt.getTargetGroup().toString());
+        insertValues.add(tpt.getRecomSessionsPerWeek());
+        insertValues.add(tpt.getId());
+
+        jdbcTemplate.update(
+                "UPDATE plan_templates SET name=?, trainings_focus=?, target_group=?, recom_sessions_per_week=? " +
+                        " WHERE id=?", insertValues.toArray()
+        );
+        log.debug("Trainings plan template with id: '"+tpt.getId()+"' was updated!");
+    }
+
+    /**
      * Gets a list of suited plan specified by the given data.
      *
      * @param oneShotPlan if the plan should be a one shot plan.
@@ -937,6 +956,26 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Edits a exercise instance in the database.
+     * @param exIn The exercise that needs to be changed. It contains new values,
+     *             but the old id.
+     */
+    public void editExerciseInstance(ExerciseInstance exIn) {
+        for (TrainingsSession session : exIn.getTrainingsSessions()) {
+            editTrainingsSession(session);
+        }
+        ArrayList<Object> insertValues = new ArrayList<>();
+        insertValues.add(exIn.getCategory());
+        insertValues.add(exIn.getRepetitionMaximum());
+        insertValues.add(exIn.getId());
+        jdbcTemplate.update(
+                "UPDATE exercise_instances SET category=?, repetition_maximum=? " +
+                        " WHERE id=?", insertValues.toArray()
+        );
+        log.debug("Updated values for Exercise-Instance with id: '"+exIn.getId()+"' !");
+    }
+
     // Trainings Session
 
     /**
@@ -986,6 +1025,45 @@ public class DataBaseService {
                 (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
         log.debug("Trainings Session for Exercise Instance with ID '" + exerciseInstanceID + "' created with Id: " + id + " !");
         return id;
+    }
+
+    /**
+     * Updates a TrainingsSession's values.
+     *
+     * @param session The Trainings Session object. It contains the new values but the id of the session.
+     */
+    public void editTrainingsSession(TrainingsSession session) {
+        ArrayList<Object> insertValues = new ArrayList<>();
+        insertValues.ensureCapacity(13);
+        insertValues.add(session.getExerciseInstanceId());
+        insertValues.add(session.getOrdering());
+        insertValues.add(session.getSets());
+        insertValues.add(session.getTempo());
+        insertValues.add(session.getPauseInSec());
+        if (session.getWeightDiff().length > 7) {
+            throw new IllegalArgumentException("to many sets!");
+        }
+        insertValues.addAll(Arrays.asList(session.getWeightDiff()));
+        for (int i = insertValues.size(); i < 12; i++) {
+            insertValues.add(null);
+        }
+        if (session.getReps().length > 7) {
+            throw new IllegalArgumentException("to many sets!");
+        }
+        insertValues.addAll(Arrays.asList(session.getReps()));
+        for (int i = insertValues.size(); i < 19; i++) {
+            insertValues.add(null);
+        }
+        insertValues.add(session.getId());
+
+        jdbcTemplate.update(
+                "UPDATE trainings_sessions SET exercise_instance=?, ordering=?, sets=?," +
+                        " tempo=?, pause=?, weightdiff_set1=?, weightdiff_set2=?, weightdiff_set3=?, weightdiff_set4=?," +
+                        " weightdiff_set5=?, weightdiff_set6=?, weightdiff_set7=?, reps_set1=?, reps_set2=?," +
+                        " reps_set3=?, reps_set4=?, reps_set5=?, reps_set6=?, reps_set7=? WHERE id=?" ,
+                insertValues.toArray()
+        );
+        log.debug("Updated value for Trainingssession with id: '"+ session.getId() +"' !");
     }
 
     /**

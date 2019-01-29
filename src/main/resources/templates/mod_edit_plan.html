@@ -13,7 +13,8 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
 
-    <div th:include="/fragments/navbar :: navbar_style"></div>
+    <div th:include="/fragments/navbar :: style_fragment"></div>
+
     <style>
         * {
             box-sizing: border-box;
@@ -65,6 +66,7 @@
                             <div class="panel-body">
                                 <input  type="text" class="form-control" id="planName"
                                         placeholder="Hier bisherigen Namen anzeigen" th:field="*{name}">
+                                <input hidden th:field="*{id}">
                             </div>
                         </div>
                     </div>
@@ -76,9 +78,9 @@
                             <div class="panel-body">
                                 <select id="focus" class="form-control" required th:field="*{trainingsFocus}">
                                     <option selected disabled hidden th:value="null">Hier bisherigen Fokus anzeigen</option>
-                                    <option th:value="'muscle'">Muskelaufbau</option>
-                                    <option th:value="'stamina'">Ausdauer</option>
-                                    <option th:value="'pain'">Schmerzreduktion</option>
+                                    <option th:value="'MUSCLE'">Muskelaufbau</option>
+                                    <option th:value="'STAMINA'">Ausdauer</option>
+                                    <option th:value="'WEIGHT'">Gewichtsreduktion</option>
                                 </select>
                             </div>
                         </div>
@@ -91,11 +93,11 @@
                                 Zielgruppe: (Erfahrungslevel)
                             </div>
                             <div class="panel-body">
-                                <select id="targetExperience" class="form-control" required>
-                                    <option selected disabled hidden>Hier bisherige Erfahrung anzeigen</option>
-                                    <option>Anfänger</option>
-                                    <option>Fortgeschritten</option>
-                                    <option>Profi</option>
+                                <select id="targetExperience" class="form-control" required th:field="*{targetGroup}">
+                                    <option selected disabled hidden th:value="'null'">Hier bisherige Erfahrung anzeigen</option>
+                                    <option th:value="'BEGINNER'">Anfänger</option>
+                                    <option th:value="'MEDIUM'">Fortgeschritten</option>
+                                    <option th:value="'EXPERT'">Profi</option>
                                 </select>
                             </div>
                         </div>
@@ -107,7 +109,8 @@
                             </div>
                             <div class="panel-body">
                                 <input  type="number" class="form-control" id="weeklyTEs"
-                                        placeholder="Hier bisherigen TEs pro Woche anzeigen">
+                                        placeholder="Hier bisherigen TEs pro Woche anzeigen"
+                                        th:field="*{recomSessionsPerWeek}">
                             </div>
                         </div>
                     </div>
@@ -121,80 +124,27 @@
                                     <label for="exerciseName">Übungsname:</label>
                                     <input type="text" class="form-control" id="exerciseName"
                                            placeholder="Aktueller Übungsname"
-                                           th:field="*{exerciseInstances[__${itemStat.index}__].name}">
+                                           th:value="${exercise.name}">
                                 </div>
                             </div>
                             <div class="col">
                                 <div class="form-group">
                                     <label for="order">Ordnung:</label>
                                     <input type="text" class="form-control" id="order"
-                                           placeholder="Aktuelle Ordnung"
-                                           th:field="*{exerciseInstances[__${itemStat.index}__].category}">
-                                </div>
-                            </div>
-                            <div class="col">
-                                <div class="form-group">
-                                    <label for="rm">Repetition Maximum:</label>
-                                    <input type="text" class="form-control" id="rm"
-                                           placeholder="Aktuelles Repetition Maximum">
-                                </div>
-                            </div>
-                            <div class="col">
-                                <label for="tagBlockPlan">Ausführung(en):</label>
-                                <div id="tagBlockPlan">
-                                    <input type="text" data-role="tagsinput"
-                                           value="" class="form-control tagsPlanInput" disabled>
+                                           placeholder="Aktuelle Ordnung" disabled
+                                           th:value="${exercise.category}">
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="panel-body">
-                        <div class="col-md-12">
-                            <table class="table table-bordered table-condensed detail detailExerciseTable" border="1">
-                                <colgroup>
-                                    <col width="5%">
-                                    <col width="32.5%">
-                                    <col width="32.5%">
-                                    <col width="15%">
-                                    <col width="15%">
-                                </colgroup>
-                                <thead>
-                                    <tr>
-                                        <th>TE</th>
-                                        <th>Gewichtsänderungen</th>
-                                        <th>Wiederholungen</th>
-                                        <th>Tempo</th>
-                                        <th>Pause</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="trainingssession, istat :
-                                    *{exerciseInstances[__${itemStat.index}__].trainingsSessions}">
-                                        <td>
-                                            <input type="text" class="form-control" disabled placeholder="TE"
-                                            th:value="${istat.count}">
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control" placeholder="Gewichtsänderung">
-                                        </td>
-
-
-                                        <td>
-                                            <input type="text" class="form-control" placeholder="Tempo"
-                                                    th:field="*{exerciseInstances[__${itemStat.index}__].
-                                                    trainingsSessions[__${istat.index}__].tempo}">
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control" placeholder="Pause"
-                                                   th:value="${trainingssession.pauseInSec}">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="col">
+                            <div class="form-group">
+                                <a type="button" th:href="@{/mods/editplan/__${exercise.planTemplateID}__/__${exercise.id}__}">
+                                Übung Bearbeiten
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-                Ab hier dann für jede Übung in dem Plan ein neues Panel wie das darüber
             </div>
             <div class="panel-footer">
                 <div class="row">

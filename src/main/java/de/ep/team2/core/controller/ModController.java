@@ -109,28 +109,19 @@ public class ModController {
         return "mod_user_search";
     }
 
-    @RequestMapping(value="/editplan", method = RequestMethod.GET)
-    public String getEditPlan(Model model) {
-        if (model.containsAttribute("tpt")) {
-            return "mod_edit_plan";
-        } else {
-            model.addAttribute("tpt", new TrainingsPlanTemplate());
-            return "mod_edit_plan";
-        }
-    }
-
     @RequestMapping(value="/editplan", method = RequestMethod.PUT)
     public String postEditPlan(@ModelAttribute("tpt") TrainingsPlanTemplate tpt, Model model) {
-
-        return "";
+        PlanService service = new PlanService();
+        service.editPlanTemplate(tpt);
+        return "redirect:/mods/searchplan";
     }
 
     @RequestMapping(value="/editplan/{id}", method = RequestMethod.GET)
-    public String editPlan(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+    public String editPlan(@PathVariable("id") Integer id, Model model) {
         PlanService service = new PlanService();
         TrainingsPlanTemplate tpt = service.getPlanTemplateAndSessionsByID(id);
-        redirectAttributes.addFlashAttribute("tpt", tpt);
-        return "redirect:/mods/editplan";
+        model.addAttribute("tpt", tpt);
+        return "mod_edit_plan";
     }
 
     @RequestMapping(value="/editplan/{id}/{exId}", method = RequestMethod.GET)
@@ -144,10 +135,13 @@ public class ModController {
         return "mod_edit_exerciseInstance";
     }
 
-    @RequestMapping(value="/editExerciseInstance", method = RequestMethod.POST)
-    public String postEditExIn(@ModelAttribute("exIn") ExerciseInstance exIn) {
-
-        return "redirect:/mods/home";
+    @RequestMapping(value="/editplan/{id}/{exId}", method = RequestMethod.POST)
+    public String postEditExIn(@ModelAttribute("exIn") ExerciseInstance exIn,
+                               @PathVariable("id") Integer id, @PathVariable("exId") Integer exId,
+                               Model model) {
+        PlanService service = new PlanService();
+        service.editExerciseInstance(exIn);
+        return "redirect:/mods/editplan/"+id;
     }
 
 }

@@ -454,4 +454,15 @@ public class PlanService {
             db.insertUserPlan(email, id);
         }
     }
+
+    //Edit Plan
+
+    public void editExerciseInstance(ExerciseInstance exIn) {
+        DataBaseService db = DataBaseService.getInstance();
+        db.editExerciseInstance(exIn);
+    }
+
+    public void editPlanTemplate(TrainingsPlanTemplate tpt) {
+        DataBaseService.getInstance().editPlanTemplate(tpt);
+    }
 }
