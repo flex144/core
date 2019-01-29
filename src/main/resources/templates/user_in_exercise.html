@@ -246,10 +246,16 @@
 </div>
 
 <!--- submit Thymeleaf request --->
-<form th:action="@{/user/plan/exercise/done}" method="post" hidden>
+<form th:action="@{/user/plan/exercise/done}" method="post" id="submitForm">
     <input title="done" type="checkbox" name="doneFlag" hidden checked>
     <input type="" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
     <input title="send" id="submitButton" type="submit" hidden>
+    <input name="repsTodo" th:value="${exerciseDto.getReps()[0]}">
+    <input name="repsDone">
+    <input class="btn  btn-primary btn-lg" type="submit"
+           value="js"
+           onclick="javascript: form.action='./adjust';"/>
+    <input name="currentSet" th:value="${currentSet}">
 </form>
 
 <!--- Page Content --->
@@ -437,6 +443,9 @@
         </div>
     </div>
 </div>
+<form>
+    in
+</form>
 
 <!--- Button functionality and display --->
 <script>

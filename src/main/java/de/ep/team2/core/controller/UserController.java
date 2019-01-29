@@ -4,8 +4,10 @@ import de.ep.team2.core.Exceptions.NoPlanException;
 import de.ep.team2.core.dtos.ExerciseDto;
 import de.ep.team2.core.dtos.RegistrationDto;
 import de.ep.team2.core.dtos.TrainingsDayDto;
+import de.ep.team2.core.entities.ExerciseInstance;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.entities.User;
+import de.ep.team2.core.entities.UserPlan;
 import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
@@ -193,6 +195,27 @@ public class UserController {
         return "redirect:/user/plan";
     }
 
+    @PostMapping("/plan/exercise/adjust")
+    public String exerciseRepsEvaluation(@RequestParam("indexInList") Integer indexInList, @RequestParam("currentSet") Integer currentSet,
+                                         @RequestParam("repsTodo") Integer repsTodo, @RequestParam("repsDone") Integer repsDone, RedirectAttributes redirectAttributes) {
+        if (currentSet == null || repsTodo == null || repsDone == null) {
+            redirectAttributes.addFlashAttribute("currentSet", currentSet);
+            return "redirect:/user/plan/exercise/" + indexInList;
+        }
+        PlanService planService = new PlanService();
+        ExerciseDto exerciseDto = dayDto.getExercises().get(indexInList);
+        double calc = -1 + ((double) repsDone / (double) repsTodo);
+        int repsDifferencePercent = (int) Math.round(calc * 100);
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        planService.adjustWeightsOfUserForExercise(principal.getEmail(), exerciseDto.getIdExerciseInstance(), repsDifferencePercent);
+        ExerciseInstance exerciseInstance = planService.getExerciseInstanceById(exerciseDto.getIdExerciseInstance());
+        UserPlan userPlan = planService.getUserPlanById(exerciseDto.getIdUserPlan());
+        exerciseDto.setWeights(planService.createExerciseDto(exerciseInstance, userPlan, dayDto.getCurrentSession()).getWeights());
+        dayDto.changeExercise(exerciseDto, exerciseDto.getIndexInList());
+        redirectAttributes.addFlashAttribute("currentSet", currentSet);
+        return "redirect:/user/plan/exercise/" + indexInList;
+    }
+
     /**
      * Sets the exercise of The current TrainingsDayDto done. (only used for initial Trainings)
      * And saves the weight done by the user to the database.
@@ -235,6 +258,9 @@ public class UserController {
             if (dayDto.isInitialTraining()) {
                 return "user_first_training_of_plan";
             } else {
+                if(!model.containsAttribute("currentSet")) {
+                    model.addAttribute("currentSet", 0);
+                }
                 return "user_in_exercise";
             }
         }
