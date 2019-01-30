@@ -15,14 +15,17 @@ import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
 
 @Controller
@@ -195,9 +198,21 @@ public class UserController {
         return "redirect:/user/plan";
     }
 
+    /**
+     * Calculates with the done and required reps if a weight adjustment is necessary.
+     * Calls the method in the Plan service to execute the adjustment.
+     * redirects the needed parameter to access the exercise page again.
+     *
+     * @param indexInList to identify the exercise Dto
+     * @param currentSet current set to save the progress of the exercise
+     * @param repsTodo reps the user should do
+     * @param repsDone reps the user has done
+     * @param redirectAttributes used to bring the currentSet attribute to the front end
+     * @return "redirect:/user/plan/exercise/"
+     */
     @PostMapping("/plan/exercise/adjust")
     public String exerciseRepsEvaluation(@RequestParam("indexInList") Integer indexInList, @RequestParam("currentSet") Integer currentSet,
-                                         @RequestParam("repsTodo") Integer repsTodo, @RequestParam("repsDone") Integer repsDone, RedirectAttributes redirectAttributes) {
+                                         @RequestParam("repsTodo") Integer repsTodo, @RequestParam("repsDone") Integer repsDone, RedirectAttributes redirectAttributes,  HttpServletRequest request) {
         if (currentSet == null || repsTodo == null || repsDone == null) {
             redirectAttributes.addFlashAttribute("currentSet", currentSet);
             return "redirect:/user/plan/exercise/" + indexInList;
@@ -212,8 +227,12 @@ public class UserController {
         UserPlan userPlan = planService.getUserPlanById(exerciseDto.getIdUserPlan());
         exerciseDto.setWeights(planService.createExerciseDto(exerciseInstance, userPlan, dayDto.getCurrentSession()).getWeights());
         dayDto.changeExercise(exerciseDto, exerciseDto.getIndexInList());
+        request.setAttribute(
+                View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
         redirectAttributes.addFlashAttribute("currentSet", currentSet);
-        return "redirect:/user/plan/exercise/" + indexInList;
+        redirectAttributes.addAttribute("index", indexInList);
+        redirectAttributes.addAttribute("trainingStarted", true);
+        return "redirect:/user/plan/exercise/";
     }
 
     /**
@@ -248,7 +267,7 @@ public class UserController {
      * "user_in_exercise" when its a normal trainings session.
      */
     @PostMapping("/plan/exercise/")
-    public String openExercise(@RequestParam Integer index,
+    public String openExercise(@RequestParam("index") Integer index,
                                @RequestParam("trainingStarted") Boolean started, Model model) {
         if (dayDto.getExercises() == null) {
             model.addAttribute("error", "No active plan visit plan overview first!");

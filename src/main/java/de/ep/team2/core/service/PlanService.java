@@ -268,6 +268,15 @@ public class PlanService {
         }
     }
 
+    /**
+     * Creates the exerciseDto for the traingsDayDto based on an given exercise instance.
+     * Sets and calculates all values required in the dto based on the userplan, session and instance.
+     *
+     * @param exInstance Instance the Dto represents
+     * @param userPlan userplan the dto belongs to
+     * @param currentSession currents session the plan is in
+     * @return the new created dto
+     */
     public ExerciseDto createExerciseDto(ExerciseInstance exInstance, UserPlan userPlan, int currentSession) {
         DataBaseService db = DataBaseService.getInstance();
         ExerciseDto newDto = new ExerciseDto();
@@ -282,6 +291,7 @@ public class PlanService {
             // when the initial Training was already completed calculate the values for the current Session
             trainingsSession = getSessionByOrdering(currentSession, exInstance.getTrainingsSessions());
             if (exercise.getWeightType() != WeightType.SELF_WEIGHT) {
+                // selfweight exercises require no calculation
                 newDto.setWeights(calcWeights(db.getWeightForUserPlanExercise(userPlan.getId(), exInstance.getId()), trainingsSession.getSets(), trainingsSession.getWeightDiff()));
             } else {
                 newDto.setWeights(trainingsSession.getWeightDiff());
@@ -455,6 +465,15 @@ public class PlanService {
         }
     }
 
+    /**
+     * Checks if conditions are met throws according exception if not.
+     * Calculates with the percentage of done repetition the adjustment of the weight and then the new weight
+     * and forwards it to the database.
+     *
+     * @param usermail email to identify the user and his plan
+     * @param idOfExInstance id of the exercise instance the weights belong to
+     * @param percentRepsDifference percentage of weights done to much positive to few negativ.
+     */
     public void adjustWeightsOfUserForExercise(String usermail, int idOfExInstance, int percentRepsDifference) {
         DataBaseService db = DataBaseService.getInstance();
         User user = db.getUserByEmail(usermail);
@@ -493,10 +512,21 @@ public class PlanService {
         db.alterWeightForUserPlanExercise(userPlan.getId(), idOfExInstance, newWeight);
     }
 
+    /**
+     * Returns an exercise instance object with a given id from the database. null if nothing found.
+     * @param idOfExInst id of the instance to search
+     * @return found instance or null
+     */
     public ExerciseInstance getExerciseInstanceById(int idOfExInst) {
         return DataBaseService.getInstance().getExercisInstanceById(idOfExInst);
     }
 
+    /**
+     * Returns a user Plan object with a given id from the database. null if nothing found.
+     *
+     * @param idUserPlan id of the plan to look for.
+     * @return found plan or null
+     */
     public UserPlan getUserPlanById(int idUserPlan) {
         return DataBaseService.getInstance().getUserPlanById(idUserPlan);
     }
