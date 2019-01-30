@@ -879,6 +879,11 @@ public class DataBaseService {
         }
     }
 
+    private void deleteTagsofExercise(int idOfExercise) {
+        jdbcTemplate.update("DELETE FROM ex_tags_map WHERE ex_inst_id = ?",
+                (Object[]) new Integer[]{idOfExercise});
+    }
+
     /**
      * Returns the names of all tags saved in the database.
      *
@@ -974,6 +979,8 @@ public class DataBaseService {
                 "UPDATE exercise_instances SET is_exercise=?, category=?, repetition_maximum=? " +
                         " WHERE id=?", insertValues.toArray()
         );
+        deleteTagsofExercise(exIn.getId());
+        addTagsToExercise(exIn.getTags(), exIn.getId());
         log.debug("Updated values for Exercise-Instance with id: '"+exIn.getId()+"' !");
     }
 

@@ -154,4 +154,9 @@ public class ModController {
         return "redirect:/mods/editplan/"+id;
     }
 
+    private String checkIfArgsValid(ExerciseInstance exIn) {
+        //TODO: Eingabe überprüfen;
+        return "";
+    }
+
 }
