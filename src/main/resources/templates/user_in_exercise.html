@@ -253,6 +253,7 @@
                value="js" id="weightChangeButton"
                onclick="javascript: form.action='./adjust';"/>
         <input name="currentSet" th:value="${currentSet}" id="startingSet">
+        <input th:value="${exerciseDto.getExercise().getWeightType() == T(de.ep.team2.core.enums.WeightType).SELF_WEIGHT}">
     </form>
     <input name="currentSet" value="0" id="currentSet">
 </div>
