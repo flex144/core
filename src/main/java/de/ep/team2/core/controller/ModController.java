@@ -3,7 +3,6 @@ package de.ep.team2.core.controller;
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.entities.User;
-import de.ep.team2.core.entities.UserStats;
 import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.StatisticService;
@@ -199,11 +198,17 @@ public class ModController {
         return "redirect:/mods/searchuser";
     }
 
+    /**
+     * adds all stats to the model and returns the mod statistic page.
+     *
+     * @param model model thymeleaf uses.
+     * @return "mod_statistics"
+     */
     @RequestMapping(value = {"/statistics"}, method = RequestMethod.GET)
     public String statistics(Model model) {
         StatisticService statisticService = new StatisticService();
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserStats test = statisticService.getUserStats(principal.getEmail());
+        model.addAttribute("userStats", statisticService.getUserStats(principal.getEmail()));
         model.addAttribute("focusMap", statisticService.getUserFocusStats());
         model.addAttribute("expMap", statisticService.getUserExperienceStats());
         model.addAttribute("frequencyMap", statisticService.getUserFrequencyStats());

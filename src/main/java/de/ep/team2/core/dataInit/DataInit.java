@@ -1,7 +1,6 @@
 package de.ep.team2.core.dataInit;
 
 import de.ep.team2.core.dtos.TrainingsDayDto;
-import de.ep.team2.core.entities.UserPlan;
 import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
@@ -26,9 +25,9 @@ public class DataInit {
 
     private final String adminMail = "admin@ep18.com";
     private final String adminPassword = "QxA4cxKWAT2bwmsD";
-    private final boolean fillWithExampleData = true;
     // clears Database on each server start, required 'true' to run unit tests
     private final boolean alwaysClearDb = true;
+    private final boolean fillWithExampleData = true;
 
     private JdbcTemplate jdbcTemplate;
     private static final Logger log = LoggerFactory.getLogger(DataInit.class);
@@ -119,137 +118,11 @@ public class DataInit {
 
     private void initTables() {
         log.debug("Creating tables");
-        // Users
-        jdbcTemplate.execute("DROP TABLE IF EXISTS users CASCADE ");
-        jdbcTemplate.execute("CREATE TABLE users(" +
-                "id SERIAL, email VARCHAR(255) NOT NULL ," +
-                "first_name VARCHAR(255), last_name VARCHAR(255) ," +
-                "height_in_cm INTEGER," +
-                "weight_in_kg INTEGER," +
-                "gender varchar(20)," +
-                "trainings_focus varchar(20)," +
-                "experience varchar(20)," +
-                "birth_date date," +
-                "trainings_frequency INTEGER," +
-                " password varchar(60) not null, " +
-                " enabled boolean not null default false, " +
-                " role varchar(20) not null," +
-                " primary key(email))");
-        log.debug("Created table users");
-
-        //Confirmation Token
-        jdbcTemplate.execute("DROP TABLE IF EXISTS confirmation_token CASCADE");
-        jdbcTemplate.execute("CREATE TABLE confirmation_token (" +
-                "id SERIAL NOT NULL PRIMARY KEY, token VARCHAR(36), " +
-                "userToConfirm VARCHAR(255) REFERENCES users, createdDate DATE)");
-
-        // Exercises
-        jdbcTemplate.execute("DROP TABLE IF EXISTS exercises CASCADE ");
-        jdbcTemplate.execute("CREATE TABLE exercises(" +
-                "id SERIAL NOT NULL PRIMARY KEY," +
-                "name VARCHAR(255) NOT NULL UNIQUE," +
-                "description VARCHAR(2000)," +
-                "weight_type varchar(15) NOT NULL," +
-                "video_link varchar(400))");
-        log.debug("Created table exercises");
-        // Images
-        jdbcTemplate.execute("DROP TABLE IF EXISTS images");
-        jdbcTemplate.execute("CREATE TABLE images(" +
-                "exercise integer references exercises not null," +
-                "path varchar(400) PRIMARY KEY," +
-                "img_type varchar(10) NOT NULL)");
-        //initImages();
-        log.debug("Created table images");
-        // Plan Templates
-        jdbcTemplate.execute("DROP TABLE IF EXISTS plan_templates cascade ");
-        jdbcTemplate.execute("CREATE TABLE plan_templates(" +
-                "id SERIAL NOT NULL PRIMARY KEY," +
-                "name varchar(255) NOT NULL UNIQUE," +
-                "trainings_focus varchar(255)," +
-                "target_group varchar(255)," +
-                "author varchar(255) references users ," +
-                "one_shot_plan boolean," +
-                "recom_sessions_per_week integer," +
-                "num_train_sessions integer NOT NULL," +
-                "exercises_per_session integer NOT NULL, " +
-                "complete boolean NOT NULL DEFAULT FALSE )");
-        log.debug("Created table plan_templates");
-        // Exercise Instance
-        jdbcTemplate.execute("DROP TABLE IF EXISTS exercise_instances CASCADE ");
-        jdbcTemplate.execute("CREATE TABLE exercise_instances(" +
-                "id SERIAL NOT NULL PRIMARY KEY," +
-                "is_exercise integer references exercises not null," +
-                "category varchar(50)," +
-                "repetition_maximum integer," +
-                "plan_template integer not null references plan_templates)");
-        log.debug("Created table exercise_instances");
-        // Execution Tags for Instance
-        jdbcTemplate.execute("DROP TABLE IF EXISTS execution_tags CASCADE ");
-        jdbcTemplate.execute("CREATE TABLE execution_tags(" +
-                "id SERIAL NOT NULL PRIMARY KEY," +
-                "name varchar(255) NOT NULL UNIQUE)");
-        log.debug("Created table execution_tags");
-        jdbcTemplate.execute("DROP TABLE IF EXISTS ex_tags_map CASCADE ");
-        jdbcTemplate.execute("CREATE TABLE ex_tags_map(" +
-                "ex_inst_id INTEGER NOT NULL," +
-                "ex_tag_id INTEGER NOT NULL)");
-        log.debug("Created table ex_tags_map");
-        // Training Sessions
-        jdbcTemplate.execute("DROP TABLE IF EXISTS trainings_sessions cascade ");
-        jdbcTemplate.execute("CREATE TABLE trainings_sessions(" +
-                "id SERIAL NOT NULL PRIMARY KEY," +
-                "exercise_instance integer references exercise_instances not null," +
-                "ordering integer not null," +
-                "sets integer not null," +
-                "weightdiff_set1 integer," +
-                "weightdiff_set2 integer," +
-                "weightdiff_set3 integer," +
-                "weightdiff_set4 integer," +
-                "weightdiff_set5 integer," +
-                "weightdiff_set6 integer," +
-                "weightdiff_set7 integer," +
-                "tempo varchar(50)," +
-                "pause integer," +
-                "reps_set1 integer," +
-                "reps_set2 integer," +
-                "reps_set3 integer," +
-                "reps_set4 integer," +
-                "reps_set5 integer," +
-                "reps_set6 integer," +
-                "reps_set7 integer," +
-                "CHECK (sets <= 7)," +
-                "CHECK (ordering <= 15 AND ordering >= 1))");
-        log.debug("Created table trainings_sessions");
-        jdbcTemplate.execute("DROP TABLE IF EXISTS user_plans cascade ");
-        jdbcTemplate.execute("CREATE TABLE user_plans(" +
-                "id SERIAL NOT NULL PRIMARY KEY," +
-                "\"user\" varchar(255) NOT NULL REFERENCES users," +
-                "template integer NOT NULL REFERENCES plan_templates," +
-                "curSession integer NOT NULL," +
-                "maxSession integer NOT NULL," +
-                "initial_training_done boolean NOT NULL)");
-        log.debug("Created table user_plans");
-        jdbcTemplate.execute("DROP TABLE IF EXISTS weights cascade ");
-        jdbcTemplate.execute("CREATE TABLE weights(" +
-                "  id SERIAL NOT NULL PRIMARY KEY," +
-                "  idUserPlan integer not null references user_plans," +
-                "  idExerciseInstance integer not null references exercise_instances," +
-                "  weight integer not null)");
-        log.debug("Created table weights");
-        jdbcTemplate.execute("DROP TABLE IF EXISTS user_stats cascade ");
-        jdbcTemplate.execute("CREATE TABLE user_stats(" +
-                "  id SERIAL NOT NULL PRIMARY KEY," +
-                "  userMail varchar(255) not null references users," +
-                "  total_weight integer," +
-                "  plans_done integer," +
-                "  days_done integer," +
-                "  registration_date date not null)");
-        log.debug("Created table user_stats");
+        DataBaseService.getInstance().createTables();
     }
 
     private void fillUsers() {
         LinkedList<String[]> initTestData = new LinkedList<>();
-        String[] admin = {"admin@ep18.com", null, null, userService.encode("QxA4cxKWAT2bwmsD")};
         String[] timo = {"timo@gmail.com", "Timo", "Heinrich", userService.encode("hello")};
         String[] alex = {"alex@gmail.com", "Alexander", "Reißig", userService.encode("password")};
         String[] felix = {"felix@gmail.com", "Felix", "Wilhelm", userService.encode("123")};

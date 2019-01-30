@@ -69,14 +69,31 @@ public class StatisticService {
         return DataBaseService.getInstance().getNumberPlans();
     }
 
+    /**
+     * Gets a User Stats object with filled data for the user with the given email.
+     *
+     * @param userMail mail to specify the user.
+     * @return stats object filled with data.
+     */
     public UserStats getUserStats(String userMail) {
         return DataBaseService.getInstance().getUserStats(userMail);
     }
 
+    /**
+     * adds the value to the total weight stat of the user specified by user Mail.
+     *
+     * @param userMail Mail to identify user.
+     * @param value value to add to the total weight.
+     */
     public void increaseWeightDone(String userMail, int value) {
         DataBaseService.getInstance().increaseWeightDone(userMail, value);
     }
 
+    /**
+     * Increases the days done stat of the user with email userMail by 1.
+     *
+     * @param userMail email to specify user.
+     */
     public void increaseDaysDone(String userMail) {
         DataBaseService.getInstance().increaseDaysDone(userMail);
     }

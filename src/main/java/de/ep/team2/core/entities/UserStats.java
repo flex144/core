@@ -1,5 +1,6 @@
 package de.ep.team2.core.entities;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class UserStats {
@@ -57,5 +58,10 @@ public class UserStats {
 
     public void setRegistration_date(Date registration_date) {
         this.registration_date = registration_date;
+    }
+
+    public String getRegDateString() {
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        return format.format(this.registration_date);
     }
 }
