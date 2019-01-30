@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -193,5 +194,22 @@ public class UserService {
             }
         }
         return toReturn;
+    }
+
+    /**
+     * Sets a random password for a user. It's used when a user forgot his password.
+     * @param email Email of user.
+     * @return The new random Password as String.
+     */
+    public String setRandomUserPassword(String email) {
+        String newPassword = "";
+        DataBaseService db = DataBaseService.getInstance();
+        User toChange = getUserByEmail(email);
+        if (toChange != null) {
+            newPassword = UUID.randomUUID().toString().substring(1,12);
+            toChange.setPassword(encode(newPassword));
+            db.changeUserDetails(toChange);
+        }
+        return newPassword;
     }
 }
