@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -144,19 +145,43 @@ public class ModController {
         PlanService service = new PlanService();
         ExerciseService exerciseService = new ExerciseService();
         Exercise toUpdate = exerciseService.getExerciseByName(exIn.getName());
+        String validArgs = checkIfArgsValid(exIn);
         if (toUpdate == null) {
             String errorMessage = "Übung '"+exIn.getName()+"' nicht vorhanden!";
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
             return "redirect:/mods/editplan/"+id+"/"+exId;
+        } else if (!validArgs.equals("")) {
+            redirectAttributes.addFlashAttribute("errorMessage", validArgs);
+            return "redirect:/mods/editplan/"+id+"/"+exId;
         }
+
         exIn.setIsExerciseID(toUpdate.getId());
         service.editExerciseInstance(exIn);
         return "redirect:/mods/editplan/"+id;
     }
 
     private String checkIfArgsValid(ExerciseInstance exIn) {
-        //TODO: Eingabe überprüfen;
-        return "";
-    }
+        String validationMessage = "";
+        int sessionCounter = 1;
 
+        for(TrainingsSession session : exIn.getTrainingsSessions()) {
+            int weightLength = session.getWeightDiff().length;
+            int repsLength = session.getReps().length;
+            if(repsLength >7) {
+                validationMessage = "Maximal 7 Sets erlaubt!";
+            } else if(repsLength == 0) {
+                validationMessage = "Wiederholungen dürfen nicht leer sein!";
+            }else if(weightLength > repsLength) {
+                validationMessage = "Es kann nicht mehr Gewichtsänderungen als Sets geben!";
+            } else if(weightLength>1 && repsLength != weightLength) {
+                validationMessage = "Gewichtsänderungen passen nicht!";
+            }
+            if(!validationMessage.equals("")) {
+                validationMessage = validationMessage + " (Trainingseinheit '"+sessionCounter+"')" ;
+                break;
+            }
+        }
+
+        return validationMessage;
+    }
 }

@@ -459,6 +459,13 @@ public class PlanService {
 
     public void editExerciseInstance(ExerciseInstance exIn) {
         DataBaseService db = DataBaseService.getInstance();
+        for(TrainingsSession session : exIn.getTrainingsSessions()) {
+            if(session.getWeightDiff().length == 0) {
+                Integer[] newWeightDiff = new Integer[] {0};
+                session.setWeightDiff(newWeightDiff);
+            }
+            session.setWeightDiff(setWeightDiffToReps(session.getReps(), session.getWeightDiff()));
+        }
         db.editExerciseInstance(exIn);
     }
 
