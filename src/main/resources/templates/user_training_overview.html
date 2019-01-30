@@ -153,10 +153,6 @@
                         Übung festlegen
                     </button>
                     <button type="button"
-                            class="btn btn-block btn-warning" data-toggle="button" aria-pressed="false" style="font-size: small" onclick="toggleExercise()">
-                        Alternative
-                    </button>
-                    <button type="button"
                             class="btn btn-block btn-danger" data-dismiss="modal" style="font-size: small" id="closeInfoModal">
                         Zurück
                     </button>
@@ -236,6 +232,11 @@
     </div>
 </div>
 
+<!--- TODO timo help --->
+<div>
+    <input th:field="*{dayDto.trainingStarted}" id="trainingHasStarted">
+</div>
+
 <!--- the Page --->
 <div style="width: 100%; height: 95%;">
     <!--- buffers the main part of the page to the middle-->
@@ -271,13 +272,10 @@
                             <div class="container " style="padding-bottom: 2px; height: 15%; width: 100%;"  >
                                 <div th:hidden="${exerciseInst.done}">
                                     <div class="containerColor col-md-4" th:id="exercise + ${stat.count}">
-                                        <div class="row">
-                                            <div class=" col-xs-1 tableCentered" >
-                                                <label class="btn active ">
-                                                    <input type="checkbox" autocomplete="off" disabled style="transform: scale(2)">
-                                                </label>
+                                        <div class="row" style="height: 50px;">
+                                            <div class=" col-xs-1 tableCentered" hidden>
                                             </div>
-                                            <a class="col-xs-8" th:href="@{'/user/plan/exercise/'+ ${exerciseInst.indexInList}}" disabled>
+                                            <a class="col-xs-10" th:href="@{'/user/plan/exercise/'+ ${exerciseInst.indexInList}}" disabled>
                                                 <div class="tableCentered col-xs-3" >
                                                     <h3 class="numbertest1 tableCentered" th:id="orderNumber + ${stat.count}" th:text="${exerciseInst.category}"></h3>
                                                 </div>
@@ -285,10 +283,7 @@
                                                     <h3 class="tableCentered" th:text="${exerciseInst.exercise.name}"></h3>
                                                 </div>
                                             </a>
-                                            <div class=" col-xs-2">
-                                                <button data-toggle="modal" data-target="#exerciseModal" class="btn btn-info tableCentered" id="infoButton">
-                                                    i
-                                                </button>
+                                            <div class=" col-xs-1" hidden>
                                             </div>
                                         </div>
                                     </div>
@@ -303,7 +298,7 @@
 
                     <!--- Buttons to leave/star the exercise --->
                         <div id="container_timer" class="container fullsize row">
-                            <div class="col-xs-4 col-xs-offset-1" id="button_trainingBack">
+                            <div class="col-xs-4 col-xs-offset-1" id="button_trainingBack" >
                                 <a type="button"
                                    class="btn btn-block btn-danger fullsize responsive-width" id="backButton"
                                    style="height: 100%; min-height: 50px" th:href="@{/user/home}">
@@ -339,21 +334,14 @@
     </div>
 </div>
 
-<!--- load the next page --->
-<script>
-    function loadExercise() {
-        window.location = "exercise"
-    }
-</script>
-
 <!--- clicking on a row--->
 <script>
     function startTraining(){
-        /*TODO maybe enable clicking on exercises*/
         document.getElementById('button_trainingStart').style.display = "none";
         document.getElementById('button_trainingBack').style.display = "none";
         document.getElementById('button_trainingExit').style.display = "inherit";
         document.getElementById('button_trainingFinished').style.display = "inherit";
+        document.getElementById('trainingHasStarted').value = true;
         if (document.getElementById('currentOrder').innerHTML == ""){
             window.location.href="/user/plan/exercise/0";
         }
@@ -392,9 +380,10 @@
 
 </script>
 
-<!--- Toggleable content --->
+<!--- Toggle alternative exercise (removed) --->
 <script>
     document.onLoad(initialLoad());
+    var warningHidden;
 
     /*
     * Hides toggleable content at page load
@@ -443,8 +432,18 @@
     * Colours all rows on page load
     * */
     function initializeData() {
-        document.getElementById('button_trainingExit').style.display = "none";
-        document.getElementById('button_trainingFinished').style.display = "none";
+        console.log(document.getElementById('trainingHasStarted').value);
+        if(document.getElementById('trainingHasStarted').value){
+            document.getElementById('button_trainingStart').style.display = "inherit";
+            document.getElementById('button_trainingBack').style.display = "inherit";
+            document.getElementById('button_trainingExit').style.display = "none";
+            document.getElementById('button_trainingFinished').style.display = "none";
+        } else{
+            document.getElementById('button_trainingStart').style.display = "none";
+            document.getElementById('button_trainingBack').style.display = "none";
+            document.getElementById('button_trainingExit').style.display = "inherit";
+            document.getElementById('button_trainingFinished').style.display = "inherit";
+        }
         for (var i = 0; i < numberOfExercises; i++){
             colourCoding(i+1);
         }
@@ -474,7 +473,7 @@
         var testingVariable = orderNumber.charCodeAt(0);
         console.log("Ordnung:" + testingVariable);
         if (testingVariable %2 == 0) {
-            colour = "#aaff00";
+            colour = "#bbff66";
         }
         console.log(colour);
         return colour;
@@ -482,9 +481,5 @@
 
 </script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 </body>
 </html>
