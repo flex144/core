@@ -88,30 +88,30 @@
         </div>
     </div>
 </div>
-<input th:value="${focusMap.get(null)}" id="numberNoFocus">
-<input th:value="${focusMap.get('Muskelaufbau')}" id="numberMuscleFocus">
-<input th:value="${focusMap.get('Ausdauer')}" id="numberStaminaFocus">
-<input th:value="${focusMap.get('Gewichtsreduktion')}" id="numberWeightFocus">
+<input th:value="${focusMap.get(null)}?: 0" id="numberNoFocus">
+<input th:value="${focusMap.get('Muskelaufbau')}?: 0" id="numberMuscleFocus">
+<input th:value="${focusMap.get('Ausdauer')}?: 0" id="numberStaminaFocus">
+<input th:value="${focusMap.get('Gewichtsreduktion')}?: 0" id="numberWeightFocus">
 
-<input th:value="${expMap.get(null)}" id="numberNoExp">
-<input th:value="${expMap.get('Anfänger')}" id="numberBeginner">
-<input th:value="${expMap.get('Fortgeschritten')}" id="numberMedium">
-<input th:value="${expMap.get('Profi')}" id="numberExpert">
+<input th:value="${expMap.get(null)}?: 0" id="numberNoExp">
+<input th:value="${expMap.get('Anfänger')}?: 0" id="numberBeginner">
+<input th:value="${expMap.get('Fortgeschritten')}?: 0" id="numberMedium">
+<input th:value="${expMap.get('Profi')}?: 0" id="numberExpert">
 
-<input th:value="${frequencyMap.get(null)}" id="numberNoFreq">
-<input th:value="${frequencyMap.get('1')}" id="numberFreq1">
-<input th:value="${frequencyMap.get('2')}" id="numberFreq2">
-<input th:value="${frequencyMap.get('3')}" id="numberFreq3">
+<input th:value="${frequencyMap.get(null)}?: 0" id="numberNoFreq">
+<input th:value="${frequencyMap.get('1')}?: 0" id="numberFreq1">
+<input th:value="${frequencyMap.get('2')}?: 0" id="numberFreq2">
+<input th:value="${frequencyMap.get('3')}?: 0" id="numberFreq3">
 
-<input th:value="${userNumberMap.get('ROLE_USER')}" id="userNumberNormal">
-<input th:value="${userNumberMap.get('ROLE_MOD')}" id="userNumberMod">
+<input th:value="${userNumberMap.get('ROLE_USER')}?: 0" id="userNumberNormal">
+<input th:value="${userNumberMap.get('ROLE_MOD')}?: 0" id="userNumberMod">
 
-<input th:value="${userGenderMap.get(null) + userGenderMap.get('')}" id="userNumberUnknown">
-<input th:value="${userGenderMap.get('Männlich')}" id="userNumberMale">
-<input th:value="${userGenderMap.get('Weiblich')}" id="userNumberFemale">
+<input th:value="${(userGenderMap.get(null)?: 0) + (userGenderMap.get('')?: 0)}" id="userNumberUnknown">
+<input th:value="${userGenderMap.get('Männlich')}?: 0" id="userNumberMale">
+<input th:value="${userGenderMap.get('Weiblich')}?: 0" id="userNumberFemale">
 
-<input th:value="${numberExercises}" id="numberExercises">
-<input th:value="${numberPlans}" id="numberPlans">
+<input th:value="${numberExercises}?: 0" id="numberExercises">
+<input th:value="${numberPlans}?: 0" id="numberPlans">
 <script>
     //doughnut
     var ctxD = document.getElementById("doughnutChart").getContext('2d');
