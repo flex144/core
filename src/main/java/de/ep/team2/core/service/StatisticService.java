@@ -1,5 +1,7 @@
 package de.ep.team2.core.service;
 
+import de.ep.team2.core.entities.UserStats;
+
 import java.util.Map;
 
 public class StatisticService {
@@ -65,5 +67,21 @@ public class StatisticService {
      */
     public Integer getNumberPlans() {
         return DataBaseService.getInstance().getNumberPlans();
+    }
+
+    public UserStats getUserStats(String userMail) {
+        return DataBaseService.getInstance().getUserStats(userMail);
+    }
+
+    public void increaseWeightDone(String userMail, int value) {
+        DataBaseService.getInstance().increaseWeightDone(userMail, value);
+    }
+
+    public void increasePlansDone(String userMail){
+        DataBaseService.getInstance().increasePlansDone(userMail);
+    }
+
+    public void increaseDaysDone(String userMail) {
+        DataBaseService.getInstance().increaseDaysDone(userMail);
     }
 }

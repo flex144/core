@@ -84,7 +84,7 @@ public class DataInit {
         boolean noneExist = true;
         String[] tableNames = new String[]{"users", "confirmation_token", "exercises", "images",
                 "plan_templates", "exercise_instances", "execution_tags", "ex_tags_map",
-                "trainings_sessions", "user_plans", "weights"}; // , "user_stats"
+                "trainings_sessions", "user_plans", "weights", "user_stats"};
         try {
             for (String tableName : tableNames) {
                 Connection connection = jdbcTemplate.getDataSource().getConnection();
@@ -236,15 +236,15 @@ public class DataInit {
                 "  idExerciseInstance integer not null references exercise_instances," +
                 "  weight integer not null)");
         log.debug("Created table weights");
-        /*jdbcTemplate.execute("DROP TABLE IF EXISTS user_stats cascade ");
+        jdbcTemplate.execute("DROP TABLE IF EXISTS user_stats cascade ");
         jdbcTemplate.execute("CREATE TABLE user_stats(" +
                 "  id SERIAL NOT NULL PRIMARY KEY," +
                 "  userMail varchar(255) not null references users," +
                 "  total_weight integer," +
                 "  plans_done integer," +
-                "  registration_data date not null)");
+                "  days_done integer," +
+                "  registration_date date not null)");
         log.debug("Created table user_stats");
-        */
     }
 
     private void fillUsers() {

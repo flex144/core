@@ -198,6 +198,7 @@ public class DataBaseService {
         log.debug("User '" + firstName + " " + lastName + "' with mail: '"
                 + email + "' inserted in Table 'users' with Id "
                 + id + " !");
+        insertUserStats(email, new Date());
         return id;
     }
 
@@ -239,6 +240,7 @@ public class DataBaseService {
     public void deleteUserById(int id) {
         User toDelete = getUserById(id);
         if (toDelete != null) {
+            deleteUserStats(toDelete.getEmail());
             deleteUserFromPlan(toDelete.getEmail());
             deleteUserPlanOfUser(toDelete);
             jdbcTemplate.update("DELETE FROM users WHERE id = ?",
@@ -1283,6 +1285,7 @@ public class DataBaseService {
         userPlan.setCurrentSession(userPlan.getCurrentSession() + 1);
         if (userPlan.getCurrentSession() > userPlan.getMaxSession()) {
             log.debug("Max Sessions of Plan for User " + userPlan.getUserMail() + " reached! deleting Plan!");
+            increasePlansDone(userPlan.getUserMail());
             deleteUserPlanAndWeightsById(userPlanID);
             return -1;
         } else {
@@ -1443,5 +1446,52 @@ public class DataBaseService {
         } else {
             return result.getFirst();
         }
+    }
+
+    public void insertUserStats(String userMail, Date creationDate) {
+        Object[] insertValues = new Object[]{userMail.toLowerCase(), creationDate};
+        jdbcTemplate.update("insert into user_stats(usermail, total_weight, plans_done, days_done, registration_date) values (?,0,0,0,?)"
+                , insertValues );
+        Integer id = jdbcTemplate.query("select currval" +
+                        "(pg_get_serial_sequence('user_stats','id'));",
+                (resultSet, i) -> resultSet.getInt(i + 1)).get(0);
+        log.debug("Stats for user " + userMail + " created with Id " + id + " !");
+    }
+
+    public void deleteUserStats(String userMail) {
+        jdbcTemplate.update("DELETE FROM user_stats where usermail = ?", userMail);
+    }
+
+    public UserStats getUserStats(String userMail) {
+        LinkedList<UserStats> result = new LinkedList<>(jdbcTemplate.query("SELECT * FROM user_stats where usermail = ?",
+                new String[]{userMail},
+                new BeanPropertyRowMapper<>(UserStats.class)));
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.getFirst();
+        }
+    }
+
+    public void increaseWeightDone(String userMail, int value){
+        UserStats stats = getUserStats(userMail);
+        int weightDone = stats.getTotal_weight();
+        weightDone = weightDone + value;
+        jdbcTemplate.update("UPDATE user_stats SET total_weight = ? where usermail = ?", weightDone, userMail);
+    }
+
+    public void increasePlansDone(String userMail){
+        UserStats stats = getUserStats(userMail);
+        int plansDone = stats.getPlans_done();
+        plansDone++;
+        jdbcTemplate.update("UPDATE user_stats SET plans_done = ? where usermail = ?", plansDone, userMail);
+    }
+
+    public void increaseDaysDone(String userMail) {
+        UserStats stats = getUserStats(userMail);
+        int daysDone = stats.getDays_done();
+        daysDone++;
+        jdbcTemplate.update("UPDATE user_stats SET days_done = ? where usermail = ?", daysDone,
+                userMail);
     }
 }

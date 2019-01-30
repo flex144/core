@@ -2,10 +2,13 @@ package de.ep.team2.core.controller;
 
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.Exercise;
+import de.ep.team2.core.entities.User;
+import de.ep.team2.core.entities.UserStats;
 import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.StatisticService;
 import de.ep.team2.core.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -199,6 +202,8 @@ public class ModController {
     @RequestMapping(value = {"/statistics"}, method = RequestMethod.GET)
     public String statistics(Model model) {
         StatisticService statisticService = new StatisticService();
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserStats test = statisticService.getUserStats(principal.getEmail());
         model.addAttribute("focusMap", statisticService.getUserFocusStats());
         model.addAttribute("expMap", statisticService.getUserExperienceStats());
         model.addAttribute("frequencyMap", statisticService.getUserFrequencyStats());

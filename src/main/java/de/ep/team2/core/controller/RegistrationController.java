@@ -70,7 +70,6 @@ public class RegistrationController {
                     " doesn't work, please copy and paste the link into your browser.)");
 
             emailSenderService.sendEmail(mailMessage);
-
             redirectAttributes.addFlashAttribute("email", userDto.getEmail());
             return "redirect:/welcome";
         } else {

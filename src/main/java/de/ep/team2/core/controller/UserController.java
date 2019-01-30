@@ -10,6 +10,7 @@ import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.PlanService;
+import de.ep.team2.core.service.StatisticService;
 import de.ep.team2.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -147,10 +148,9 @@ public class UserController {
     @RequestMapping("/plan")
     public String handleUserTrainingStart(Model model) {
         PlanService planService = new PlanService();
-
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // start Training
         if (dayDto.getExercises() == null) {
-            User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             try {
                 dayDto = planService.fillTrainingsDayDto(principal.getEmail(), dayDto);
             } catch (NoPlanException noPlan) {
@@ -169,6 +169,8 @@ public class UserController {
             if (dayDto.isInitialTraining()) {
                 planService.setUserPlanInitialTrainDone(dayDto.getExercises().getFirst().getIdUserPlan());
             }
+            StatisticService statisticService = new StatisticService();
+            statisticService.increaseDaysDone(principal.getEmail());
             dayDto.clear();
             return "redirect:/user/home"; // todo maybe info page that training is over
         } else {
@@ -188,9 +190,32 @@ public class UserController {
     public String exerciseCompleted(@RequestParam("doneFlag") boolean doneFlag, @RequestParam("indexInList") Integer indexInList) {
         ExerciseDto exerciseDto = dayDto.getExercises().get(indexInList);
         exerciseDto.setDone(doneFlag);
+        incStats(exerciseDto);
         dayDto.setCurrentCategory(exerciseDto.getCategory());
         dayDto.changeExercise(exerciseDto, indexInList);
         return "redirect:/user/plan";
+    }
+
+    private void incStats(ExerciseDto exerciseDto) {
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserService userService = new UserService();
+        StatisticService statisticService = new StatisticService();
+        int sum = 0;
+        if (exerciseDto.getExercise().getWeightType() == WeightType.SELF_WEIGHT) {
+            Integer userWeight = userService.getUserByEmail(principal.getEmail()).getWeightInKg();
+            if (userWeight == null) {
+                return;
+            } else {
+                for (int i = 0; i < exerciseDto.getWeights().length; i++) {
+                    sum = sum + (userWeight * exerciseDto.getReps()[i]);
+                }
+            }
+        } else {
+            for (int i = 0; i < exerciseDto.getWeights().length; i++) {
+                sum = sum + (exerciseDto.getWeights()[i] * exerciseDto.getReps()[i]);
+            }
+        }
+        statisticService.increaseWeightDone(principal.getEmail(), sum);
     }
 
     /**
