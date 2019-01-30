@@ -168,9 +168,10 @@ public class UserController {
         if (planService.checkIfDayDone(dayDto)) {
             if (dayDto.isInitialTraining()) {
                 planService.setUserPlanInitialTrainDone(dayDto.getExercises().getFirst().getIdUserPlan());
+            } else {
+                StatisticService statisticService = new StatisticService();
+                statisticService.increaseDaysDone(principal.getEmail());
             }
-            StatisticService statisticService = new StatisticService();
-            statisticService.increaseDaysDone(principal.getEmail());
             dayDto.clear();
             return "redirect:/user/home"; // todo maybe info page that training is over
         } else {

@@ -77,10 +77,6 @@ public class StatisticService {
         DataBaseService.getInstance().increaseWeightDone(userMail, value);
     }
 
-    public void increasePlansDone(String userMail){
-        DataBaseService.getInstance().increasePlansDone(userMail);
-    }
-
     public void increaseDaysDone(String userMail) {
         DataBaseService.getInstance().increaseDaysDone(userMail);
     }
