@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Statistiken</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+    <div th:include="/fragments/navbar :: style_fragment"></div></head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    .col-container {
+        display: table;
+        width: 100%;
+    }
+    .col {
+        display: table-cell;
+        padding: 5px;
+        width: 50%;
+    }
+    @media only screen and (max-width: 600px) {
+        .col {
+            display: block;
+            width: 100%;
+        }
+    }
+    .panel .panel-heading {
+        font-weight: bold;
+    }
+</style>
+<body>
+<div th:replace="/fragments/navbar :: navbar_mod"></div>
+
+<div class="container">
+    <div class="panel panel-default outerPanel">
+        <div class="panel-heading" align="center">
+            <h3>Allgemeine Statistiken</h3>
+        </div>
+        <div class="panel-body">
+            <div class="col-container">
+                <div class="col">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Registrierte Personen
+                        </div>
+                        <div class="panel-body">
+                            <canvas id="barChartUser"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Erstellte Planvorlagen und Übungen
+                        </div>
+                        <div class="panel-body">
+                            <canvas id="barChartPlans"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-container">
+                <div class="col">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Gewählte Ziele aller Nutzer
+                        </div>
+                        <div class="panel-body">
+                            <canvas id="doughnutChartFocus"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Eingestufte Erfahrung aller Nutzer
+                        </div>
+                        <div class="panel-body">
+                            <canvas id="doughnutChartExperience"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-container">
+                <div class="col">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Geschlechterverteilung aller Nutzer
+                        </div>
+                        <div class="panel-body">
+                            <canvas id="doughnutChartGender"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Trainingshäufigkeit aller Nutzer (pro Woche)
+                        </div>
+                        <div class="panel-body">
+                            <canvas id="doughnutChartFrequency"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input th:value="${focusMap.get(null)}?: 0" id="numberNoFocus" hidden>
+<input th:value="${focusMap.get('Muskelaufbau')}?: 0" id="numberMuscleFocus" hidden>
+<input th:value="${focusMap.get('Ausdauer')}?: 0" id="numberStaminaFocus" hidden>
+<input th:value="${focusMap.get('Gewichtsreduktion')}?: 0" id="numberWeightFocus" hidden>
+
+<input th:value="${expMap.get(null)}?: 0" id="numberNoExp" hidden>
+<input th:value="${expMap.get('Anfänger')}?: 0" id="numberBeginner" hidden>
+<input th:value="${expMap.get('Fortgeschritten')}?: 0" id="numberAdvanced" hidden>
+<input th:value="${expMap.get('Profi')}?: 0" id="numberExpert" hidden>
+
+<input th:value="${frequencyMap.get(null)}?: 0" id="numberNoFreq" hidden>
+<input th:value="${frequencyMap.get('1')}?: 0" id="numberFreq1" hidden>
+<input th:value="${frequencyMap.get('2')}?: 0" id="numberFreq2" hidden>
+<input th:value="${frequencyMap.get('3')}?: 0" id="numberFreq3" hidden>
+
+<input th:value="${userNumberMap.get('ROLE_USER')}?: 0" id="userNumber" hidden>
+<input th:value="${userNumberMap.get('ROLE_MOD')}?: 0" id="modNumber" hidden>
+
+<input th:value="${(userGenderMap.get(null)?: 0) + (userGenderMap.get('')?: 0)}" id="genderNumberUnknown" hidden>
+<input th:value="${userGenderMap.get('Männlich')}?: 0" id="genderNumberMale" hidden>
+<input th:value="${userGenderMap.get('Weiblich')}?: 0" id="genderNumberFemale" hidden>
+
+<input th:value="${numberExercises}?: 0" id="numberExercises" hidden>
+<input th:value="${numberPlans}?: 0" id="numberPlans" hidden>
+
+<script>
+    // Load thymeleaf values out of the input fields into javascript variables for further use
+    var numberNoFocus = document.getElementById("numberNoFocus").value;
+    var numberMuscleFocus = document.getElementById("numberMuscleFocus").value;
+    var numberStaminaFocus = document.getElementById("numberStaminaFocus").value;
+    var numberWeightFocus = document.getElementById("numberWeightFocus").value;
+
+    var numberNoExp = document.getElementById("numberNoExp").value;
+    var numberBeginner = document.getElementById("numberBeginner").value;
+    var numberAdvanced = document.getElementById("numberAdvanced").value;
+    var numberExpert = document.getElementById("numberExpert").value;
+
+    var numberNoFreq = document.getElementById("numberNoFreq").value;
+    var numberFreq1 = document.getElementById("numberFreq1").value;
+    var numberFreq2 = document.getElementById("numberFreq2").value;
+    var numberFreq3 = document.getElementById("numberFreq3").value;
+
+    var genderNumberUnknown = document.getElementById("genderNumberUnknown").value;
+    var genderNumberMale = document.getElementById("genderNumberMale").value;
+    var genderNumberFemale = document.getElementById("genderNumberFemale").value;
+
+    var userNumber = document.getElementById("userNumber").value;
+    var modNumber = document.getElementById("modNumber").value;
+
+    var numberExercises = document.getElementById("numberExercises").value;
+
+    var numberPlans = document.getElementById("numberPlans").value;
+
+    // Doughnut chart to display the proportions of chosen training focuses
+    var ctxD = document.getElementById("doughnutChartFocus").getContext('2d');
+    var myLineChart = new Chart(ctxD, {
+        type: 'doughnut',
+        data: {
+            labels: ["Muskelfokus", "Ausdauerfokus", "Gewichtsreduktion", "Ohne Fokus"],
+            datasets: [{
+                data: [numberMuscleFocus, numberStaminaFocus, numberWeightFocus, numberNoFocus],
+                backgroundColor: ["#F7464A", "#FDB45C", "#fdf96a", "#949FB1"],
+                hoverBackgroundColor: ["#FF5A5E", "#FFC870", "#fffda7", "#A8B3C5"]
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'bottom'
+            }
+        }
+    });
+
+    // Doughnut chart to display the proportions of the users assigned training experience
+    var ctxD = document.getElementById("doughnutChartExperience").getContext('2d');
+    var myLineChart = new Chart(ctxD, {
+        type: 'doughnut',
+        data: {
+            labels: ["Anfänger", "Fortgeschritten", "Experte", "Nicht eingestuft"],
+            datasets: [{
+                data: [numberBeginner, numberAdvanced, numberExpert, numberNoExp],
+                backgroundColor: ["#F7464A", "#FDB45C", "#46BFBD", "#949FB1"],
+                hoverBackgroundColor: ["#FF5A5E", "#FFC870", "#5AD3D1", "#A8B3C5"]
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'bottom'
+            }
+        }
+    });
+
+    // Doughnut chart to display the proportions of the users genders
+    var ctxD = document.getElementById("doughnutChartGender").getContext('2d');
+    var myLineChart = new Chart(ctxD, {
+        type: 'doughnut',
+        data: {
+            labels: ["Weiblich", "Männlich", "Unbekannt"],
+            datasets: [{
+                data: [genderNumberFemale, genderNumberMale, genderNumberUnknown],
+                backgroundColor: ["#F7464A", "#757ac3", "#949FB1"],
+                hoverBackgroundColor: ["#FF5A5E", "#9d96ff", "#A8B3C5"]
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'bottom'
+            }
+        }
+    });
+
+    // Doughnut chart to display the proportions of chosen training frequency
+    var ctxD = document.getElementById("doughnutChartFrequency").getContext('2d');
+    var myLineChart = new Chart(ctxD, {
+        type: 'doughnut',
+        data: {
+            labels: ["Einmal", "Zweimal", "Dreimal", "Keine Angaben"],
+            datasets: [{
+                data: [numberFreq1, numberFreq2, numberFreq3, numberNoFreq],
+                backgroundColor: ["#F7464A", "#fdf96a", "#46BFBD", "#949FB1"],
+                hoverBackgroundColor: ["#FF5A5E", "#fffda7", "#5AD3D1", "#A8B3C5"]
+            }]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'bottom'
+            }
+        }
+    });
+
+    // Bar diagram to display the amount of users and moderators
+    var ctxB = document.getElementById("barChartUser").getContext('2d');
+    var myBarChart = new Chart(ctxB, {
+        type: 'bar',
+        data: {
+            labels: ["Trainer", "Normale Nutzer"],
+            datasets: [{
+                label: 'Anzahl',
+                data: [modNumber, userNumber],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+
+    // Bar diagram to display the amount of existing plans and exercises
+    var ctxB = document.getElementById("barChartPlans").getContext('2d');
+    var myBarChart = new Chart(ctxB, {
+        type: 'bar',
+        data: {
+            labels: ["Planvorlagen", "Übungen"],
+            datasets: [{
+                label: 'Anzahl',
+                scaleOverride: true,
+                scaleShowLabels: false,
+                data: [numberPlans, numberExercises],
+                backgroundColor: [
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+</body>
+</html>

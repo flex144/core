@@ -1353,4 +1353,95 @@ public class DataBaseService {
         }
     }
 
+    // Statistics
+
+    /**
+     * Counts the number of users using the same focus, groups them then returns a map with the name of the focus as String and the counted number as Integer.
+     *
+     * @return Map with each focus, which has users, and the number of the users using it.
+     */
+    public Map<String,Integer> getUserFocusStats() {
+        Map<String,Integer> results = new HashMap<>();
+        jdbcTemplate.query("SELECT count(email), trainings_focus  FROM users group by trainings_focus",
+                (rs, i) -> results.put(rs.getString("trainings_focus"), rs.getInt("count")));
+        return results;
+    }
+
+    /**
+     * Counts the number of users with the same experience level, groups them then returns a map with the experience level as String and the counted number as Integer.
+     *
+     * @return Map with each experience level, which has users, and the number of the users using it.
+     */
+    public Map<String,Integer> getUserExperienceStats() {
+        Map<String,Integer> results = new HashMap<>();
+        jdbcTemplate.query("SELECT count(email), experience  FROM users group by experience",
+                (rs, i) -> results.put(rs.getString("experience"), rs.getInt("count")));
+        return results;
+    }
+
+    /**
+     * Counts the number of users having the same trainings frequency, groups them then returns a map with the frequency as String and the counted number as Integer.
+     *
+     * @return Map with each frequency, which has users, and the number of the users using it.
+     */
+    public Map<String,Integer> getUserFrequencyStats() {
+        Map<String,Integer> results = new HashMap<>();
+        jdbcTemplate.query("SELECT count(email), trainings_frequency  FROM users group by trainings_frequency",
+                (rs, i) -> results.put(rs.getString("trainings_frequency"), rs.getInt("count")));
+        return results;
+    }
+
+    /**
+     * Counts the number of users with the same Role, groups them then returns a map with the Role as String and the counted number as Integer.
+     *
+     * @return Map with each Role and the number of the users having it.
+     */
+    public Map<String,Integer> getUserNumberStats() {
+        Map<String,Integer> results = new HashMap<>();
+        jdbcTemplate.query("SELECT count(email), role  FROM users group by role",
+                (rs, i) -> results.put(rs.getString("role"), rs.getInt("count")));
+        return results;
+    }
+
+    /**
+     * Counts the number of users having the same gender, groups them then returns a map with the gender as String and the counted number as Integer.
+     *
+     * @return Map with each gender and unknown, which users have, and the number of the users having it.
+     */
+    public Map<String,Integer> getUserGenderStats() {
+        Map<String,Integer> results = new HashMap<>();
+        jdbcTemplate.query("SELECT count(email), gender  FROM users group by gender",
+                (rs, i) -> results.put(rs.getString("gender"), rs.getInt("count")));
+        return results;
+    }
+
+    /**
+     * returns the number of all exercises.
+     *
+     * @return the number of all exercises.
+     */
+    public Integer getNumberExercises() {
+        LinkedList<Integer> result = new LinkedList<>(jdbcTemplate.query("SELECT count(id) FROM exercises",
+                (rs, i) -> rs.getInt("count")));
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.getFirst();
+        }
+    }
+
+    /**
+     * returns the number of all plans.
+     *
+     * @return the number of all plans.
+     */
+    public Integer getNumberPlans() {
+        LinkedList<Integer> result = new LinkedList<>(jdbcTemplate.query("SELECT count(id) FROM plan_templates",
+                (rs, i) -> rs.getInt("count")));
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.getFirst();
+        }
+    }
 }

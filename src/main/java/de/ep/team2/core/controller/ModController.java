@@ -4,6 +4,7 @@ import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.PlanService;
+import de.ep.team2.core.service.StatisticService;
 import de.ep.team2.core.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -193,5 +194,18 @@ public class ModController {
         UserService userService = new UserService();
         redirectAttributes.addFlashAttribute("users", userService.getAllMods());
         return "redirect:/mods/searchuser";
+    }
+
+    @RequestMapping(value = {"/statistics"}, method = RequestMethod.GET)
+    public String statistics(Model model) {
+        StatisticService statisticService = new StatisticService();
+        model.addAttribute("focusMap", statisticService.getUserFocusStats());
+        model.addAttribute("expMap", statisticService.getUserExperienceStats());
+        model.addAttribute("frequencyMap", statisticService.getUserFrequencyStats());
+        model.addAttribute("userNumberMap", statisticService.getUserNumberStats());
+        model.addAttribute("userGenderMap", statisticService.getUserGenderStats());
+        model.addAttribute("numberExercises", statisticService.getNumberExercises());
+        model.addAttribute("numberPlans", statisticService.getNumberPlans());
+        return "mod_statistics";
     }
 }
