@@ -247,13 +247,15 @@ public class UserController {
      * @return "error" when the trainings day hasn't started yet.; "user_first_training_of_plan" when its the initial training to provide the weights.;
      * "user_in_exercise" when its a normal trainings session.
      */
-    @RequestMapping("/plan/exercise/{index}")
-    public String openExercise(@PathVariable Integer index, Model model) {
+    @PostMapping("/plan/exercise/")
+    public String openExercise(@RequestParam Integer index,
+                               @RequestParam("trainingStarted") Boolean started, Model model) {
         if (dayDto.getExercises() == null) {
             model.addAttribute("error", "No active plan visit plan overview first!");
             return "error";
         } else {
             ExerciseDto exerciseDto = dayDto.getExercises().get(index);
+            dayDto.setTrainingStarted(started);
             model.addAttribute("exerciseDto", exerciseDto);
             if (dayDto.isInitialTraining()) {
                 return "user_first_training_of_plan";

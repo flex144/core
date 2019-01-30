@@ -232,9 +232,13 @@
     </div>
 </div>
 
-<!--- TODO timo help --->
 <div>
-    <input th:field="*{dayDto.trainingStarted}" id="trainingHasStarted">
+    <form th:action="@{'/user/plan/exercise/'}" method="post" id="submitForm">
+        <input name="index" id="indexOfEx">
+        <input th:value="${dayDto.trainingStarted}" id="trainingHasStarted" name="trainingStarted">
+    </form>
+
+    </form>
 </div>
 
 <!--- the Page --->
@@ -275,7 +279,7 @@
                                         <div class="row" style="height: 50px;">
                                             <div class=" col-xs-1 tableCentered" hidden>
                                             </div>
-                                            <a class="col-xs-10" th:href="@{'/user/plan/exercise/'+ ${exerciseInst.indexInList}}" disabled>
+                                            <a class="col-xs-10" th:onclick="'submitWithIndex(' + ${exerciseInst.getIndexInList()} + ')'" disabled>
                                                 <div class="tableCentered col-xs-3" >
                                                     <h3 class="numbertest1 tableCentered" th:id="orderNumber + ${stat.count}" th:text="${exerciseInst.category}"></h3>
                                                 </div>
@@ -290,7 +294,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -336,6 +339,11 @@
 
 <!--- clicking on a row--->
 <script>
+    function submitWithIndex(index) {
+        document.getElementById('indexOfEx').value = index;
+        document.getElementById('submitForm').submit();
+    }
+
     function startTraining(){
         document.getElementById('button_trainingStart').style.display = "none";
         document.getElementById('button_trainingBack').style.display = "none";
