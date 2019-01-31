@@ -12,6 +12,12 @@
 
     <div th:include="/fragments/navbar :: style_fragment"></div></head>
 <style>
+    #userDaysDone,
+    #userPlansDone,
+    #userTotalWeightLifted,
+    #userRegDate{
+        background-color: white;
+    }
     * {
         box-sizing: border-box;
     }
@@ -52,7 +58,7 @@
                         <div class="panel-body">
                             <div class="input-group input-group-general">
                                 <span class="input-group-addon">Anzahl</span>
-                                <input  type="text" class="form-control" id="userDaysDone"
+                                <input  type="text" class="form-control" id="userDaysDone" readonly
                                         th:value="${userStats.getDays_done()}?: 0">
                             </div>
                         </div>
@@ -66,7 +72,7 @@
                         <div class="panel-body">
                             <div class="input-group input-group-general">
                                 <span class="input-group-addon">Anzahl</span>
-                                <input  type="text" class="form-control" id="userPlansDone"
+                                <input  type="text" class="form-control" id="userPlansDone" readonly
                                         th:value="${userStats.getPlans_done()}?: 0">
                             </div>
                         </div>
@@ -77,12 +83,12 @@
                 <div class="col">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            Gesamt bewegtes Gewicht
+                            Insgesamt bewegtes Gewicht
                         </div>
                         <div class="panel-body">
                             <div class="input-group input-group-general">
                                 <span class="input-group-addon">Gewicht in kg</span>
-                                <input  type="text" class="form-control" id="userTotalWeightLifted"
+                                <input  type="text" class="form-control" id="userTotalWeightLifted" readonly
                                         th:value="${userStats.getTotal_weight()}?: 0">
                             </div>
                         </div>
