@@ -126,6 +126,10 @@
             background-color: #EEEEEE;
         }
     </style>
+    <script type="text/javascript">
+        function noenter() {
+            return !(window.event && window.event.keyCode == 13); }
+    </script>
 </head>
 
 <body>
@@ -187,7 +191,7 @@
                 <div class="col col-general">
                     <div class="input-group input-group-general">
                         <span class="input-group-addon">Planbezeichnung:</span>
-                        <input  type="text" class="form-control" id="planName"
+                        <input  type="text" class="form-control" id="planName" onkeypress="return noenter()"
                                 placeholder="Hier Bezeichnung eingeben..." th:field="*{planName}">
                     </div>
                 </div>
@@ -218,7 +222,7 @@
                         <!-- replace padding & padding left with padding: auto for other screens than alex´ laptop -->
                         <a class="form-control" type="input" id="inputFieldCheckbox">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" onchange="checkboxChanged()"
+                                <input type="checkbox" class="form-check-input" onchange="checkboxChanged()" onkeypress="return noenter()"
                                        id="singleDayCheck" th:field="*{oneShot}" th:disabled="${plan}">
                             </div>
                         </a>
@@ -237,7 +241,7 @@
                                     <span class="glyphicon glyphicon-minus"></span>
                                 </button>
                             </div>
-                            <input type="text" name="trainingUnits" class="form-control" id="inputUnit"
+                            <input type="text" name="trainingUnits" class="form-control" id="inputUnit" onkeypress="return noenter()"
                                    th:field="*{sessionNums}" readonly>
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default" id="btnIncrementTEs"
@@ -258,7 +262,7 @@
                                     <span class="glyphicon glyphicon-minus"></span>
                                 </button>
                             </div>
-                            <input type="text" name="trainingUnitsPerWeek" class="form-control" id="inputUnitsPerWeek"
+                            <input type="text" name="trainingUnitsPerWeek" class="form-control" id="inputUnitsPerWeek" onkeypress="return noenter()"
                                    align="center" readonly th:field="*{recomSessionsPerWeek}">
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default" id="btnIncrementWeeklyTes"
@@ -270,8 +274,8 @@
                     </div>
                 </div>
             </div>
-            <input th:field="*{id}" hidden>
-            <input type="text" id="prevUnitAmount" value="3" hidden disabled>
+            <input th:field="*{id}" hidden onkeypress="return noenter()">
+            <input type="text" id="prevUnitAmount" value="3" hidden disabled onkeypress="return noenter()">
         </div>
 
         <!-- panel with form to customize an exercise, add it to the plan and create a new exercise -->
@@ -314,7 +318,7 @@
                     <div class="col col-exercise">
                         <div class="input-group">
                             <span class="input-group-addon">Übung:</span>
-                            <input id="inputExercise" type="text" class="form-control"
+                            <input id="inputExercise" type="text" class="form-control" onkeypress="return noenter()"
                                    list="storedExercises" placeholder="Übung auswählen.."
                                    name="exerciseName" required th:field="*{exerciseName}">
                             <datalist id="storedExercises">
@@ -326,14 +330,14 @@
                     <div class="col col-exercise">
                         <div class="input-group">
                             <span class="input-group-addon">Ordnung:</span>
-                            <input  type="text" class="form-control" id="inputOrder"
+                            <input  type="text" class="form-control" id="inputOrder" onkeypress="return noenter()"
                                     placeholder="Hier Ordnung eingeben.." th:field="*{category}">
                         </div>
                     </div>
                     <div class="col col-exercise">
                         <div class="input-group">
                             <span class="input-group-addon">RM:</span>
-                            <input th:field="*{repetitionMaximum}" type="text" class="form-control" id="inputRM"
+                            <input th:field="*{repetitionMaximum}" type="text" class="form-control" id="inputRM" onkeypress="return noenter()"
                                     placeholder="Hier repetition Maximum eingeben..">
                         </div>
                     </div>
@@ -350,11 +354,11 @@
                     <div class="col col-execution">
                         <div class="input-group">
                             <span class="input-group-addon">Ausführung(en):</span>
-                            <input id="inputExecution" type="text" name="executions"
-                                   class="form-control" list="storedExecutions" onchange="addTag()">
+                            <input id="inputExecution" type="text" name="executions" onkeypress="return noenter()"
+                                   class="form-control" list="storedExecutions">
                             <div class="input-group-btn">
                                 <button class="btn btn-success" id="buttonAddExecution"
-                                        onclick="addTag()" style="border-radius: 0px 4px 4px 0px" type="button">
+                                        onclick="checkExecution()" style="border-radius: 0px 4px 4px 0px" type="button">
                                     <span class="glyphicon glyphicon-plus"></span>
                                     Add
                                 </button>
@@ -371,7 +375,7 @@
                                 <span class="input-group-addon">Hinzugefügte Ausführungen:</span>
                                 <a class="form-control" type="input" style="height: auto; padding: 0px"
                                     placeholder=" ">
-                                    <input type="text" data-role="tagsinput" id="tags" value="" name="tags"
+                                    <input type="text" data-role="tagsinput" id="tags" value="" name="tags" onkeypress="return noenter()"
                                            class="form-control tagsPlanInput">
                                 </a>
                             </div>
@@ -422,7 +426,7 @@
                                 </td>
                                 <td>
                                     <div class="form-group">
-                                        <ul id="pauseInputs" class="list-group" ></ul> <!-- todo only numeric input -->
+                                        <ul id="pauseInputs" class="list-group" ></ul>
                                     </div>
                                 </td>
                             </tr>
@@ -434,10 +438,14 @@
                 <div class="row">
                     <div class="col-md-9"></div>
                     <div class="col-md-3">
-                        <button type="submit" class="btn btn-success btn-block" id="buttonAddExercise">
+                        <button type="button" class="btn btn-success btn-block" id="buttonAddExercise" onclick="checkExercise()">
                             <span class="glyphicon glyphicon-plus"></span>
                             Übung zum Plan hinzufügen
                         </button>
+                        <div hidden>
+                            <button type="submit" id="buttonAddExerciseClick">
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -508,7 +516,7 @@
                         </button>
                     </div>
                     <div class="col-md-2">
-                        <button type="button" id="savePlan" class="btn btn-success btn-block" onclick="confirmPlan()">
+                        <button type="button" id="savePlan" class="btn btn-success btn-block" onclick="checkPlan()">
                             <span class="glyphicon glyphicon-floppy-save"></span>
                             Plan speichern
                         </button>
@@ -534,7 +542,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="exerciseName">Name der Übung:</label>
-                            <input type="text" class="form-control" id="exerciseName"
+                            <input type="text" class="form-control" id="exerciseName" onkeypress="return noenter()"
                                    placeholder="Hier die Übungsbezeichnung eingeben...">
                         </div>
                     </div>
@@ -551,7 +559,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="muscleImageInput">Muskelgruppen-Bild:</label>
-                                <input type="image" class="form-control" id="muscleImageInput"
+                                <input type="image" class="form-control" id="muscleImageInput" onkeypress="return noenter()"
                                        placeholder="Hier Bild mit Muskelgruppen einfügen...">
                             </div>
                         </div>
@@ -573,7 +581,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="videoLink1">Erklärungsvideos: (Optional)</label>
-                            <input type="url" class="form-control" id="videoLink1"
+                            <input type="url" class="form-control" id="videoLink1" onkeypress="return noenter()"
                                    placeholder="Hier Link zu einem Erklärungsvideo einfügen...">
                         </div>
                     </div>
@@ -582,14 +590,14 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="imageInput">Zusätzliche Bilder hochladen (Optional)</label>
-                            <input type="image" class="form-control" id="imageInput"
+                            <input type="image" class="form-control" id="imageInput" onkeypress="return noenter()"
                                    placeholder="Hier Bild zur Übung einfügen...">
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Speichern</button>
+                <button type="button" class="btn btn-primary" onclick="addNewExerciseCheck()">Speichern</button>
                 <button type="button" class="btn btn-default" id="buttonCloseExerciseForm"
                         data-dismiss="modal">
                     Schließen
@@ -610,12 +618,12 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label for="inputExecutionName">Bezeichnung der Ausführung:</label>
-                    <input  type="text" class="form-control" id="inputExecutionName" autofocus
+                    <input  type="text" class="form-control" id="inputExecutionName" autofocus onkeypress="return noenter()"
                             placeholder="Hier die Bezeichnung für die neue Ausführungsart eingeben...">
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success" onclick="createExecution()" data-dismiss="modal">
+                <button type="button" class="btn btn-success" onclick="checkExecutionAdd()" data-dismiss="modal" id="saveNewExecution" >
                     Speichern</button>
                 <button type="button" class="btn btn-default" id="buttonCloseExecutionModal"
                         data-dismiss="modal">Schließen</button>
@@ -796,15 +804,15 @@
                                 <h4 id="planOrExercise">Planvorschau</h4>
                             </div>
                             <div class="col-md-3">
-                                <input class="form-control" type="text" id="viewPlanName"
+                                <input class="form-control" type="text" id="viewPlanName" onkeypress="return noenter()"
                                        th:value="${plan.name}" disabled/>
                             </div>
                             <div class="col-md-3">
-                                <input class="form-control" type="text" id="viewPlanFocus"
+                                <input class="form-control" type="text" id="viewPlanFocus" onkeypress="return noenter()"
                                        th:value="${plan.trainingsFocus}" disabled/>
                             </div>
                             <div class="col-md-3">
-                                <input class="form-control" type="text" id="viewPlanTE"
+                                <input class="form-control" type="text" id="viewPlanTE" onkeypress="return noenter()"
                                        th:value="${plan.numTrainSessions}" disabled/>
                             </div>
                         </div>
@@ -847,7 +855,7 @@
                                               th:each="tag : ${exercise.tags}" th:data="${tag}">
                                         </nobr>
                                         <div id="tagBlockPlan">
-                                            <input type="text" data-role="tagsinput"
+                                            <input type="text" data-role="tagsinput" onkeypress="return noenter()"
                                                    th:id="'tagsPlan' + ${exercise.id}"
                                                    value="" class="form-control tagsPlanInput" disabled>
                                         </div>
@@ -1137,10 +1145,10 @@
         // Create new list element in final plan containing the entered values and a button to view details
         $('#planExerciseOrder').append(
             '<li style="padding-top: .3em; padding-bottom: .3em">' +
-            '<input type="text" value="'+newExerciseOrder+'" class="form-control" disabled>' + '</li>');
+            '<input type="text" value="'+newExerciseOrder+'" class="form-control" disabled onkeypress="return noenter()">' + '</li>');
         $('#planExerciseName').append(
             '<li style="padding-top: .3em; padding-bottom: .3em">' +
-            '<input type="text" value="'+newExerciseName+'" class="form-control" disabled>' + '</li>');
+            '<input type="text" value="'+newExerciseName+'" class="form-control" disabled onkeypress="return noenter()">' + '</li>');
         $('#planButtonExerciseDetails').append(
             '<li style="padding-top: .3em; padding-bottom: .3em">' +
             '<button type="button" class="btn btn-primary btn-block" data-toggle="modal" ' +
@@ -1246,15 +1254,15 @@
 
             // Add the input fields to the lists
             $('#counterTE').append(
-                '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control" onkeypress="return noenter()">' + '</li>');
             $('#weightsInputs').append(
-                '<li>' + '<input id="'+weightsInputId+'" name="weightDiff" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+weightsInputId+'" name="weightDiff" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
             $('#repsInputs').append(
-                '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
             $('#tempoInputs').append(
-                '<li>' + '<input id="' + tempoInputId + '" name="tempo" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="' + tempoInputId + '" name="tempo" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
             $('#pauseInputs').append(
-                '<li>' + '<input id="' + pauseInputId + '" name="pause" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="' + pauseInputId + '" name="pause" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
         }
     }
 
@@ -1296,15 +1304,15 @@
 
         // Add the input fields to the lists
         $('#counterTE').append(
-            '<li>' + '<input id="'+counterTEId+'" disabled value="'+currentTE+'" class="form-control">' + '</li>');
+            '<li>' + '<input id="'+counterTEId+'" disabled value="'+currentTE+'" class="form-control" onkeypress="return noenter()">' + '</li>');
         $('#weightsInputs').append(
-            '<li>' + '<input id="'+weightsInputId+'" name="weightDiff" type="text" class="form-control">' + '</li>');
+            '<li>' + '<input id="'+weightsInputId+'" name="weightDiff" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
         $('#repsInputs').append(
-            '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
+            '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
         $('#tempoInputs').append(
-            '<li>' + '<input id="' + tempoInputId + '" name="tempo" type="text" class="form-control">' + '</li>');
+            '<li>' + '<input id="' + tempoInputId + '" name="tempo" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
         $('#pauseInputs').append(
-            '<li>' + '<input id="' + pauseInputId + '" name="pause" type="text" class="form-control">' + '</li>');
+            '<li>' + '<input id="' + pauseInputId + '" name="pause" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
     }
 
     /**
@@ -1323,15 +1331,15 @@
 
             // Add the input fields to the lists
             $('#counterTE').append(
-                '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control" onkeypress="return noenter()">' + '</li>');
             $('#weightsInputs').append(
-                '<li>' + '<input id="'+weightsInputId+'" name="weightDiff" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+weightsInputId+'" name="weightDiff" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
             $('#repsInputs').append(
-                '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+repsInputId+'" name="sets" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
             $('#tempoInputs').append(
-                '<li>' + '<input id="' + tempoInputId + '" name="tempo" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="' + tempoInputId + '" name="tempo" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
             $('#pauseInputs').append(
-                '<li>' + '<input id="' + pauseInputId + '" name="pause" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="' + pauseInputId + '" name="pause" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
         }
     }
 
@@ -1507,13 +1515,261 @@
 
             // Add the examples to the lists
             $('#viewCounterTE').append(
-                '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+counterTEId+'" disabled value="'+(i+1)+'" class="form-control" onkeypress="return noenter()">' + '</li>');
             $('#viewRepsInputs').append(
-                '<li>' + '<input id="'+repsInputId+'" disabled value="3 - '+(10+i)+'" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+repsInputId+'" disabled value="3 - '+(10+i)+'" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
             $('#viewTempoInputs').append(
-                '<li>' + '<input id="'+tempoInputId+'" disabled value="90" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+tempoInputId+'" disabled value="90" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
             $('#viewPauseInputs').append(
-                '<li>' + '<input id="'+pauseInputId+'" disabled value="60" type="text" class="form-control">' + '</li>');
+                '<li>' + '<input id="'+pauseInputId+'" disabled value="60" type="text" class="form-control" onkeypress="return noenter()">' + '</li>');
+        }
+    }
+</script>
+
+
+<!--- Form value checks--->
+<script>
+    /**
+     * Tests the value in the input field on Null or empty
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkNotEmpty(id) {
+        var passesTest = true;
+        console.log(id);
+        var valueInField = document.getElementById(id).value;
+        console.log(valueInField);
+        if (valueInField == null || valueInField == "") {
+            console.log(id + " :checkNotEmpty : failed");
+            document.getElementById(id).style.borderColor = "red";
+            passesTest = false;
+        } else{
+            console.log(id + " :checkNotEmpty : passed");
+            document.getElementById(id).style.borderColor = "black";
+        }
+        return passesTest;
+    }
+
+    /**
+     * Tests the value in the input field on Null, empty or special characters
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkSpecialCharacters(id){
+        var passesTest = checkNotEmpty(id);
+        var valueInField = document.getElementById(id).value;
+        console.log(id + " :checkSpcialCharaters : value : " + valueInField);
+        var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        if (format.test(valueInField)){
+            passesTest = false;
+            console.log(id + " :checkSpcialCharaters : failed");
+            document.getElementById(id).style.borderColor = "red";
+        } else{
+            document.getElementById(id).style.borderColor = "black";
+        }
+        return passesTest;
+    }
+
+    /**
+     * Tests the value in the input on if it only has Letters from a-Z
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkText(id){
+        if (checkSpecialCharacters(id)) {
+            var format = /^[a-zäöüA-ZÄÄÖÜ ]+$/
+            var valueInField = document.getElementById(id).value;
+            var passesTest =  format.test(valueInField);
+            if (passesTest){
+                console.log(id + " :checkText : passed");
+                document.getElementById(id).style.borderColor = "black";
+                return true;
+            }
+        }
+        console.log(id + " :checkText : failed");
+        document.getElementById(id).style.borderColor = "red";
+        return false;
+    }
+
+    /**
+     * Tests the value in the input field on if it is a Number
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkNumber(id) {
+        if (checkNotEmpty(id)) {
+            var valueInField = document.getElementById(id).value;
+            if (!isNaN(valueInField)){
+                console.log(id + " :checkNumber : passed");
+                document.getElementById(id).style.borderColor = "black";
+                return true;
+            }
+        }
+        console.log(id + " :checkNumber : failed");
+        document.getElementById(id).style.borderColor = "red";
+        return false;
+    }
+
+    /**
+     * Tests the value in the weight/rep fields
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkNumberAndStroke(id){
+        if (checkNotEmpty(id)) {
+            var format = /^[0-9/+-]+$/
+            var valueInField = document.getElementById(id).value;
+            var passesTest =  format.test(valueInField);
+            if (passesTest){
+                console.log(id + " :checkText : passed");
+                document.getElementById(id).style.borderColor = "black";
+                return true;
+            }
+        }
+        console.log(id + " :checkText : failed");
+        document.getElementById(id).style.borderColor = "red";
+        return false;
+    }
+
+    /**
+     * Checks if the execution field has the right format if the "add" or Speichern button is pressed.
+     */
+    function checkExecution() {
+        var id = "inputExecution";
+        console.log(document.getElementById(id).value +" : THis value should be whatever was typed in and not Null");
+        if(checkText(id)){
+            addTag();
+            console.log("CheckText : Test was passed ");
+        } else{
+            console.log("CheckText : Test was failed");
+            alert("Bitte stell sicher, dass keine Sonderzeichen und Ziffern" +
+                " verwendet werden");
+        }
+    }
+
+    /**
+     * Checks if the create new execution field has the correct format
+     */
+    function checkExecutionAdd() {
+        var id = "inputExecutionName";
+        console.log("checkExecutionName: " + id);
+        if(checkText(id)){
+            createExecution();
+        } else{
+            alert("Bitte stell sicher, dass keine Sonderzeichen und Ziffern" +
+                " verwendet werden");
+        }
+    }
+
+    /**
+     * Checks if the forms are filled out before adding exercise
+     * */
+    function addNewExerciseCheck() {
+        var weightType = document.getElementById('weightType').value;
+        console.log(weightType);
+        if (weightType == "Wähle eine Option aus...") {
+            alert("Bitte wähle eine Gewichtsart");
+        } else{
+            if(checkText('exerciseName')&& checkNotEmpty('exercise_description')){
+                console.log("Exercise would be saved.")
+                //TODO press button, once it has function
+            } else{
+                alert("Eine Übung braucht mindestens einen Namen, eine Beschreibung und eine Gewichtsart. Sonderzeichen sind nicht möglich.")
+            }
+        }
+    }
+
+    /**
+     * Checks if the exercise fullfills the requirements if the "Übung zum Plan hinzufügen"-button is pressed
+     */
+    function checkExercise() {
+        var passesTest = true;
+        var alertmessage = "";
+        if (!allTEFilled() ) {
+            passesTest = false;
+            alertmessage = "Bitte stelle sicher, dass keine der Felder für die Übung leer sind und du dem gegebenen Format folgst. ";
+        }
+        if (!checkText("planName")) {
+            passesTest = false;
+            alertmessage = alertmessage + "Bitte benenne deinen Plan, bevor due eine Übung einfügst. ";
+        }
+        if (!checkText("inputExercise")) {
+            passesTest = false;
+            alertmessage = alertmessage + "Der Übungsname kann nur aus Buchstaben bestehen. ";
+        }
+        if (!checkNotEmpty("inputOrder")||!checkSpecialCharacters("inputOrder")) {
+            passesTest = false;
+            alertmessage = alertmessage + "In der Ordnung sind Sonderzeichen nicht erlaubt. ";
+        }
+        if (!checkNumber("inputRM")) {
+            passesTest = false;
+            alertmessage = alertmessage + "RM muss eine Zahl sein. ";
+        }
+        if (passesTest) {
+            document.getElementById('buttonAddExerciseClick').click();
+        } else {
+            alert(alertmessage);
+        }
+    }
+
+    /**
+     * Checks if all Fields for the exercise are filled.
+     * Every if has to be checked seperate, so the Border outlines get coloured in every column, as "and" stops testings as soon as one returns false.
+     * @return boolean 'passesTest'
+     */
+    function allTEFilled() {
+        var passesTest = true;
+        console.log("TE check start");
+        var units = document.getElementById('inputUnit').value;
+        for (var i = 0; i < units; i++){
+            var weightfield = "weightsInput" + i;
+            var repfield = "repsInput" + i;
+            var tempofield = "tempoInput" + i;
+            var pausefield = "pauseInput" + i;
+            if (!checkNumberAndStroke(weightfield)){
+                passesTest = false;
+            }
+            if (!checkNumberAndStroke(repfield)){
+                passesTest = false;
+            }
+            if (!checkText(tempofield)){
+                passesTest = false;
+            }
+            if (!checkNumber(pausefield)){
+                passesTest = false;
+            }
+        }
+        console.log("TE check passed");
+        return passesTest;
+    }
+
+    function checkPlan() {
+        var alertmessage = "";
+        var focus = document.getElementById('focus').value;
+        var targetGroup = document.getElementById('targetGroup').value;
+        console.log("0");
+        var focusBool = true;
+        var targetGroupBool = true;
+
+        if(focus == "Wähle eine Option aus..."){
+            focusBool = false;
+            alertmessage = "Ziel wird benötigt;";
+        }
+        console.log("1"+focusBool);
+
+        if(targetGroup == "Wähle eine Option aus..."){
+            targetGroupBool = false;
+            alertmessage = alertmessage + " Zielgruppe wird benötigt;";
+        }
+        console.log("2"+targetGroupBool);
+
+        if (checkNumber("inputUnit") && checkNumber("inputUnitsPerWeek") && focusBool && targetGroupBool){
+            console.log("plan passed");
+            confirmPlan();
+        } else {
+            console.log("plan failed");
+            alert(alertmessage + " Bitte stell sicher, dass keine Felder leer sind und keine " +
+                "Sonderzeichen außer bei Gewicht/Wiederholungen verwendet werden");
         }
     }
 

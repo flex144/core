@@ -64,6 +64,10 @@
                             </div>
                             <div class="col-md-6">
                                 <input class="button btn btn-block" type="submit"
+                                       value="Registrieren" onclick="checkForm()"/>
+                            </div>
+                            <div hidden>
+                                <input class="button btn btn-block" type="submit"
                                        value="Registrieren" id="register"/>
                             </div>
                         </div>
@@ -75,5 +79,59 @@
             </div>
         </div>
     </div>
+
+<script>
+    function checkForm(){
+        var username = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        var confirmPassword = document.getElementById('confirmPassword').value;
+        var alertmessage = "";
+        var passesTest = true;
+
+        if(document.getElementById('email').value == "") {
+            alertmessage = alertmessage + "Email kann nicht leer sein! ";
+            passesTest = false;
+        }
+        re = /[@]/;
+        if(!re.test(username)) {
+            alertmessage = alertmessage + "Bitte wähle eine existierende email. ";
+            passesTest = false;
+        }
+        if(password != "" && password == confirmPassword) {
+            if(password.length < 6) {
+                alertmessage = alertmessage + "Passwort muss mindestens 6 Zeichen lang sein. ";
+                passesTest = false;
+            }
+            if(password == username) {
+                alertmessage = alertmessage + "Dein Passwort kann nicht dein Nutzername sein. ";
+                passesTest = false;
+            }
+            re = /[0-9]/;
+            if(!re.test(password)) {
+                alertmessage = alertmessage + "Passwort benötigt eine Nummer. ";
+                passesTest = false;
+            }
+            re = /[a-z]/;
+            if(!re.test(password)) {
+                alertmessage = alertmessage + "Passwort braucht Kleinbuchstaben (a-z)! ";
+                passesTest = false;
+            }
+            re = /[A-Z]/;
+            if(!re.test(password)) {
+                alertmessage = alertmessage + "Passwort braucht Großbuchstaben (A-Z)! ";
+                passesTest = false;
+            }
+        } else {
+            alertmessage = alertmessage + "Bitte Überprüfe das du ein Passwort eingegeben hast. ";
+            passesTest = false;
+        }
+        if (passesTest){
+            document.getElementById('register').click();
+        } else {
+            alert(alertmessage);
+        }
+    }
+</script>
+
 </body>
 </html>

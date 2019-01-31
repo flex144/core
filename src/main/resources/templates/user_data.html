@@ -924,5 +924,116 @@
         document.getElementById("inputTEperWeek").value = chosenTe;
     }
 </script>
+
+<!--- Checks the user inputs --->
+<script>
+    /**
+     * Tests the value in the input field on Null or empty
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkNotEmpty(id) {
+        var passesTest = true;
+        console.log(id);
+        var valueInField = document.getElementById(id).value;
+        console.log(valueInField);
+        if (valueInField == null || valueInField == "") {
+            passesTest = false;
+            console.log(id + " :checkNotEmpty : failed");
+        }
+        console.log(id + " :checkNotEmpty : passed");
+        return passesTest;
+    }
+
+    /**
+     * Tests the value in the input field on Null, empty or special characters
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkSpecialCharacters(id){
+        var passesTest = checkNotEmpty(id);
+        var valueInField = document.getElementById(id).value;
+        console.log(id + " :checkSpcialCharaters : value : " + valueInField);
+        var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        if (format.test(valueInField)){
+            passesTest = false;
+            console.log(id + " :checkSpcialCharaters : failed");
+        }
+        return passesTest;
+    }
+
+    /**
+     * Tests the value in the input on if it only has Letters from a-Z
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkText(id){
+        if (checkSpecialCharacters(id)) {
+            var format = /^[a-zäöüA-ZÄÄÖÜ ]+$/
+            var valueInField = document.getElementById(id).value;
+            var passesTest =  format.test(valueInField);
+            if (passesTest){
+                console.log(id + " :checkText : passed");
+                return true;
+            }
+        }
+        console.log(id + " :checkText : failed");
+        return false;
+    }
+
+    /**
+     * Tests the value in the input field on if it is a Number
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkNumber(id) {
+        if (checkNotEmpty(id)) {
+            var valueInField = document.getElementById(id).value;
+            if (!isNaN(valueInField)){
+                console.log(id + " :checkNumber : passed");
+                return true;
+            }
+        }
+        console.log(id + " :checkNumber : failed");
+        return false;
+    }
+
+    function checkUserData(){
+        var alertmessage = "";
+        var passesTest = true;
+        console.log(alertmessage);
+        if(!checkText("firstname")){
+            alertmessage = alertmessage + "Du kannst keine Sonderzeichen in deinem Vornamen verwenden. "
+            passesTest = false;
+        }
+        console.log(alertmessage);
+        if(!checkText("lastname")){
+            alertmessage = alertmessage + "Du kannst keine Sonderzeichen in deinem Nachnamen verwenden. "
+            passesTest = false;
+        }
+        console.log(alertmessage);
+        //TODO maybe check birthday or remove other checks, depending on what will be optional
+        /*if(!checkNumber("height")){
+            alertmessage = alertmessage + "Buchstaben sind bei der Größe nicht möglich. "
+            passesTest = false;
+        }
+        if(!checkNumber("weight")){
+            alertmessage = alertmessage + "Buchstaben sind beim Gewicht nicht möglich. "
+            passesTest = false;
+        }
+        if (document.getElementById('gender').value == "Wähle eine Option aus...") {
+            alertmessage = alertmessage + "Du musst ein Geschlecht wählen"
+            passesTest = false;
+        }*/
+
+        if (passesTest){
+            console.log("passes");
+            document.getElementById('buttonWeiter').click();
+        } else{
+            console.log("fails");
+            alert(alertmessage);
+        }
+    }
+</script>
 </body>
 </html>
