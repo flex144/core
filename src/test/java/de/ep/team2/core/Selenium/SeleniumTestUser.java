@@ -12,9 +12,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * These Tests are based on an exercise plan including one selfweight and one weighted exercise.
- */
+
 public class SeleniumTestUser {
     WebDriver driver;
     String title;
@@ -54,7 +52,6 @@ public class SeleniumTestUser {
         assertTrue(!driver.findElement(By.id("exitModal")).isDisplayed());
     }
 
-
     /**
      * Checks for Alerts
      */
@@ -83,7 +80,6 @@ public class SeleniumTestUser {
         driver.findElement(By.cssSelector("input.btn")).click();
     }
 
-
     /**
      * Checks if the login is succesfull
      */
@@ -94,8 +90,8 @@ public class SeleniumTestUser {
 
         //check if user gets logged in correctly;
         assertTrue(url.equals("http://localhost:8080/user/home"));
+        driver.quit();
     }
-
 
     /**
      * Tests features that are part of the user/plan/overview
@@ -136,7 +132,7 @@ public class SeleniumTestUser {
 
         url = driver.getCurrentUrl();
         assertEquals(url, "http://localhost:8080/user/home");
-
+        driver.quit();
     }
 
     /**
@@ -145,31 +141,24 @@ public class SeleniumTestUser {
      */
     @Test
     public void exercisePage(){
-        //Add overviewPage() if the tests are done individually
+        //Add overviewPage() instead of login() if the tests are done individually
         //overviewPage();
+        login();
 
         //check if user can access a Plan
         driver.findElement(By.id("buttonPlan")).click();
         title = driver.getTitle();
 
         assertEquals(title, "Your personalized training page");
-        //TODO Need to start training
-        driver.findElement(By.id("exercise1")).click();
-
-        //TODO check for Order
-        /*Ztring order = driver.findElement(By.id("orderNumber1")).getAttribute("value");
-        driver.findElement(By.id("exercise1")).click();
-        driver.findElement(By.id("userMaxWeight")).sendKeys("1");
         driver.findElement(By.id("startButton")).click();
-        assertEquals(order, driver.findElement(By.id("currentOrder")).getAttribute("value"));
-        */
 
         //accessing the first exercise
         driver.findElement(By.id("exercise1")).click();
         String url = driver.getCurrentUrl();
-        assertEquals(url, "http://localhost:8080/user/plan/exercise/1");
+        assertEquals(url, "http://localhost:8080/user/plan/exercise/");
         title = driver.getTitle();
         assertEquals(title, "In exercise");
+
 
         //Start the Training
         String buttonText = driver.findElement(By.id("startButton")).getText();
@@ -179,15 +168,10 @@ public class SeleniumTestUser {
         stopwatch();
         repCounter();
 
-
-
-        driver.findElement(By.id("startButton")).click();
-        buttonText = driver.findElement(By.id("startButton")).getText();
-        assertEquals(buttonText, "Evaluation");
         driver.findElement(By.id("startButton")).click();
 
-        //Links to correct page on exit
-        driver.findElement(By.id("startButton")).click();
+        System.out.println("main done");
+
         title = driver.getTitle();
         assertEquals(title, "Your personalized training page");
 
@@ -230,13 +214,20 @@ public class SeleniumTestUser {
         //Non valid Input leads to notification module
         driver.findElement(By.id("repInput")).sendKeys(Keys.DELETE);
         driver.findElement(By.id("repInput")).sendKeys("asdnvladsv");
+        System.out.println("Errorcase 1 ");
         waitDuration(800);
         driver.findElement(By.id("startButton")).click();
+        System.out.println("Errorcase 2 ");
+
         waitDuration(200);
         assertTrue(driver.findElement(By.id("noValidInputModule")).isDisplayed());
+        waitDuration(200);
+        System.out.println("Errorcase 3 ");
         driver.findElement(By.id("button_noValidInputModule")).click();
+        System.out.println("Errorcase 4 ");
         waitDuration(1000);
         assertTrue(!driver.findElement(By.id("noValidInputModule")).isDisplayed());
+        System.out.println("Errorcase 5 ");
 
         //Value reset to default
         driver.findElement(By.id("startButton")).click();
@@ -250,8 +241,6 @@ public class SeleniumTestUser {
         System.out.println("needed:" + neededRepitions);
         waitDuration(500);
         assertEquals(neededRepitions, userRepitions);
-
-        driver.findElement(By.id("repInput")).sendKeys("3");
 
     }
 

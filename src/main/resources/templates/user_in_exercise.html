@@ -78,6 +78,10 @@
         }
 
     </style>
+    <script type="text/javascript">
+        function noenter() {
+            return !(window.event && window.event.keyCode == 13); }
+    </script>
 </head>
 <body>
 
@@ -344,7 +348,7 @@
                             </div>
                             <div class="col-xs-4">
                                 <form>
-                                    <input class="fullsize" type="number" oninput="updateReps()" id="repInput" value="999" style="text-align: center" disabled>
+                                    <input class="fullsize" type="number"  onkeypress="return noenter()" oninput="updateReps()" id="repInput" value="999" style="text-align: center" disabled>
                                 </form>
                             </div>
                             <div class="col-xs-4">
@@ -577,17 +581,20 @@
      * update Values on each input
      ***/
     function updateReps() {
-        valueCheck = Math.ceil(document.getElementById('repInput').value);
-        if(valueCheck < 2* totalReps && valueCheck> 0){
-            currentReps = valueCheck;
-        } else if(valueCheck == ""){
-
-        }else{
-            currentReps = totalReps;
-            valueCheck = currentReps;
-            document.getElementById('repInput').value = currentReps;
+        var valueOfField = document.getElementById('repInput').value;
+        if(!isNaN(valueOfField)){
+            valueCheck = Math.ceil(valueOfField);
+            if(valueCheck < 2* totalReps && valueCheck> 0){
+                currentReps = valueCheck;
+            }else{
+                if(valueCheck == ""){
+                } else{
+                    currentReps = totalReps;
+                    valueCheck = currentReps;
+                    document.getElementById('repInput').value = currentReps;
+                }
+            }
         }
-
     }
 
     /***
@@ -703,18 +710,19 @@
             document.getElementById('progressBar').style.width = "100%";
             trainingNotActive();
             progressBar();
+            checkForWeightChange();
         }else{
             console.log("in exercisefunction case default");
             currentCounter++;
             buttonTitle = "Satz " + currentCounter + " beenden";
             trainingStatusInProgress();
             progressBar();
+            checkForWeightChange();
         }
         console.log("in exercisefunction continued");
         newRepCount = "reps" + setCounter;
         newWeightCount = "weight" + setCounter;
         labelValue = currentCounter + "/" + setCounter;
-        checkForWeightChange();
         updateLabels();
         updateValues();
         stopTimer();
