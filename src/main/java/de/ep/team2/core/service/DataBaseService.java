@@ -1289,6 +1289,15 @@ public class DataBaseService {
         log.debug("User plan with id " + userPlanID + " of " + toDelete.getUserMail() + " deleted!");
     }
 
+    /**
+     * Deletes a weight from a userplan by its exerciseInstance id.
+     * @param exerciseId Id of the exercise instance.
+     */
+    public void deleteWeightsByExId(int exerciseId) {
+        jdbcTemplate.update("DELETE FROM weights WHERE idexerciseinstance=?",
+                (Object[]) new Integer[]{exerciseId});
+    }
+
     // weights
 
     /**

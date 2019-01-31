@@ -143,20 +143,22 @@
                                     </td>
                                     <td>
                                         <input type="text" class="form-control" placeholder="Gewichtsänderung"
-                                        th:field="*{trainingsSessions[__${istat.index}__].weightDiff}" pattern="^[[+-0-9]*[,]]*[+-0-9]$">
+                                               th:field="*{trainingsSessions[__${istat.index}__].weightDiff}"
+                                               pattern="[0-9,+-]*$">
                                     </td>
                                     <td>
                                         <input id="repsInput" type="text" class="form-control"
                                                placeholder="Wiederholungen"
-                                               th:field="*{trainingsSessions[__${istat.index}__].reps}" pattern="[0-9,]*">
+                                               th:field="*{trainingsSessions[__${istat.index}__].reps}"
+                                               pattern="[0-9,]*" required>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control" placeholder="Tempo"
-                                               th:field="*{trainingsSessions[__${istat.index}__].tempo}">
+                                               th:field="*{trainingsSessions[__${istat.index}__].tempo}" required>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control" placeholder="Pause"
-                                               th:field="*{trainingsSessions[__${istat.index}__].pauseInSec}">
+                                               th:field="*{trainingsSessions[__${istat.index}__].pauseInSec}" required>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -164,7 +166,6 @@
                         </div>
                     </div>
                 </div>
-                Ab hier dann für jede Übung in dem Plan ein neues Panel wie das darüber
             </div>
             <div class="panel-footer">
                 <div class="row">
@@ -180,6 +181,13 @@
                             <span class="glyphicon glyphicon-floppy-saved"></span>
                             Änderungen übernehmen
                         </button>
+                    </div>
+                    <div class="col-md-6">
+                        <a class="button btn btn-block" type="button" data-toggle="modal"
+                           data-target="#modal_confirm_delete">
+                            <span class="glyphicon glyphicon-trash"></span>
+                            Übung Löschen
+                        </a>
                     </div>
                 </div>
             </div>
@@ -209,7 +217,8 @@
                         <div class="row">
                             <div class="col-md-1"></div>
                             <div class="col-md-5">
-                                <a type="button" class="btn btn-warning btn-block"><!--th:href="Link to user page"-->
+                                <a type="button" class="btn btn-warning btn-block"
+                                   th:href="@{/mods/editplan/__${exIn.planTemplateID}__}"><!--th:href="Link to user page"-->
                                     <span class="glyphicon glyphicon-trash"></span>
                                     Änderungen verwerfen
                                 </a>
@@ -228,7 +237,56 @@
     </div>
 </div>
 
+<!-- Modal to confirm deletion of the exercise instance-->
+<div class="modal fade" id="modal_confirm_delete">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- body (form) -->
+            <div class="modal-body">
+                <form th:object="${exIn}" th:action="@{/mods/editplan/__${exIn.planTemplateID}__/__${exIn.id}__}"
+                      th:method="delete" id="deleteForm">
+                    <div class="panel panel-danger">
+                        <div class="panel-heading">
+                            <h4>Löschen bestätigen</h4>
+                        </div>
+                        <div class="panel-body">
+                            <p style="font-size: 16px">
+                                Wollen sie die aktuelle Übung wirklich löschen?
+                            </p>
+                            <p class="text-danger" style="font-size: 12px">
+                                Die Übung kann danach nicht neu eingefügt werden!
+                            </p>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-danger btn-block" id="submitForm">Löschen</button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-default btn-block" data-dismiss="modal">Abbrechen</button>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+
+    /**
+     * Set tags in the tag-input field "tags" to the colorset "warning" (yellow)
+     */
+    $('.tagsPlanInput').tagsinput({
+        tagClass: 'label label-warning'
+    });
+
+    document.getElementById("submitForm").onclick = function() {
+        document.getElementById("deleteForm").submit();
+    }
 
 </script>
 

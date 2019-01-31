@@ -48,13 +48,27 @@ public class PlanService {
         TrainingsPlanTemplate tempToDelete = db.getPlanTemplateAndSessionsByID(id);
          LinkedList<User> users = db.deleteUserPlansByTemplateId(id);
         for (ExerciseInstance ei : tempToDelete.getExerciseInstances()) {
-            for (TrainingsSession ts : ei.getTrainingsSessions()) {
-                db.deleteTrainingsSessionById(ts.getId());
-            }
-            db.deleteExerciseInstanceByID(ei.getId());
+            deleteExerciseInstanceById(ei.getId());
         }
         db.deletePlanTemplateByID(id);
         return users;
+    }
+
+    /**
+     * Deletes an exercise instance and its trainings sessions from the database.
+     *
+     * @param id Id of the exercise instance to delete
+     */
+    public void deleteExerciseInstanceById(int id) {
+        DataBaseService db = DataBaseService.getInstance();
+        ExerciseInstance toDelete = db.getExercisInstanceById(id);
+        if(toDelete != null) {
+            db.deleteWeightsByExId(id);
+            for (TrainingsSession session : toDelete.getTrainingsSessions()) {
+                db.deleteTrainingsSessionById(session.getId());
+            }
+            db.deleteExerciseInstanceByID(id);
+        }
     }
 
     /**

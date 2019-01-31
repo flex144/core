@@ -133,8 +133,10 @@ public class ModController {
         TrainingsPlanTemplate tpt = service.getPlanTemplateAndSessionsByID(id);
         ExerciseInstance exIn = service.getExerciseInstanceById(exId);
         model.addAttribute("tpt", tpt);
-        model.addAttribute("exIn", exIn);
         model.addAttribute("allExercises", exerciseService.getAllExercises());
+        if (!model.containsAttribute("exIn")) {
+            model.addAttribute("exIn", exIn);
+        }
         return "mod_edit_exerciseInstance";
     }
 
@@ -148,16 +150,31 @@ public class ModController {
         String validArgs = checkIfArgsValid(exIn);
         if (toUpdate == null) {
             String errorMessage = "Übung '"+exIn.getName()+"' nicht vorhanden!";
+            redirectAttributes.addFlashAttribute("exIn", exIn);
             redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
             return "redirect:/mods/editplan/"+id+"/"+exId;
         } else if (!validArgs.equals("")) {
             redirectAttributes.addFlashAttribute("errorMessage", validArgs);
+            redirectAttributes.addFlashAttribute("exIn", exIn);
             return "redirect:/mods/editplan/"+id+"/"+exId;
         }
 
         exIn.setIsExerciseID(toUpdate.getId());
         service.editExerciseInstance(exIn);
         return "redirect:/mods/editplan/"+id;
+    }
+
+    @RequestMapping(value="/editplan/{id}/{exId}", method = RequestMethod.DELETE)
+    public String deleteExIn(@PathVariable("id") Integer id, @PathVariable("exId") Integer exId,
+                             Model model) {
+        PlanService planService = new PlanService();
+        if(planService.getExerciseInstanceById(exId) == null) {
+            model.addAttribute("error", "Übungsinstanz existiert nicht!");
+            return "error";
+        } else{
+            planService.deleteExerciseInstanceById(exId);
+            return "redirect:/mods/editplan/"+id;
+        }
     }
 
     private String checkIfArgsValid(ExerciseInstance exIn) {
@@ -173,15 +190,29 @@ public class ModController {
                 validationMessage = "Wiederholungen dürfen nicht leer sein!";
             }else if(weightLength > repsLength) {
                 validationMessage = "Es kann nicht mehr Gewichtsänderungen als Sets geben!";
-            } else if(weightLength>1 && repsLength != weightLength) {
+            } else if(weightLength>1 && (repsLength != weightLength ||
+                     containsNull(session.getWeightDiff()))) {
                 validationMessage = "Gewichtsänderungen passen nicht!";
+            } else if(containsNull(session.getReps())) {
+                validationMessage = "Wiederholungen passen nicht!";
             }
             if(!validationMessage.equals("")) {
                 validationMessage = validationMessage + " (Trainingseinheit '"+sessionCounter+"')" ;
                 break;
             }
+            sessionCounter++;
         }
 
         return validationMessage;
+    }
+
+    private boolean containsNull(Integer[] numbers) {
+        boolean toReturn = false;
+        for(Integer number : numbers) {
+            if(number == null) {
+                toReturn = true;
+            }
+        }
+        return toReturn;
     }
 }
