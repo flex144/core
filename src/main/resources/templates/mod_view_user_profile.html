@@ -76,6 +76,12 @@
                         Zum Moderator Befördern
                     </a>
                 </div>
+                <div class="col" th:if="${#authentication.principal.getUsername().equals(user.getEmail())}">
+                    <a th:href="@{/user/editprofile}" type="button" class="btn btn-block btn-default">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        Bearbeiten
+                    </a>
+                </div>
                 <div class="col">
                     <a type="button" class="btn btn-block btn-danger" data-toggle="modal"
                        data-target="#confirm_delete">
