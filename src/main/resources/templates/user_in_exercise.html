@@ -398,7 +398,7 @@
                             </div>
                         </div>
 
-                        <!--- Evaluation --->
+                        <!--- Evaluation | Feature removed
                         <div id="container_evaluationBox" class="fullsize">
                             <div class="container fullsize">
                                 <div class="btn-group btn-group-toggle fullsize" data-toggle="buttons" id="radioButtonGroup">
@@ -420,6 +420,7 @@
                                 </div>
                             </div>
                         </div>
+                         --->
                     </div>
                 </div>
                 <div class="panel-footer" style="text-align: center;  height: 10%;">
@@ -663,7 +664,7 @@
         document.getElementById('exitButton').style.display = "none";
         document.getElementById('repInput').value = currentReps;
         document.querySelector('.doneReps').innerHTML = totalReps;
-        evaluationBox.style.display = "none";
+        //evaluationBox.style.display = "none";
         document.querySelector('.value').innerHTML = labelValue;
         document.getElementById('pauseTime').innerHTML = pauseTimeValue + " " +"s";
         document.querySelector('.buttonName').innerHTML = buttonTitle;
@@ -689,21 +690,21 @@
         else if (done){
             console.log("in exercisefunction case 2");
             document.getElementById('submitButton').click();
-        }else if (currentCounter == setCounter){
-            console.log("in exercisefunction case 3");
+           }
+           /*else if (currentCounter == setCounter){
             timerBox.style.display = "none";
             evaluationBox.style.display = "inherit";
-            buttonTitle = "Abschließen";
-            done = true;
-            trainingNotActive();
-            document.getElementById('progressBar').style.width = "100%";
-        } else if(currentCounter == setCounter -1) {
+        } */
+        else if(currentCounter == setCounter -1) {
             console.log("in exercisefunction case 4");
-            buttonTitle = "Evaluation";
+            buttonTitle = "Abschließen";
             currentCounter++;
+            done = true;
+            document.getElementById('progressBar').style.width = "100%";
+            trainingNotActive();
             progressBar();
         }else{
-            console.log("in exercisefunction case 5");
+            console.log("in exercisefunction case default");
             currentCounter++;
             buttonTitle = "Satz " + currentCounter + " beenden";
             trainingStatusInProgress();
@@ -778,7 +779,7 @@
      * calculates and updates progressbar-element
      */
     function progressBar(){
-        var  value = parseInt(setCounter) + 1;
+        var  value = parseInt(setCounter);
         document.getElementById('progressBar').style.width =  (currentCounter/value) *100 + "%";
     }
 
