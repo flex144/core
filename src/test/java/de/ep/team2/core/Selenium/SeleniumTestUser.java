@@ -12,9 +12,13 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * These Tests are based on an exercise plan including one selfweight and one weighted exercise.
+ */
 public class SeleniumTestUser {
     WebDriver driver;
     String title;
+
 
 
     /**
@@ -27,6 +31,41 @@ public class SeleniumTestUser {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Checks Modules and warnings.
+     */
+    public void modalCheckOverview(){
+        driver.findElement(By.id("openInfoModal")).click();
+        assertTrue(driver.findElement(By.id("infoModal")).isDisplayed());
+        waitDuration(800);
+        driver.findElement(By.id("leaveInfoModal")).click();
+        waitDuration(800);
+        assertTrue(!driver.findElement(By.id("infoModal")).isDisplayed());
+
+        driver.findElement(By.id("startButton")).click();
+
+        driver.findElement(By.id("exitOverview")).click();
+        assertTrue(driver.findElement(By.id("exitModal")).isDisplayed());
+        waitDuration(800);
+        driver.findElement(By.id("buttonContinue")).click();
+        waitDuration(800);
+        assertTrue(!driver.findElement(By.id("exitModal")).isDisplayed());
+    }
+
+
+    /**
+     * Checks for Alerts
+     */
+    private boolean isAlertPresent() {
+        try {
+            driver.switchTo().alert();
+            return true;
+        } // try
+        catch (Exception e) {
+            return false;
+        } // catch
     }
 
     /**
@@ -70,12 +109,20 @@ public class SeleniumTestUser {
         title = driver.getTitle();
         assertEquals(title, "Your personalized training page");
 
-        modalCheckOverview();
         waitDuration(500);
+        //Can't access exercise before Training starts
+        driver.findElement(By.id("exercise1")).click();
+        if (isAlertPresent()) {
+            driver.switchTo().alert();
+            driver.switchTo().alert().accept();
+            driver.switchTo().defaultContent();
+        }
+
+        modalCheckOverview();
 
         driver.findElement(By.id("exercise1")).click();
         url = driver.getCurrentUrl();
-        assertEquals(url, "http://localhost:8080/user/plan/exercise/0");
+        assertEquals(url, "http://localhost:8080/user/plan/exercise/");
         title = driver.getTitle();
         assertEquals(title, "Bitte gib deine Daten ein!");
         driver.findElement(By.id("backButton")).click();
@@ -86,10 +133,6 @@ public class SeleniumTestUser {
         driver.findElement(By.id("exercise1")).click();
         driver.findElement(By.id("userMaxWeight")).sendKeys("1");
         driver.findElement(By.id("startButton")).click();
-        assertEquals(order, driver.findElement(By.id("currentOrder")).getAttribute("value"));
-        driver.findElement(By.id("exercise2")).click();
-        driver.findElement(By.id("userMaxWeight")).sendKeys("1");
-        driver.findElement(By.id("startButton")).click();
 
         url = driver.getCurrentUrl();
         assertEquals(url, "http://localhost:8080/user/home");
@@ -97,49 +140,32 @@ public class SeleniumTestUser {
     }
 
     /**
-     * Checks Modules and warnings.
-     */
-    public void modalCheckOverview(){
-        driver.findElement(By.id("openInfoModal")).click();
-        assertTrue(driver.findElement(By.id("infoModal")).isDisplayed());
-        waitDuration(800);
-        driver.findElement(By.id("leaveInfoModal")).click();
-        waitDuration(800);
-        assertTrue(!driver.findElement(By.id("infoModal")).isDisplayed());
-
-        /* TODO add back once session saves if training has started
-        driver.findElement(By.id("startButton")).click();
-
-        driver.findElement(By.id("exitOverview")).click();
-        assertTrue(driver.findElement(By.id("exitModal")).isDisplayed());
-        waitDuration(800);
-        driver.findElement(By.id("buttonContinue")).click();
-        waitDuration(800);
-        assertTrue(!driver.findElement(By.id("exitModal")).isDisplayed()); */
-
-        driver.findElement(By.id("infoButton")).click();
-        assertTrue(driver.findElement(By.id("exerciseModal")).isDisplayed());
-        waitDuration(800);
-        driver.findElement(By.id("closeInfoModal")).click();
-        waitDuration(800);
-        assertTrue(!driver.findElement(By.id("exerciseModal")).isDisplayed());
-    }
-
-
-    /**
-     * Tests features that are part of the user/plan/exercise
+     * Tests functions on the /exercise/ pages
+     * It's important that this is on Training 1 or later, as Training 0 uses different pages
      */
     @Test
     public void exercisePage(){
-        overviewPage();
+        //Add overviewPage() if the tests are done individually
+        //overviewPage();
 
         //check if user can access a Plan
         driver.findElement(By.id("buttonPlan")).click();
         title = driver.getTitle();
+
         assertEquals(title, "Your personalized training page");
+        //TODO Need to start training
+        driver.findElement(By.id("exercise1")).click();
+
+        //TODO check for Order
+        /*Ztring order = driver.findElement(By.id("orderNumber1")).getAttribute("value");
+        driver.findElement(By.id("exercise1")).click();
+        driver.findElement(By.id("userMaxWeight")).sendKeys("1");
+        driver.findElement(By.id("startButton")).click();
+        assertEquals(order, driver.findElement(By.id("currentOrder")).getAttribute("value"));
+        */
 
         //accessing the first exercise
-        driver.findElement(By.id("exercise2")).click();
+        driver.findElement(By.id("exercise1")).click();
         String url = driver.getCurrentUrl();
         assertEquals(url, "http://localhost:8080/user/plan/exercise/1");
         title = driver.getTitle();
@@ -159,10 +185,6 @@ public class SeleniumTestUser {
         buttonText = driver.findElement(By.id("startButton")).getText();
         assertEquals(buttonText, "Evaluation");
         driver.findElement(By.id("startButton")).click();
-
-        //feature is to be removed
-        evaluation();
-        System.out.println("Evaluation passed");
 
         //Links to correct page on exit
         driver.findElement(By.id("startButton")).click();
@@ -278,7 +300,7 @@ public class SeleniumTestUser {
     }
 
     /**
-     * Radio button functionality
+     * Radio button functionality | Feature has been removed
      */
     public void evaluation(){
         //1 not selected

@@ -1487,6 +1487,17 @@ public class DataBaseService {
         }
     }
 
+    /**
+     * Alters the weight of a specific user plan of an specific exercise to a new value.
+     *
+     * @param id if of userplan
+     * @param idOfExInstance id of instance
+     * @param newWeight new weight value
+     */
+    public void alterWeightForUserPlanExercise(int id, int idOfExInstance, int newWeight) {
+        jdbcTemplate.update("UPDATE weights SET weight = ? WHERE iduserplan = ? AND idexerciseinstance = ?",
+                newWeight, id, idOfExInstance);
+    }
     // Statistics
 
     /**

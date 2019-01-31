@@ -14,6 +14,18 @@
     <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
 
     <div th:include="/fragments/navbar :: style_fragment"></div>
+    <style>
+
+        .col-container {
+            display: table;
+            width: 100%;
+        }
+        .col {
+            display: table-cell;
+            padding: 5px;
+            width: 33%;
+        }
+    </style>
 </head>
 <body>
 
@@ -33,7 +45,6 @@
                     <h3 th:text="'Bitte trage ein mit wie viel Gewicht (in kg) du die Übung '
                     + ${exerciseDto.getExercise().getName()} + ', ' + ${exerciseDto.getRepMax()} + ' mal wiederholen kannst.'"></h3>
                 </div>
-                <!-- TODO Info zur Übung -->
                 <!--- form for user to write into --->
                 <div class="panel-body">
                     <div class="col-xs-12" style="text-align: center;">
@@ -44,16 +55,19 @@
                 </div>
                 <!--- Buttons for exit and continuing --->
                 <div class="panel-footer" style="text-align: center;">
-                    <div class="row">
-                        <a type="button"
-                           class="btn btn-danger col-xs-3 col-xs-offset-1" th:href="@{/user/plan}" id="backButton">
-                            Zurück
-                        </a>
-                        <div class="col-xs-4"></div>
-                        <button type="submit"
-                                class="btn btn-success col-xs-3" id="startButton" style="font-size: small" disabled>
-                            Bestätigen
-                        </button>
+                    <div class="col-container">
+                        <div class="col">
+                            <a type="button"
+                               class="btn btn-danger btn-block" th:href="@{/user/plan}" id="backButton">
+                                Zurück
+                            </a>
+                        </div>
+                        <div class="col">
+                            <button type="submit"
+                                    class="btn btn-success btn-block" id="startButton" style="font-size: small" disabled>
+                                Bestätigen
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

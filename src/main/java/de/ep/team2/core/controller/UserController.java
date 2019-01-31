@@ -4,8 +4,10 @@ import de.ep.team2.core.Exceptions.NoPlanException;
 import de.ep.team2.core.dtos.ExerciseDto;
 import de.ep.team2.core.dtos.RegistrationDto;
 import de.ep.team2.core.dtos.TrainingsDayDto;
+import de.ep.team2.core.entities.ExerciseInstance;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.entities.User;
+import de.ep.team2.core.entities.UserPlan;
 import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
@@ -14,14 +16,17 @@ import de.ep.team2.core.service.StatisticService;
 import de.ep.team2.core.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
 
 @Controller
@@ -221,6 +226,43 @@ public class UserController {
     }
 
     /**
+     * Calculates with the done and required reps if a weight adjustment is necessary.
+     * Calls the method in the Plan service to execute the adjustment.
+     * redirects the needed parameter to access the exercise page again.
+     *
+     * @param indexInList to identify the exercise Dto
+     * @param currentSet current set to save the progress of the exercise
+     * @param repsTodo reps the user should do
+     * @param repsDone reps the user has done
+     * @param redirectAttributes used to bring the currentSet attribute to the front end
+     * @return "redirect:/user/plan/exercise/"
+     */
+    @PostMapping("/plan/exercise/adjust")
+    public String exerciseRepsEvaluation(@RequestParam("indexInList") Integer indexInList, @RequestParam("currentSet") Integer currentSet,
+                                         @RequestParam("repsTodo") Integer repsTodo, @RequestParam("repsDone") Integer repsDone, RedirectAttributes redirectAttributes,  HttpServletRequest request) {
+        if (currentSet == null || repsTodo == null || repsDone == null) {
+            redirectAttributes.addFlashAttribute("currentSet", currentSet);
+            return "redirect:/user/plan/exercise/" + indexInList;
+        }
+        PlanService planService = new PlanService();
+        ExerciseDto exerciseDto = dayDto.getExercises().get(indexInList);
+        double calc = -1 + ((double) repsDone / (double) repsTodo);
+        int repsDifferencePercent = (int) Math.round(calc * 100);
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        planService.adjustWeightsOfUserForExercise(principal.getEmail(), exerciseDto.getIdExerciseInstance(), repsDifferencePercent);
+        ExerciseInstance exerciseInstance = planService.getExerciseInstanceById(exerciseDto.getIdExerciseInstance());
+        UserPlan userPlan = planService.getUserPlanById(exerciseDto.getIdUserPlan());
+        exerciseDto.setWeights(planService.createExerciseDto(exerciseInstance, userPlan, dayDto.getCurrentSession()).getWeights());
+        dayDto.changeExercise(exerciseDto, exerciseDto.getIndexInList());
+        request.setAttribute(
+                View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
+        redirectAttributes.addFlashAttribute("currentSet", currentSet);
+        redirectAttributes.addAttribute("index", indexInList);
+        redirectAttributes.addAttribute("trainingStarted", true);
+        return "redirect:/user/plan/exercise/";
+    }
+
+    /**
      * Sets the exercise of The current TrainingsDayDto done. (only used for initial Trainings)
      * And saves the weight done by the user to the database.
      *
@@ -251,17 +293,22 @@ public class UserController {
      * @return "error" when the trainings day hasn't started yet.; "user_first_training_of_plan" when its the initial training to provide the weights.;
      * "user_in_exercise" when its a normal trainings session.
      */
-    @RequestMapping("/plan/exercise/{index}")
-    public String openExercise(@PathVariable Integer index, Model model) {
+    @PostMapping("/plan/exercise/")
+    public String openExercise(@RequestParam("index") Integer index,
+                               @RequestParam("trainingStarted") Boolean started, Model model) {
         if (dayDto.getExercises() == null) {
             model.addAttribute("error", "No active plan visit plan overview first!");
             return "error";
         } else {
             ExerciseDto exerciseDto = dayDto.getExercises().get(index);
+            dayDto.setTrainingStarted(started);
             model.addAttribute("exerciseDto", exerciseDto);
             if (dayDto.isInitialTraining()) {
                 return "user_first_training_of_plan";
             } else {
+                if(!model.containsAttribute("currentSet")) {
+                    model.addAttribute("currentSet", 0);
+                }
                 return "user_in_exercise";
             }
         }

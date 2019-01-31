@@ -41,11 +41,20 @@
             width: 100%;
             height: 100%;
         }
-
+        .col-container {
+            display: table;
+            width: 100%;
+        }
+        .col {
+            display: table-cell;
+            padding: 5px;
+            width: 33%;
+        }
         /******************** Button Styles**********************/
         .btn-group-toggle{
             transform: scale(0.8);
         }
+
 
         .fullsize{
             width: 100%;
@@ -72,14 +81,13 @@
 </head>
 <body>
 
-
 <!-- Modal for exercise details -->
 <div id="exerciseModal" class="modal fade" role="dialog" data-backdrop="static">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
                 <div class="container">
-                    <div class="jumbotron col-md-5">
+                    <div class="jumbotron col-sm-9 col-md-7 col-lg-5">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 Name:
@@ -102,35 +110,35 @@
                                     Beispielvideo:
                                 </div>
                                 <div class="panel-body">
-                                    <div class="embed-responsive embed-responsive-16by9">
+                                    <div class="embed-responsive embed-responsive-16by9" style="width: 100%">
                                         <iframe th:if="${!exerciseDto.getExercise().getVideoLink().equals('')}" width="560" height="315"
-                                                th:src="${exerciseDto.getExercise().getVideoLink()}"
+                                                th:src="${exerciseDto.getExercise().getVideoLink()} "  style="width: 100%"
                                                 frameborder="0" allowfullscreen></iframe>
                                     </div>
                                 </div>
                             </div>
                             <div class="panel panel-default" th:if="${!exerciseDto.getExercise().getMuscleImgPaths().isEmpty()}">
                                 <div class="panel-heading">
-                                    <p th:if="${!exerciseDto.getExercise().getMuscleImgPaths().isEmpty()}">
+                                    <p th:if="${!exerciseDto.getExercise().getMuscleImgPaths().isEmpty()}"  style="width: 100%">
                                         Muskelgruppen Bilder:</p>
                                 </div>
                                 <div class="panel-body">
 
-                                    <div th:each="path : ${exerciseDto.getExercise().getMuscleImgPaths()}"
+                                    <div th:each="path : ${exerciseDto.getExercise().getMuscleImgPaths()} "
                                          class="image">
-                                        <img th:src="@{${path}}"/>
+                                        <img th:src="@{${path}}"  style="width: 100%"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="panel panel-default" th:if="${!exerciseDto.getExercise().getOtherImgPaths().isEmpty()}">
                                 <div class="panel-heading">
-                                    <p th:if="${!exerciseDto.getExercise().getOtherImgPaths().isEmpty()}">Andere
+                                    <p th:if="${!exerciseDto.getExercise().getOtherImgPaths().isEmpty()}"  style="width: 100%; max-width: 100%">Andere
                                         Bilder:</p>
                                 </div>
                                 <div class="panel-body">
-                                    <div th:each="path : ${exerciseDto.getExercise().getOtherImgPaths()}"
+                                    <div th:each="path : ${exerciseDto.getExercise().getOtherImgPaths()}" style="width: 100%; max-width: 100%"
                                          class="image">
-                                        <img th:src="@{${path}}"/>
+                                        <img th:src="@{${path}}" style="width: 100%; max-width: 100%"/>
                                     </div>
                                 </div>
                             </div>
@@ -138,6 +146,7 @@
                     </div>
                 </div>
             </div>
+            <!--- Feature removed
             <div class="container col-md-12" id="toggledAlert" >
                 <div class="container col-md-12">
                     <h5 style="color: red; text-align: center; background: #e3f2fd; border: 1px solid black;">
@@ -161,16 +170,15 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer " >
-                <div class="container col-md-12">
-                    <button type="button"
+            --->
+            <div class="modal-footer" >
+                <div class="container col-sm-12">
+                    <!--- Feature removed
+                    <button type="button" style="max-width: 100%"
                             class="btn btn-block btn-success" style="font-size: small" onclick="safeAlternativeExercise()" disabled id="button_saveExercise">
                         Übung festlegen
                     </button>
-                    <button type="button"
-                            class="btn btn-block btn-warning" data-toggle="button" aria-pressed="false" style="font-size: small" onclick="toggleExercise()">
-                        Alternative
-                    </button>
+                    --->
                     <button type="button"
                             class="btn btn-block btn-danger" data-dismiss="modal" style="font-size: small" id="closeInfoModal">
                         Zurück
@@ -190,21 +198,19 @@
                     <h4>Willst du die Übung abbrechen und zur Trainingsplanseite Zurückkehren?</h4>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-1"></div>
-                <div class="col-xs-4">
+            <div class="col-container">
+                <div class="col">
                     <a type="button"
                        class="btn btn-block btn-danger" th:href="@{/user/plan}">
                         Zum Plan
                     </a>
                 </div>
-                <div class="col-xs-4 col-xs-offset-2">
+                <div class="col">
                     <button type="button"
                             class="btn btn-block btn-success" data-dismiss="modal" id="continueButton">
                         Weitermachen
                     </button>
                 </div>
-                <div class="col-xs-1"></div>
             </div>
         </div>
     </div>
@@ -245,12 +251,22 @@
     </div>
 </div>
 
-<!--- submit Thymeleaf request --->
-<form th:action="@{/user/plan/exercise/done}" method="post" hidden>
-    <input title="done" type="checkbox" name="doneFlag" hidden checked>
-    <input type="" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
-    <input title="send" id="submitButton" type="submit" hidden>
-</form>
+<!--- submit Thymeleaf request for weight changes --->
+<div hidden>
+    <form th:action="@{/user/plan/exercise/done}" method="post" id="submitForm">
+        <input title="done" type="checkbox" name="doneFlag" hidden checked>
+        <input type="" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
+        <input title="send" id="submitButton" type="submit" hidden>
+        <input name="repsTodo" th:value="${exerciseDto.getReps()[0]}" id="weightRepsTodo">
+        <input name="repsDone" id="weightRepsDone">
+        <input class="btn  btn-primary btn-lg" type="submit"
+               value="js" id="weightChangeButton"
+               onclick="javascript: form.action='./adjust';"/>
+        <input name="currentSet" th:value="${currentSet}" id="startingSet">
+        <input th:value="${exerciseDto.getExercise().getWeightType() == T(de.ep.team2.core.enums.WeightType).SELF_WEIGHT}" id="weightIsSelfWeight">
+    </form>
+    <input name="currentSet" value="0" id="currentSet">
+</div>
 
 <!--- Page Content --->
 <div style="width: 100%; height: 95%;">
@@ -339,7 +355,7 @@
                             </div>
                         </div>
                         <div style="height: 30%;">
-                            <p style="text-align: center">Geschaffte Wiederholungen in diesem Satz</p>
+                            <p style="text-align: center; font-size: small">Geschaffte Wiederholungen in diesem Satz</p>
                         </div>
                         <div style="height: 20%;">
                             <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0"
@@ -382,7 +398,7 @@
                             </div>
                         </div>
 
-                        <!--- Evaluation --->
+                        <!--- Evaluation | Feature removed
                         <div id="container_evaluationBox" class="fullsize">
                             <div class="container fullsize">
                                 <div class="btn-group btn-group-toggle fullsize" data-toggle="buttons" id="radioButtonGroup">
@@ -404,29 +420,27 @@
                                 </div>
                             </div>
                         </div>
+                         --->
                     </div>
                 </div>
                 <div class="panel-footer" style="text-align: center;  height: 10%;">
-                    <!--- Back/Cancel and Completion/Start buttons--->
                     <div class="orangeContainer fullsize">
-                        <div style="height: 20%" name="buffer">
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-4" id="backButton">
+                        <div class=col-container>
+                            <div class="col" id="backButton">
                                 <a type="button"
-                                        class="btn btn-block btn-danger fullsize responsive-width"  th:href="@{/user/plan}">
+                                   class="btn btn-block btn-danger fullsize responsive-width"  th:href="@{/user/plan}">
                                     Zurück
                                 </a>
                             </div>
-                            <div class="col-xs-4" id="exitButton">
+                            <div class="col" id="exitButton">
                                 <button type="button"
                                         class=" btn btn-block btn-danger fullsize responsive-width" data-toggle="modal" data-target="#leavePageModal" id="exitExerciseButton">
                                     Abbrechen
                                 </button>
                             </div>
-                            <div class="col-xs-4 col-xs-offset-4" >
+                            <div class="col">
                                 <button type="button"
-                                        class=" btn btn-block btn-success fullsize responsive-width" id="startButton" onclick="exerciseFunction()" style="font-size: small">
+                                        class="btn btn-block btn-success fullsize responsive-width" id="startButton" onclick="exerciseFunction()" style="font-size: small">
                                     <span class="buttonName responsive-width"></span>
                                 </button>
                             </div>
@@ -438,7 +452,8 @@
     </div>
 </div>
 
-<!--- Button functionality and display --->
+
+<!--- Feature not implemented | Switch to alternative Exercise
 <script>
     var warningHidden = true;
 
@@ -454,7 +469,7 @@
         document.getElementById('button_saveExercise').disabled = false;
     }
 
-
+    //Button/function has been removed
     function toggleExercise() {
         if (warningHidden){
             warningHidden = false;
@@ -469,33 +484,17 @@
     }
 
 </script>
+--->
 
-<!--- Toggle Evaluation/Timer and Rep Counter --->
+
+<!--- Acript for Timer, Repitions and weight updates. This has to be in one script as they are all activated by the "exerciseFunction"-function --->
 <script>
-    /**
+
+    /***
      * Needed parameters for repition/weight label changing
-     * */
+     ***/
     var getweight;
     var getReps;
-
-    /***
-     * Updates the value of the repition and weight labels
-     * */
-    function updateValues(){
-        getweight = "weight" + currentCounter;
-        getReps = "reps" + currentCounter;
-        var newWeightCounter = document.getElementById(getweight).innerHTML;
-        var newRepCounter = document.getElementById(getReps).innerHTML;
-        document.getElementById('weightLabel').innerHTML = newWeightCounter;
-        totalReps = newRepCounter;
-        document.getElementById('neededReps').innerHTML = newRepCounter;
-        document.getElementById('repInput').value = totalReps;
-    }
-
-    /***
-     * Needed parameters for Stopwatch functionality
-     * */
-    var timerID = 0;
 
     /***
      * Needed parameters for Rep counter
@@ -507,47 +506,111 @@
     var newWeightCount;
 
     /***
+     * Needed parameters for Stopwatch functionality
+     * */
+    var timerID = 0;
+
+    /***
      * Needed parameters for Container Switch
      * */
     var timerBox = document.getElementById("container_timerBox");
     var evaluationBox = document.getElementById("container_evaluationBox");
-    var currentCounter = 0;
+    var currentCounter = document.getElementById('startingSet').value;
     var setCounter = document.getElementById("setNumber").innerHTML;
     var labelValue = currentCounter + "/" + setCounter;
     var pauseTimeValue = document.getElementById('setPause').innerHTML;
     var buttonTitle = "Starten";
     var done = false;
 
-
-
     /***
-     * Instancing first values for both scripts
-     * */
-    document.onLoad(initializeReps());
-    function initializeReps(){
-        console.log("1");
-        document.getElementById('hiddenElements').style.display = "none";
-        console.log("2");
-        document.getElementById('repInput').value = currentReps;
-        console.log("3");
-        document.querySelector('.doneReps').innerHTML = totalReps;
-        console.log("4");
-        evaluationBox.style.display = "none";
-        console.log("5");
-        document.querySelector('.value').innerHTML = labelValue;
-        console.log("6");
-        document.getElementById('pauseTime').innerHTML = pauseTimeValue + " " +"s";
-        console.log("7");
-        document.querySelector('.buttonName').innerHTML = buttonTitle;
-        console.log("8");
-        document.getElementById('neededReps').innerHTML = document.getElementById('reps1').innerHTML;
-        console.log("9");
-        document.getElementById('weightLabel').innerHTML = document.getElementById('weight1').innerHTML;
-        console.log("10");
+     * Initiates the weight change
+     ***/
+    function weightChange() {
+        console.log("weightchange start");
+        document.getElementById('weightRepsDone').value = document.getElementById('repInput').value;
+        document.getElementById('weightRepsTodo').value = document.getElementById('neededReps').innerHTML;
+        document.getElementById('startingSet').value = document.getElementById('currentSet').value;
+        document.getElementById('weightChangeButton').click();
+        console.log("weightchange end");
     }
 
     /***
-     * Stopwatch functions
+     * Checks if the exercise needs to adjust the weight value
+     ***/
+    function checkForWeightChange() {
+        console.log("check for weightchange start");
+        var test = document.getElementById('weightIsSelfWeight').value;
+        console.log("Is own weight : " + test);
+        if(test == "false"){
+            console.log("Fremdgewicht");
+            var test = document.getElementById('repInput').value;
+            var test2 = document.getElementById('neededReps').innerHTML;
+            console.log("repinput: " + test);
+            console.log("neededReps: " + test2);
+            if (test != test2){
+                weightChange();
+            }
+        }
+        console.log("check for weightchange end");
+    }
+
+    /***
+     * Updates the Set to the current set, after changing the weight relaoded the page
+     ***/
+    function updateStartingSet() {
+        console.log("update Start");
+        console.log(document.getElementById('startingSet').value + " x");
+        if (document.getElementById('startingSet').value != 0){
+            console.log("update entered");
+            document.getElementById('currentSet').value = document.getElementById('startingSet').value;
+            //TODO TEST DELETE LATER console.log
+            console.log("before exercisefunction");
+            exerciseFunction();
+            console.log("after exercisefunction");
+            console.log("update end");
+        }
+
+    }
+
+    /***
+     * Rep Counter functions
+     * update Values on each input
+     ***/
+    function updateReps() {
+        valueCheck = Math.ceil(document.getElementById('repInput').value);
+        if(valueCheck < 2* totalReps && valueCheck> 0){
+            currentReps = valueCheck;
+        } else if(valueCheck == ""){
+
+        }else{
+            currentReps = totalReps;
+            valueCheck = currentReps;
+            document.getElementById('repInput').value = currentReps;
+        }
+
+    }
+
+    /***
+     * Decrease Values on each click
+     * ***/
+    function decreaseReps(){
+        if(currentReps > 0){
+            currentReps--;
+        }
+        document.getElementById('repInput').value = currentReps;
+    }
+
+    /***
+     * Increase Values on each click
+     * ***/
+    function increaseReps(){
+        if(currentReps < 2*totalReps){
+            currentReps++;
+        }
+        document.getElementById('repInput').value = currentReps;
+    }
+
+    /***
      * @arg {Integer} duration - the seconds that the clock starts at
      ***/
     function startTimer(duration, display) {
@@ -593,106 +656,134 @@
     }
 
     /***
-     * Rep Counter functions
-     * update Values on each input
-     ***/
-    function updateReps() {
-        valueCheck = Math.ceil(document.getElementById('repInput').value);
-        if(valueCheck < 2* totalReps && valueCheck> 0){
-            currentReps = valueCheck;
-        } else if(valueCheck == ""){
-
-        }else{
-            currentReps = totalReps;
-            valueCheck = currentReps;
-            document.getElementById('repInput').value = currentReps;
-        }
-
-    }
-
-    /***
-     * Decrease Values on each click
-     * ***/
-    function decreaseReps(){
-        if(currentReps > 0){
-            currentReps--;
-        }
+     * Instancing first values for both scripts
+     * */
+    document.onLoad(initializeReps());
+    function initializeReps(){
+        document.getElementById('hiddenElements').style.display = "none";
+        document.getElementById('exitButton').style.display = "none";
         document.getElementById('repInput').value = currentReps;
+        document.querySelector('.doneReps').innerHTML = totalReps;
+        //evaluationBox.style.display = "none";
+        document.querySelector('.value').innerHTML = labelValue;
+        document.getElementById('pauseTime').innerHTML = pauseTimeValue + " " +"s";
+        document.querySelector('.buttonName').innerHTML = buttonTitle;
+        document.getElementById('neededReps').innerHTML = document.getElementById('reps1').innerHTML;
+        document.getElementById('weightLabel').innerHTML = document.getElementById('weight1').innerHTML;
+        updateStartingSet();
     }
 
     /***
-     * Increase Values on each click
-     * ***/
-    function increaseReps(){
-        if(currentReps < 2*totalReps){
-            currentReps++;
-        }
-        document.getElementById('repInput').value = currentReps;
-    }
-
-    /***
-     *Evaluation/Timer Toggle*
-     *Change Values on each click
+     * Main function of this script
+     * On button press the repitions get compared to the desired values and may trigger a weight change.
+     * Resets the timer.
+     * Updats the progressbar.
      * ***/
     function exerciseFunction(){
+        console.log("exercisefunction entered");
         //Can't send empty/illegal inputs
         if( !( valueCheck <= 2* totalReps && valueCheck> 0) ){
+            console.log("in exercisefunction case 1");
             $('#noValidInputModule').modal('show');
             valueCheck = currentReps;
         }
         else if (done){
+            console.log("in exercisefunction case 2");
             document.getElementById('submitButton').click();
-        }else if (currentCounter == setCounter){
+           }
+           /*else if (currentCounter == setCounter){
             timerBox.style.display = "none";
             evaluationBox.style.display = "inherit";
+        } */
+        else if(currentCounter == setCounter -1) {
+            console.log("in exercisefunction case 4");
             buttonTitle = "Abschließen";
-            done = true;
-            document.getElementById('buttonDecrease').disabled = true;
-            document.getElementById('buttonIncrease').disabled = true;
-            document.getElementById('repInput').disabled = true;
-            document.getElementById('progressBar').style.width = "100%";
-        } else if(currentCounter == setCounter -1) {
-            buttonTitle = "Evaluation";
             currentCounter++;
+            done = true;
+            document.getElementById('progressBar').style.width = "100%";
+            trainingNotActive();
             progressBar();
         }else{
+            console.log("in exercisefunction case default");
             currentCounter++;
-            buttonTitle = "Satz " + currentCounter + "<br>"+ " beenden";
-            document.getElementById('buttonDecrease').disabled = false;
-            document.getElementById('buttonIncrease').disabled = false;
-            document.getElementById('repInput').disabled = false;
-            document.getElementById('buttonRecommended').disabled = false;
-            document.getElementById('button30s').disabled = false;
-            document.getElementById('button60s').disabled = false;
-            document.getElementById('buttonStop').disabled = false;
+            buttonTitle = "Satz " + currentCounter + " beenden";
+            trainingStatusInProgress();
             progressBar();
         }
+        console.log("in exercisefunction continued");
         newRepCount = "reps" + setCounter;
         newWeightCount = "weight" + setCounter;
         labelValue = currentCounter + "/" + setCounter;
-
-        document.getElementById('backButton').style.display = "none";
-        document.getElementById('exitExerciseButton').style.display = "inherit";
-        document.querySelector('.value').innerHTML = labelValue;
-        document.querySelector('.buttonName').innerHTML = buttonTitle;
+        checkForWeightChange();
+        updateLabels();
         updateValues();
         stopTimer();
+    }
+
+    /***
+     * Disables buttons if exercise is not active
+     * */
+    function trainingNotActive() {
+        document.getElementById('buttonDecrease').disabled = true;
+        document.getElementById('buttonIncrease').disabled = true;
+        document.getElementById('repInput').disabled = true;
+        console.log("trainingnotactive");
+    }
+
+    /***
+     * Enables buttons if exercise is started
+     * */
+    function trainingStatusInProgress() {
+        document.getElementById('buttonDecrease').disabled = false;
+        document.getElementById('buttonIncrease').disabled = false;
+        document.getElementById('repInput').disabled = false;
+        document.getElementById('buttonRecommended').disabled = false;
+        document.getElementById('button30s').disabled = false;
+        document.getElementById('button60s').disabled = false;
+        document.getElementById('buttonStop').disabled = false;
+        console.log("trainingstatus");
+    }
+
+    /***
+     * Updates the value of the repition and weight labels
+     * */
+    function updateValues(){
+        if (document.getElementById('weightIsSelfWeight').value == "false") {
+            getweight = "weight" + currentCounter;
+            var newWeightCounter = document.getElementById(getweight).innerHTML;
+            document.getElementById('weightLabel').innerHTML = newWeightCounter;
+        }
+        getReps = "reps" + currentCounter;
+        var newRepCounter = document.getElementById(getReps).innerHTML;
+        totalReps = newRepCounter;
+        currentReps = totalReps;
+        document.getElementById('neededReps').innerHTML = newRepCounter;
+        document.getElementById('repInput').value = totalReps;
+
+    }
+
+    /***
+     * Updates Labels everytime they change
+     * */
+    function updateLabels() {
+        document.getElementById('backButton').style.display = "none";
+        document.getElementById('exitExerciseButton').style.display = "inherit";
+        document.getElementById('exitButton').style.display = "inherit";
+        document.querySelector('.value').innerHTML = labelValue;
+        document.querySelector('.buttonName').innerHTML = buttonTitle;
+        document.getElementById('currentSet').value = currentCounter;
+        console.log("updateLabels");
     }
 
     /***
      * calculates and updates progressbar-element
      */
     function progressBar(){
-        var  value = parseInt(setCounter) + 1;
+        var  value = parseInt(setCounter);
         document.getElementById('progressBar').style.width =  (currentCounter/value) *100 + "%";
     }
 
 </script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
-        crossorigin="anonymous"></script>
 </body>
 </html>

@@ -264,10 +264,16 @@
                                     <div class="row">
                                         <div class="col-md-10"></div>
                                         <div class="col-md-2">
-                                            <a href="#myCarousel" class="btn btn-success btn-block" data-slide="next">
+                                            <div hidden>
+                                                <a href="#myCarousel" class="btn btn-success btn-block" data-slide="next" id="buttonUserDataSubmit">
+                                                    Weiter
+                                                    <span class="glyphicon glyphicon-chevron-right"></span>
+                                                </a>
+                                            </div>
+                                            <button  class="btn btn-success btn-block" onclick="checkUserData()">
                                                 Weiter
                                                 <span class="glyphicon glyphicon-chevron-right"></span>
-                                            </a>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -960,6 +966,104 @@
      */
     function setTEperWeek(chosenTe) {
         document.getElementById("inputTEperWeek").value = chosenTe;
+    }
+</script>
+
+<!--- Checks the user inputs --->
+<script>
+    /**
+     * Tests the value in the input field on Null or empty
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkNotEmpty(id) {
+        var passesTest = true;
+        var valueInField = document.getElementById(id).value;
+        if (valueInField == null || valueInField == "") {
+            passesTest = false;
+        }
+        return passesTest;
+    }
+
+    /**
+     * Tests the value in the input field on Null, empty or special characters
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkSpecialCharacters(id){
+        var passesTest = checkNotEmpty(id);
+        var valueInField = document.getElementById(id).value;
+        var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        if (format.test(valueInField)){
+            passesTest = false;
+        }
+        return passesTest;
+    }
+
+    /**
+     * Tests the value in the input on if it only has Letters from a-Z
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkText(id){
+        if (checkSpecialCharacters(id)) {
+            var format = /^[a-zäöüA-ZÄÄÖÜ ]+$/
+            var valueInField = document.getElementById(id).value;
+            var passesTest =  format.test(valueInField);
+            if (passesTest){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tests the value in the input field on if it is a Number
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkNumber(id) {
+        if (checkNotEmpty(id)) {
+            var valueInField = document.getElementById(id).value;
+            if (!isNaN(valueInField)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function checkUserData(){
+        var alertmessage = "";
+        var passesTest = true;
+        if(!checkText("firstname")){
+            if (checkNotEmpty("firstname")){
+                alertmessage = alertmessage + "Du kannst keine Sonderzeichen in deinem Vornamen verwenden. "
+                passesTest = false;
+            }
+        }
+        if(!checkText("lastname")){
+            if (checkNotEmpty("firstname")){
+                alertmessage = alertmessage + "Du kannst keine Sonderzeichen in deinem Nachnamen verwenden. "
+                passesTest = false;
+            }
+        }
+        if(!checkNumber("height")){
+            if (checkNotEmpty("firstname")){
+                alertmessage = alertmessage + "Buchstaben sind bei der Größe nicht möglich. "
+                passesTest = false;
+            }
+        }
+        if(!checkNumber("weight")){
+            if (checkNotEmpty("firstname")){
+                alertmessage = alertmessage + "Buchstaben sind beim Gewicht nicht möglich. "
+                passesTest = false;
+            }
+        }
+        if (passesTest){
+            document.getElementById('buttonUserDataSubmit').click();
+        } else{
+            alert(alertmessage);
+        }
     }
 </script>
 </body>

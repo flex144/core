@@ -9,6 +9,7 @@ import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.PlanService;
+import de.ep.team2.core.service.UserService;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -96,18 +97,7 @@ public class PlanTests {
         assertEquals(0, (int) dayDto.getCurrentSession());
         assertEquals(planBasedOn.getExerciseInstances().size(), dayDto.getExercises().size());
         // completes initial training
-        for (int i = 0; i < dayDto.getExercises().size(); i++) {
-            assertFalse(planService.checkIfDayDone(dayDto));
-            dayDto.getExercises().get(i).setDone(true);
-            dayDto.getExercises().get(i).setWeightDone(50);
-            planService.setWeightsOfExercise(dayDto.getExercises().get(i));
-        }
-        assertTrue(planService.checkIfDayDone(dayDto));
-        planService.setUserPlanInitialTrainDone(dayDto.getExercises().getFirst().getIdUserPlan());
-        dayDto.clear();
-        planService.fillTrainingsDayDto(userMail, dayDto);
-        assertEquals(1, (int) dayDto.getCurrentSession());
-        assertFalse(dayDto.isInitialTraining());
+        initTrain(dayDto, 50, userMail);
         // completes all Trainings of the User Plan
         for (int i = 0; i < 6; i++) {
             dayDto.clear();
@@ -168,5 +158,46 @@ public class PlanTests {
         assertNull(db.getUserPlanByUserMail(userMail));
         planService.assignPlan(userMail, 2); // id of the one shot test plan
         assertNotNull(db.getUserPlanByUserMail(userMail));
+    }
+
+    private TrainingsDayDto initTrain(TrainingsDayDto dayDto, int weightDone, String userMail) {
+        for (int i = 0; i < dayDto.getExercises().size(); i++) {
+            assertFalse(planService.checkIfDayDone(dayDto));
+            dayDto.getExercises().get(i).setDone(true);
+            dayDto.getExercises().get(i).setWeightDone(weightDone);
+            planService.setWeightsOfExercise(dayDto.getExercises().get(i));
+        }
+        assertTrue(planService.checkIfDayDone(dayDto));
+        planService.setUserPlanInitialTrainDone(dayDto.getExercises().getFirst().getIdUserPlan());
+        dayDto.clear();
+        planService.fillTrainingsDayDto(userMail, dayDto);
+        assertEquals(1, (int) dayDto.getCurrentSession());
+        assertFalse(dayDto.isInitialTraining());
+        return dayDto;
+    }
+
+    @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
+    public void adjustWeight() {
+        UserService userService = new UserService();
+        String userMail = "PlanTester@gg.com";
+        userService.createUser(userMail, null, null, userService.encode("test123"));
+        PlanService planService = new PlanService();
+        planService.assignPlan(userMail, 1);
+        TrainingsDayDto dayDto = planService.fillTrainingsDayDto(userMail, new TrainingsDayDto());
+        initTrain(dayDto, 100, userMail);
+        dayDto.clear();
+        planService.fillTrainingsDayDto(userMail, dayDto);
+        assertEquals(100, dayDto.getExercises().getFirst().getWeights()[0].intValue());
+        planService.adjustWeightsOfUserForExercise(userMail, dayDto.getExercises().getFirst().getIdExerciseInstance(), -50);
+        dayDto.clear();
+        planService.fillTrainingsDayDto(userMail, dayDto);
+        assertEquals(85, dayDto.getExercises().getFirst().getWeights()[0].intValue());
+        planService.adjustWeightsOfUserForExercise(userMail, dayDto.getExercises().getFirst().getIdExerciseInstance(), +50);
+        dayDto.clear();
+        planService.fillTrainingsDayDto(userMail, dayDto);
+        assertEquals(98, dayDto.getExercises().getFirst().getWeights()[0].intValue());
+        assertEquals(0, dayDto.getExercises().get(1).getWeights()[0].intValue());
+        userService.deleteUserByID(userService.getUserByEmail(userMail).getId());
     }
 }

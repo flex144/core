@@ -268,43 +268,57 @@ public class PlanService {
         }
     }
 
+    /**
+     * Creates the exerciseDto for the traingsDayDto based on an given exercise instance.
+     * Sets and calculates all values required in the dto based on the userplan, session and instance.
+     *
+     * @param exInstance Instance the Dto represents
+     * @param userPlan userplan the dto belongs to
+     * @param currentSession currents session the plan is in
+     * @return the new created dto
+     */
+    public ExerciseDto createExerciseDto(ExerciseInstance exInstance, UserPlan userPlan, int currentSession) {
+        DataBaseService db = DataBaseService.getInstance();
+        ExerciseDto newDto = new ExerciseDto();
+        Exercise exercise = db.getExerciseById(exInstance.getIsExerciseID());
+        TrainingsSession trainingsSession;
+        if (!userPlan.isInitialTrainingDone() && currentSession == 0) {
+            newDto.setWeights(null);
+            newDto.setFirstTraining(true);
+            newDto.setWeightDone(0);
+            trainingsSession = getSessionByOrdering(1, exInstance.getTrainingsSessions()); // in initial Workout take values from first Trainings session
+        } else {
+            // when the initial Training was already completed calculate the values for the current Session
+            trainingsSession = getSessionByOrdering(currentSession, exInstance.getTrainingsSessions());
+            if (exercise.getWeightType() != WeightType.SELF_WEIGHT) {
+                // selfweight exercises require no calculation
+                newDto.setWeights(calcWeights(db.getWeightForUserPlanExercise(userPlan.getId(), exInstance.getId()), trainingsSession.getSets(), trainingsSession.getWeightDiff()));
+            } else {
+                newDto.setWeights(trainingsSession.getWeightDiff());
+            }
+            newDto.setFirstTraining(false);
+        }
+        // add all Data to the ExerciseDto
+        newDto.setIdUserPlan(userPlan.getId());
+        newDto.setIdExerciseInstance(exInstance.getId());
+        newDto.setExercise(exercise);
+        newDto.setCategory(exInstance.getCategory());
+        newDto.setTags(exInstance.getTags());
+        newDto.setSets(trainingsSession.getSets());
+        newDto.setTempo(trainingsSession.getTempo());
+        newDto.setPause(trainingsSession.getPauseInSec());
+        newDto.setReps(trainingsSession.getReps());
+        newDto.setRepMax(exInstance.getRepetitionMaximum());
+        return newDto;
+    }
+
     private LinkedList<ExerciseDto> createExerciseDtosForDay(UserPlan userPlan, int currentSession) {
         DataBaseService db = DataBaseService.getInstance();
         // get the Trainings plan Template the User plan is based on
         TrainingsPlanTemplate template = db.getPlanTemplateAndSessionsByID(userPlan.getIdOfTemplate());
         LinkedList<ExerciseDto> toReturn = new LinkedList<>();
         for (ExerciseInstance exInstance : template.getExerciseInstances()) {
-            // create the ExerciseDto based on each ExerciseInstance and the current TrainingsSession
-            ExerciseDto newDto = new ExerciseDto();
-            Exercise exercise = db.getExerciseById(exInstance.getIsExerciseID());
-            TrainingsSession trainingsSession;
-            if (!userPlan.isInitialTrainingDone() && currentSession == 0) {
-                newDto.setWeights(null);
-                newDto.setFirstTraining(true);
-                newDto.setWeightDone(0);
-                trainingsSession = getSessionByOrdering(1, exInstance.getTrainingsSessions()); // in initial Workout take values from first Trainings session
-            } else {
-                // when the initial Training was already completed calculate the values for the current Session
-                trainingsSession = getSessionByOrdering(currentSession, exInstance.getTrainingsSessions());
-                if (exercise.getWeightType() != WeightType.SELF_WEIGHT) {
-                    newDto.setWeights(calcWeights(db.getWeightForUserPlanExercise(userPlan.getId(), exInstance.getId()), trainingsSession.getSets(), trainingsSession.getWeightDiff()));
-                } else {
-                    newDto.setWeights(trainingsSession.getWeightDiff());
-                }
-                newDto.setFirstTraining(false);
-            }
-            // add all Data to the ExerciseDto
-            newDto.setIdUserPlan(userPlan.getId());
-            newDto.setIdExerciseInstance(exInstance.getId());
-            newDto.setExercise(exercise);
-            newDto.setCategory(exInstance.getCategory());
-            newDto.setTags(exInstance.getTags());
-            newDto.setSets(trainingsSession.getSets());
-            newDto.setTempo(trainingsSession.getTempo());
-            newDto.setPause(trainingsSession.getPauseInSec());
-            newDto.setReps(trainingsSession.getReps());
-            newDto.setRepMax(exInstance.getRepetitionMaximum());
-            toReturn.add(newDto);
+            toReturn.add(createExerciseDto(exInstance, userPlan, currentSession));
         }
         return toReturn;
     }
@@ -449,5 +463,71 @@ public class PlanService {
         } else {
             db.insertUserPlan(email, id);
         }
+    }
+
+    /**
+     * Checks if conditions are met throws according exception if not.
+     * Calculates with the percentage of done repetition the adjustment of the weight and then the new weight
+     * and forwards it to the database.
+     *
+     * @param usermail email to identify the user and his plan
+     * @param idOfExInstance id of the exercise instance the weights belong to
+     * @param percentRepsDifference percentage of weights done to much positive to few negativ.
+     */
+    public void adjustWeightsOfUserForExercise(String usermail, int idOfExInstance, int percentRepsDifference) {
+        DataBaseService db = DataBaseService.getInstance();
+        User user = db.getUserByEmail(usermail);
+        if (user == null) {
+            throw new IllegalArgumentException("User doesn't exist");
+        }
+        UserPlan userPlan = db.getUserPlanByUserMail(usermail);
+        if (userPlan == null) {
+            throw new IllegalArgumentException("User has no plan to adjust");
+        }
+        Exercise exercise = db.getExerciseById(db.getExercisInstanceById(idOfExInstance).getIsExerciseID());
+        if (exercise.getWeightType() == WeightType.SELF_WEIGHT) {
+            throw new IllegalArgumentException("Self weight exercises have no weight assigned");
+        }
+        Integer weight = db.getWeightForUserPlanExercise(userPlan.getId(), idOfExInstance);
+        if (weight == null) {
+            throw new IllegalArgumentException("User has no weight assigned to this exercise");
+        }
+        int adjustment;
+        int sign = 1;
+        if (percentRepsDifference < 0) {
+            sign = -1;
+            percentRepsDifference = percentRepsDifference * -1;
+        }
+        if (percentRepsDifference < 10) {
+            return;
+        } else if (percentRepsDifference < 25) {
+            adjustment = 5;
+        } else if (percentRepsDifference < 50) {
+            adjustment = 10;
+        } else {
+            adjustment = 15;
+        }
+        adjustment = adjustment * sign;
+        int newWeight = (int) Math.round(weight * (1.0 + (adjustment / 100.0)));
+        db.alterWeightForUserPlanExercise(userPlan.getId(), idOfExInstance, newWeight);
+    }
+
+    /**
+     * Returns an exercise instance object with a given id from the database. null if nothing found.
+     * @param idOfExInst id of the instance to search
+     * @return found instance or null
+     */
+    public ExerciseInstance getExerciseInstanceById(int idOfExInst) {
+        return DataBaseService.getInstance().getExercisInstanceById(idOfExInst);
+    }
+
+    /**
+     * Returns a user Plan object with a given id from the database. null if nothing found.
+     *
+     * @param idUserPlan id of the plan to look for.
+     * @return found plan or null
+     */
+    public UserPlan getUserPlanById(int idUserPlan) {
+        return DataBaseService.getInstance().getUserPlanById(idUserPlan);
     }
 }
