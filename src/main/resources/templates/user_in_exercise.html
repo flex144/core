@@ -90,6 +90,10 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
+                <button type="button"
+                        class="btn btn-block btn-danger" data-dismiss="modal" style="font-size: small" id="closeInfoModal">
+                    Zurück
+                </button>
                 <div class="container">
                     <div class="jumbotron col-sm-9 col-md-7 col-lg-5">
                         <div class="panel panel-default">
@@ -708,7 +712,6 @@
             currentCounter++;
             done = true;
             document.getElementById('progressBar').style.width = "100%";
-            trainingNotActive();
             progressBar();
             checkForWeightChange();
         }else{
