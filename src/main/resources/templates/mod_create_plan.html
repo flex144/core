@@ -21,6 +21,7 @@
             text-align: center;
             font-weight: bold;
             background-color: white;
+            color: black;
         }
         #inputFieldCheckbox {
             width: 42px;
@@ -531,77 +532,46 @@
 <div class="modal fade" id="modalExerciseForm">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    &times;
-                </button>
-                <h4 class="modal-title">Neue Trainingsübung erstellen</h4>
-            </div>
             <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="exerciseName">Name der Übung:</label>
-                            <input type="text" class="form-control" id="exerciseName" onkeypress="return noenter()"
-                                   placeholder="Hier die Übungsbezeichnung eingeben...">
-                        </div>
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h4>Verlassen der Seite bestätigen</h4>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="form-group">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="exercise_description">Beschreibung der Übung:</label>
-                                <textarea id="exercise_description" class="form-control"
-                                          rows="6"></textarea>
+                    <!-- Panel body with warning text and buttons to confirm/return -->
+                    <div class="panel-body">
+                        <p>
+                            Um eine neue Übung zu erstellen wird die aktuelle Seite verlassen.
+                        </p>
+                        <p class="text-danger" style="font-size: 12px">
+                            Nicht gespeichterte Eingaben in dem Formular zur Übungsbearbeitung werden verworfen!
+                        </p>
+                        <p>
+                            Der angefangene Plan wird gespeichert, aber noch nicht freigegeben. <br>
+                            Du kannst nach der Erstellung einer neuen Übung über die Plansuche deinen unfertigen
+                            Plan finden, auswählen und ihn dann weiter bearbeiten. Alle bisher hinzugefügten Übungen
+                            bleiben erhalten!
+                        </p>
+                        <br>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-4">
+                                <a type="button" class="btn btn-warning btn-block"
+                                        th:href="@{/mods/createexercise}">
+                                    Seite verlassen
+                                </a>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="muscleImageInput">Muskelgruppen-Bild:</label>
-                                <input type="image" class="form-control" id="muscleImageInput" onkeypress="return noenter()"
-                                       placeholder="Hier Bild mit Muskelgruppen einfügen...">
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-default btn-block"
+                                        data-dismiss="modal">
+                                    Abbrechen
+                                </button>
                             </div>
+                            <div class="col-md-2"></div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="weightType">Gewichtsart auswählen</label>
-                            <select id="weightType" class="form-control">
-                                <option selected disabled hidden>Wähle eine Option aus...</option>
-                                <option>Eigengewicht</option>
-                                <option>Befestigtes Gewicht</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="videoLink1">Erklärungsvideos: (Optional)</label>
-                            <input type="url" class="form-control" id="videoLink1" onkeypress="return noenter()"
-                                   placeholder="Hier Link zu einem Erklärungsvideo einfügen...">
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="imageInput">Zusätzliche Bilder hochladen (Optional)</label>
-                            <input type="image" class="form-control" id="imageInput" onkeypress="return noenter()"
-                                   placeholder="Hier Bild zur Übung einfügen...">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="addNewExerciseCheck()">Speichern</button>
-                <button type="button" class="btn btn-default" id="buttonCloseExerciseForm"
-                        data-dismiss="modal">
-                    Schließen
-                </button>
             </div>
         </div>
     </div>
@@ -673,123 +643,6 @@
         </div>
     </div>
 </div>
-
-<!-- Modal to view the details of an example exercise -->
-<!--
-<div class="modal fade" id="modalDetailsExercise">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">
-                        <h4>Detailansicht</h4>
-                    </div>
-                    <!-- Panel body with an example exercise to show the detail view -->
-                    <!--
-                    <div class="panel-body" th:if="${plan}">
-                        <div class="col-md-12">
-                            <table class="table table-bordered table-condensed detailExerciseTable" border="1"
-                                   width="100%" th:each="exercise : ${plan.exerciseInstances}">
-                                <colgroup>
-                                    <col width="5%">
-                                    <col width="15%">
-                                    <col width="30%">
-                                    <col width="7%">
-                                    <col width="23%">
-                                    <col width="5%">
-                                    <col width="5%">
-                                </colgroup>
-                                <thead>
-                                <tr>
-                                    <th>Ordnung</th>
-                                    <th>Übung</th>
-                                    <th>Ausführung</th>
-                                    <th>TE</th>
-                                    <th>Sätze - Wiederholungen</th>
-                                    <th>Tempo</th>
-                                    <th>Pause</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>
-                                        <input id="viewOrder" type="text" class="form-control"
-                                               th:value="${exercise.category}" disabled/>
-                                    </td>
-                                    <td>
-                                        <input id="viewExercise" type="text" class="form-control"
-                                               th:value="${exercise.name}" disabled/>
-                                    </td>
-                                    <td>
-                                        <textarea id="viewDescription" class="form-control"
-                                                  rows="4" disabled>Auf geraden Rücken achten!
-                                        </textarea>
-                                    </td>
-                                    <td >
-                                        <div class="form-group" th:each="sessions, iStat : ${exercise.trainingsSessions}">
-                                            <ul class="list-group" th:text="${iStat.count}"></ul>
-                                        </div>
-                                    </td>
-
-                                    <td >
-                                        <div class="form-group" th:each="sessions : ${exercise.trainingsSessions}">
-                                            <ul class="list-group">
-                                                <nobr th:each="rep : ${sessions.reps}">
-                                                    <nobr th:if="${rep} != 0" th:text="${rep} + ' /'"></nobr>
-                                                </nobr>
-                                            </ul>
-                                        </div>
-                                    </td>
-
-                                    <td >
-                                        <div class="form-group" th:each="sessions : ${exercise.trainingsSessions}">
-                                            <ul class="list-group" th:text="${sessions.tempo}"></ul>
-                                        </div>
-                                    </td>
-
-                                    <td >
-                                        <div class="form-group" th:each="sessions : ${exercise.trainingsSessions}">
-                                            <ul class="list-group" th:text="${sessions.pauseInSec}"></ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- Panel footer with Buttons to interact with the shown exercise -->
-                    <!--
-                    <div class="panel-footer">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <button type="button" class="btn btn-danger btn-block"
-                                        id="deleteCurrentExercise" data-dismiss="modal">
-                                    Übung löschen
-                                </button>
-                            </div>
-                            <div class="col-md-4">
-                                <button type="button" class="btn btn-primary btn-block"
-                                        id="editCurrentExercise" data-dismiss="modal">
-                                    Übung bearbeiten
-                                </button>
-                            </div>
-                            <div class="col-md-4">
-                                <button type="button" class="btn btn-default btn-block" id="btnCloseModalShowDetails"
-                                        data-dismiss="modal">
-                                    Schließen
-                                </button>
-                            </div>
-                            <div class="col-md-2"></div>
-                        </div>
-                    </div>
-                    -->
-<!--
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
--->
 
 <!-- Modal to view the details of an example plan -->
 <div class="modal fade" id="modalViewFinalPlan">
@@ -1222,6 +1075,8 @@
             // Disable the TE per Week buttons
             $('#btnDecrementWeeklyTes').prop('disabled', true);
             $('#btnIncrementWeeklyTes').prop('disabled', true);
+            // Hide the value of training units per week
+            document.getElementById("inputUnitsPerWeek").style.color = "white";
         } else {
             // Get the previous amount of TE´s
             var prevTEs = parseInt(document.getElementById("prevUnitAmount").value);
@@ -1235,6 +1090,8 @@
             // Enable the TE per Week buttons
             $('#btnDecrementWeeklyTes').prop('disabled', false);
             $('#btnIncrementWeeklyTes').prop('disabled', false);
+            // Show the value of training units per week
+            document.getElementById("inputUnitsPerWeek").style.color = "black";
         }
     }
 
@@ -1559,7 +1416,7 @@
             passesTest = false;
         } else{
             console.log(id + " :checkNotEmpty : passed");
-            document.getElementById(id).style.borderColor = "black";
+            document.getElementById(id).style.borderColor = "#CCCCCC";
         }
         return passesTest;
     }
@@ -1579,7 +1436,7 @@
             console.log(id + " :checkSpcialCharaters : failed");
             document.getElementById(id).style.borderColor = "red";
         } else{
-            document.getElementById(id).style.borderColor = "black";
+            document.getElementById(id).style.borderColor = "#CCCCCC";
         }
         return passesTest;
     }
@@ -1596,7 +1453,7 @@
             var passesTest =  format.test(valueInField);
             if (passesTest){
                 console.log(id + " :checkText : passed");
-                document.getElementById(id).style.borderColor = "black";
+                document.getElementById(id).style.borderColor = "#CCCCCC";
                 return true;
             }
         }
@@ -1615,7 +1472,7 @@
             var valueInField = document.getElementById(id).value;
             if (!isNaN(valueInField)){
                 console.log(id + " :checkNumber : passed");
-                document.getElementById(id).style.borderColor = "black";
+                document.getElementById(id).style.borderColor = "#CCCCCC";
                 return true;
             }
         }
@@ -1636,7 +1493,7 @@
             var passesTest =  format.test(valueInField);
             if (passesTest){
                 console.log(id + " :checkText : passed");
-                document.getElementById(id).style.borderColor = "black";
+                document.getElementById(id).style.borderColor = "#CCCCCC";
                 return true;
             }
         }

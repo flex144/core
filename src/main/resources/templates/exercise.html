@@ -130,10 +130,6 @@
                         <th>Gewichtsart</th>
                         <td><p th:text="${exercise.getWeightType().getValue()}" style="font-size: 14px"></p></td>
                     </tr>
-                    <tr>
-                        <th>Muskelgruppen</th>
-                        <td><p style="font-size: 14px">Brust, Trizeps</p></td>
-                    </tr>
                     </tbody>
                 </table>
                 <button class="accordion" th:if="${!exercise.getDescription().equals('')}">

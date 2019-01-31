@@ -86,13 +86,7 @@
                     <div class="col-container">
                         <div class="col">
                             <input class="form-control" id="currentEmail" type="email" name="currentEmail"
-                                   placeholder="Hier steht die aktuelle E-Mail Adresse" th:value="${user.email}">
-                        </div>
-                        <div class="col">
-                            <button class="btn btn-primary btn-block launch-modal" type="button">
-                                <span class="glyphicon glyphicon-lock"></span>
-                                E-Mail Adresse ändern
-                            </button>
+                                   placeholder="Hier steht die aktuelle E-Mail Adresse" th:value="${user.email}" readonly>
                         </div>
                         <div class="col">
                             <button class="btn btn-primary btn-block" data-toggle="modal"
