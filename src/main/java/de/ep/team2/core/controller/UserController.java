@@ -1,6 +1,7 @@
 package de.ep.team2.core.controller;
 
 import de.ep.team2.core.Exceptions.NoPlanException;
+import de.ep.team2.core.dataInit.DataInit;
 import de.ep.team2.core.dtos.ExerciseDto;
 import de.ep.team2.core.dtos.RegistrationDto;
 import de.ep.team2.core.dtos.TrainingsDayDto;
@@ -11,12 +12,16 @@ import de.ep.team2.core.entities.UserPlan;
 import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
+import de.ep.team2.core.service.EmailSenderService;
 import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.StatisticService;
 import de.ep.team2.core.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,9 +30,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/user")
@@ -36,6 +44,11 @@ public class UserController {
 
     @Autowired
     private TrainingsDayDto dayDto;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
+
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     /**
      * Brings the User to the Startup page.
@@ -151,7 +164,7 @@ public class UserController {
      * @return "user_training_overview" when the user has to select the next exercise; "redirect:/user/new" if the user has no plan; "redirect:/user/home" if the training is done for the day.
      */
     @RequestMapping("/plan")
-    public String handleUserTrainingStart(Model model) {
+    public String handleUserTrainingStart(Model model, RedirectAttributes redirectAttributes) {
         PlanService planService = new PlanService();
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // start Training
@@ -178,7 +191,8 @@ public class UserController {
                 statisticService.increaseDaysDone(principal.getEmail());
             }
             dayDto.clear();
-            return "redirect:/user/home"; // todo maybe info page that training is over
+            redirectAttributes.addFlashAttribute("message", "Trainingseinheit abgeschlossen! Weiter so! Bleib dran!");
+            return "redirect:/user/home";
         } else {
             model.addAttribute("dayDto", dayDto);
             return "user_training_overview";
@@ -374,5 +388,60 @@ public class UserController {
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         model.addAttribute("userStats", statisticService.getUserStats(principal.getEmail()));
         return "user_statistics";
+    }
+
+    @RequestMapping(value = {"/contact"}, method = RequestMethod.GET)
+    public String contact(Model model) {
+        UserService userService = new UserService();
+        List<User> mods = userService.getAllMods();
+        for (User mod : mods) {
+            if (mod.getFirstName() == null || mod.getFirstName().equals("") ||
+                    mod.getLastName() == null || mod.getLastName().equals("")) {
+                mods.remove(mod);
+            }
+        }
+        model.addAttribute("mods", mods);
+        return "user_contact_trainer"; }
+
+    @PostMapping("/contact")
+    public String contactSubmit(@RequestParam("trainer") Integer id, @RequestParam("subject") String subject,
+                                @RequestParam("message") String message, Model model, RedirectAttributes redirectAttributes) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        String modMail;
+        UserService userService = new UserService();
+        if (id == -1) {
+            List<User> mods = userService.getAllMods();
+            mods.remove(userService.getUserByEmail(DataInit.ADMIN_MAIL));
+            Random rnd = new Random();
+            int r = rnd.nextInt(mods.size());
+            modMail = mods.get(r).getEmail();
+        } else {
+            User mod = userService.getUserByID(id);
+            if (mod != null) {
+                if (!mod.getRole().equals("ROLE_MOD")) {
+                    model.addAttribute("error", "User is no Mod");
+                    return "error";
+                }
+                modMail = mod.getEmail();
+            } else {
+                model.addAttribute("error", "Mod not found");
+                return "error";
+            }
+        }
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal == null) {
+            model.addAttribute("error", "You need to be logged in");
+            return "error";
+        }
+        String uri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString();
+        String url = uri + "/users/" + principal.getId();
+        mailMessage.setTo(modMail);
+        mailMessage.setSubject(subject);
+        mailMessage.setText("Der Benutzer " + principal.getEmail() + " hat ein Problem mit der Traingsplattform. \n" +
+                "Nachricht: \n\n" + message + "\n\nLink zum Profil: " + url + "\n\n Bitte Kontaktiere ihn über seine E-Mail-Adresse.");
+        log.info("Email sent to '" + modMail + "' from '" + principal.getEmail() + "' because he has trouble with the system");
+        emailSenderService.sendEmail(mailMessage);
+        redirectAttributes.addFlashAttribute("message", "Die E-Mail wurde an den/einen Trainer versandt.");
+        return "redirect:/user/home";
     }
 }

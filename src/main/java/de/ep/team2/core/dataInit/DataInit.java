@@ -26,7 +26,7 @@ public class DataInit {
 
     // Variables used to configure the Application
 
-    private final String adminMail = "admin@ep18.com";
+    public static final String ADMIN_MAIL = "admin@ep18.com"; // Should only be used to set your account as Moderator. This will receive no emails of users.
     private final String adminPassword = "QxA4cxKWAT2bwmsD";
     // clears Database on each server start, required 'true' to run unit tests
     private final boolean alwaysClearDb = true;
@@ -114,8 +114,8 @@ public class DataInit {
     }
 
     private void addAdmin() {
-        int id = DataBaseService.getInstance().insertUser(adminMail, null, null, userService.encode(adminPassword));
-        DataBaseService.getInstance().confirmUser(adminMail);
+        int id = DataBaseService.getInstance().insertUser(ADMIN_MAIL, null, null, userService.encode(adminPassword));
+        DataBaseService.getInstance().confirmUser(ADMIN_MAIL);
         DataBaseService.getInstance().changeToMod(id);
     }
 
