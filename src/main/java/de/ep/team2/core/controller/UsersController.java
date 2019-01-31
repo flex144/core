@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * Handles Http-Requests with the path '/users'.
+ * required that users and mods can access some profiles.
  */
 @Controller
 @RequestMapping("/users")
