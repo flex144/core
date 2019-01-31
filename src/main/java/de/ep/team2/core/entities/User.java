@@ -168,7 +168,11 @@ public class User implements UserDetails {
      */
     public String getBirthDateString() {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        return format.format(this.birthDate);
+        if (birthDate != null) {
+            return format.format(this.birthDate);
+        } else {
+            return "";
+        }
     }
 
     public Integer getTrainingsFrequency() {

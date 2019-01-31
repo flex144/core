@@ -67,6 +67,10 @@ public class UserStats {
      */
     public String getRegDateString() {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
-        return format.format(this.registration_date);
+        if (registration_date != null) {
+            return format.format(this.registration_date);
+        } else {
+            return "";
+        }
     }
 }

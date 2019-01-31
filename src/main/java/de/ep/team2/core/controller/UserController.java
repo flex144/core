@@ -394,14 +394,16 @@ public class UserController {
     public String contact(Model model) {
         UserService userService = new UserService();
         List<User> mods = userService.getAllMods();
+        List<User> validMods = new LinkedList<>();
         for (User mod : mods) {
-            if (mod.getFirstName() == null || mod.getFirstName().equals("") ||
-                    mod.getLastName() == null || mod.getLastName().equals("")) {
-                mods.remove(mod);
+            if (mod.getFirstName() != null && !mod.getFirstName().equals("") &&
+                    mod.getLastName() != null && !mod.getLastName().equals("")) {
+                validMods.add(mod);
             }
         }
-        model.addAttribute("mods", mods);
-        return "user_contact_trainer"; }
+        model.addAttribute("mods", validMods);
+        return "user_contact_trainer";
+    }
 
     @PostMapping("/contact")
     public String contactSubmit(@RequestParam("trainer") Integer id, @RequestParam("subject") String subject,
