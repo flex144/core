@@ -317,6 +317,10 @@ public class ModController {
 
         exIn.setIsExerciseID(toUpdate.getId());
         service.editExerciseInstance(exIn);
+        TrainingsPlanTemplate tpt = service.getPlanTemplateAndSessionsByID(exIn.getPlanTemplateID());
+        if(!tpt.isConfirmed()) {
+            return "redirect:/mods/plans/"+tpt.getId();
+        }
         return "redirect:/mods/editplan/"+id;
     }
 
@@ -333,11 +337,16 @@ public class ModController {
     public String deleteExIn(@PathVariable("id") Integer id, @PathVariable("exId") Integer exId,
                              Model model) {
         PlanService planService = new PlanService();
-        if(planService.getExerciseInstanceById(exId) == null) {
+        ExerciseInstance exIn = planService.getExerciseInstanceById(exId);
+        if(exIn == null) {
             model.addAttribute("error", "Übungsinstanz existiert nicht!");
             return "error";
         } else{
+            TrainingsPlanTemplate tpt = planService.getPlanTemplateAndSessionsByID(exIn.getPlanTemplateID());
             planService.deleteExerciseInstanceById(exId);
+            if(!tpt.isConfirmed()) {
+                return "redirect:/mods/plans/"+tpt.getId();
+            }
             return "redirect:/mods/editplan/"+id;
         }
     }

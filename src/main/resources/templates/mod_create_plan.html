@@ -675,7 +675,7 @@
                         <div class="col-md-12">
                             <table class="table table-bordered table-condensed detail detailExerciseTable" border="1"
                                    width="100%" th:each="exercise : ${plan.exerciseInstances}"
-                                   th:id="${exercise.id}">
+                                   th:id="${exercise.id}" th:data="${exercise.id}">
                                 <colgroup>
                                     <col width="5%">
                                     <col width="15%">
@@ -752,14 +752,9 @@
                     <div class="panel-footer">
                         <div class="row">
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-danger btn-block"
-                                        id="deleteCurrentExercise" data-dismiss="modal">
-                                    Übung löschen
-                                </button>
-                            </div>
-                            <div class="col-md-4">
                                 <button type="button" class="btn btn-primary btn-block"
-                                        id="editCurrentExercise" data-dismiss="modal">
+                                        id="editCurrentExercise" data-dismiss="modal"
+                                        onclick="editExercise()">
                                     Übung bearbeiten
                                 </button>
                             </div>
@@ -859,6 +854,16 @@
         accordionJS();
     });
 
+    function editExercise() {
+        var x = document.getElementsByClassName("detailExerciseTable");
+        for (i = 0; i < x.length; i++) {
+            var y = document.getElementById(x[i].id);
+            if (y.style.getPropertyValue("display") === "block"){
+                location.href = "/mods/editplan/1/"+x[i].getAttribute('data');
+            }
+        }
+    }
+
     /**
      * Sets the tags for the plan in it's detailed preview.
      */
@@ -896,7 +901,6 @@
             setPlanTags(value);
             document.getElementById("planOrExercise").innerText = "Planvorschau";
             document.getElementById("editCurrentExercise").style.display = "none";
-            document.getElementById("deleteCurrentExercise").style.display = "none";
         } else {
             for (i = 0; i < x.length; i++) {
                 var y = document.getElementById(x[i].id);
@@ -918,7 +922,6 @@
             setPlanTags(value);
             document.getElementById("planOrExercise").innerText = "Übungsdetails";
             document.getElementById("editCurrentExercise").style.display = "block";
-            document.getElementById("deleteCurrentExercise").style.display = "block";
         }
         $(document).ready(function () {
             $('#modalViewFinalPlan').modal({

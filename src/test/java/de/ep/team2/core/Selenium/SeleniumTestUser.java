@@ -75,8 +75,8 @@ public class SeleniumTestUser {
         //login at website as user with email "alex@gmail.com" and password "password";
         driver.navigate().to("http://localhost:8080/");
         driver.findElement(By.id("email"))
-                .sendKeys("timo@gmail.com");
-        driver.findElement(By.id("password")).sendKeys("hello");
+                .sendKeys("benedikt.schwarz@gmail.com");
+        driver.findElement(By.id("password")).sendKeys("XOXO");
         driver.findElement(By.cssSelector("input.btn")).click();
     }
 
@@ -102,6 +102,9 @@ public class SeleniumTestUser {
         String url;
         //check if user can access a Plan
         driver.findElement(By.id("buttonPlan")).click();
+        driver.findElement(By.id("getNormalPlan")).click();
+        waitDuration(200);
+        System.out.println("point 1");
         title = driver.getTitle();
         assertEquals(title, "Your personalized training page");
 
