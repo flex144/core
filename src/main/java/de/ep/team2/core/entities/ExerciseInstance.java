@@ -11,7 +11,7 @@ public class ExerciseInstance {
     private String category;
     private int repetitionMaximum;
     private LinkedList<String> tags;
-    private LinkedList<TrainingsSession> trainingsSessions;
+    public LinkedList<TrainingsSession> trainingsSessions;
 
     public ExerciseInstance(int planTemplateID, int isExerciseID, int id, String category, int repetitionMaximum,
                             LinkedList<String> tags, LinkedList<TrainingsSession> trainingsSessions,
@@ -25,6 +25,8 @@ public class ExerciseInstance {
         this.trainingsSessions = trainingsSessions;
         this.name = name;
     }
+
+    public ExerciseInstance() {}
 
     public int getPlanTemplateID() {
         return planTemplateID;

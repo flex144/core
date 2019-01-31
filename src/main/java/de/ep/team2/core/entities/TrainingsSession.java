@@ -1,5 +1,7 @@
 package de.ep.team2.core.entities;
 
+import java.util.ArrayList;
+
 public class TrainingsSession {
 
     private int id;
@@ -22,6 +24,8 @@ public class TrainingsSession {
         this.tempo = tempo;
         this.pauseInSec = pauseInSec;
     }
+
+    public TrainingsSession() {}
 
     public int getId() {
         return id;

@@ -9,69 +9,211 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css">
 
-    <div th:include="/fragments/navbar :: navbar_style"></div>
+    <div th:include="/fragments/navbar :: style_fragment"></div>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .col-container {
+            display: table;
+            width: 100%;
+        }
+        .col {
+            display: table-cell;
+            padding: 5px;
+        }
+        .colGeneralInfo {
+            width: 50%;
+        }
+        #panelEditPlan {
+            padding-left: 20px;
+        }
+        @media only screen and (max-width: 600px) {
+            .col {
+                display: block;
+                width: 100%;
+            }
+            #panelEditPlan {
+                padding-left: 0px;
+            }
+        }
+        .panel .panel-heading {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="/fragments/navbar :: navbar_mod"></div>
 
-<div class="container">
-    <div class="panel panel-default outerPanel">
-        <div class="panel-heading" style="font-weight: bold">
-            Planvorlage bearbeiten
-        </div>
-        <div class="panel-body">
-            <div class="col-md-12">
-                <table class="table table-bordered table-condensed detail detailExerciseTable" border="1"
-                       width="100%">
-                    <colgroup>
-                        <col width="5%">
-                        <col width="15%">
-                        <col width="30%">
-                        <col width="7%">
-                        <col width="23%">
-                        <col width="5%">
-                        <col width="5%">
-                    </colgroup>
-                    <thead>
-                    <tr>
-                        <th>Ordnung</th>
-                        <th>Übung</th>
-                        <th>Ausführung</th>
-                        <th>TE</th>
-                        <th>Sätze - Wiederholungen</th>
-                        <th>Tempo</th>
-                        <th>Pause</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+<div class="container" >
+    <form th:action="@{/mods/editplan}" th:method="put" th:object="${tpt}">
+        <div class="panel panel-default outerPanel">
+            <div class="panel-heading" id="panelEditPlan">
+                <h3>Planvorlage bearbeiten</h3>
+            </div>
+            <div class="panel-body">
+                <div class="col-container">
+                    <div class="col colGeneralInfo">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Planbezeichnung:
+                            </div>
+                            <div class="panel-body">
+                                <input  type="text" class="form-control" id="planName"
+                                        placeholder="Hier bisherigen Namen anzeigen" th:field="*{name}">
+                                <input hidden th:field="*{id}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col colGeneralInfo">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Trainingsfokus:
+                            </div>
+                            <div class="panel-body">
+                                <select id="focus" class="form-control" required th:field="*{trainingsFocus}">
+                                    <option selected disabled hidden th:value="null">Hier bisherigen Fokus anzeigen</option>
+                                    <option th:value="'MUSCLE'">Muskelaufbau</option>
+                                    <option th:value="'STAMINA'">Ausdauer</option>
+                                    <option th:value="'WEIGHT'">Gewichtsreduktion</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-container">
+                    <div class="col colGeneralInfo">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Zielgruppe: (Erfahrungslevel)
+                            </div>
+                            <div class="panel-body">
+                                <select id="targetExperience" class="form-control" required th:field="*{targetGroup}">
+                                    <option selected disabled hidden th:value="'null'">Hier bisherige Erfahrung anzeigen</option>
+                                    <option th:value="'BEGINNER'">Anfänger</option>
+                                    <option th:value="'MEDIUM'">Fortgeschritten</option>
+                                    <option th:value="'EXPERT'">Profi</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col colGeneralInfo">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Trainingseinheiten pro Woche:
+                            </div>
+                            <div class="panel-body">
+                                <input  type="number" class="form-control" id="weeklyTEs"
+                                        placeholder="Hier bisherigen TEs pro Woche anzeigen"
+                                        th:field="*{recomSessionsPerWeek}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                    </tbody>
-                </table>
-
+                <div class="panel panel-default" th:each="exercise, itemStat : *{exerciseInstances}">
+                    <div class="panel-heading">
+                        <div class="col-container">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="order">Ordnung:</label>
+                                    <input type="text" class="form-control" id="order"
+                                           placeholder="Aktuelle Ordnung" disabled
+                                           th:value="${exercise.category}">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="exerciseName">Übungsname:</label>
+                                    <input type="text" class="form-control" id="exerciseName"
+                                           placeholder="Aktueller Übungsname" disabled
+                                           th:value="${exercise.name}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div clas="col-container">
+                            <div class="col">
+                                <a type="button" th:href="@{/mods/editplan/__${exercise.planTemplateID}__/__${exercise.id}__}">
+                                    Übung Bearbeiten
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-md-6">
+                        <a type="button" class="button btn btn-block" data-toggle="modal"
+                           data-target="#modal_confirm_exit" >
+                            <span class="glyphicon glyphicon-remove"></span>
+                            Abbrechen
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="button btn btn-block" type="submit">
+                            <span class="glyphicon glyphicon-floppy-saved"></span>
+                            Änderungen übernehmen
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="panel-footer">
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5">
-                    <button type="button" class="btn btn-danger btn-block"
-                            id="deleteCurrentExercise" data-dismiss="modal">
-                        <span class="glyphicon glyphicon-remove"></span>
-                        Abbrechen
-                    </button>
+    </form>
+</div>
+
+<!-- Modal to confirm leaving the current page without saving changes -->
+<div class="modal fade" id="modal_confirm_exit">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- body (form) -->
+            <div class="modal-body">
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h4>Abbruch bestätigen</h4>
+                    </div>
+                    <div class="panel-body">
+                        <br>
+                        <p style="font-size: 16px">
+                            Wollen sie wirklich abbrechen?
+                        </p>
+                        <p class="text-warning" style="font-size: 12px">
+                            Alle vorgenommenen Änderungen werden verworfen!
+                        </p>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-5">
+                                <a type="button" class="btn btn-warning btn-block"
+                                   th:href="@{/mods/searchplan}">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                    Änderungen verwerfen
+                                </a>
+                            </div>
+                            <div class="col-md-5">
+                                <button type="button" class="btn btn-default btn-block" data-dismiss="modal">
+                                    Weiter Bearbeiten
+                                </button>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-5">
-                    <button type="button" class="btn btn-success btn-block">
-                        <span class="glyphicon glyphicon-floppy-save"></span>
-                        Änderungen übernehmen
-                    </button>
-                </div>
-                <div class="col-md-1"></div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+
+</script>
 
 </body>
 </html>

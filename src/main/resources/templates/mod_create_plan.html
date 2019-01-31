@@ -923,6 +923,7 @@
         </div>
     </div>
 </div>
+
 <form th:action="@{/mods/plans/{path}(path=${createDto.getId()})}" th:method="delete" id="formDelete">
 </form>
 
@@ -1014,6 +1015,7 @@
         for (i = 0; i < x.length; i++) {
             var e = x[i].getAttribute('data');
             $('#tagsPlan' + value).tagsinput('add', e);
+            $('#tagsPlanEx' + value).tagsinput('add', e);
         }
     }
 
@@ -1049,6 +1051,15 @@
                     y.style.display = "block";
                 } else {
                     y.style.display = "none";
+                }
+            }
+            var z = document.getElementsByClassName("detailChangeExerciseTable");
+            for (i = 0; i < z.length; i++) {
+                var o = document.getElementById(z[i].id);
+                if (o.id === 'ExID'+value) {
+                    o.style.display = "block";
+                } else {
+                    o.style.display = "none";
                 }
             }
             setPlanTags(value);

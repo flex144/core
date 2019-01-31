@@ -114,7 +114,7 @@ public class TrainingsPlanTemplate {
         return exerciseInstances;
     }
 
-    public void setTrainingsSessions(LinkedList<ExerciseInstance> trainingsSessions) {
+    public void setExerciseInstances(LinkedList<ExerciseInstance> exerciseInstances) {
         this.exerciseInstances = exerciseInstances;
     }
 

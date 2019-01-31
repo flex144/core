@@ -3,6 +3,9 @@ package de.ep.team2.core.controller;
 import de.ep.team2.core.dtos.CreatePlanDto;
 import de.ep.team2.core.entities.Exercise;
 import de.ep.team2.core.entities.User;
+import de.ep.team2.core.entities.ExerciseInstance;
+import de.ep.team2.core.entities.TrainingsPlanTemplate;
+import de.ep.team2.core.entities.TrainingsSession;
 import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.StatisticService;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -215,5 +219,165 @@ public class ModController {
         model.addAttribute("numberExercises", statisticService.getNumberExercises());
         model.addAttribute("numberPlans", statisticService.getNumberPlans());
         return "mod_statistics";
+    }
+
+    /**
+     * Searches for a plantemplate in the database and binds it to the model for thymeleaf
+     * to use.
+     *
+     * @param id id of the plantemplate
+     * @param model the model thymeleaf uses.
+     * @return the page mod_edit_plan
+     */
+    @RequestMapping(value="/editplan/{id}", method = RequestMethod.GET)
+    public String editPlan(@PathVariable("id") Integer id, Model model) {
+        PlanService service = new PlanService();
+        TrainingsPlanTemplate tpt = service.getPlanTemplateAndSessionsByID(id);
+        if(tpt== null) {
+            model.addAttribute("error", "Plan nicht gefunden!");
+            return "error";
+        }
+        model.addAttribute("tpt", tpt);
+        return "mod_edit_plan";
+    }
+
+    /**
+     * Function used to edit a plan in the database.
+     *
+     * @param tpt The plantemplate to edit.
+     * @param model the model thymeleaf uses.
+     * @return redirect to /mods/searchplan
+     */
+    @RequestMapping(value="/editplan", method = RequestMethod.PUT)
+    public String postEditPlan(@ModelAttribute("tpt") TrainingsPlanTemplate tpt, Model model) {
+        PlanService service = new PlanService();
+        service.editPlanTemplate(tpt);
+        return "redirect:/mods/searchplan";
+    }
+
+    /**
+     * Returns a website to edit a exercise instance of a plan.
+     * The method looks in the database for the searched exercise instance and
+     * binds it to the model.
+     *
+     * @param id id of the plan template
+     * @param exId id of the exercise instance
+     * @param model model thymeleaf uses
+     * @return returns the website mod_edit_exerciseInstance
+     */
+    @RequestMapping(value="/editplan/{id}/{exId}", method = RequestMethod.GET)
+    public String editExIn(@PathVariable("id") Integer id, @PathVariable("exId") Integer exId,
+                           Model model) {
+        PlanService service = new PlanService();
+        ExerciseService exerciseService = new ExerciseService();
+        TrainingsPlanTemplate tpt = service.getPlanTemplateAndSessionsByID(id);
+        ExerciseInstance exIn = service.getExerciseInstanceById(exId);
+        if(tpt == null || exIn == null) {
+            model.addAttribute("error", "Plan oder Übung nicht vorhanden!");
+            return "error";
+        }
+        model.addAttribute("tpt", tpt);
+        model.addAttribute("allExercises", exerciseService.getAllExercises());
+        if (!model.containsAttribute("exIn")) {
+            model.addAttribute("exIn", exIn);
+        }
+        return "mod_edit_exerciseInstance";
+    }
+
+    /**
+     * Handles post requests for editing an exercise instance.
+     * The function checks if the values are valid and saves the exercise in the database.
+     *
+     * @param exIn the edited exercise instance
+     * @param id id of the plan template where the exercise belongs
+     * @param exId id of the exercise instance
+     * @param model model thymeleaf uses
+     * @param redirectAttributes handles attributes for a redirect
+     * @return if args are valid it returns the editplan site for the plan,
+     *          if not, it returns the edit exercise page, with an errormessage.
+     */
+    @RequestMapping(value="/editplan/{id}/{exId}", method = RequestMethod.POST)
+    public String postEditExIn(@ModelAttribute("exIn") ExerciseInstance exIn,
+                               @PathVariable("id") Integer id, @PathVariable("exId") Integer exId,
+                               Model model, RedirectAttributes redirectAttributes) {
+        PlanService service = new PlanService();
+        ExerciseService exerciseService = new ExerciseService();
+        Exercise toUpdate = exerciseService.getExerciseByName(exIn.getName());
+        String validArgs = checkIfArgsValid(exIn);
+        if (toUpdate == null) {
+            String errorMessage = "Übung '"+exIn.getName()+"' nicht vorhanden!";
+            redirectAttributes.addFlashAttribute("exIn", exIn);
+            redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+            return "redirect:/mods/editplan/"+id+"/"+exId;
+        } else if (!validArgs.equals("")) {
+            redirectAttributes.addFlashAttribute("errorMessage", validArgs);
+            redirectAttributes.addFlashAttribute("exIn", exIn);
+            return "redirect:/mods/editplan/"+id+"/"+exId;
+        }
+
+        exIn.setIsExerciseID(toUpdate.getId());
+        service.editExerciseInstance(exIn);
+        return "redirect:/mods/editplan/"+id;
+    }
+
+    /**
+     * Handles delete requests for deleting an exercise instance.
+     *
+     * @param id id of the plan template where the exercise instance belongs
+     * @param exId id of the exercise instance to delete
+     * @param model model thymeleaf uses
+     * @return returns the editplan site if everything goes right, else it redirects to
+     *          the error page.
+     */
+    @RequestMapping(value="/editplan/{id}/{exId}", method = RequestMethod.DELETE)
+    public String deleteExIn(@PathVariable("id") Integer id, @PathVariable("exId") Integer exId,
+                             Model model) {
+        PlanService planService = new PlanService();
+        if(planService.getExerciseInstanceById(exId) == null) {
+            model.addAttribute("error", "Übungsinstanz existiert nicht!");
+            return "error";
+        } else{
+            planService.deleteExerciseInstanceById(exId);
+            return "redirect:/mods/editplan/"+id;
+        }
+    }
+
+    private String checkIfArgsValid(ExerciseInstance exIn) {
+        String validationMessage = "";
+        int sessionCounter = 1;
+
+        for(TrainingsSession session : exIn.getTrainingsSessions()) {
+            int weightLength = session.getWeightDiff().length;
+            int repsLength = session.getReps().length;
+            if(repsLength >7) {
+                validationMessage = "Maximal 7 Sets erlaubt!";
+            } else if(repsLength == 0) {
+                validationMessage = "Wiederholungen dürfen nicht leer sein!";
+            }else if(weightLength > repsLength) {
+                validationMessage = "Es kann nicht mehr Gewichtsänderungen als Sets geben!";
+            } else if(weightLength>1 && (repsLength != weightLength ||
+                     containsNull(session.getWeightDiff()))) {
+                validationMessage = "Gewichtsänderungen passen nicht!";
+            } else if(containsNull(session.getReps())) {
+                validationMessage = "Wiederholungen passen nicht!";
+            }
+            if(!validationMessage.equals("")) {
+                validationMessage = validationMessage + " (Trainingseinheit '"+sessionCounter+"')" ;
+                break;
+            }
+            sessionCounter++;
+        }
+
+        return validationMessage;
+    }
+
+    private boolean containsNull(Integer[] numbers) {
+        boolean toReturn = false;
+        for(Integer number : numbers) {
+            if(number == null) {
+                toReturn = true;
+            }
+        }
+        return toReturn;
     }
 }

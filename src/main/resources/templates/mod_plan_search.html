@@ -94,7 +94,8 @@
                         <td th:text="${planTemplate.getTargetGroup()}"></td>
                         <td th:text="${planTemplate.getRecomSessionsPerWeek()}"></td>
                         <td th:text="${planTemplate.getNumTrainSessions()}"></td>
-                        <td th:text="${planTemplate.confirmed()}"></td>
+                        <td th:text="${planTemplate.confirmed()}" th:id="'confirmed'+ ${planTemplate.getId()}"
+                            th:data="${planTemplate.confirmed()}"></td>
                         <td th:if="${planTemplate.getAuthor()}" th:text="${planTemplate.author.getEmail()}"></td>
                         <td th:if="${planTemplate.getAuthor()} == null" th:text="'Gelöschtes Profil'"></td>
                     </tr>
@@ -120,7 +121,12 @@
 --->
 <script>
     function rowClicked(value) {
-        location.href = "plans/" + value;
+        var x = document.getElementById("confirmed"+value);
+        if(x.getAttribute('data') === "Ja") {
+            location.href = "../mods/editplan/"+value;
+        } else {
+            location.href = "../mods/plans/"+value;
+        }
     }
 </script>
 

@@ -10,6 +10,8 @@ import de.ep.team2.core.service.ExerciseService;
 import de.ep.team2.core.service.PlanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +22,8 @@ import java.util.LinkedList;
 @Controller
 @RequestMapping("/mods/")
 public class TrainingsController {
+
+    private static final Logger log = LoggerFactory.getLogger(TrainingsController.class);
 
     @Autowired
     private EmailSenderService emailSenderService;
@@ -39,6 +43,7 @@ public class TrainingsController {
                                       RedirectAttributes redirectAttributes) {
         PlanService service = new PlanService();
         String checkArgs = checkIfArgsValid(dto);
+        log.info("Post Request.");
 
         if (checkArgs.equals("valid!")) {
             dto.nameToId();

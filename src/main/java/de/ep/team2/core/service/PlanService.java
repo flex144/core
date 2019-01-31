@@ -48,13 +48,27 @@ public class PlanService {
         TrainingsPlanTemplate tempToDelete = db.getPlanTemplateAndSessionsByID(id);
          LinkedList<User> users = db.deleteUserPlansByTemplateId(id);
         for (ExerciseInstance ei : tempToDelete.getExerciseInstances()) {
-            for (TrainingsSession ts : ei.getTrainingsSessions()) {
-                db.deleteTrainingsSessionById(ts.getId());
-            }
-            db.deleteExerciseInstanceByID(ei.getId());
+            deleteExerciseInstanceById(ei.getId());
         }
         db.deletePlanTemplateByID(id);
         return users;
+    }
+
+    /**
+     * Deletes an exercise instance and its trainings sessions from the database.
+     *
+     * @param id Id of the exercise instance to delete
+     */
+    public void deleteExerciseInstanceById(int id) {
+        DataBaseService db = DataBaseService.getInstance();
+        ExerciseInstance toDelete = db.getExercisInstanceById(id);
+        if(toDelete != null) {
+            db.deleteWeightsByExId(id);
+            for (TrainingsSession session : toDelete.getTrainingsSessions()) {
+                db.deleteTrainingsSessionById(session.getId());
+            }
+            db.deleteExerciseInstanceByID(id);
+        }
     }
 
     /**
@@ -529,5 +543,23 @@ public class PlanService {
      */
     public UserPlan getUserPlanById(int idUserPlan) {
         return DataBaseService.getInstance().getUserPlanById(idUserPlan);
+    }
+
+    //Edit Plan
+
+    public void editExerciseInstance(ExerciseInstance exIn) {
+        DataBaseService db = DataBaseService.getInstance();
+        for(TrainingsSession session : exIn.getTrainingsSessions()) {
+            if(session.getWeightDiff().length == 0) {
+                Integer[] newWeightDiff = new Integer[] {0};
+                session.setWeightDiff(newWeightDiff);
+            }
+            session.setWeightDiff(setWeightDiffToReps(session.getReps(), session.getWeightDiff()));
+        }
+        db.editExerciseInstance(exIn);
+    }
+
+    public void editPlanTemplate(TrainingsPlanTemplate tpt) {
+        DataBaseService.getInstance().editPlanTemplate(tpt);
     }
 }
