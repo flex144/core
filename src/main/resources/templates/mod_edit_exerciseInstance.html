@@ -100,7 +100,8 @@
                                 <div class="form-group">
                                     <label for="rm">Repetition Maximum:</label>
                                     <input type="text" class="form-control" id="rm"
-                                           placeholder="Aktuelles Repetition Maximum" th:field="*{repetitionMaximum}">
+                                           placeholder="Aktuelles Repetition Maximum" th:field="*{repetitionMaximum}"
+                                           pattern="[0-9]+" required>
                                 </div>
                             </div>
                             <div class="col">
@@ -169,20 +170,20 @@
             </div>
             <div class="panel-footer">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <a type="button" class="button btn btn-block" data-toggle="modal"
                            data-target="#modal_confirm_exit">
                             <span class="glyphicon glyphicon-remove"></span>
                             Abbrechen
                         </a>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <button class="button btn btn-block" type="submit">
                             <span class="glyphicon glyphicon-floppy-saved"></span>
                             Änderungen übernehmen
                         </button>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <a class="button btn btn-block" type="button" data-toggle="modal"
                            data-target="#modal_confirm_delete">
                             <span class="glyphicon glyphicon-trash"></span>

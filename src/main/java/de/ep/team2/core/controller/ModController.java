@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -110,14 +109,33 @@ public class ModController {
         return "mod_user_search";
     }
 
+    /**
+     * Searches for a plantemplate in the database and binds it to the model for thymeleaf
+     * to use.
+     *
+     * @param id id of the plantemplate
+     * @param model the model thymeleaf uses.
+     * @return the page mod_edit_plan
+     */
     @RequestMapping(value="/editplan/{id}", method = RequestMethod.GET)
     public String editPlan(@PathVariable("id") Integer id, Model model) {
         PlanService service = new PlanService();
         TrainingsPlanTemplate tpt = service.getPlanTemplateAndSessionsByID(id);
+        if(tpt== null) {
+            model.addAttribute("error", "Plan nicht gefunden!");
+            return "error";
+        }
         model.addAttribute("tpt", tpt);
         return "mod_edit_plan";
     }
 
+    /**
+     * Function used to edit a plan in the database.
+     *
+     * @param tpt The plantemplate to edit.
+     * @param model the model thymeleaf uses.
+     * @return redirect to /mods/searchplan
+     */
     @RequestMapping(value="/editplan", method = RequestMethod.PUT)
     public String postEditPlan(@ModelAttribute("tpt") TrainingsPlanTemplate tpt, Model model) {
         PlanService service = new PlanService();
@@ -125,6 +143,16 @@ public class ModController {
         return "redirect:/mods/searchplan";
     }
 
+    /**
+     * Returns a website to edit a exercise instance of a plan.
+     * The method looks in the database for the searched exercise instance and
+     * binds it to the model.
+     *
+     * @param id id of the plan template
+     * @param exId id of the exercise instance
+     * @param model model thymeleaf uses
+     * @return returns the website mod_edit_exerciseInstance
+     */
     @RequestMapping(value="/editplan/{id}/{exId}", method = RequestMethod.GET)
     public String editExIn(@PathVariable("id") Integer id, @PathVariable("exId") Integer exId,
                            Model model) {
@@ -132,6 +160,10 @@ public class ModController {
         ExerciseService exerciseService = new ExerciseService();
         TrainingsPlanTemplate tpt = service.getPlanTemplateAndSessionsByID(id);
         ExerciseInstance exIn = service.getExerciseInstanceById(exId);
+        if(tpt == null || exIn == null) {
+            model.addAttribute("error", "Plan oder Übung nicht vorhanden!");
+            return "error";
+        }
         model.addAttribute("tpt", tpt);
         model.addAttribute("allExercises", exerciseService.getAllExercises());
         if (!model.containsAttribute("exIn")) {
@@ -140,6 +172,18 @@ public class ModController {
         return "mod_edit_exerciseInstance";
     }
 
+    /**
+     * Handles post requests for editing an exercise instance.
+     * The function checks if the values are valid and saves the exercise in the database.
+     *
+     * @param exIn the edited exercise instance
+     * @param id id of the plan template where the exercise belongs
+     * @param exId id of the exercise instance
+     * @param model model thymeleaf uses
+     * @param redirectAttributes handles attributes for a redirect
+     * @return if args are valid it returns the editplan site for the plan,
+     *          if not, it returns the edit exercise page, with an errormessage.
+     */
     @RequestMapping(value="/editplan/{id}/{exId}", method = RequestMethod.POST)
     public String postEditExIn(@ModelAttribute("exIn") ExerciseInstance exIn,
                                @PathVariable("id") Integer id, @PathVariable("exId") Integer exId,
@@ -164,6 +208,15 @@ public class ModController {
         return "redirect:/mods/editplan/"+id;
     }
 
+    /**
+     * Handles delete requests for deleting an exercise instance.
+     *
+     * @param id id of the plan template where the exercise instance belongs
+     * @param exId id of the exercise instance to delete
+     * @param model model thymeleaf uses
+     * @return returns the editplan site if everything goes right, else it redirects to
+     *          the error page.
+     */
     @RequestMapping(value="/editplan/{id}/{exId}", method = RequestMethod.DELETE)
     public String deleteExIn(@PathVariable("id") Integer id, @PathVariable("exId") Integer exId,
                              Model model) {
