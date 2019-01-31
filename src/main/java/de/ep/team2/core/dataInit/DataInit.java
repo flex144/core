@@ -2,6 +2,7 @@ package de.ep.team2.core.dataInit;
 
 import de.ep.team2.core.dtos.TrainingsDayDto;
 import de.ep.team2.core.enums.ExperienceLevel;
+import de.ep.team2.core.enums.Gender;
 import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
@@ -13,6 +14,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -122,20 +125,33 @@ public class DataInit {
     }
 
     private void fillUsers() {
+        DataBaseService db = DataBaseService.getInstance();
         LinkedList<String[]> initTestData = new LinkedList<>();
         String[] timo = {"timo@gmail.com", "Timo", "Heinrich", userService.encode("hello")};
         String[] alex = {"alex@gmail.com", "Alexander", "Reißig", userService.encode("password")};
         String[] felix = {"felix@gmail.com", "Felix", "Wilhelm", userService.encode("123")};
         String[] yannick = {"yannick@gmail.com", null, null, userService.encode("123")};
+        String[] ben = {"benedikt.schwarz@gmail.com", "Benedikt", "Schwarz", userService.encode("XOXO")};
         initTestData.add(timo);
         initTestData.add(alex);
         initTestData.add(felix);
         initTestData.add(yannick);
+        initTestData.add(ben);
         for (String[] o : initTestData) {
-            DataBaseService.getInstance().insertUser(o[0], o[1], o[2], o[3]);
-            DataBaseService.getInstance().confirmUser(o[0]);
+            db.insertUser(o[0], o[1], o[2], o[3]);
+            db.confirmUser(o[0]);
         }
-        DataBaseService.getInstance().changeToMod(4);
+        for (int i = 1; i < 5; i++) {
+            db.changeToMod(i);
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.set(1998,Calendar.JANUARY,4);
+        Date date = cal.getTime();
+        db.setAdvancedUserData(77,180, TrainingsFocus.MUSCLE,2, Gender.MALE, ExperienceLevel.EXPERT,null,"timo@gmail.com");
+        db.setAdvancedUserData(77,180, TrainingsFocus.WEIGHT,2, Gender.FEMALE, ExperienceLevel.BEGINNER,null,"felix@gmail.com");
+        db.setAdvancedUserData(77,180, TrainingsFocus.STAMINA,3, Gender.FEMALE, ExperienceLevel.BEGINNER,null,"alex@gmail.com");
+        db.setAdvancedUserData(77,180, TrainingsFocus.STAMINA,1, Gender.MALE, ExperienceLevel.BEGINNER,null,"yannick@gmail.com");
+        db.setAdvancedUserData(80,183, TrainingsFocus.MUSCLE,2, Gender.MALE, ExperienceLevel.BEGINNER,date,"benedikt.schwarz@gmail.com");
     }
 
     private void fillExercises() {
