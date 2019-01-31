@@ -4,6 +4,7 @@ import de.ep.team2.core.Exceptions.NoPlanException;
 import de.ep.team2.core.dtos.ExerciseDto;
 import de.ep.team2.core.dtos.RegistrationDto;
 import de.ep.team2.core.dtos.TrainingsDayDto;
+import de.ep.team2.core.entities.ConfirmationToken;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.entities.User;
 import de.ep.team2.core.enums.ExperienceLevel;
@@ -388,7 +389,7 @@ public class UserController {
         mailMessage.setTo(modMail);
         mailMessage.setSubject(subject);
         mailMessage.setText("Der Benutzer " + principal.getEmail() + " hat ein Problem mit der Traingsplattform. \n" +
-                "Nachricht: \n\n" + message + "\n\nLink zum Profil: " + url);
+                "Nachricht: \n\n" + message + "\n\nLink zum Profil: " + url + "\n\n Bitte Kontaktiere ihn über seine E-Mail-Adresse.");
         log.info("Email sent to" + modMail + " from " + principal.getEmail() + " because he has trouble with the system");
         emailSenderService.sendEmail(mailMessage);
         redirectAttributes.addFlashAttribute("message", "Die email wurde an den Trainer versandt.");
