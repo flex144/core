@@ -88,6 +88,7 @@ public class TrainingsController {
         dto.setId(id);
         dto.setPlanName(tpt.getName());
         dto.setTrainingsFocus(tpt.getTrainingsFocus());
+        dto.setTargetGroup(tpt.getTargetGroup());
         dto.setSessionNums(tpt.getNumTrainSessions());
         dto.setRecomSessionsPerWeek(tpt.getRecomSessionsPerWeek());
         redirectAttributes.addFlashAttribute("createDto", dto);
