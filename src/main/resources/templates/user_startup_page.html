@@ -58,11 +58,13 @@
     <div th:replace="/fragments/navbar :: navbar_user"></div>
 </div>
 
-<div class="visible-md visible-lg">
-    <br><br>
-</div>
 <div class="container">
-    <span th:if="${message}" th:text="${message}"></span>
+    <div class="alert alert-success" th:if="${message}">
+        <span th:text="${message}"></span>
+    </div>
+    <div class="visible-md visible-lg" th:unless="${message}">
+        <br><br>
+    </div>
     <div class="jumbotron">
         <div class="col-container">
             <div class="col col-outer">

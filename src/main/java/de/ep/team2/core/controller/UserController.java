@@ -392,7 +392,7 @@ public class UserController {
                 "Nachricht: \n\n" + message + "\n\nLink zum Profil: " + url + "\n\n Bitte Kontaktiere ihn über seine E-Mail-Adresse.");
         log.info("Email sent to" + modMail + " from " + principal.getEmail() + " because he has trouble with the system");
         emailSenderService.sendEmail(mailMessage);
-        redirectAttributes.addFlashAttribute("message", "Die email wurde an den Trainer versandt.");
+        redirectAttributes.addFlashAttribute("message", "Die E-Mail wurde an den/einen Trainer versandt.");
         return "redirect:/user/home";
     }
 }
