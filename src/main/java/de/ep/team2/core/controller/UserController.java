@@ -328,4 +328,7 @@ public class UserController {
         model.addAttribute("userStats", statisticService.getUserStats(principal.getEmail()));
         return "user_statistics";
     }
+
+    @RequestMapping(value = {"/contact"}, method = RequestMethod.GET)
+    public String contact() { return "user_contact_trainer"; }
 }
