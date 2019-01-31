@@ -573,9 +573,10 @@
             document.getElementById('currentSet').value = document.getElementById('startingSet').value;
             //TODO TEST DELETE LATER console.log
             console.log("before exercisefunction");
-            exerciseFunction();
             console.log("after exercisefunction");
             console.log("update end");
+            exerciseFunction();
+            trainingStatusInProgress();
         }
 
     }
@@ -712,6 +713,7 @@
             currentCounter++;
             done = true;
             document.getElementById('progressBar').style.width = "100%";
+            trainingStatusInProgress();
             progressBar();
             checkForWeightChange();
         }else{
