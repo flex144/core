@@ -139,14 +139,6 @@
 <input th:value="${numberExercises}?: 0" id="numberExercises" hidden>
 <input th:value="${numberPlans}?: 0" id="numberPlans" hidden>
 
-<!-- todo user stats on other page -->
-
-<input th:value="${userStats.getDays_done()}?: 0">
-<input th:value="${userStats.getPlans_done()}?: 0">
-<input th:value="${userStats.getTotal_weight()}?: 0">
-<input th:value="${userStats.getRegDateString()}?: 0">
-
-
 <script>
     // Load thymeleaf values out of the input fields into javascript variables for further use
     var numberNoFocus = document.getElementById("numberNoFocus").value;

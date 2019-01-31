@@ -314,4 +314,18 @@ public class UserController {
         }
         return "redirect:/user/editprofile";
     }
+
+    /**
+     * adds all stats to the model and returns the user statistic page.
+     *
+     * @param model model thymeleaf uses.
+     * @return "mod_statistics"
+     */
+    @RequestMapping(value = {"/statistics"}, method = RequestMethod.GET)
+    public String statistics(Model model) {
+        StatisticService statisticService = new StatisticService();
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        model.addAttribute("userStats", statisticService.getUserStats(principal.getEmail()));
+        return "user_statistics";
+    }
 }

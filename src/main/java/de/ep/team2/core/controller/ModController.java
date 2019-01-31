@@ -207,8 +207,6 @@ public class ModController {
     @RequestMapping(value = {"/statistics"}, method = RequestMethod.GET)
     public String statistics(Model model) {
         StatisticService statisticService = new StatisticService();
-        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        model.addAttribute("userStats", statisticService.getUserStats(principal.getEmail()));
         model.addAttribute("focusMap", statisticService.getUserFocusStats());
         model.addAttribute("expMap", statisticService.getUserExperienceStats());
         model.addAttribute("frequencyMap", statisticService.getUserFrequencyStats());
