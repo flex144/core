@@ -20,18 +20,43 @@ public class UserService {
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    /**
+     * returns a user with the given id, null if not found.
+     *
+     * @param id id to look for.
+     * @return user with the id.
+     */
     public User getUserByID(Integer id) {
         return DataBaseService.getInstance().getUserById(id);
     }
 
+    /**
+     * returns a user with the given email, null if not found.
+     *
+     * @param email email to look for.
+     * @return user with the email.
+     */
     public User getUserByEmail(String email) {
         return DataBaseService.getInstance().getUserByEmail(email);
     }
 
+    /**
+     * deletes teh user with the given id.
+     *
+     * @param id id of user to delete.
+     */
     public void deleteUserByID(Integer id) {
         DataBaseService.getInstance().deleteUserById(id);
     }
 
+    /**
+     * Creates a user with the given parameter. first and last name may be null.
+     *
+     * @param email email of the user.
+     * @param firstName first name of the user.
+     * @param lastName last name fo the user.
+     * @param password encoded password.
+     */
     public void createUser(String email, String firstName, String lastName, String password) {
         DataBaseService.getInstance().insertUser(email, firstName, lastName, password);
     }
@@ -68,6 +93,11 @@ public class UserService {
         return errorMessage;
     }
 
+    /**
+     * returns a list of all users in the system.
+     *
+     * @return a list of all users in the system.
+     */
     public List<User> getAllUsers() {
         return DataBaseService.getInstance().getAllUsers();
     }
@@ -76,6 +106,12 @@ public class UserService {
         return DataBaseService.getInstance().changeUserDetails(user);
     }
 
+    /**
+     * change the advanced user details to the values provided by the user object. even to null values.
+     * email is used to identify which user has to be changed.
+     *
+     * @param user user which holds the new data.
+     */
     public void changeAdvancedUserDetails(User user) {
         DataBaseService.getInstance().setAdvancedUserData(user.getWeightInKg(), user.getHeightInCm(),
                 user.getTrainingsFocus(), user.getTrainingsFrequency(), user.getGender(), user.getExperience(),

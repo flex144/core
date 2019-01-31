@@ -2,12 +2,14 @@ package de.ep.team2.core.Unit;
 
 
 import de.ep.team2.core.entities.Exercise;
+import de.ep.team2.core.entities.UserStats;
 import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.Gender;
 import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
 import de.ep.team2.core.service.DataBaseService;
 import de.ep.team2.core.service.ExerciseService;
+import de.ep.team2.core.service.StatisticService;
 import de.ep.team2.core.service.UserService;
 import org.junit.Rule;
 import org.junit.Test;
@@ -25,7 +27,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class DataBaseServiceUnitTests {
+public class ServiceUnitTests {
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
@@ -278,5 +280,22 @@ public class DataBaseServiceUnitTests {
         assertEquals(69, db.getTrainingsSessionById(id).getPauseInSec());
         db.deleteTrainingsSessionById(id);
         assertNull(db.getTrainingsSessionById(id));
+    }
+
+    @Test
+    @WithUserDetails(value = "felix@gmail.com", userDetailsServiceBeanName = "userDetailsService")
+    public void TestUserStats() {
+        StatisticService statisticService = new StatisticService();
+        UserService userService = new UserService();
+        String userMail = "testBoy123@mail.de";
+        userService.createUser(userMail, null, null, userService.encode("testtest"));
+        UserStats stats = statisticService.getUserStats(userMail);
+        assertEquals(0, (stats.getTotal_weight() + stats.getDays_done() + stats.getPlans_done()));
+        statisticService.increaseDaysDone(userMail);
+        statisticService.increaseWeightDone(userMail, 2000);
+        DataBaseService.getInstance().increasePlansDone(userMail);
+        stats = statisticService.getUserStats(userMail);
+        assertEquals(2002, (stats.getTotal_weight() + stats.getDays_done() + stats.getPlans_done()));
+        userService.deleteUserByID(userService.getUserByEmail(userMail).getId());
     }
 }

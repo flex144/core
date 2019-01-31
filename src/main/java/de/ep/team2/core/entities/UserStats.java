@@ -60,6 +60,11 @@ public class UserStats {
         this.registration_date = registration_date;
     }
 
+    /**
+     * brings the registration date into the format dd.mm.yyyy and returns it as string.
+     *
+     * @return String of the registration date.
+     */
     public String getRegDateString() {
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         return format.format(this.registration_date);

@@ -182,6 +182,7 @@ public class UserController {
 
     /**
      * Sets the exercise of The current TrainingsDayDto done.
+     * Increases the total weight stat of the user by the weight he did.
      *
      * @param doneFlag boolean Flag if done.
      * @param indexInList index of the exercise in the List of the Dto.

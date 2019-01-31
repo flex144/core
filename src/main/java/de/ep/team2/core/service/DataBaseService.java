@@ -1601,7 +1601,7 @@ public class DataBaseService {
      * @param userMail to identify which user to delete.
      */
     public void deleteUserStats(String userMail) {
-        jdbcTemplate.update("DELETE FROM user_stats where usermail = ?", userMail);
+        jdbcTemplate.update("DELETE FROM user_stats where usermail = ?", userMail.toLowerCase());
     }
 
     /**
@@ -1612,7 +1612,7 @@ public class DataBaseService {
      */
     public UserStats getUserStats(String userMail) {
         LinkedList<UserStats> result = new LinkedList<>(jdbcTemplate.query("SELECT * FROM user_stats where usermail = ?",
-                new String[]{userMail},
+                new String[]{userMail.toLowerCase()},
                 new BeanPropertyRowMapper<>(UserStats.class)));
         if (result.isEmpty()) {
             return null;
@@ -1631,7 +1631,7 @@ public class DataBaseService {
         UserStats stats = getUserStats(userMail);
         int weightDone = stats.getTotal_weight();
         weightDone = weightDone + value;
-        jdbcTemplate.update("UPDATE user_stats SET total_weight = ? where usermail = ?", weightDone, userMail);
+        jdbcTemplate.update("UPDATE user_stats SET total_weight = ? where usermail = ?", weightDone, userMail.toLowerCase());
     }
 
     /**
@@ -1643,7 +1643,7 @@ public class DataBaseService {
         UserStats stats = getUserStats(userMail);
         int plansDone = stats.getPlans_done();
         plansDone++;
-        jdbcTemplate.update("UPDATE user_stats SET plans_done = ? where usermail = ?", plansDone, userMail);
+        jdbcTemplate.update("UPDATE user_stats SET plans_done = ? where usermail = ?", plansDone, userMail.toLowerCase());
     }
 
     /**
@@ -1656,6 +1656,6 @@ public class DataBaseService {
         int daysDone = stats.getDays_done();
         daysDone++;
         jdbcTemplate.update("UPDATE user_stats SET days_done = ? where usermail = ?", daysDone,
-                userMail);
+                userMail.toLowerCase());
     }
 }
