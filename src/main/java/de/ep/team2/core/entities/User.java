@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -158,6 +159,16 @@ public class User implements UserDetails {
 
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
+    }
+
+    /**
+     * brings the birth date into the format dd.mm.yyyy and returns it as string.
+     *
+     * @return String of the birth date.
+     */
+    public String getBirthDateString() {
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
+        return format.format(this.birthDate);
     }
 
     public Integer getTrainingsFrequency() {
