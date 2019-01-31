@@ -264,16 +264,10 @@
                                     <div class="row">
                                         <div class="col-md-10"></div>
                                         <div class="col-md-2">
-                                            <div hidden>
-                                                <a href="#myCarousel" class="btn btn-success btn-block" data-slide="next" id="buttonUserDataSubmit">
-                                                    Weiter
-                                                    <span class="glyphicon glyphicon-chevron-right"></span>
-                                                </a>
-                                            </div>
-                                            <button  class="btn btn-success btn-block" onclick="checkUserData()">
+                                            <a href="#myCarousel" class="btn btn-success btn-block" onclick="checkUserData()">
                                                 Weiter
                                                 <span class="glyphicon glyphicon-chevron-right"></span>
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -1035,6 +1029,7 @@
     function checkUserData(){
         var alertmessage = "";
         var passesTest = true;
+
         if(!checkText("firstname")){
             if (checkNotEmpty("firstname")){
                 alertmessage = alertmessage + "Du kannst keine Sonderzeichen in deinem Vornamen verwenden. "
@@ -1042,25 +1037,26 @@
             }
         }
         if(!checkText("lastname")){
-            if (checkNotEmpty("firstname")){
+            if (checkNotEmpty("lastname")){
                 alertmessage = alertmessage + "Du kannst keine Sonderzeichen in deinem Nachnamen verwenden. "
                 passesTest = false;
             }
         }
         if(!checkNumber("height")){
-            if (checkNotEmpty("firstname")){
+            if (checkNotEmpty("height")){
                 alertmessage = alertmessage + "Buchstaben sind bei der Größe nicht möglich. "
                 passesTest = false;
             }
         }
         if(!checkNumber("weight")){
-            if (checkNotEmpty("firstname")){
+            if (checkNotEmpty("weight")){
                 alertmessage = alertmessage + "Buchstaben sind beim Gewicht nicht möglich. "
                 passesTest = false;
             }
         }
+
         if (passesTest){
-            document.getElementById('buttonUserDataSubmit').click();
+            $('#myCarousel').carousel(2);
         } else{
             alert(alertmessage);
         }
