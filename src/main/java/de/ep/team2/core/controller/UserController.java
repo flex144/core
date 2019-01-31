@@ -1,10 +1,10 @@
 package de.ep.team2.core.controller;
 
 import de.ep.team2.core.Exceptions.NoPlanException;
+import de.ep.team2.core.dataInit.DataInit;
 import de.ep.team2.core.dtos.ExerciseDto;
 import de.ep.team2.core.dtos.RegistrationDto;
 import de.ep.team2.core.dtos.TrainingsDayDto;
-import de.ep.team2.core.entities.ConfirmationToken;
 import de.ep.team2.core.entities.TrainingsPlanTemplate;
 import de.ep.team2.core.entities.User;
 import de.ep.team2.core.enums.ExperienceLevel;
@@ -43,7 +43,7 @@ public class UserController {
     @Autowired
     private EmailSenderService emailSenderService;
 
-    private static final Logger log = LoggerFactory.getLogger(PlanService.class);
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     /**
      * Brings the User to the Startup page.
@@ -159,7 +159,7 @@ public class UserController {
      * @return "user_training_overview" when the user has to select the next exercise; "redirect:/user/new" if the user has no plan; "redirect:/user/home" if the training is done for the day.
      */
     @RequestMapping("/plan")
-    public String handleUserTrainingStart(Model model) {
+    public String handleUserTrainingStart(Model model, RedirectAttributes redirectAttributes) {
         PlanService planService = new PlanService();
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         // start Training
@@ -186,7 +186,8 @@ public class UserController {
                 statisticService.increaseDaysDone(principal.getEmail());
             }
             dayDto.clear();
-            return "redirect:/user/home"; // todo maybe info page that training is over
+            redirectAttributes.addFlashAttribute("message", "Trainingseinheit abgeschlossen! Weiter so! Bleib dran!");
+            return "redirect:/user/home";
         } else {
             model.addAttribute("dayDto", dayDto);
             return "user_training_overview";
@@ -361,8 +362,9 @@ public class UserController {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         String modMail;
         UserService userService = new UserService();
-        if (id == null) {
+        if (id == -1) {
             List<User> mods = userService.getAllMods();
+            mods.remove(userService.getUserByEmail(DataInit.ADMIN_MAIL));
             Random rnd = new Random();
             int r = rnd.nextInt(mods.size());
             modMail = mods.get(r).getEmail();
@@ -390,7 +392,7 @@ public class UserController {
         mailMessage.setSubject(subject);
         mailMessage.setText("Der Benutzer " + principal.getEmail() + " hat ein Problem mit der Traingsplattform. \n" +
                 "Nachricht: \n\n" + message + "\n\nLink zum Profil: " + url + "\n\n Bitte Kontaktiere ihn über seine E-Mail-Adresse.");
-        log.info("Email sent to" + modMail + " from " + principal.getEmail() + " because he has trouble with the system");
+        log.info("Email sent to '" + modMail + "' from '" + principal.getEmail() + "' because he has trouble with the system");
         emailSenderService.sendEmail(mailMessage);
         redirectAttributes.addFlashAttribute("message", "Die email wurde an den Trainer versandt.");
         return "redirect:/user/home";

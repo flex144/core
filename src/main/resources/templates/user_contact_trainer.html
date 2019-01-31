@@ -54,7 +54,7 @@
                             </div>
                             <div class="panel-body">
                                 <select id="targetTrainer" name="trainer" class="form-control" required>
-                                    <option value="null" selected>Unbekannt</option>
+                                    <option value="-1" selected>Unbekannt</option>
                                     <option th:each="user : ${mods}" th:value="${user.id}" th:text="${user.firstName} + ' ' + ${user.lastName}"></option>
                                 </select>
                             </div>
