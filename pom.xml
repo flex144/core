@@ -6,7 +6,6 @@
 	<groupId>de.ep.team2</groupId>
 	<artifactId>core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-    <!-- needed for deploy on tomcat otherwise jar -->
 	<packaging>war</packaging>
 
 	<name>core</name>

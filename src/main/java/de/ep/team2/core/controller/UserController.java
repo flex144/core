@@ -9,11 +9,15 @@ import de.ep.team2.core.entities.User;
 import de.ep.team2.core.enums.ExperienceLevel;
 import de.ep.team2.core.enums.TrainingsFocus;
 import de.ep.team2.core.enums.WeightType;
+import de.ep.team2.core.service.EmailSenderService;
 import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.StatisticService;
 import de.ep.team2.core.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,8 +25,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/user")
@@ -31,6 +38,11 @@ public class UserController {
 
     @Autowired
     private TrainingsDayDto dayDto;
+
+    @Autowired
+    private EmailSenderService emailSenderService;
+
+    private static final Logger log = LoggerFactory.getLogger(PlanService.class);
 
     /**
      * Brings the User to the Startup page.
@@ -330,5 +342,56 @@ public class UserController {
     }
 
     @RequestMapping(value = {"/contact"}, method = RequestMethod.GET)
-    public String contact() { return "user_contact_trainer"; }
+    public String contact(Model model) {
+        UserService userService = new UserService();
+        List<User> mods = userService.getAllMods();
+        for (User mod : mods) {
+            if (mod.getFirstName() == null || mod.getFirstName().equals("") ||
+                    mod.getLastName() == null || mod.getLastName().equals("")) {
+                mods.remove(mod);
+            }
+        }
+        model.addAttribute("mods", mods);
+        return "user_contact_trainer"; }
+
+    @PostMapping("/contact")
+    public String contactSubmit(@RequestParam("trainer") Integer id, @RequestParam("subject") String subject,
+                                @RequestParam("message") String message, Model model, RedirectAttributes redirectAttributes) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        String modMail;
+        UserService userService = new UserService();
+        if (id == null) {
+            List<User> mods = userService.getAllMods();
+            Random rnd = new Random();
+            int r = rnd.nextInt(mods.size());
+            modMail = mods.get(r).getEmail();
+        } else {
+            User mod = userService.getUserByID(id);
+            if (mod != null) {
+                if (!mod.getRole().equals("ROLE_MOD")) {
+                    model.addAttribute("error", "User is no Mod");
+                    return "error";
+                }
+                modMail = mod.getEmail();
+            } else {
+                model.addAttribute("error", "Mod not found");
+                return "error";
+            }
+        }
+        User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal == null) {
+            model.addAttribute("error", "You need to be logged in");
+            return "error";
+        }
+        String uri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString();
+        String url = uri + "/users/" + principal.getId();
+        mailMessage.setTo(modMail);
+        mailMessage.setSubject(subject);
+        mailMessage.setText("Der Benutzer " + principal.getEmail() + " hat ein Problem mit der Traingsplattform. \n" +
+                "Nachricht: \n\n" + message + "\n\nLink zum Profil: " + url);
+        log.info("Email sent to" + modMail + " from " + principal.getEmail() + " because he has trouble with the system");
+        emailSenderService.sendEmail(mailMessage);
+        redirectAttributes.addFlashAttribute("message", "Die email wurde an den Trainer versandt.");
+        return "redirect:/user/home";
+    }
 }

@@ -45,7 +45,7 @@
             <h3>Trainer kontaktieren</h3>
         </div>
         <div class="panel-body">
-            <form>
+            <form th:action="@{/user/contact}" method="post">
                 <div class="col-container">
                     <div class="col col-upper">
                         <div class="panel panel-default">
@@ -53,11 +53,9 @@
                                 Gewünschten Trainer auswählen
                             </div>
                             <div class="panel-body">
-                                <select id="targetTrainer" class="form-control" required>
-                                    <option selected>Wähle einen Trainer aus...</option>
-                                    <option>Hans</option>
-                                    <option>Tom</option>
-                                    <option>Unbekannt</option>
+                                <select id="targetTrainer" name="trainer" class="form-control" required>
+                                    <option value="null" selected>Unbekannt</option>
+                                    <option th:each="user : ${mods}" th:value="${user.id}" th:text="${user.firstName} + ' ' + ${user.lastName}"></option>
                                 </select>
                             </div>
                             <div class="panel-footer text-muted" style="font-size: 10px">
@@ -72,7 +70,7 @@
                                 Betreff
                             </div>
                             <div class="panel-body">
-                            <textarea id="inputTopic" class="form-control" rows="1" required
+                            <textarea id="inputTopic" name="subject" class="form-control" rows="1" required
                                       maxlength="500"></textarea>
                             </div>
                         </div>
@@ -85,7 +83,7 @@
                                 Nachricht
                             </div>
                             <div class="panel-body">
-                            <textarea id="inputMessage" class="form-control" rows="10" required
+                            <textarea id="inputMessage" name="message" class="form-control" rows="10" required
                                       maxlength="4000"></textarea>
                             </div>
                             <div class="panel-footer text-muted" style="font-size: 10px">
