@@ -228,10 +228,16 @@
                                     <div class="row">
                                         <div class="col-md-10"></div>
                                         <div class="col-md-2">
-                                            <a href="#myCarousel" class="btn btn-success btn-block" data-slide="next">
+                                            <div hidden>
+                                                <a href="#myCarousel" class="btn btn-success btn-block" data-slide="next" id="buttonUserDataSubmit">
+                                                    Weiter
+                                                    <span class="glyphicon glyphicon-chevron-right"></span>
+                                                </a>
+                                            </div>
+                                            <button  class="btn btn-success btn-block" onclick="checkUserData()">
                                                 Weiter
                                                 <span class="glyphicon glyphicon-chevron-right"></span>
-                                            </a>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -934,14 +940,10 @@
      */
     function checkNotEmpty(id) {
         var passesTest = true;
-        console.log(id);
         var valueInField = document.getElementById(id).value;
-        console.log(valueInField);
         if (valueInField == null || valueInField == "") {
             passesTest = false;
-            console.log(id + " :checkNotEmpty : failed");
         }
-        console.log(id + " :checkNotEmpty : passed");
         return passesTest;
     }
 
@@ -953,11 +955,9 @@
     function checkSpecialCharacters(id){
         var passesTest = checkNotEmpty(id);
         var valueInField = document.getElementById(id).value;
-        console.log(id + " :checkSpcialCharaters : value : " + valueInField);
         var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
         if (format.test(valueInField)){
             passesTest = false;
-            console.log(id + " :checkSpcialCharaters : failed");
         }
         return passesTest;
     }
@@ -973,11 +973,9 @@
             var valueInField = document.getElementById(id).value;
             var passesTest =  format.test(valueInField);
             if (passesTest){
-                console.log(id + " :checkText : passed");
                 return true;
             }
         }
-        console.log(id + " :checkText : failed");
         return false;
     }
 
@@ -990,47 +988,42 @@
         if (checkNotEmpty(id)) {
             var valueInField = document.getElementById(id).value;
             if (!isNaN(valueInField)){
-                console.log(id + " :checkNumber : passed");
                 return true;
             }
         }
-        console.log(id + " :checkNumber : failed");
         return false;
     }
 
     function checkUserData(){
         var alertmessage = "";
         var passesTest = true;
-        console.log(alertmessage);
         if(!checkText("firstname")){
-            alertmessage = alertmessage + "Du kannst keine Sonderzeichen in deinem Vornamen verwenden. "
-            passesTest = false;
+            if (checkNotEmpty("firstname")){
+                alertmessage = alertmessage + "Du kannst keine Sonderzeichen in deinem Vornamen verwenden. "
+                passesTest = false;
+            }
         }
-        console.log(alertmessage);
         if(!checkText("lastname")){
-            alertmessage = alertmessage + "Du kannst keine Sonderzeichen in deinem Nachnamen verwenden. "
-            passesTest = false;
+            if (checkNotEmpty("firstname")){
+                alertmessage = alertmessage + "Du kannst keine Sonderzeichen in deinem Nachnamen verwenden. "
+                passesTest = false;
+            }
         }
-        console.log(alertmessage);
-        //TODO maybe check birthday or remove other checks, depending on what will be optional
-        /*if(!checkNumber("height")){
-            alertmessage = alertmessage + "Buchstaben sind bei der Größe nicht möglich. "
-            passesTest = false;
+        if(!checkNumber("height")){
+            if (checkNotEmpty("firstname")){
+                alertmessage = alertmessage + "Buchstaben sind bei der Größe nicht möglich. "
+                passesTest = false;
+            }
         }
         if(!checkNumber("weight")){
-            alertmessage = alertmessage + "Buchstaben sind beim Gewicht nicht möglich. "
-            passesTest = false;
+            if (checkNotEmpty("firstname")){
+                alertmessage = alertmessage + "Buchstaben sind beim Gewicht nicht möglich. "
+                passesTest = false;
+            }
         }
-        if (document.getElementById('gender').value == "Wähle eine Option aus...") {
-            alertmessage = alertmessage + "Du musst ein Geschlecht wählen"
-            passesTest = false;
-        }*/
-
         if (passesTest){
-            console.log("passes");
-            document.getElementById('buttonWeiter').click();
+            document.getElementById('buttonUserDataSubmit').click();
         } else{
-            console.log("fails");
             alert(alertmessage);
         }
     }
