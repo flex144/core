@@ -67,9 +67,6 @@
                         <th data-field="exerciseName" data-sortable="true">
                             Übungsname
                         </th>
-                        <th data-field="muscleGroups" data-sortable="true">
-                            Muskel Gruppen
-                        </th>
                         <th data-field="description" data-sortable="true">
                             Beschreibung
                         </th>
@@ -80,7 +77,6 @@
                         th:onclick="'javascript:rowClicked(\'' + ${exercise.getId()} + '\');'">
                         <td th:text="${exercise.getId()}"></td>
                         <td th:text="${exercise.getName()}"></td>
-                        <td>Brust, Trizeps</td>
                         <td th:if="${exercise.getDescription() != null and exercise.getDescription().length() > 130}" th:text="${exercise.getDescription().substring(0,130)+'...'}"></td>
                         <td th:unless="${exercise.getDescription() != null and exercise.getDescription().length() > 130}" th:text="${exercise.getDescription()}"></td>
                     </tr>
