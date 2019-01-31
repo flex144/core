@@ -1,6 +1,8 @@
 package de.ep.team2.core.controller;
 
 import de.ep.team2.core.entities.User;
+import de.ep.team2.core.service.DataBaseService;
+import de.ep.team2.core.service.PlanService;
 import de.ep.team2.core.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,6 +53,7 @@ public class UsersController {
             return "error";
         }
         model.addAttribute("user", searchedUser);
+        model.addAttribute("userPlan", DataBaseService.getInstance().getUserPlanByUserMail(searchedUser.getEmail()));
         return "mod_view_user_profile";
     }
 

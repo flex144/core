@@ -59,13 +59,7 @@
                     </a>
                 </div>
                 <div class="col">
-                    <a th:href="@{/user/plan}" type="button" class="btn btn-block btn-default">
-                        <span class="glyphicon glyphicon-list-alt"></span>
-                        Plan des Nutzers
-                    </a>
-                </div>
-                <div class="col">
-                    <a type="button" class="btn btn-block btn-default">
+                    <a th:href="@{'/user/statistics/' + ${user.getId()}}" type="button" class="btn btn-block btn-default">
                         <span class="glyphicon glyphicon-stats"></span>
                         Statistiken des Nutzers
                     </a>
@@ -161,8 +155,12 @@
                         <th>angestrebte Trainingshäufigkeit (pro Woche)</th>
                         <td><p th:text="${user.trainingsFrequency}" style="font-size: 14px"/></td>
                     </tr>
+                    <tr th:if="${userPlan}">
+                        <th>Traingsplan id</th>
+                        <td><p th:text="${userPlan.getIdOfTemplate()}" style="font-size: 14px"/></td>
+                    </tr>
                     <tr>
-                        <th>Rolle</th>
+                        <th>Rolle</th>userPlanId
                         <td th:if="${user.role == 'ROLE_MOD'}"><p style="font-size: 14px">Moderator</p></td>
                         <td th:if="${user.role == 'ROLE_USER'}"><p style="font-size: 14px">Nutzer</p></td>
                     </tr>

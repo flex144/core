@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -387,6 +388,23 @@ public class UserController {
         StatisticService statisticService = new StatisticService();
         User principal = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         model.addAttribute("userStats", statisticService.getUserStats(principal.getEmail()));
+        return "user_statistics";
+    }
+
+    /**
+     * returns the stat page of a specific user for a mod.
+     *
+     * @param id user to get the stats from.
+     * @param model model thymeleaf uses.
+     * @return "user_statistics"
+     */
+    @PreAuthorize("hasRole('ROLE_MOD')")
+    @RequestMapping(value = {"/statistics/{id}"}, method = RequestMethod.GET)
+    public String statisticsOtherUser(@PathVariable int id, Model model) {
+        StatisticService statisticService = new StatisticService();
+        UserService userService = new UserService();
+        User user = userService.getUserByID(id);
+        model.addAttribute("userStats", statisticService.getUserStats(user.getEmail()));
         return "user_statistics";
     }
 
