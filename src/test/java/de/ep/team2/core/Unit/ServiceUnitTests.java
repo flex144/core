@@ -71,20 +71,20 @@ public class ServiceUnitTests {
 
     @Test
     public void getAllUsers() {
-        assertEquals(5, DataBaseService.getInstance().getAllUsers().size());
+        assertEquals(6, DataBaseService.getInstance().getAllUsers().size());
     }
 
     @Test
     public void getAllMods() {
-        assertEquals(2, DataBaseService.getInstance().getAllMods().size());
+        assertEquals(4, DataBaseService.getInstance().getAllMods().size());
     }
 
     @Test
     public void searchUser() {
         UserService userService = new UserService();
         assertEquals("timo@gmail.com", userService.getUserListByName("timo").get(0).getEmail()); // timo is unique
-        assertEquals(4, userService.getUserListByName("e").size()); // 4 users contain the letter e
-        assertEquals(5, userService.getUserListByName("").size()); // returns all user
+        assertEquals(5, userService.getUserListByName("e").size()); // 5 users contain the letter e
+        assertEquals(6, userService.getUserListByName("").size()); // returns all user
     }
 
     @Test
