@@ -12,68 +12,76 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
-
     <div th:include="/fragments/navbar :: style_fragment"></div>
     <style>
 
         .col-container {
             display: table;
             width: 100%;
+            align-items: center;
+            align-content: center;
+            align-self: center;
         }
-        .col {
-            display: table-cell;
-            padding: 5px;
-            width: 33%;
+        .responsive-width{
+            font-size: calc(10px + 1vw);
         }
+
+
     </style>
+    <!--- Disables sending forms using the enter button--->
+    <script type="text/javascript">
+        function noenter() {
+            return !(window.event && window.event.keyCode == 13); }
+    </script>
 </head>
 <body>
 
+<div>
+    <br>
+    <br>
+    <br>
+</div>
 <form th:action="@{/user/plan/exercise/done/init}" method="post">
-<div class="container" id="panelContainer">
-    <div class="visible-md visible-lg">
-        <br><br>
-        <br><br>
-    </div>
-    <div class="col-md-4">
-        <div class="container">
-            <div class="panel panel-login panel-default">
-                <input title="done" type="checkbox" name="doneFlag" hidden checked>
-                <input type="text" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
-                <!--- Short description --->
-                <div class="panel-heading" >
-                    <h3 th:text="'Bitte trage ein mit wie viel Gewicht (in kg) du die Übung '
+    <div class="container" id="panelContainer" style="height: 100%; width: 100%">
+        <div class="col-lg-6 col-lg-offset-2" >
+            <div >
+                <div class="panel panel-login panel-default">
+                    <input title="done" type="checkbox" name="doneFlag" hidden checked>
+                    <input type="text" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
+                    <!--- Short description --->
+                    <div class="panel-heading" >
+                        <h3 th:text="'Bitte trage ein mit wie viel Gewicht (in kg) du die Übung '
                     + ${exerciseDto.getExercise().getName()} + ', ' + ${exerciseDto.getRepMax()} + ' mal wiederholen kannst.'"></h3>
-                </div>
-                <!--- form for user to write into --->
-                <div class="panel-body">
-                    <div class="col-xs-12" style="text-align: center;">
-                        <form>
-                            <input type="number" name="weightDone" style="text-align: center" id="userMaxWeight" oninput="updateWeight()">
-                        </form>
                     </div>
-                </div>
-                <!--- Buttons for exit and continuing --->
-                <div class="panel-footer" style="text-align: center;">
-                    <div class="col-container">
-                        <div class="col">
-                            <a type="button"
-                               class="btn btn-danger btn-block" th:href="@{/user/plan}" id="backButton">
-                                Zurück
-                            </a>
+                    <!--- form for user to write into --->
+                    <div class="panel-body">
+                        <div class="col-xs-12" style="text-align: center;">
+                            <form>
+                                <input type="number" name="weightDone" style="text-align: center" id="userMaxWeight" oninput="updateWeight()" onkeypress="return noenter()">
+                            </form>
                         </div>
-                        <div class="col">
-                            <button type="submit"
-                                    class="btn btn-success btn-block" id="startButton" style="font-size: small" disabled>
-                                Bestätigen
-                            </button>
+                    </div>
+                    <!--- Buttons for exit and continuing --->
+                    <div class="panel-footer" style="text-align: center;">
+                        <div class="col-container">
+                            <div class="col-xs-5">
+                                <a type="button"
+                                   class="btn btn-danger btn-block responsive-width" th:href="@{/user/plan}" id="backButton">
+                                    Zurück
+                                </a>
+                            </div>
+                            <div class="col-xs-7">
+                                <button type="submit"
+                                        class="btn btn-success btn-block responsive-width" id="startButton">
+                                    Bestätigen
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </form>
 
 <!--- Checks if value given by user is acceptable --->
@@ -86,13 +94,7 @@
         }else{
             document.getElementById('startButton').disabled = true;
         }
-
     }
 </script>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
-        integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 </body>
 </html>

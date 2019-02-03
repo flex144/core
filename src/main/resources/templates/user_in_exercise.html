@@ -12,10 +12,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
-
-
     <div th:include="/fragments/navbar :: style_fragment"></div>
-
     <style>
         /********************container Styles**********************/
         html, body {
@@ -63,7 +60,7 @@
         }
 
         .responsive-width{
-            font-size: calc(12px);
+            font-size: calc(10px + 0.5vw);
         }
 
         /******************** Table Styles **********************/
@@ -78,6 +75,7 @@
         }
 
     </style>
+    <!--- Disables sending forms using the enter button--->
     <script type="text/javascript">
         function noenter() {
             return !(window.event && window.event.keyCode == 13); }
@@ -91,7 +89,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <button type="button"
-                        class="btn btn-block btn-danger" data-dismiss="modal" style="font-size: small" id="closeInfoModal">
+                        class="btn btn-block btn-danger" data-dismiss="modal" style="font-size: small" id="closeInfoModalTop">
                     Zurück
                 </button>
                 <div class="container">
@@ -207,13 +205,13 @@
                 </div>
             </div>
             <div class="col-container">
-                <div class="col">
+                <div class="col-xs-5">
                     <a type="button"
                        class="btn btn-block btn-danger" th:href="@{/user/plan}">
                         Zum Plan
                     </a>
                 </div>
-                <div class="col">
+                <div class="col-xs-5 col-xs-offset-1">
                     <button type="button"
                             class="btn btn-block btn-success" data-dismiss="modal" id="continueButton">
                         Weitermachen
@@ -277,15 +275,14 @@
 </div>
 
 <!--- Page Content --->
-<div style="width: 100%; height: 95%;">
+<div style="width: 100%; height: 92%;" class="container">
+    <br>
     <!--- buffers the main part of the page to the middle-->
-    <div class="col-md-4 visible-md visible-lg">
+    <div class="col-lg-3 visible-lg">
     </div>
     <!--- Container with the mainpart of the page--->
-    <div class="col-md-4" style="height: 100%;">
-        <div class="visible-md visible-lg">
-        </div>
-        <div class="container fullsize">
+    <div class="col-lg-6" style="height: 100%;">
+        <div class="fullsize">
             <div class="panel panel-login panel-default fullsize">
                 <div class="panel-heading" style="font-size: 140%; height: 10%;">
                     <div class="col-xs-9">
@@ -362,7 +359,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div style="height: 30%;">
+                        <div style="height: 30%;"  class="responsive-width">
                             <p style="text-align: center; font-size: small">Geschaffte Wiederholungen in diesem Satz</p>
                         </div>
                         <div style="height: 20%;">
@@ -434,19 +431,19 @@
                 <div class="panel-footer" style="text-align: center;  height: 10%;">
                     <div class="orangeContainer fullsize">
                         <div class=col-container>
-                            <div class="col" id="backButton">
+                            <div class="col-xs-5" id="backButton">
                                 <a type="button"
                                    class="btn btn-block btn-danger fullsize responsive-width"  th:href="@{/user/plan}">
                                     Zurück
                                 </a>
                             </div>
-                            <div class="col" id="exitButton">
+                            <div class="col-xs-5" id="exitButton">
                                 <button type="button"
                                         class=" btn btn-block btn-danger fullsize responsive-width" data-toggle="modal" data-target="#leavePageModal" id="exitExerciseButton">
                                     Abbrechen
                                 </button>
                             </div>
-                            <div class="col">
+                            <div class="col-xs-7">
                                 <button type="button"
                                         class="btn btn-block btn-success fullsize responsive-width" id="startButton" onclick="exerciseFunction()" style="font-size: small">
                                     <span class="buttonName responsive-width"></span>
@@ -459,7 +456,6 @@
         </div>
     </div>
 </div>
-
 
 <!--- Feature not implemented | Switch to alternative Exercise
 <script>
@@ -493,7 +489,6 @@
 
 </script>
 --->
-
 
 <!--- Acript for Timer, Repitions and weight updates. This has to be in one script as they are all activated by the "exerciseFunction"-function --->
 <script>
@@ -534,47 +529,32 @@
      * Initiates the weight change
      ***/
     function weightChange() {
-        console.log("weightchange start");
         document.getElementById('weightRepsDone').value = document.getElementById('repInput').value;
         document.getElementById('weightRepsTodo').value = document.getElementById('neededReps').innerHTML;
         document.getElementById('startingSet').value = document.getElementById('currentSet').value;
         document.getElementById('weightChangeButton').click();
-        console.log("weightchange end");
     }
 
     /***
      * Checks if the exercise needs to adjust the weight value
      ***/
     function checkForWeightChange() {
-        console.log("check for weightchange start");
         var test = document.getElementById('weightIsSelfWeight').value;
-        console.log("Is own weight : " + test);
         if(test == "false"){
-            console.log("Fremdgewicht");
             var test = document.getElementById('repInput').value;
             var test2 = document.getElementById('neededReps').innerHTML;
-            console.log("repinput: " + test);
-            console.log("neededReps: " + test2);
             if (test != test2){
                 weightChange();
             }
         }
-        console.log("check for weightchange end");
     }
 
     /***
      * Updates the Set to the current set, after changing the weight relaoded the page
      ***/
     function updateStartingSet() {
-        console.log("update Start");
-        console.log(document.getElementById('startingSet').value + " x");
         if (document.getElementById('startingSet').value != 0){
-            console.log("update entered");
             document.getElementById('currentSet').value = document.getElementById('startingSet').value;
-            //TODO TEST DELETE LATER console.log
-            console.log("before exercisefunction");
-            console.log("after exercisefunction");
-            console.log("update end");
             exerciseFunction();
             trainingStatusInProgress();
         }
@@ -692,23 +672,19 @@
      * Updats the progressbar.
      * ***/
     function exerciseFunction(){
-        console.log("exercisefunction entered");
         //Can't send empty/illegal inputs
         if( !( valueCheck <= 2* totalReps && valueCheck> 0) ){
-            console.log("in exercisefunction case 1");
             $('#noValidInputModule').modal('show');
             valueCheck = currentReps;
         }
         else if (done){
-            console.log("in exercisefunction case 2");
             document.getElementById('submitButton').click();
-           }
-           /*else if (currentCounter == setCounter){
-            timerBox.style.display = "none";
-            evaluationBox.style.display = "inherit";
-        } */
+        }
+        /*else if (currentCounter == setCounter){
+         timerBox.style.display = "none";
+         evaluationBox.style.display = "inherit";
+     } */
         else if(currentCounter == setCounter -1) {
-            console.log("in exercisefunction case 4");
             buttonTitle = "Abschließen";
             currentCounter++;
             done = true;
@@ -717,14 +693,12 @@
             progressBar();
             checkForWeightChange();
         }else{
-            console.log("in exercisefunction case default");
             currentCounter++;
             buttonTitle = "Satz " + currentCounter + " beenden";
             trainingStatusInProgress();
             progressBar();
             checkForWeightChange();
         }
-        console.log("in exercisefunction continued");
         newRepCount = "reps" + setCounter;
         newWeightCount = "weight" + setCounter;
         labelValue = currentCounter + "/" + setCounter;
@@ -740,7 +714,6 @@
         document.getElementById('buttonDecrease').disabled = true;
         document.getElementById('buttonIncrease').disabled = true;
         document.getElementById('repInput').disabled = true;
-        console.log("trainingnotactive");
     }
 
     /***
@@ -754,7 +727,6 @@
         document.getElementById('button30s').disabled = false;
         document.getElementById('button60s').disabled = false;
         document.getElementById('buttonStop').disabled = false;
-        console.log("trainingstatus");
     }
 
     /***
@@ -785,7 +757,6 @@
         document.querySelector('.value').innerHTML = labelValue;
         document.querySelector('.buttonName').innerHTML = buttonTitle;
         document.getElementById('currentSet').value = currentCounter;
-        console.log("updateLabels");
     }
 
     /***

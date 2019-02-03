@@ -12,8 +12,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
-
-
     <div th:include="/fragments/navbar :: style_fragment"></div>
     <style>
 
@@ -44,15 +42,7 @@
         }
 
         .responsive-width{
-            font-size: calc(12px);
-        }
-
-        .button{
-            text-align: center;
-            display:table-cell;
-            vertical-align:middle;
-            margin: auto;
-            padding: auto;
+            font-size: calc(8px + 0.8vw);
         }
 
         .col-container {
@@ -202,16 +192,16 @@
                     <h4>Training wirklich abbrechen?</h4>
                 </div>
                 <div class="col-container">
-                    <div class="col">
+                    <div class="col-xs-5">
                         <a type="button"
-                           class="btn btn-block btn-danger" th:href="@{/user/home}">
-                            Training abbrechen
+                           class="btn btn-block btn-danger responsive-width" th:href="@{/user/home}">
+                            Training <br> abbrechen
                         </a>
                     </div>
-                    <div class="col">
+                    <div class="col-xs-5 col-xs-offset-1" >
                         <button type="button"
-                                class="btn btn-block btn-secondary" data-dismiss="modal" id="buttonContinue">
-                            Training Fortsetzen
+                                class="btn btn-block btn-secondary responsive-width" data-dismiss="modal" id="buttonContinue">
+                            Training <br> Fortsetzen
                         </button>
                     </div>
                 </div>
@@ -243,6 +233,7 @@
     </div>
 </div>
 
+<!--- Saves if training has started or not --->
 <div hidden>
     <form th:action="@{'/user/plan/exercise/'}" method="post" id="submitForm">
         <input name="index" id="indexOfEx">
@@ -251,18 +242,14 @@
 </div>
 
 <!--- the Page --->
-<div style="width: 100%; height: 100%;">
-    <!--- buffers the main part of the page to the middle-->
-    <div class="col-md-3 visible-md visible-lg">
-    </div>
+<div style="width: 100%; height: 100%;" class="container">
+    <br>
+    <div class="col-lg-2 col-xs-0"></div>
     <!--- Container with the content of the page--->
-    <div class="col-md-6" style="height: 100%;">
-        <div class="visible-md visible-lg">
-        </div>
-        <div class="container fullsize">
+    <div class="col-lg-8" style="height: 90%;">
             <div class="panel panel-login panel-default fullsize">
-                <div class="panel-heading col-container" style="font-size: 140%; height: 10%;">
-                    <div class="col" style="font-size: small">
+                <div class="panel-heading col-container" style="font-size: 110%; height: 15%;">
+                    <div class="col" >
                             Trainings-<br> einheit nr.
                     </div>
                     <div class="col" th:text="${dayDto.currentSession}"></div>
@@ -276,15 +263,15 @@
                         i
                     </button>
                 </div>
-                <div class="panel-body" style=" height: 80%;">
+                <div class="panel-body" style=" height: 75%;">
                     <!--- Template for thymeleaf data to load into --->
-                    <div class="container" id="container_content" style="height: 70%;
+                    <div  id="container_content" style="height: 70%;
         overflow-x: fragments; overflow-y: scroll; text-align: center;
         padding: 5px" >
                         <div th:each="exerciseInst, stat : ${dayDto.exercises}"  >
-                            <div class="container " style="padding-bottom: 2px; min-height: 20%; width: 100%;"  >
+                            <div style="padding-bottom: 2px; min-height: 20%; width: 100%;"  >
                                 <div th:hidden="${exerciseInst.done}">
-                                    <div class="containerColor col-sm-12 col-md-5 col-lg-6" th:id="exercise + ${stat.count}" style="display: block;">
+                                    <div class="containerColor col-sm-12" th:id="exercise + ${stat.count}" style="display: block;">
                                         <div >
                                             <div class="col-container" th:onclick="'submitWithIndex(' + ${exerciseInst.getIndexInList()} + ')'" >
                                                 <div class="tableCentered col" >
@@ -303,20 +290,20 @@
                 </div>
                 <div class="panel-footer" style="text-align: center;  height: 10%;">
                     <!--- Buttons to leave/star the exercise --->
-                    <div id="container_timer" class="container fullsize row">
-                        <div id="firstButtonSet" class="fullsize">
+                    <div id="container_buttonSets" class="fullsize">
+                        <div id="firstButtonSet" class="fullsize row">
                             <div class="col-xs-5" id="button_trainingBack">
                                 <a type="button"
                                    class="btn btn-block btn-danger fullsize responsive-width" id="backButton"
-                                   style="height: 100%; min-height: 50px" th:href="@{/user/home}">
+                                   style="height: 100%; min-height: 30px" th:href="@{/user/home}">
                                     Zurück
                                 </a>
                             </div>
-                            <div class="col-xs-5 col-xs-offset-1" id="button_trainingStart">
+                            <div class="col-xs-6 col-xs-offset-1" id="button_trainingStart">
                                 <button type="button"
                                         class="btn btn-block btn-success fullsize responsive-width" id="startButton"
-                                        style="height: 100%; min-height: 50px" onclick="startTraining()" >
-                                    Training <br>  starten
+                                        style="height: 100%; min-height: 30px" onclick="startTraining()" >
+                                    Training starten
                                 </button>
                             </div>
                         </div>
@@ -324,15 +311,14 @@
                             <div class="col-xs-12" id="button_trainingExit">
                                 <button type="button"
                                         class="btn btn-block btn-danger fullsize responsive-width"
-                                        style="height: 100%; min-height: 50px" data-toggle="modal" data-target="#exitModal" id="exitOverview">
-                                    Training <br> abbrechen
+                                        style="height: 100%; min-height: 10px" data-toggle="modal" data-target="#exitModal" id="exitOverview">
+                                    Training abbrechen
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 </div>
 
