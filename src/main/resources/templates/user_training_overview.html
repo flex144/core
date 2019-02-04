@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+          content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Your personalized training page</title>
 
@@ -11,16 +11,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
     <div th:include="/fragments/navbar :: style_fragment"></div>
     <style>
-
-        html, body {
-            width: 100%;
+        html {
             height: 100%;
-            font-size: calc(12px+ 0.2vw);
         }
-
         .tableCentered{
             text-align: center;
             align-items: center;
@@ -40,11 +35,9 @@
             background: #ecf0f1;
             border: solid 2px #2E2E2E;
         }
-
-        .responsive-width{
-            font-size: calc(8px + 0.8vw);
+        * {
+            box-sizing: border-box;
         }
-
         .col-container {
             display: table;
             width: 100%;
@@ -52,7 +45,48 @@
         .col {
             display: table-cell;
             padding: 5px;
-            width: 33%;
+        }
+        #currentSet,
+        #currentTE {
+            width: 40px;
+            text-align: center;
+        }
+        .panel-login {
+            height: 100%;
+            margin-bottom: 0px;
+            position: relative;
+        }
+        .panel-login .panel-body{
+            height: 84.5%;
+        }
+        @media only screen and (max-height: 800px) {
+            .panel-login .panel-body{
+                height: 82%;
+            }
+        }
+        @media only screen and (max-height: 700px) {
+            .panel-login .panel-body{
+                height: 80%;
+            }
+        }
+        .panel-login .panel-heading {
+            padding: 10px;
+        }
+        .panel-login .panel-footer {
+            position: absolute;
+            width:100%;
+            bottom:0;
+        }
+        #contentBlock {
+            height: 100%;
+            padding: 0px;
+        }
+        #pageContainer {
+            height: 100%;
+            padding: 7px;
+        }
+        #openInfoModal {
+            padding: 6px 12px 6px 6px;
         }
     </style>
 </head>
@@ -241,12 +275,109 @@
     </form>
 </div>
 
-<!--- the Page --->
-<div style="width: 100%; height: 100%;" class="container">
-    <br>
-    <div class="col-lg-2 col-xs-0"></div>
-    <!--- Container with the content of the page--->
-    <div class="col-lg-8" style="height: 90%;">
+<div class="container-fluid" id="pageContainer">
+    <div class="col-md-4 col-md-offset-4" id="contentBlock">
+        <div class="panel panel-login panel-default">
+            <div class="panel-heading">
+                <div class="col-container">
+                    <div class="col">
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <div class="col-container">
+                                    <div class="col visible-md visible-lg" style="padding: 0px 5px 0px 0px">
+                                        Aktuelle
+                                    </div>
+                                    <div class="col" style="padding: 0px">
+                                        Trainingseinheit
+                                    </div>
+                                </div>
+                            </span>
+                            <input type="text" class="form-control" id="currentTE"
+                                   th:value="${dayDto.currentSession}">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group">
+                            <span class="input-group-addon">Set</span>
+                            <input type="text" class="form-control" id="currentSet"
+                                   th:value="${dayDto.currentCategory}">
+                        </div>
+                    </div>
+                    <div class="col" style="width: 50px">
+                        <div class="input-group-btn">
+                            <button data-toggle="modal" data-target="#infoModal" class="btn btn-info"
+                               id="openInfoModal" style="border-radius: 4px">
+                                <span class="glyphicon glyphicon-info-sign" align="center"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body" style="overflow-y: scroll">
+                <div th:each="exerciseInst, stat : ${dayDto.exercises}">
+                    <div class="container " style="padding-bottom: 2px; min-height: 20%; width: 100%;
+                    border-radius: 20px; border-color: #ecf0f1 #ecf0f1 #ecf0f1 black">
+                        <div th:hidden="${exerciseInst.done}">
+                            <div th:id="exercise + ${stat.count}" style="display: block;">
+                                <div class="col-container" th:onclick="'submitWithIndex(' + ${exerciseInst.getIndexInList()} + ')'" >
+                                    <div class="col">
+                                        <h3 th:id="orderNumber + ${stat.count}" th:text="${exerciseInst.category}"></h3>
+                                    </div>
+                                    <div class="col">
+                                        <h3 th:text="${exerciseInst.exercise.name}"></h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+            </div>
+            <div class="panel-footer">
+                <div id="container_timer" class="container fullsize">
+                    <div id="firstButtonSet">
+                        <div class="col-container">
+                            <div class="col" id="button_trainingBack">
+                                <a type="button" class="btn button btn-block" id="backButton" th:href="@{/user/home}">
+                                    <span class="glyphicon glyphicon-arrow-left"></span>
+                                    Zurück
+                                </a>
+                            </div>
+                            <div class="col" id="button_trainingStart">
+                                <button type="button" class="btn button btn-block" id="startButton"
+                                        onclick="startTraining()" >
+                                    <span class="glyphicon glyphicon-play"></span>
+                                    Training starten
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="secondButtonSet">
+                        <div id="button_trainingExit">
+                            <button type="button" class="btn button btn-block" data-toggle="modal"
+                                    data-target="#exitModal" id="exitOverview">
+                                <span class="glyphicon glyphicon-remove"></span>
+                                Training abbrechen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--- the Page ---
+<div style="width: 100%; height: 100%;">
+    <!--- buffers the main part of the page to the middle--
+    <div class="col-md-3 visible-md visible-lg">
+    </div>
+    <!--- Container with the content of the page---
+    <div class="col-md-6" style="height: 100%;">
+        <div class="visible-md visible-lg">
+        </div>
+        <div class="container fullsize">
+>>>>>>> Stashed changes
             <div class="panel panel-login panel-default fullsize">
                 <div class="panel-heading col-container" style="font-size: 110%; height: 15%;">
                     <div class="col" >
@@ -263,9 +394,15 @@
                         i
                     </button>
                 </div>
+<<<<<<< Updated upstream
                 <div class="panel-body" style=" height: 75%;">
-                    <!--- Template for thymeleaf data to load into --->
+                    <!--- Template for thymeleaf data to load into ---
                     <div  id="container_content" style="height: 70%;
+======
+                <div class="panel-body" style=" height: 80%;">
+                    <!--- Template for thymeleaf data to load into ---
+                    <div class="container" id="container_content" style="height: 70%;
+>>>>>>> Stashed changes
         overflow-x: fragments; overflow-y: scroll; text-align: center;
         padding: 5px" >
                         <div th:each="exerciseInst, stat : ${dayDto.exercises}"  >
@@ -289,9 +426,15 @@
                     </div>
                 </div>
                 <div class="panel-footer" style="text-align: center;  height: 10%;">
-                    <!--- Buttons to leave/star the exercise --->
+<<<<<<< Updated upstream
+                    <!--- Buttons to leave/star the exercise ---
                     <div id="container_buttonSets" class="fullsize">
                         <div id="firstButtonSet" class="fullsize row">
+=======
+                    <!--- Buttons to leave/star the exercise ---
+                    <div id="container_timer" class="container fullsize row">
+                        <div id="firstButtonSet" class="fullsize">
+>>>>>>> Stashed changes
                             <div class="col-xs-5" id="button_trainingBack">
                                 <a type="button"
                                    class="btn btn-block btn-danger fullsize responsive-width" id="backButton"
@@ -320,7 +463,7 @@
                 </div>
             </div>
     </div>
-</div>
+</div>-->
 
 <!--- clicking on a row--->
 <script>
