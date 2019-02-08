@@ -1,33 +1,41 @@
-<!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Bitte gib deine Daten ein!</title>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Dateneingabe</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
     <div th:include="/fragments/navbar :: style_fragment"></div>
-    <style>
 
+    <style>
+        body {
+            height: 100%;
+            width: 100%;
+            background-image:  linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.35)),
+            url("images/Hintergründe/background_gym_5_greyscale.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        * {
+            box-sizing: border-box;
+        }
         .col-container {
             display: table;
             width: 100%;
-            align-items: center;
-            align-content: center;
-            align-self: center;
         }
-        .responsive-width{
-            font-size: calc(10px + 1vw);
+        .col {
+            display: table-cell;
+            padding: 5px;
         }
-
-
     </style>
+
     <!--- Disables sending forms using the enter button--->
     <script type="text/javascript">
         function noenter() {
@@ -36,53 +44,59 @@
 </head>
 <body>
 
-<div>
-    <br>
-    <br>
-    <br>
-</div>
-<form th:action="@{/user/plan/exercise/done/init}" method="post">
-    <div class="container" id="panelContainer" style="height: 100%; width: 100%">
-        <div class="col-lg-6 col-lg-offset-2" >
-            <div >
-                <div class="panel panel-login panel-default">
-                    <input title="done" type="checkbox" name="doneFlag" hidden checked>
-                    <input type="text" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
-                    <!--- Short description --->
-                    <div class="panel-heading" >
-                        <h3 th:text="'Bitte trage ein mit wie viel Gewicht (in kg) du die Übung '
-                    + ${exerciseDto.getExercise().getName()} + ', ' + ${exerciseDto.getRepMax()} + ' mal wiederholen kannst.'"></h3>
+<!-- Page content -->
+<div class="container-fluid" id="pageContainer">
+    <div class="visible-md visible-lg">
+        <br><br>
+    </div>
+    <br><br>
+    <form th:action="@{/user/plan/exercise/done/init}" method="post">
+        <div class="col-md-4 col-md-offset-4" id="contentBlock">
+            <div class="panel panel-login panel-default">
+                <input title="done" type="checkbox" name="doneFlag" hidden checked>
+                <input type="text" th:value="${exerciseDto.getIndexInList()}" name="indexInList" hidden>
+                <div class="panel-heading" style="text-align: center">
+                    <div class="visible-md visible-lg">
+                        <h3>Bitte gebe deine Daten ein</h3>
                     </div>
-                    <!--- form for user to write into --->
-                    <div class="panel-body">
-                        <div class="col-xs-12" style="text-align: center;">
-                            <form>
-                                <input type="number" name="weightDone" style="text-align: center" id="userMaxWeight" oninput="updateWeight()" onkeypress="return noenter()">
-                            </form>
+                    <div class="visible-sm visible-xs">
+                        <h4>Bitte gebe deine Daten ein</h4>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <p  th:text="'Bitte trage ein mit wie viel Gewicht (in kg) du die Übung '
+                    + ${exerciseDto.getExercise().getName()} + ', ' + ${exerciseDto.getRepMax()} +
+                    ' mal wiederholen kannst:'"></p>
+                    <br>
+                    <div style="text-align: center;">
+                        <form>
+                            <input type="number" name="weightDone" style="text-align: center" id="userMaxWeight"
+                                   oninput="updateWeight()" onkeypress="return noenter()">
+                        </form>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="col-container">
+                        <div class="col">
+                            <a th:href="@{/user/plan}" id="backButton" type="button"
+                               class="button btn btn-block">
+                                <span class="glyphicon glyphicon-arrow-left"></span>
+                                Zurück
+                            </a>
                         </div>
-                    </div>
-                    <!--- Buttons for exit and continuing --->
-                    <div class="panel-footer" style="text-align: center;">
-                        <div class="col-container">
-                            <div class="col-xs-5">
-                                <a type="button"
-                                   class="btn btn-danger btn-block responsive-width" th:href="@{/user/plan}" id="backButton">
-                                    Zurück
-                                </a>
-                            </div>
-                            <div class="col-xs-7">
-                                <button type="submit"
-                                        class="btn btn-success btn-block responsive-width" id="startButton">
-                                    Bestätigen
-                                </button>
-                            </div>
+                        <div class="col">
+                            <button type="submit"
+                                    class="btn button btn-block" id="startButton">
+                                <span class="glyphicon glyphicon-saved"></span>
+                                Bestätigen
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 
 <!--- Checks if value given by user is acceptable --->
 <script>

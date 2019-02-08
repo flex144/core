@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+          content="width=device-width, height=device-height, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Your personalized training page</title>
 
@@ -11,16 +11,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <link href="../static/css/core.css" th:href="@{css/core.css}" rel="stylesheet" media="screen">
     <div th:include="/fragments/navbar :: style_fragment"></div>
     <style>
-
-        html, body {
-            width: 100%;
+        html {
             height: 100%;
-            font-size: calc(12px+ 0.2vw);
         }
-
         .tableCentered{
             text-align: center;
             align-items: center;
@@ -40,11 +35,9 @@
             background: #ecf0f1;
             border: solid 2px #2E2E2E;
         }
-
-        .responsive-width{
-            font-size: calc(8px + 0.8vw);
+        * {
+            box-sizing: border-box;
         }
-
         .col-container {
             display: table;
             width: 100%;
@@ -52,7 +45,51 @@
         .col {
             display: table-cell;
             padding: 5px;
-            width: 33%;
+        }
+        #currentSet {
+            width: 45px;
+            text-align: center;
+        }
+        #currentTE {
+            width: 40px;
+            text-align: center;
+        }
+        .panel-login {
+            height: 100%;
+            margin-bottom: 0px;
+            position: relative;
+        }
+        .panel-login .panel-body{
+            height: 84.5%;
+        }
+        @media only screen and (max-height: 800px) {
+            .panel-login .panel-body{
+                height: 82%;
+            }
+        }
+        @media only screen and (max-height: 700px) {
+            .panel-login .panel-body{
+                height: 80%;
+            }
+        }
+        .panel-login .panel-heading {
+            padding: 10px;
+        }
+        .panel-login .panel-footer {
+            position: absolute;
+            width:100%;
+            bottom:0;
+        }
+        #contentBlock {
+            height: 100%;
+            padding: 0px;
+        }
+        #pageContainer {
+            height: 100%;
+            padding: 7px;
+        }
+        #openInfoModal {
+            padding: 6px 12px 6px 6px;
         }
     </style>
 </head>
@@ -241,46 +278,60 @@
     </form>
 </div>
 
-<!--- the Page --->
-<div style="width: 100%; height: 100%;" class="container">
-    <br>
-    <div class="col-lg-2 col-xs-0"></div>
-    <!--- Container with the content of the page--->
-    <div class="col-lg-8" style="height: 90%;">
-            <div class="panel panel-login panel-default fullsize">
-                <div class="panel-heading col-container" style="font-size: 110%; height: 15%;">
-                    <div class="col" >
-                            Trainings-<br> einheit nr.
-                    </div>
-                    <div class="col" th:text="${dayDto.currentSession}"></div>
+<!-- Page content -->
+<div class="container-fluid" id="pageContainer">
+    <div class="col-md-4 col-md-offset-4" id="contentBlock">
+        <div class="panel panel-login panel-default">
+            <div class="panel-heading">
+                <div class="col-container">
                     <div class="col">
-                        <div>set: </div>
-                        <div  id="currentOrder" th:text="${dayDto.currentCategory}">#
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <div class="col-container">
+                                    <div class="col visible-md visible-lg" style="padding: 0px 5px 0px 0px">
+                                        Aktuelle
+                                    </div>
+                                    <div class="col" style="padding: 0px">
+                                        Trainingseinheit
+                                    </div>
+                                </div>
+                            </span>
+                            <input type="text" class="form-control" id="currentTE"
+                                   th:value="${dayDto.currentSession}">
                         </div>
                     </div>
-                    <div class="col" th:text="${dayDto.currentCategory}"></div>
-                    <button data-toggle="modal" data-target="#infoModal" class="btn btn-info" id="openInfoModal">
-                        i
-                    </button>
+                    <div class="col">
+                        <div class="input-group">
+                            <span class="input-group-addon">Set</span>
+                            <input type="text" class="form-control" id="currentSet"
+                                   th:value="${dayDto.currentCategory}">
+                        </div>
+                    </div>
+                    <div class="col" style="width: 50px">
+                        <div class="input-group-btn">
+                            <button data-toggle="modal" data-target="#infoModal" class="btn btn-info"
+                               id="openInfoModal" style="border-radius: 4px">
+                                <span class="glyphicon glyphicon-info-sign" align="center"></span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="panel-body" style=" height: 75%;">
-                    <!--- Template for thymeleaf data to load into --->
-                    <div  id="container_content" style="height: 70%;
-        overflow-x: fragments; overflow-y: scroll; text-align: center;
-        padding: 5px" >
-                        <div th:each="exerciseInst, stat : ${dayDto.exercises}"  >
-                            <div style="padding-bottom: 2px; min-height: 20%; width: 100%;"  >
-                                <div th:hidden="${exerciseInst.done}">
-                                    <div class="containerColor col-sm-12" th:id="exercise + ${stat.count}" style="display: block;">
-                                        <div >
-                                            <div class="col-container" th:onclick="'submitWithIndex(' + ${exerciseInst.getIndexInList()} + ')'" >
-                                                <div class="tableCentered col" >
-                                                    <h3 class="numbertest1 tableCentered" th:id="orderNumber + ${stat.count}" th:text="${exerciseInst.category}"></h3>
-                                                </div>
-                                                <div class="tableCentered col">
-                                                    <h3 class="tableCentered" th:text="${exerciseInst.exercise.name}"></h3>
-                                                </div>
-                                            </div>
+            </div>
+            <div class="panel-body" style="overflow-y: scroll">
+                <div id="exercisesListId">
+                    <div th:each="exerciseInst, stat : ${dayDto.exercises}" th:sortKey="${exerciseInst.category}">
+                        <div class="container" style="padding-bottom: 2px; min-height: 20%; width: 100%">
+                            <div th:hidden="${exerciseInst.done}">
+                                <div th:id="exercise + ${stat.count}" style="display: block; border-radius: 10px;
+                                    border: solid 2px black">
+                                    <div class="col-container"
+                                         th:onclick="'submitWithIndex(' + ${exerciseInst.getIndexInList()} + ')'" >
+                                        <div class="col" style="width: 50px; padding-left: 8px">
+                                            <h3 th:id="orderNumber + ${stat.count}" th:text="${exerciseInst.category}">
+                                            </h3>
+                                        </div>
+                                        <div class="col">
+                                            <h3 th:text="${exerciseInst.exercise.name}"></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -288,37 +339,39 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel-footer" style="text-align: center;  height: 10%;">
-                    <!--- Buttons to leave/star the exercise --->
-                    <div id="container_buttonSets" class="fullsize">
-                        <div id="firstButtonSet" class="fullsize row">
-                            <div class="col-xs-5" id="button_trainingBack">
-                                <a type="button"
-                                   class="btn btn-block btn-danger fullsize responsive-width" id="backButton"
-                                   style="height: 100%; min-height: 30px" th:href="@{/user/home}">
+                <br>
+            </div>
+            <div class="panel-footer">
+                <div id="container_timer" class="container fullsize">
+                    <div id="firstButtonSet">
+                        <div class="col-container">
+                            <div class="col" id="button_trainingBack">
+                                <a type="button" class="btn button btn-block" id="backButton" th:href="@{/user/home}">
+                                    <span class="glyphicon glyphicon-arrow-left"></span>
                                     Zurück
                                 </a>
                             </div>
-                            <div class="col-xs-6 col-xs-offset-1" id="button_trainingStart">
-                                <button type="button"
-                                        class="btn btn-block btn-success fullsize responsive-width" id="startButton"
-                                        style="height: 100%; min-height: 30px" onclick="startTraining()" >
+                            <div class="col" id="button_trainingStart">
+                                <button type="button" class="btn button btn-block" id="startButton"
+                                        onclick="startTraining()" >
+                                    <span class="glyphicon glyphicon-play"></span>
                                     Training starten
                                 </button>
                             </div>
                         </div>
-                        <div id="secondButtonSet" class="fullsize">
-                            <div class="col-xs-12" id="button_trainingExit">
-                                <button type="button"
-                                        class="btn btn-block btn-danger fullsize responsive-width"
-                                        style="height: 100%; min-height: 10px" data-toggle="modal" data-target="#exitModal" id="exitOverview">
-                                    Training abbrechen
-                                </button>
-                            </div>
+                    </div>
+                    <div id="secondButtonSet">
+                        <div id="button_trainingExit">
+                            <button type="button" class="btn button btn-block" data-toggle="modal"
+                                    data-target="#exitModal" id="exitOverview">
+                                <span class="glyphicon glyphicon-remove"></span>
+                                Training abbrechen
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
 </div>
 
@@ -448,6 +501,30 @@
         return colour;
     }
 
+</script>
+
+<!-- Sort training exercises -->
+<script>
+    /**
+     * Sort the loaded exercises when document is loaded
+     */
+    $(document).ready(function(){
+        jQuery.fn.sortDomElements = (function() {
+            return function(comparator) {
+                return Array.prototype.sort.call(this, comparator).each(function(i) {
+                    this.parentNode.appendChild(this);
+                });
+            };
+        })();
+
+        $("#exercisesListId").children().sortDomElements(function(a,b){
+            akey = $(a).attr("sortkey");
+            bkey = $(b).attr("sortkey");
+            if (akey == bkey) return 0;
+            if (akey < bkey) return -1;
+            if (akey > bkey) return 1;
+        })
+    })
 </script>
 
 </body>
