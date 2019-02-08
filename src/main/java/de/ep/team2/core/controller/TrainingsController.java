@@ -44,7 +44,6 @@ public class TrainingsController {
         PlanService service = new PlanService();
         String checkArgs = checkIfArgsValid(dto);
         log.info("Post Request.");
-
         if (checkArgs.equals("valid!")) {
             dto.nameToId();
             try {
@@ -56,6 +55,10 @@ public class TrainingsController {
             //Add Exercises to the thymeleaf model
             TrainingsPlanTemplate tpt = service
                     .getPlanTemplateAndSessionsByID(dto.getId());
+            dto.setExerciseName(null);
+            dto.setExerciseID(null);
+            dto.setRepetitionMaximum(null);
+            dto.setCategory(null);
             redirectAttributes.addFlashAttribute("plan", tpt);
             return "redirect:/mods/createplan";
         } else {
