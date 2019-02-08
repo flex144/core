@@ -1485,8 +1485,7 @@
      * @return if the value passes the evaluation
      */
     function checkNumberAndStroke(id){
-        if (checkNotEmpty(id)) {
-            var format = /^[0-9/+-]+$/
+            var format = /^[0-9/+-]*$/
             var valueInField = document.getElementById(id).value;
             var passesTest =  format.test(valueInField);
             if (passesTest){
@@ -1494,7 +1493,6 @@
                 document.getElementById(id).style.borderColor = "#CCCCCC";
                 return true;
             }
-        }
         console.log(id + " :checkText : failed");
         document.getElementById(id).style.borderColor = "red";
         return false;
@@ -1558,7 +1556,7 @@
             passesTest = false;
             alertmessage = "Bitte stelle sicher, dass keine der Felder für die Übung leer sind und du dem gegebenen Format folgst. ";
         }
-        if (!checkText("planName")) {
+        if (!checkNotEmpty("planName")) {
             passesTest = false;
             alertmessage = alertmessage + "Bitte benenne deinen Plan, bevor due eine Übung einfügst. ";
         }
@@ -1598,7 +1596,7 @@
             if (!checkNumberAndStroke(weightfield)){
                 passesTest = false;
             }
-            if (!checkNumberAndStroke(repfield)){
+            if (!checkNumberAndStroke(repfield) || !checkNotEmpty(repfield)){
                 passesTest = false;
             }
             if (!checkText(tempofield)){
