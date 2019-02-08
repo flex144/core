@@ -154,10 +154,8 @@
 <script>
     function checkForms(){
         var checkName = true;
-        var checkMusclegroup = true;
         var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
         var name = document.getElementById('exerciseName').value;
-        var musclegroup = document.getElementById('displaySelected').innerHTML;
         var errorMessage = "";
         var testForFormating;
         if (name == null || name == "") {
@@ -170,49 +168,12 @@
                 errorMessage = errorMessage + "Sonderzeichen sind nicht möglich";
             }
         }
-        if (musclegroup == null || musclegroup == "") {
-            checkMusclegroup = false;
-            errorMessage = errorMessage + "Die Übung braucht mindestens eine Muskelgruppe ";
-        } else {
-            testForFormating = format.test(musclegroup);
-            checkMusclegroup = !testForFormating;
-            if (testForFormating){
-                errorMessage = errorMessage + "Sonderzeichen im Namen oder Muskelgruppe sind nicht möglich. ";
-            }
-        }
-
-        if (checkName && checkMusclegroup){
+        if (checkName){
             document.getElementById('submitPageButton').click();
         } else{
             alert(errorMessage);
         }
     }
-</script>
-
-<script>
-    var selectedMuscles = [];
-
-    /**
-     * Execute functions when the page is loaded
-     */
-    $(document).ready(function(){
-        // Hide the panel footer that displays added muscle groups
-        document.getElementById("addedMuscleTypes").style.display = "none";
-    });
-
-    function addToList() {
-        var toadd = document.getElementById('inputMuscle').value;
-        selectedMuscles.push(toadd);
-        document.getElementById('inputMuscle').value = "";
-        display();
-    }
-    
-    function display() {
-        document.getElementById("displaySelected").innerHTML = selectedMuscles;
-        // Show the panel footer that displays added muscle groups
-        document.getElementById("addedMuscleTypes").style.display = "block";
-    }
-
 </script>
 </body>
 </html>

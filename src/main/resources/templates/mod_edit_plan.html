@@ -16,6 +16,10 @@
     <div th:include="/fragments/navbar :: style_fragment"></div>
 
     <style>
+        body {
+            background-image:  linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.35)),
+            url("../../images/Hintergründe/background_gym_5_greyscale.jpg");
+        }
         * {
             box-sizing: border-box;
         }
@@ -55,6 +59,13 @@
         <div class="panel panel-default outerPanel">
             <div class="panel-heading" id="panelEditPlan">
                 <h3>Planvorlage bearbeiten</h3>
+                <div class="col">
+                    <a type="button" class="btn btn-block btn-danger" data-toggle="modal"
+                       data-target="#confirm_delete">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        Löschen
+                    </a>
+                </div>
             </div>
             <div class="panel-body">
                 <div class="col-container">
@@ -211,9 +222,46 @@
     </div>
 </div>
 
-<script>
-
-</script>
+<div class="modal fade" id="confirm_delete">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-body">
+            <form th:action="@{/mods/plans/{path}(path=${tpt.getId()})}" th:method="delete">
+                <div class="panel panel-danger">
+                    <div class="panel-heading">
+                        <h4>Löschen bestätigen</h4>
+                    </div>
+                    <div class="panel-body">
+                        <p style="font-size: 16px">
+                            Wollen sie den aktuellen Plan wirklich löschen?
+                        </p>
+                        <p class="text-danger" style="font-size: 12px">
+                            Diese Aktion kann nicht rückgängig gemacht
+                            werden!
+                        </p>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-5">
+                                <button type="submit"
+                                        class="btn btn-danger btn-block">
+                                    Löschen
+                                </button>
+                            </div>
+                            <div class="col-md-5">
+                                <button type="button"
+                                        class="btn btn-default btn-block"
+                                        data-dismiss="modal">Abbrechen
+                                </button>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
