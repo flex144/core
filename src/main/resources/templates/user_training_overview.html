@@ -272,7 +272,7 @@
 
 <!--- Saves if training has started or not --->
 <div hidden>
-    <form th:action="@{'/user/plan/exercise/'}" method="post" id="submitForm">
+    <form th:action="@{'/user/plan/exercise'}" method="post" id="submitForm">
         <input name="index" id="indexOfEx">
         <input th:value="${dayDto.trainingStarted}" id="trainingHasStarted" name="trainingStarted">
     </form>

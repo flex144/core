@@ -250,14 +250,18 @@ public class UserController {
      * @param repsTodo reps the user should do
      * @param repsDone reps the user has done
      * @param redirectAttributes used to bring the currentSet attribute to the front end
-     * @return "redirect:/user/plan/exercise/"
+     * @return "redirect:/user/plan/exercise"
      */
     @PostMapping("/plan/exercise/adjust")
     public String exerciseRepsEvaluation(@RequestParam("indexInList") Integer indexInList, @RequestParam("currentSet") Integer currentSet,
                                          @RequestParam("repsTodo") Integer repsTodo, @RequestParam("repsDone") Integer repsDone, RedirectAttributes redirectAttributes,  HttpServletRequest request) {
         if (currentSet == null || repsTodo == null || repsDone == null) {
+            request.setAttribute(
+                    View.RESPONSE_STATUS_ATTRIBUTE, HttpStatus.TEMPORARY_REDIRECT);
             redirectAttributes.addFlashAttribute("currentSet", currentSet);
-            return "redirect:/user/plan/exercise/" + indexInList;
+            redirectAttributes.addAttribute("index", indexInList);
+            redirectAttributes.addAttribute("trainingStarted", true);
+            return "redirect:/user/plan/exercise";
         }
         PlanService planService = new PlanService();
         ExerciseDto exerciseDto = dayDto.getExercises().get(indexInList);
@@ -274,7 +278,7 @@ public class UserController {
         redirectAttributes.addFlashAttribute("currentSet", currentSet);
         redirectAttributes.addAttribute("index", indexInList);
         redirectAttributes.addAttribute("trainingStarted", true);
-        return "redirect:/user/plan/exercise/";
+        return "redirect:/user/plan/exercise";
     }
 
     /**
@@ -308,7 +312,7 @@ public class UserController {
      * @return "error" when the trainings day hasn't started yet.; "user_first_training_of_plan" when its the initial training to provide the weights.;
      * "user_in_exercise" when its a normal trainings session.
      */
-    @PostMapping("/plan/exercise/")
+    @PostMapping("/plan/exercise")
     public String openExercise(@RequestParam("index") Integer index,
                                @RequestParam("trainingStarted") Boolean started, Model model) {
         if (dayDto.getExercises() == null) {
