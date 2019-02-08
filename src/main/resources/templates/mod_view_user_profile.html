@@ -165,6 +165,11 @@
                         <td th:if="${user.role == 'ROLE_MOD'}"><p style="font-size: 14px">Moderator</p></td>
                         <td th:if="${user.role == 'ROLE_USER'}"><p style="font-size: 14px">Nutzer</p></td>
                     </tr>
+                    <tr>
+                        <th>Freigeschaltet</th>
+                        <td th:if="${user.isEnabled()}">Ja</td>
+                        <td th:unless="${user.isEnabled()}">Nein</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>

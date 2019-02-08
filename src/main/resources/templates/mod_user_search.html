@@ -73,6 +73,9 @@
                         <th data-field="role" data-sortable="true">
                             Benutzer Gruppe
                         </th>
+                        <th data-field="role" data-sortable="true">
+                            Nutzer freigeschaltet
+                        </th>
                     </tr>
                     </thead>
                     <tbody id="myTable">
@@ -84,6 +87,8 @@
                         <td th:text="${user.getFirstName()}"/>
                         <td th:text="${user.getLastName()}"/>
                         <td th:text="${user.getRole()}"/>
+                        <td th:if="${user.isEnabled()}">Ja</td>
+                        <td th:unless="${user.isEnabled()}">Nein</td>
                     </tr>
                     </tbody>
                 </table>

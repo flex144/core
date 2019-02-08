@@ -374,6 +374,8 @@ public class DataBaseService {
             deleteUserStats(toDelete.getEmail());
             deleteUserFromPlan(toDelete.getEmail());
             deleteUserPlanOfUser(toDelete);
+            jdbcTemplate.update("DELETE FROM confirmation_token WHERE usertoconfirm = ?",
+                    (Object[]) new String[]{toDelete.getEmail()});
             jdbcTemplate.update("DELETE FROM users WHERE id = ?",
                     (Object[]) new Integer[]{id});
             User deleter = (User) SecurityContextHolder.getContext().getAuthentication()
