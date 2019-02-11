@@ -141,7 +141,7 @@ public class DataInit {
             db.insertUser(o[0], o[1], o[2], o[3]);
             db.confirmUser(o[0]);
         }
-        for (int i = 1; i < 5; i++) {
+        for (int i = 2; i < 6; i++) {
             db.changeToMod(i);
         }
         Calendar cal = Calendar.getInstance();

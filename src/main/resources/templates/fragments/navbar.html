@@ -8,7 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
-    <div th:fragment="style_fragment">
+    <div th:fragment="style_fragment" th:inline="text">
         <style>
             .glyphicon {
                 margin-left: 5px;
@@ -17,7 +17,7 @@
                 height: 100%;
                 width: 100%;
                 background-image:  linear-gradient(rgba(255,255,255,0.35), rgba(255,255,255,0.35)),
-                url("../images/Hintergründe/background_gym_5_greyscale.jpg");
+                url([[@{/images/Hintergründe/background_gym_5_greyscale.jpg}]]);
                 background-size: cover;
                 background-position: center;
                 background-repeat: no-repeat;
