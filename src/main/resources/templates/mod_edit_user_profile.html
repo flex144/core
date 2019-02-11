@@ -48,7 +48,7 @@
 </div>
 
 <div class="container">
-    <form th:action="@{/user/editprofile}" method="post" th:object="${user}">
+    <form th:action="@{/user/editprofile}" method="post" th:object="${user}" id="submitForm">
         <div class="panel panel-default outerPanel">
         <div class="panel-heading" id="editProfilePanel">
             <h3>Nutzerprofil bearbeiten</h3>
@@ -200,8 +200,8 @@
                     </a>
                 </div>
                 <div class="col-md-6">
-                    <button class="button btn btn-block" type="submit" id="generalSubmit">
-                        <span class="glyphicon glyphicon-floppy-saved"></span>
+                    <button class="button btn btn-block" type="button" id="generalSubmit" onclick="checkUserData()">
+                        <span class="glyphicon glyphicon-floppy-saved" ></span>
                         Änderungen übernehmen
                     </button>
                 </div>
@@ -262,7 +262,7 @@
                     <div class="panel-heading">
                         <h4>Passwort ändern</h4>
                     </div>
-                    <form th:action="@{/user/editprofilepassword}" method="post" th:object="${dto}">
+                    <form th:action="@{/user/editprofilepassword}" method="post" th:object="${dto}" id="editProfilePassword">
                        <div class="panel-body">
                             <p style="font-size: 16px">
                                 Geben sie zuerst das alte Passwort ein, dann wählen sie ein neues und bestätigen dieses.
@@ -278,7 +278,7 @@
                             <div class="row">
                                 <div class="col-md-1"></div>
                                 <div class="col-md-5">
-                                    <button type="submit" class="btn btn-primary btn-block" id="passwordSubmit">
+                                    <button type="button" class="btn btn-primary btn-block" id="passwordSubmit" onclick="checkForm()">
                                         Änderungen übernehmen
                                     </button>
                                 </div>
@@ -383,6 +383,147 @@
     password.onchange = validatePassword;
     confirm_password.onkeyup = validatePassword;
 
+</script>
+
+<!--- Checks the user inputs --->
+<script>
+    /**
+     * Tests the value in the input field on Null or empty
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkNotEmpty(id) {
+        var passesTest = true;
+        var valueInField = document.getElementById(id).value;
+        if (valueInField == null || valueInField == "") {
+            passesTest = false;
+        }
+        return passesTest;
+    }
+
+    /**
+     * Tests the value in the input field on Null, empty or special characters
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkSpecialCharacters(id){
+        var passesTest = checkNotEmpty(id);
+        var valueInField = document.getElementById(id).value;
+        var format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        if (format.test(valueInField)){
+            passesTest = false;
+        }
+        return passesTest;
+    }
+
+    /**
+     * Tests the value in the input on if it only has Letters from a-Z
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkText(id){
+        if (checkSpecialCharacters(id)) {
+            var format = /^[a-zäöüA-ZÄÄÖÜ ]+$/
+            var valueInField = document.getElementById(id).value;
+            var passesTest =  format.test(valueInField);
+            if (passesTest){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tests the value in the input field on if it is a Number
+     * @param id the id of the input field checked witht his method
+     * @return if the value passes the evaluation
+     */
+    function checkNumber(id) {
+        if (checkNotEmpty(id)) {
+            var valueInField = document.getElementById(id).value;
+            if (!isNaN(valueInField)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function checkUserData(){
+        var alertmessage = "";
+        var passesTest = true;
+
+        if(!checkText("firstnameInput")){
+            if (checkNotEmpty("firstnameInput")){
+                alertmessage = alertmessage + "Du kannst keine Sonderzeichen oder Zahlen in deinem Vornamen verwenden. "
+                passesTest = false;
+            }
+        }
+        if(!checkText("lastnameInput")){
+            if (checkNotEmpty("lastnameInput")){
+                alertmessage = alertmessage + "Du kannst keine Sonderzeichen oder Zahlen in deinem Nachnamen verwenden. "
+                passesTest = false;
+            }
+        }
+        if(!checkNumber("heightInput")){
+            if (checkNotEmpty("heightInput")){
+                alertmessage = alertmessage + "Buchstaben sind bei der Größe nicht möglich. "
+                passesTest = false;
+            }
+        }
+        if(!checkNumber("weightInput")){
+            if (checkNotEmpty("weightInput")){
+                alertmessage = alertmessage + "Buchstaben sind beim Gewicht nicht möglich. "
+                passesTest = false;
+            }
+        }
+
+        if (passesTest){
+            document.getElementById('submitForm').submit;
+        } else{
+            alert(alertmessage);
+        }
+    }
+</script>
+
+<!--- Checks the user password --->
+<script>
+    function checkForm(){
+        var password = document.getElementById('newPassword').value;
+        var confirmPassword = document.getElementById('confirmNewPassword').value;
+        var alertmessage = "";
+        var passesTest = true;
+        var testFormat = /[@]/;
+
+        if(password != "" && password == confirmPassword) {
+            if(password.length < 6) {
+                alertmessage = alertmessage + "Passwort muss mindestens 6 Zeichen lang sein. ";
+                passesTest = false;
+            }
+            testFormat = /[0-9]/;
+            if(!testFormat.test(password)) {
+                alertmessage = alertmessage + "Passwort benötigt eine Nummer. ";
+                passesTest = false;
+            }
+            testFormat = /[a-z]/;
+            if(!testFormat.test(password)) {
+                alertmessage = alertmessage + "Passwort braucht Kleinbuchstaben (a-z)! ";
+                passesTest = false;
+            }
+            testFormat = /[A-Z]/;
+            if(!testFormat.test(password)) {
+                alertmessage = alertmessage + "Passwort braucht Großbuchstaben (A-Z)! ";
+                passesTest = false;
+            }
+        } else {
+            alertmessage = alertmessage + "Bitte Überprüfe das du ein Passwort eingegeben hast. ";
+            passesTest = false;
+        }
+        if (passesTest){
+            document.getElementById('editProfilePassword').submit;
+        } else {
+            alert(alertmessage);
+        }
+    }
 </script>
 
 </body>
