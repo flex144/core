@@ -275,7 +275,7 @@
                     </div>
                 </div>
             </div>
-            <input th:field="*{id}" hidden onkeypress="return noenter()">
+            <input th:field="*{id}" hidden onkeypress="return noenter()" id="planID">
             <input type="text" id="prevUnitAmount" value="3" hidden disabled onkeypress="return noenter()">
         </div>
 
@@ -1536,12 +1536,45 @@
     }
 
     /**
+     * Counts if an exercise has more than 10 sets
+     * */
+    function countAmountOfSets(id) {
+        var content = document.getElementById(id).value;
+        var amountOfSlashes = (content.match(/\//g) || []).length;
+        if (amountOfSlashes < 10){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a plan with the same name already exists
+     * */
+    function checkNoDuplicatePlanName(){
+        //TODO add listLength
+        var listLength;
+        var passesTest = true
+        if(document.getElementById("planID").value != null){
+            return passesTest
+        }
+        for (var i = 0; i < listLength; i++){
+            //TODO compare to list of existing names
+            if (document.getElementById("planName").value == [POINT TO THE LIST @ I]){
+                passesTest = false;
+                alert("Dieser Name ist bereits für einen Plan vergeben. Bitte wähle einen anderen.")
+            }
+        }
+        return passesTest;
+
+    }
+
+    /**
      * Checks if the execution field has the right format if the "add" or Speichern button is pressed.
      */
     function checkExecution() {
         var id = "inputExecution";
         console.log(document.getElementById(id).value +" : THis value should be whatever was typed in and not Null");
-        if(checkText(id)){
+        if(checkNotEmpty(id)){
             addTag();
             console.log("CheckText : Test was passed ");
         } else{
@@ -1557,7 +1590,7 @@
     function checkExecutionAdd() {
         var id = "inputExecutionName";
         console.log("checkExecutionName: " + id);
-        if(checkText(id)){
+        if(checkNotEmpty(id)){
             createExecution();
         } else{
             alert("Bitte stell sicher, dass keine Sonderzeichen und Ziffern" +
@@ -1567,7 +1600,7 @@
 
     /**
      * Checks if the forms are filled out before adding exercise
-     * */
+     *
     function addNewExerciseCheck() {
         var weightType = document.getElementById('weightType').value;
         console.log(weightType);
@@ -1576,12 +1609,15 @@
         } else{
             if(checkText('exerciseName')&& checkNotEmpty('exercise_description')){
                 console.log("Exercise would be saved.")
-                //TODO press button, once it has function
+                // press button, once it has function
             } else{
                 alert("Eine Übung braucht mindestens einen Namen, eine Beschreibung und eine Gewichtsart. Sonderzeichen sind nicht möglich.")
             }
         }
     }
+    */
+
+
 
     /**
      * Checks if the exercise fullfills the requirements if the "Übung zum Plan hinzufügen"-button is pressed
@@ -1597,7 +1633,7 @@
             passesTest = false;
             alertmessage = alertmessage + "Bitte benenne deinen Plan, bevor due eine Übung einfügst. ";
         }
-        if (!checkText("inputExercise")) {
+        if (!checkNotEmpty("inputExercise")) {
             passesTest = false;
             alertmessage = alertmessage + "Der Übungsname kann nur aus Buchstaben bestehen. ";
         }
@@ -1630,13 +1666,14 @@
             var repfield = "repsInput" + i;
             var tempofield = "tempoInput" + i;
             var pausefield = "pauseInput" + i;
-            if (!checkNumberAndStroke(weightfield)){
+            if (!checkNumberAndStroke(weightfield) || countAmountOfSets(weightfield)){
+
                 passesTest = false;
             }
-            if (!checkNumberAndStroke(repfield) || !checkNotEmpty(repfield)){
+            if (!checkNumberAndStroke(repfield) || !checkNotEmpty(repfield) || countAmountOfSets(repfield)){
                 passesTest = false;
             }
-            if (!checkText(tempofield)){
+            if (!checkNotEmpty(tempofield)){
                 passesTest = false;
             }
             if (!checkNumber(pausefield)){
@@ -1644,6 +1681,9 @@
             }
         }
         console.log("TE check passed");
+        if (!checkNoDuplicatePlanName()){
+            passesTest = false;
+        }
         return passesTest;
     }
 
