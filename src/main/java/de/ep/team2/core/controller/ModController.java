@@ -35,6 +35,7 @@ public class ModController {
      * time(without an existing dto)
      * this method creates an empty dto adds the default value for SessionNums. adds all
      * Exercises and tags so they can be displayed.
+     * Adds All plan names in the System so they can be checked for duplicates in the frontend.
      *
      * @param model model thymeleaf uses.
      * @return the site mod create plan.
@@ -50,6 +51,7 @@ public class ModController {
             model.addAttribute("createDto", dto);
         }
         model.addAttribute("allExercises", exerciseService.getAllExercises());
+        model.addAttribute("allPlanNames", planService.getAllPlanNames());
         model.addAttribute("allTags", planService.getAllTagNames());
         return "mod_create_plan";
     }
@@ -352,17 +354,16 @@ public class ModController {
     private String checkIfArgsValid(ExerciseInstance exIn) {
         String validationMessage = "";
         int sessionCounter = 1;
-
         for(TrainingsSession session : exIn.getTrainingsSessions()) {
             int weightLength = session.getWeightDiff().length;
             int repsLength = session.getReps().length;
-            if(repsLength >7) {
-                validationMessage = "Maximal 7 Sets erlaubt!";
+            if(repsLength > 10) {
+                validationMessage = "Maximal 10 Sets erlaubt!";
             } else if(repsLength == 0) {
                 validationMessage = "Wiederholungen dürfen nicht leer sein!";
             }else if(weightLength > repsLength) {
                 validationMessage = "Es kann nicht mehr Gewichtsänderungen als Sets geben!";
-            } else if(weightLength>1 && (repsLength != weightLength ||
+            } else if(weightLength > 1 && (repsLength != weightLength ||
                      containsNull(session.getWeightDiff()))) {
                 validationMessage = "Gewichtsänderungen passen nicht!";
             } else if(containsNull(session.getReps())) {
@@ -374,7 +375,6 @@ public class ModController {
             }
             sessionCounter++;
         }
-
         return validationMessage;
     }
 

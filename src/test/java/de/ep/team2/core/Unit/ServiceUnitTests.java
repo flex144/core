@@ -76,7 +76,7 @@ public class ServiceUnitTests {
 
     @Test
     public void getAllMods() {
-        assertEquals(4, DataBaseService.getInstance().getAllMods().size());
+        assertEquals(5, DataBaseService.getInstance().getAllMods().size());
     }
 
     @Test
@@ -175,7 +175,7 @@ public class ServiceUnitTests {
         assertEquals("TestExercise", exercise.getName());
         assertEquals("I was created to test the altering of exercises, but not the images", exercise.getDescription());
         assertEquals(WeightType.FIXED_WEIGHT, exercise.getWeightType());
-        assertNull(exercise.getVideoLink());
+        assertEquals("", exercise.getVideoLink());
         exercise.setName("Liegestütz"); // name already in use
         exercise.setDescription("Liegestütz is already in use but i should be altered anyway");
         try {

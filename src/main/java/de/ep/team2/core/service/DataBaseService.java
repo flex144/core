@@ -120,6 +120,9 @@ public class DataBaseService {
                 "weightdiff_set5 integer," +
                 "weightdiff_set6 integer," +
                 "weightdiff_set7 integer," +
+                "weightdiff_set8 integer," +
+                "weightdiff_set9 integer," +
+                "weightdiff_set10 integer," +
                 "tempo varchar(50)," +
                 "pause integer," +
                 "reps_set1 integer," +
@@ -129,7 +132,10 @@ public class DataBaseService {
                 "reps_set5 integer," +
                 "reps_set6 integer," +
                 "reps_set7 integer," +
-                "CHECK (sets <= 7)," +
+                "reps_set8 integer," +
+                "reps_set9 integer," +
+                "reps_set10 integer," +
+                "CHECK (sets <= 10)," +
                 "CHECK (ordering <= 15 AND ordering >= 1))");
         log.debug("Created table trainings_sessions");
         jdbcTemplate.execute("DROP TABLE IF EXISTS user_plans cascade ");
@@ -1254,26 +1260,26 @@ public class DataBaseService {
         insertValues.add(sets);
         insertValues.add(tempo);
         insertValues.add(pauseInSec);
-        if (weightDiff.length > 7) {
+        if (weightDiff.length > 10) {
             throw new IllegalArgumentException("to many sets!");
         }
         insertValues.addAll(Arrays.asList(weightDiff));
-        for (int i = insertValues.size(); i < 12; i++) {
+        for (int i = insertValues.size(); i < 15; i++) {
             insertValues.add(null);
         }
-        if (reps.length > 7) {
+        if (reps.length > 10) {
             throw new IllegalArgumentException("to many sets!");
         }
         insertValues.addAll(Arrays.asList(reps));
-        for (int i = insertValues.size(); i < 19; i++) {
+        for (int i = insertValues.size(); i < 25; i++) {
             insertValues.add(null);
         }
         jdbcTemplate.update(
                 "insert into trainings_sessions(exercise_instance, ordering, sets, tempo, pause, weightdiff_set1," +
                         " weightdiff_set2, weightdiff_set3, weightdiff_set4, weightdiff_set5, weightdiff_set6," +
-                        " weightdiff_set7, reps_set1, reps_set2, reps_set3, reps_set4," +
-                        " reps_set5, reps_set6, reps_set7) values " +
-                        "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        " weightdiff_set7, weightdiff_set8, weightdiff_set9, weightdiff_set10, reps_set1, reps_set2, reps_set3, reps_set4," +
+                        " reps_set5, reps_set6, reps_set7, reps_set8, reps_set9, reps_set10) values " +
+                        "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 insertValues.toArray());
         Integer id = jdbcTemplate.query("select currval" +
                         "(pg_get_serial_sequence('trainings_sessions','id'));",
@@ -1295,27 +1301,26 @@ public class DataBaseService {
         insertValues.add(session.getSets());
         insertValues.add(session.getTempo());
         insertValues.add(session.getPauseInSec());
-        if (session.getWeightDiff().length > 7) {
+        if (session.getWeightDiff().length > 10) {
             throw new IllegalArgumentException("to many sets!");
         }
         insertValues.addAll(Arrays.asList(session.getWeightDiff()));
-        for (int i = insertValues.size(); i < 12; i++) {
+        for (int i = insertValues.size(); i < 15; i++) {
             insertValues.add(null);
         }
-        if (session.getReps().length > 7) {
+        if (session.getReps().length > 10) {
             throw new IllegalArgumentException("to many sets!");
         }
         insertValues.addAll(Arrays.asList(session.getReps()));
-        for (int i = insertValues.size(); i < 19; i++) {
+        for (int i = insertValues.size(); i < 25; i++) {
             insertValues.add(null);
         }
         insertValues.add(session.getId());
-
         jdbcTemplate.update(
                 "UPDATE trainings_sessions SET exercise_instance=?, ordering=?, sets=?," +
                         " tempo=?, pause=?, weightdiff_set1=?, weightdiff_set2=?, weightdiff_set3=?, weightdiff_set4=?," +
-                        " weightdiff_set5=?, weightdiff_set6=?, weightdiff_set7=?, reps_set1=?, reps_set2=?," +
-                        " reps_set3=?, reps_set4=?, reps_set5=?, reps_set6=?, reps_set7=? WHERE id=?" ,
+                        " weightdiff_set5=?, weightdiff_set6=?, weightdiff_set7=?, weightdiff_set8=?, weightdiff_set9=?, weightdiff_set10=?, reps_set1=?, reps_set2=?," +
+                        " reps_set3=?, reps_set4=?, reps_set5=?, reps_set6=?, reps_set7=?, reps_set8=?, reps_set9=?, reps_set10=? WHERE id=?" ,
                 insertValues.toArray()
         );
         log.debug("Updated value for Trainingssession with id: '"+ session.getId() +"' !");
@@ -1338,14 +1343,14 @@ public class DataBaseService {
         @Override
         public TrainingsSession mapRow(ResultSet rs, int rowNum) throws SQLException {
             ArrayList<Integer> weightDiff = new ArrayList<>();
-            for (int j = 1; j < 8; j++) {
+            for (int j = 1; j < 11; j++) {
                 Integer toAdd = rs.getObject(String.format("weightdiff_set%d", j), Integer.class);
                 if (toAdd != null) {
                     weightDiff.add(toAdd);
                 }
             }
             ArrayList<Integer> reps = new ArrayList<>();
-            for (int j = 1; j < 8; j++) {
+            for (int j = 1; j < 11; j++) {
                 Integer toAdd = rs.getObject(String.format("reps_set%d", j), Integer.class);
                 if (toAdd != null) {
                     reps.add(toAdd);

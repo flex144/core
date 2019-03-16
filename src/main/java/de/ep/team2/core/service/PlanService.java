@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class PlanService {
@@ -87,6 +88,20 @@ public class PlanService {
     }
 
     /**
+     * Returns a List of the Names of all Plan Templates in the System.
+     *
+     * @return List of the Names of all Plan Templates as String.
+     */
+    public List<String> getAllPlanNames() {
+        LinkedList<TrainingsPlanTemplate> allTemplates = DataBaseService.getInstance().getAllPlanTemplatesNoChildren();
+        LinkedList<String> toReturn = new LinkedList<>();
+        for (TrainingsPlanTemplate tpt : allTemplates) {
+            toReturn.add(tpt.getName());
+        }
+        return toReturn;
+    }
+
+    /**
      * Returns a Template with a specific id with all its children added to the Object.
      *
      * @param id id of template to return.
@@ -154,8 +169,8 @@ public class PlanService {
             if (!validateWeightWithReps(reps, weightDiff)) {
                 throw new IllegalArgumentException("Wiederholungen und Gewichtsunterschiede stimmen nicht überein!");
             }
-            if (reps.length > 7) {
-                throw new IllegalArgumentException("Zu viele Sätze maximal 7 erlaubt!");
+            if (reps.length > 10) {
+                throw new IllegalArgumentException("Zu viele Sätze maximal 10 erlaubt!");
             }
             db.insertTrainingsSession(exInstanceId, i + 1, reps.length, setWeightDiffToReps(reps,weightDiff), reps,
                     dto.getTempo().get(i), dto.getPause().get(i));
@@ -183,8 +198,8 @@ public class PlanService {
             if (!validateWeightWithReps(reps, weightDiff)) {
                 throw new IllegalArgumentException("Wiederholungen und Gewichtsunterschiede stimmen nicht überein!");
             }
-            if (reps.length > 7) {
-                throw new IllegalArgumentException("Zu viele Sätze maximal 7 erlaubt!");
+            if (reps.length > 10) {
+                throw new IllegalArgumentException("Zu viele Sätze maximal 10 erlaubt!");
             }
         }
         return true;

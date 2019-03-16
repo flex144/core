@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -49,7 +51,23 @@ public class ExerciseService {
                                   List<String> muscleImgPaths, List<String> otherImgPaths) {
         LinkedList<String[]> imgPaths = uniteImgPaths(muscleImgPaths, otherImgPaths);
         return DataBaseService.getInstance().insertExercise(name, description,
-                weightType, link, imgPaths);
+                weightType, formatLink(link), imgPaths);
+    }
+
+    private String formatLink(String link) {
+        if (link == null) {
+            return "";
+        }
+        String pattern = "(?<=youtu.be/|watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
+        String videoId;
+        Pattern compiledPattern = Pattern.compile(pattern);
+        Matcher matcher = compiledPattern.matcher(link);
+        if(matcher.find()){
+            videoId = matcher.group();
+        } else {
+            return "";
+        }
+        return "https://www.youtube.com/embed/" + videoId;
     }
 
     private LinkedList<String[]> uniteImgPaths(List<String> muscleImgPaths, List<String> otherImgPaths) {
@@ -192,7 +210,7 @@ public class ExerciseService {
      * @param exercise Exercise Object which holds the data.
      */
     public void updateExerciseAndAddNewImg(Exercise exercise) {
-        DataBaseService.getInstance().updateExerciseWithoutImg(exercise.getId(), exercise.getName(), exercise.getDescription(), exercise.getWeightType(), exercise.getVideoLink());
+        DataBaseService.getInstance().updateExerciseWithoutImg(exercise.getId(), exercise.getName(), exercise.getDescription(), exercise.getWeightType(), formatLink(exercise.getVideoLink()));
         DataBaseService.getInstance().addNewImgPaths(exercise.getId(), uniteImgPaths(exercise.getMuscleImgPaths(), exercise.getOtherImgPaths()));
     }
 
