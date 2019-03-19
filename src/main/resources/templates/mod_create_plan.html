@@ -201,7 +201,8 @@
                         <span class="input-group-addon">Trainingsfokus:</span>
                         <select id="focus" class="form-control" required th:field="*{trainingsFocus}">
                             <option th:value="null" selected>Wähle eine Option aus...</option>
-                            <option th:each="focus : ${T(de.ep.team2.core.enums.TrainingsFocus).values()}" th:value="${focus.getConst()}" th:text="${focus.toString()}"></option>
+                            <option th:each="focus : ${T(de.ep.team2.core.enums.TrainingsFocus).values()}"
+                                    th:value="${focus.getConst()}" th:text="${focus.toString()}"></option>
                         </select>
                     </div>
                 </div>
@@ -213,7 +214,8 @@
                         <span class="input-group-addon">Zielgruppe:</span>
                         <select id="targetGroup" class="form-control" required th:field="*{targetGroup}">
                             <option th:value="null" selected>Wähle eine Gruppe aus...</option>
-                            <option th:each="level : ${T(de.ep.team2.core.enums.ExperienceLevel).values()}" th:value="${level.getConst()}" th:text="${level.toString()}"></option>
+                            <option th:each="level : ${T(de.ep.team2.core.enums.ExperienceLevel).values()}"
+                                    th:value="${level.getConst()}" th:text="${level.toString()}"></option>
                         </select>
                     </div>
                 </div>
@@ -223,7 +225,8 @@
                         <!-- replace padding & padding left with padding: auto for other screens than alex´ laptop -->
                         <a class="form-control" type="input" id="inputFieldCheckbox">
                             <div class="form-check">
-                                <input type="checkbox" class="form-check-input" onchange="checkboxChanged()" onkeypress="return noenter()"
+                                <input type="checkbox" class="form-check-input" onchange="checkboxChanged()"
+                                       onkeypress="return noenter()"
                                        id="singleDayCheck" th:field="*{oneShot}" th:disabled="${plan}">
                             </div>
                         </a>
@@ -275,7 +278,7 @@
                     </div>
                 </div>
             </div>
-            <input th:field="*{id}" hidden onkeypress="return noenter()" id="planID">
+            <input th:field="*{id}" hidden onkeypress="return noenter()" id="planID" th:data="${uri}">
             <input type="text" id="prevUnitAmount" value="3" hidden disabled onkeypress="return noenter()">
         </div>
 
@@ -897,10 +900,12 @@
 
     function editExercise() {
         var x = document.getElementsByClassName("detailExerciseTable");
+        var z = document.getElementById("planID");
+        var uri = z.getAttribute('data');
         for (i = 0; i < x.length; i++) {
             var y = document.getElementById(x[i].id);
             if (y.style.getPropertyValue("display") === "block"){
-                location.href = "/mods/editplan/1/"+x[i].getAttribute('data');
+                location.href = uri + "/mods/editplan/" + z.getAttribute('value') + "/"+x[i].getAttribute('data');
             }
         }
     }

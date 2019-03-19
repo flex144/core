@@ -63,10 +63,11 @@ public class RegistrationController {
 
             SimpleMailMessage mailMessage = new SimpleMailMessage();
             mailMessage.setTo(userDto.getEmail());
+            mailMessage.setFrom("core.ep18@gmail.com");
             mailMessage.setSubject("Complete Registration!");
             String uri = ServletUriComponentsBuilder.fromCurrentContextPath().build().toString();
             String url = uri + "/confirm?token=" + confirmationToken.getConfirmationToken();
-            mailMessage.setText("To confirm your account, please click here : '" + url + "' . (If that" +
+            mailMessage.setText("To confirm your account, please click here : " + url + "  (If that" +
                     " doesn't work, please copy and paste the link into your browser.)");
 
             emailSenderService.sendEmail(mailMessage);
