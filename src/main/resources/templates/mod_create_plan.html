@@ -1006,7 +1006,7 @@
     function createExecution() {
         // Get the name of the new execution from the input field "inputExecutionName"
         var newExecution = document.getElementById("inputExecutionName").value;
-        // Create a new option with the stored execution name in the datalist "storedEcexutions
+        // Create a new option with the stored execution name in the datalist "storedEcexutions"
         $('#storedExecutions').append(
             '<option value="'+newExecution+'" />'
         );
@@ -1470,6 +1470,7 @@
             passesTest = false;
             console.log(id + " :checkSpcialCharaters : failed");
             document.getElementById(id).style.borderColor = "red";
+            alert("Eine Übung kann nur 10 Sätze haben.");
         } else{
             document.getElementById(id).style.borderColor = "#CCCCCC";
         }
@@ -1522,48 +1523,71 @@
      * @return if the value passes the evaluation
      */
     function checkNumberAndStroke(id){
-            var format = /^[0-9/+-]*$/
-            var valueInField = document.getElementById(id).value;
-            var passesTest =  format.test(valueInField);
+        var format = /[0-9+-/ ]/;
+        var valueInField = document.getElementById(id).value;
+        var passesTest = format.test(valueInField);
+        console.log("CheckNumberAndStroke: passesTest: " +passesTest);
+        if (checkNotEmpty(id)){
             if (passesTest){
-                console.log(id + " :checkText : passed");
                 document.getElementById(id).style.borderColor = "#CCCCCC";
+                console.log(id + " :checkNumberAndStroke : passed");
                 return true;
+            }else {
+                document.getElementById(id).style.borderColor = "red";
+                console.log(id + " :checkNumberAndStroke : failed");
+                return false;
             }
-        console.log(id + " :checkText : failed");
-        document.getElementById(id).style.borderColor = "red";
-        return false;
+        }
     }
 
     /**
      * Counts if an exercise has more than 10 sets
      * */
     function countAmountOfSets(id) {
+        console.log("countAmountOfSets: entered");
         var content = document.getElementById(id).value;
         var amountOfSlashes = (content.match(/\//g) || []).length;
         if (amountOfSlashes < 10){
+            console.log("countAmountOfSets: passed");
+            document.getElementById(id).style.borderColor = "#CCCCCC";
             return true;
         }
+        console.log("countAmountOfSets: failed");
+        document.getElementById(id).style.borderColor = "red";
         return false;
+    }
+
+
+    /**
+     * Counts the amount of Backslashes in the given input-field with id
+     * */
+    function getAmountOfSets(id) {
+        console.log("getAmountOfSets(" + id + "): entered");
+        var content = document.getElementById(id).value;
+        return (content.match(/\//g) || []).length;
     }
 
     /**
      * Checks if a plan with the same name already exists
      * */
     function checkNoDuplicatePlanName(){
-        //TODO add listLength
+        console.log("checkNoDuplicatePlanName: entered");
         var listLength;
+        //TODO add listLength "storedExercises"
         var passesTest = true
         if(document.getElementById("planID").value != null){
+            console.log("checkNoDuplicatePlanName: case: editing");
             return passesTest
-        }
+        }/**
         for (var i = 0; i < listLength; i++){
-            /**TODO compare to list of existing names
+            TODO compare to list of existing names
             if (document.getElementById("planName").value == [POINT TO THE LIST @ I]){
                 passesTest = false;
                 alert("Dieser Name ist bereits für einen Plan vergeben. Bitte wähle einen anderen.")
-            }*/
-        }
+            }
+        console.log("checkNoDuplicatePlanName: case: name exists");
+        }*/
+        console.log("checkNoDuplicatePlanName: case: exiting");
         return passesTest;
 
     }
@@ -1666,17 +1690,20 @@
             var repfield = "repsInput" + i;
             var tempofield = "tempoInput" + i;
             var pausefield = "pauseInput" + i;
-            if (!checkNumberAndStroke(weightfield) || countAmountOfSets(weightfield)){
-
+            if (!checkNumberAndStroke(weightfield) || !countAmountOfSets(weightfield)){
                 passesTest = false;
             }
-            if (!checkNumberAndStroke(repfield) || !checkNotEmpty(repfield) || countAmountOfSets(repfield)){
+            if (!checkNumberAndStroke(repfield) || !checkNotEmpty(repfield) || !countAmountOfSets(repfield)){
                 passesTest = false;
             }
             if (!checkNotEmpty(tempofield)){
                 passesTest = false;
             }
             if (!checkNumber(pausefield)){
+                passesTest = false;
+            }
+            if (getAmountOfSets(weightfield) != getAmountOfSets(repfield)) {
+                alert("Es müssen gleich viele Sätze bei Gewicht und Wiederholungen angegeben werden.")
                 passesTest = false;
             }
         }
