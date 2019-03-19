@@ -862,6 +862,10 @@
     </div>
 </div>
 
+<datalist id="existingPlanNames" hidden>
+    <option hidden th:each="name : ${allPlanNames}" th:value="${name}" th:text="${name}"/>
+</datalist>
+
 <script th:inline="javascript">
 
     /**
