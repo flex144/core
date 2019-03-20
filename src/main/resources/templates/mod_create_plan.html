@@ -1712,8 +1712,10 @@
                 passesTest = false;
             }
             if (getAmountOfSets(weightfield) != getAmountOfSets(repfield)) {
-                alert("Es müssen gleich viele Sätze bei Gewicht und Wiederholungen angegeben werden.")
-                passesTest = false;
+                if (getAmountOfSets(weightfield) != 0){
+                    alert("Es müssen gleich viele Sätze bei Gewicht und Wiederholungen angegeben werden. Oder nur ein einziges Gewicht für beliebig viele Sätze.")
+                    passesTest = false;
+                }
             }
         }
         console.log("TE check passed");
